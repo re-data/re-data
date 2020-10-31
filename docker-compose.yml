@@ -1,0 +1,59 @@
+version: "2.1"
+services:
+
+  # postgres_redata:
+  #   image: postgres:12
+  #   environment:
+  #     - POSTGRES_USER=redata
+  #     - POSTGRES_PASSWORD=mysecretpassword
+  #     - POSTGRES_DB=redata
+  #   ports:
+  #     - "5432:5432"
+
+  postgres_airflow:
+    image: postgres:12
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    ports:
+      - "5433:5432"
+
+  scheduler_airflow:
+    image: apache/airflow
+    restart: always
+    depends_on:
+      - postgres
+      - webserver
+    env_file:
+      - .env
+    ports:
+      - "8793:8793"
+    volumes:
+      - ./redata:/usr/local/redata
+    command: scheduler
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  webserver_airflow:
+    image: apache/airflow
+    hostname: webserver
+    restart: always
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    volumes:
+      - ./redata:/usr/local/redata
+      - ./scripts:/opt/airflow/scripts
+    ports:
+      - "8080:8080"
+    entrypoint: ./scripts/airflow-entrypoint.sh
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+      interval: 30s
+      timeout: 30s
+      retries: 32
