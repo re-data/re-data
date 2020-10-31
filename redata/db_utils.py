@@ -23,3 +23,14 @@ def get_current_table_schema(table_name):
     schema_cols =  [ {'name': c_name, 'type': c_type} for c_name, c_type in all_cols]
     return schema_cols
 
+def get_monitored_tables():
+    db = get_source_connection()
+
+    result = db.execute("""
+        SELECT
+            table_name
+        FROM
+            metrics_table_metadata
+    """)
+    return list(el[0] for el in result)
+

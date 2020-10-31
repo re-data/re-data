@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3.8"
 services:
 
   # postgres_redata:
@@ -10,7 +10,7 @@ services:
   #   ports:
   #     - "5432:5432"
 
-  postgres_airflow:
+  postgres:
     image: postgres:12
     environment:
       - POSTGRES_USER=airflow
@@ -24,7 +24,7 @@ services:
     restart: always
     depends_on:
       - postgres
-      - webserver
+      - webserver_airflow
     env_file:
       - .env
     ports:

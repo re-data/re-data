@@ -45,22 +45,15 @@ def setup_initial_query(db_table_name):
         }
         db.execute(text("""
             INSERT INTO metrics_table_metadata
-            VALUES (:table_name, :column_name, :column_type, :schema)
+            VALUES (NOW(), :table_name, :column_name, :column_type, :schema)
         """), params)
         print ("Query added to initial monitoring")
-
-
-def setup_query_for_all_tables():
-    db = get_source_connection()
-
-    tables = db.table_names()
-    for table in tables:
-        setup_initial_query(table)
 
 
 def setup_metrics():
     db = get_source_connection()
     db.execute("""CREATE TABLE IF NOT EXISTS metrics_table_metadata (
+        created_at timestamp default now(),
         table_name text,
         time_column text,
         time_column_type text,

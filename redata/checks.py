@@ -1,13 +1,14 @@
 import json
 from sqlalchemy.sql import text
-from redata.db_utils import get_source_connection, get_current_table_schema
+from redata.db_utils import get_source_connection, get_current_table_schema, get_monitored_tables
+from redata.setup_checks import setup_initial_query
 
 def check_data_is_coming(table, time_column, time_type):
     db = get_source_connection()
 
     db.execute(f"""
         INSERT INTO metrics_results (table_name, name, value)
-        SELECT '{table}', '{time_column}_delay', EXTRACT (epoch from now() - max({time_column})) / 60
+        SELECT '{table}', '{time_column}_delay', EXTRACT (epoch from now() - max({time_column}))
         FROM {table}
     """)
     print (f"Successfull inserted for table {table}")
@@ -96,6 +97,20 @@ def check_data_volume(table_name, time_column, time_interval):
         )
         """), params
     )
+
+def check_for_new_tables():
+    db = get_source_connection()
+
+    tables = db.table_names()
+    monitored_tables = set(get_monitored_tables())
+
+    for table in tables:
+        if table not in monitored_tables:
+            insert_schema_changed_record(
+                db, table, 'table created', None, None, None
+            )
+            setup_initial_query(table)
+
 
 
 # check_data_volume('testing_grafana', 'created_at', '1 day')

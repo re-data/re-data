@@ -8,6 +8,17 @@ from redata import checks
 
 VOLUME_INTERVAL = ['1 hour', '1 day', '7 days', '30 days']
 
+
+def run_checks_for_table(table, time_column, time_type):
+    checks.check_data_is_coming(table, time_column, time_type)
+    checks.check_if_schema_changed(table)
+    
+    for interval in VOLUME_INTERVAL:
+        checks.check_data_volume(table, time_column, interval)
+
+def run_check_for_new_tables():
+    checks.check_for_new_tables()
+
 with DAG('validation_dag', description='Validate data',
           schedule_interval='*/1 * * * *',
           start_date=datetime(2017, 3, 20), catchup=False) as dag:
@@ -20,28 +31,19 @@ with DAG('validation_dag', description='Validate data',
     """)
     
     for table, time_column, time_type in tables:
-        coming = PythonOperator(
-            task_id=f'check_data_is_coming_{table}',
-            python_callable=checks.check_data_is_coming,
+        run_checks = PythonOperator(
+            task_id=f'run_checks_for_{table}',
+            python_callable=run_checks_for_table,
             op_kwargs={'table': table, 'time_column': time_column, 'time_type': time_type},
             dag=dag
         )
-        dag >> coming
 
-        schema_change = PythonOperator(
-            task_id=f'check_if_schema_changed_{table}',
-            python_callable=checks.check_if_schema_changed,
-            op_kwargs={'table': table},
-            dag=dag
-        )
-        dag >> schema_change
+        dag >> run_checks
 
-        for interval in VOLUME_INTERVAL:
-            slug_inteval = interval.replace(" ", "_")
-            volume = PythonOperator(
-                task_id=f'check_data_volume_{table}_interval_{slug_inteval}',
-                python_callable=checks.check_data_volume,
-                op_kwargs={'table_name': table, 'time_column': time_column, 'time_interval': interval},
-                dag=dag
-            )
-            dag >> volume
+    check_new_tables = PythonOperator(
+        task_id='run_check_for_new_tables',
+        python_callable=run_check_for_new_tables,
+        dag=dag
+    )
+
+    dag >> check_new_tables
