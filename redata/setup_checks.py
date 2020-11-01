@@ -11,6 +11,7 @@ def setup_initial_query(db_table_name):
     
     best_column = None
     best_type = None
+    closest_date = None
 
     schema_cols = get_current_table_schema(db_table_name)
 
@@ -19,22 +20,20 @@ def setup_initial_query(db_table_name):
         observed = []
 
         for c in columns:
-            counts = db.execute(f"""
+            counts = db.execute(text(f"""
                 SELECT
-                    count(*)
+                    max(:c)
                 FROM
                     {db_table_name}
                 WHERE
-                    {c} > now() - interval '1 days'
-            """)
+                    {c} < NOW()
+            """), {'c': c})
 
-            if counts.fetchall()[0][0] > 0:
-                observed.append(c)
-        
-        if observed:
-            # For now take first column to be observed one
-            best_column = observed[0]
-            best_type = pref
+            result = counts.fetchall()
+            if not closest_date or (result and result[0][0] > closest_date):
+                best_column = c
+                best_type = pref
+                closest_date = result or result[0][0]
 
     if best_column:
         params = {
@@ -87,4 +86,3 @@ def setup_metrics():
     print ("Generated tracked metrics for table")
 
 
-setup_metrics()

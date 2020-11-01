@@ -1,14 +1,22 @@
 version: "3.8"
 services:
 
-  # postgres_redata:
-  #   image: postgres:12
-  #   environment:
-  #     - POSTGRES_USER=redata
-  #     - POSTGRES_PASSWORD=mysecretpassword
-  #     - POSTGRES_DB=redata
-  #   ports:
-  #     - "5432:5432"
+  grafana:
+    image: grafana/grafana:7.3.0
+    ports:
+      - 3001:3000
+    env_file:
+      - .env
+    tty: true
+    
+  postgres_redata:
+    image: postgres:12
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_USER=redata
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=redata
 
   postgres:
     image: postgres:12
