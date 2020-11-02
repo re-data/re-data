@@ -2,11 +2,10 @@ import json
 from sqlalchemy.sql import text
 from redata.db_utils import get_source_connection, get_current_table_schema, get_monitored_tables
 from redata.setup_checks import setup_initial_query
+from redata.db_utils import DB
 
 def check_data_is_coming(table, time_column, time_type):
-    db = get_source_connection()
-
-    db.execute(f"""
+    DB.execute(f"""
         INSERT INTO metrics_results (table_name, name, value)
         SELECT '{table}', '{time_column}_delay', EXTRACT (epoch from now() - max({time_column}))
         FROM {table}
@@ -14,19 +13,19 @@ def check_data_is_coming(table, time_column, time_type):
     print (f"Successfull inserted for table {table}")
 
 
-def update_to_current_schema(db, table, schema_cols):
+def update_to_current_schema(table, schema_cols):
     params = {
         'table_name': table,
         'schema': json.dumps({ 'columns': schema_cols })
     }
-    db.execute(text("""
+    DB.execute(text("""
         UPDATE metrics_table_metadata
         SET schema = :schema
         WHERE table_name = :table_name
     """), params)
 
 
-def insert_schema_changed_record(db, table_name, operation, column_name, column_type, column_count):
+def insert_schema_changed_record(table_name, operation, column_name, column_type, column_count):
     params = {
         'table_name': table_name,
         'operation': operation,
@@ -34,7 +33,7 @@ def insert_schema_changed_record(db, table_name, operation, column_name, column_
         'column_type': column_type,
         'column_count': column_count
     }
-    db.execute(text("""
+    DB.execute(text("""
         INSERT INTO metrics_table_schema_changes 
         VALUES (
             NOw(), :table_name, :operation, :column_name, :column_type, :column_count
@@ -43,12 +42,11 @@ def insert_schema_changed_record(db, table_name, operation, column_name, column_
 
 
 def check_if_schema_changed(table):
-    db = get_source_connection()
 
     def schema_to_dict(schema):
         return dict([(el['name'], el['type'])for el in schema])
 
-    get_last_schema = db.execute(text("""
+    get_last_schema = DB.execute(text("""
         SELECT schema FROM metrics_table_metadata WHERE table_name = :table
     """), {'table': table})
 
@@ -63,32 +61,30 @@ def check_if_schema_changed(table):
         for el in last_dict:
             if el not in current_dict:
                 print (f"{el} was removed from schema")
-                insert_schema_changed_record(db, table, 'column removed', el, last_dict[el], len(current_dict))
+                insert_schema_changed_record(table, 'column removed', el, last_dict[el], len(current_dict))
 
         for el in current_dict:
             if el not in last_dict:
                 print (f"{el} was added to schema")
-                insert_schema_changed_record(db, table, 'column added', el, current_dict[el], len(current_dict))
+                insert_schema_changed_record(table, 'column added', el, current_dict[el], len(current_dict))
             else:
                 prev_type = last_dict[el]
                 curr_type = current_dict[el]
 
                 if curr_type != prev_type:
                     print (f"Type of column: {el} changed from {prev_type} to {curr_type}")
-                    insert_schema_changed_record(db, table, 'column added', el, current_dict[el], len(current_dict))
+                    insert_schema_changed_record(table, 'column added', el, current_dict[el], len(current_dict))
 
-        update_to_current_schema(db, table, current_schema)
+        update_to_current_schema(table, current_schema)
 
 def check_data_volume(table_name, time_column, time_interval):
-    db = get_source_connection()
-
     params = {
         'table_name': table_name,
         'time_column': time_column,
         'time_interval': time_interval
     }
 
-    db.execute(text(f"""
+    DB.execute(text(f"""
         INSERT INTO metrics_data_volume (table_name, time_interval, count)
         (
             SELECT :table_name, :time_interval, count(*)
@@ -100,15 +96,13 @@ def check_data_volume(table_name, time_column, time_interval):
     print (f"Added to metrics data volume")
 
 def check_for_new_tables():
-    db = get_source_connection()
-
-    tables = db.table_names()
+    tables = DB.table_names()
     monitored_tables = set(get_monitored_tables())
 
     for table in tables:
         if table not in monitored_tables:
             insert_schema_changed_record(
-                db, table, 'table created', None, None, None
+                table, 'table created', None, None, None
             )
             setup_initial_query(table)
 

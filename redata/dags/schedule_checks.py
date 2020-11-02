@@ -2,16 +2,14 @@ from datetime import datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 
-from redata.db_utils import get_source_connection, get_current_table_schema
 from redata import checks
+from redata.db_utils import DB
 
 
 VOLUME_INTERVAL = ['1 hour', '1 day', '7 days', '30 days']
 
 def run_checks():
-    db = get_source_connection()
-
-    tables = db.execute("""
+    tables = DB.execute("""
         SELECT *
         FROM metrics_table_metadata
     """)

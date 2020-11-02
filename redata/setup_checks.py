@@ -1,10 +1,10 @@
 from sqlalchemy.sql import text
 import json
-from redata.db_utils import get_source_connection, get_current_table_schema
+from redata.db_utils import get_current_table_schema
+from redata.db_utils import DB
 
 def setup_initial_query(db_table_name):
 
-    db = get_source_connection()
     print (f"running setup for {db_table_name}")
 
     preference = ['timestamp without time zone', 'timestamp with time zone', 'date']
@@ -20,7 +20,7 @@ def setup_initial_query(db_table_name):
         observed = []
 
         for c in columns:
-            counts = db.execute(text(f"""
+            counts = DB.execute(text(f"""
                 SELECT
                     max(:c)
                 FROM
@@ -42,7 +42,7 @@ def setup_initial_query(db_table_name):
             'column_type': best_type,
             'schema': json.dumps({ 'columns': schema_cols })
         }
-        db.execute(text("""
+        DB.execute(text("""
             INSERT INTO metrics_table_metadata
             VALUES (NOW(), :table_name, :column_name, :column_type, :schema)
         """), params)
@@ -50,8 +50,7 @@ def setup_initial_query(db_table_name):
 
 
 def setup_metrics():
-    db = get_source_connection()
-    db.execute("""CREATE TABLE IF NOT EXISTS metrics_table_metadata (
+    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_table_metadata (
         created_at timestamp default now(),
         table_name text,
         time_column text,
@@ -59,14 +58,14 @@ def setup_metrics():
         schema jsonb
         )"""
     )
-    db.execute("""CREATE TABLE IF NOT EXISTS metrics_results (
+    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_results (
         table_name text,
         created_at timestamp default now(),
         name text,
         value integer
         )"""
     )
-    db.execute("""CREATE TABLE IF NOT EXISTS metrics_table_schema_changes (
+    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_table_schema_changes (
         created_at timestamp default now(),
         table_name text,
         operation text,
@@ -75,7 +74,7 @@ def setup_metrics():
         column_count integer
         )"""
     )
-    db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume (
+    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume (
         created_at timestamp default now(),
         table_name text,
         time_interval text,

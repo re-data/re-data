@@ -2,14 +2,13 @@ from sqlalchemy import create_engine
 
 def get_source_connection():
     db_string = "postgres://postgres:mysecretpassword@192.168.99.100:5432/postgres"
-    db = create_engine(db_string)
+    db = create_engine(db_string, echo=True)
     return db
 
+DB = get_source_connection()
 
 def get_current_table_schema(table_name):
-    db = get_source_connection()
-    
-    result = db.execute(f"""
+    result = DB.execute(f"""
         SELECT 
             column_name, 
             data_type 
@@ -24,8 +23,7 @@ def get_current_table_schema(table_name):
     return schema_cols
 
 def get_monitored_tables():
-    db = get_source_connection()
-    result = db.execute("""
+    result = DB.execute("""
         SELECT
             *
         FROM
