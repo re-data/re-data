@@ -25,7 +25,6 @@ def get_current_table_schema(table_name):
 
 def get_monitored_tables():
     db = get_source_connection()
-
     result = db.execute("""
         SELECT
             table_name
@@ -33,4 +32,3 @@ def get_monitored_tables():
             metrics_table_metadata
     """)
     return list(el[0] for el in result)
-

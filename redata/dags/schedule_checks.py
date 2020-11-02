@@ -12,23 +12,25 @@ def run_checks():
     db = get_source_connection()
 
     tables = db.execute("""
-        SELECT table_name, time_column, time_column_type
+        SELECT *
         FROM metrics_table_metadata
     """)
     
-    for table, time_column, time_type in tables:
-        run_checks_for_table(table, time_column, time_type)
+    for table in tables:
+        run_checks_for_table(table)
 
 
-def run_checks_for_table(table, time_column, time_type):
-    checks.check_data_is_coming(table, time_column, time_type)
-    checks.check_if_schema_changed(table)
+def run_checks_for_table(table):
+    checks.check_data_is_coming(table.table_name, table.time_column, table.time_column_type)
+    checks.check_if_schema_changed(table.table_name)
     
     for interval in VOLUME_INTERVAL:
-        checks.check_data_volume(table, time_column, interval)
+        checks.check_data_volume(table.table_name, table.time_column, interval)
+
 
 def run_check_for_new_tables():
     checks.check_for_new_tables()
+
 
 with DAG('validation_dag', description='Validate data',
           schedule_interval='*/1 * * * *',

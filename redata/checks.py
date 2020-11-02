@@ -97,6 +97,7 @@ def check_data_volume(table_name, time_column, time_interval):
         )
         """), params
     )
+    print (f"Added to metrics data volume")
 
 def check_for_new_tables():
     db = get_source_connection()
