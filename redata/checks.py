@@ -1,4 +1,5 @@
 import json
+import pdb
 from sqlalchemy.sql import text
 from redata.db_utils import get_source_connection, get_current_table_schema, get_monitored_tables
 from redata.setup_checks import setup_initial_query
@@ -95,6 +96,26 @@ def check_data_volume(table_name, time_column, time_interval):
     )
     print (f"Added to metrics data volume")
 
+
+def check_data_valume_diff(table_name, time_column):
+    from_time = DB.execute(text("""
+        SELECT max(created_at) as created_at
+        FROM metrics_data_volume_diff
+        WHERE table_name = :table_name
+        """), {'table_name': table_name}).first()
+
+    from_time = from_time.created_at if from_time else None
+    DB.execute(text(f"""
+        INSERT INTO metrics_data_volume_diff (created_at, from_time, table_name, count)
+        (
+            SELECT NOW(), :from_time, :table_name, count(*)
+            FROM {table_name}
+            WHERE :from_time is null or {time_column} > :from_time
+        )
+        """), {'table_name': table_name, 'from_time': from_time}
+    )
+
+
 def check_for_new_tables():
     tables = DB.table_names()
     monitored_tables = set(get_monitored_tables())
@@ -105,6 +126,7 @@ def check_for_new_tables():
                 table, 'table created', None, None, None
             )
             setup_initial_query(table)
+
 
 
 

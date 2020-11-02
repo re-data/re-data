@@ -1,3 +1,4 @@
+import pdb
 from sqlalchemy.sql import text
 import json
 from redata.db_utils import get_current_table_schema
@@ -22,7 +23,7 @@ def setup_initial_query(db_table_name):
         for c in columns:
             counts = DB.execute(text(f"""
                 SELECT
-                    max(:c)
+                    max({c})
                 FROM
                     {db_table_name}
                 WHERE
@@ -33,7 +34,7 @@ def setup_initial_query(db_table_name):
             if not closest_date or (result and result[0][0] > closest_date):
                 best_column = c
                 best_type = pref
-                closest_date = result or result[0][0]
+                closest_date = result[0][0] if result else None
 
     if best_column:
         params = {
@@ -81,7 +82,15 @@ def setup_metrics():
         count bigint
         )"""
     )
+    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume_diff (
+        created_at timestamp default now(),
+        from_time timestamp,
+        table_name text,
+        count bigint
+        )"""
+    )
 
     print ("Generated tracked metrics for table")
 
 
+setup_metrics()

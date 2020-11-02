@@ -21,6 +21,7 @@ def run_checks():
 def run_checks_for_table(table):
     checks.check_data_is_coming(table.table_name, table.time_column, table.time_column_type)
     checks.check_if_schema_changed(table.table_name)
+    checks.check_data_valume_diff(table.table_name, table.time_column)
     
     for interval in VOLUME_INTERVAL:
         checks.check_data_volume(table.table_name, table.time_column, interval)
