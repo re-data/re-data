@@ -27,8 +27,8 @@ def get_monitored_tables():
     db = get_source_connection()
     result = db.execute("""
         SELECT
-            table_name
+            *
         FROM
             metrics_table_metadata
     """)
-    return list(el[0] for el in result)
+    return list(el.table_name for el in result)
