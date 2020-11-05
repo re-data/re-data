@@ -93,4 +93,5 @@ def setup_metrics():
     print ("Generated tracked metrics for table")
 
 
-setup_metrics()
+if __name__ == "__main__":
+    setup_metrics()

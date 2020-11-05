@@ -128,6 +128,5 @@ def check_for_new_tables():
             setup_initial_query(table)
 
 
-
-
-# check_data_volume('testing_grafana', 'created_at', '1 day')
+if __name__ == "__main__":
+    check_data_volume('testing_grafana', 'created_at', '1 day')
