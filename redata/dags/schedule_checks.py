@@ -2,8 +2,10 @@ from datetime import datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 
-from redata import checks
-from redata.db_utils import DB
+from redata.checks.data_delayed import check_data_delayed
+from redata.checks.data_volume import check_data_volume, check_data_valume_diff
+from redata.checks.data_schema import check_if_schema_changed, check_for_new_tables
+from redata.db_operations import DB
 
 
 VOLUME_INTERVAL = ['1 hour', '1 day', '7 days', '30 days']
@@ -19,16 +21,16 @@ def run_checks():
 
 
 def run_checks_for_table(table):
-    checks.check_data_is_coming(table.table_name, table.time_column, table.time_column_type)
-    checks.check_if_schema_changed(table.table_name)
-    checks.check_data_valume_diff(table.table_name, table.time_column)
+    check_data_delayed(table.table_name, table.time_column, table.time_column_type)
+    check_if_schema_changed(table.table_name)
+    check_data_valume_diff(table.table_name, table.time_column)
     
     for interval in VOLUME_INTERVAL:
-        checks.check_data_volume(table.table_name, table.time_column, interval)
+        check_data_volume(table.table_name, table.time_column, interval)
 
 
 def run_check_for_new_tables():
-    checks.check_for_new_tables()
+    check_for_new_tables()
 
 
 with DAG('validation_dag', description='Validate data',

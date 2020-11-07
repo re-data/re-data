@@ -1,8 +1,8 @@
 import pdb
 from sqlalchemy.sql import text
 import json
-from redata.db_utils import get_current_table_schema
-from redata.db_utils import DB
+from redata.db_operations import get_current_table_schema
+from redata.db_operations import DB
 
 def setup_initial_query(db_table_name):
 
@@ -59,11 +59,10 @@ def setup_metrics():
         schema jsonb
         )"""
     )
-    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_results (
+    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_data_delay (
         table_name text,
-        created_at timestamp default now(),
-        name text,
-        value integer
+        value integer,
+        created_at timestamp default now()
         )"""
     )
     DB.execute("""CREATE TABLE IF NOT EXISTS metrics_table_schema_changes (
