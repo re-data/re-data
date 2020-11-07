@@ -5,13 +5,13 @@ from airflow.operators.python_operator import PythonOperator
 from redata.checks.data_delayed import check_data_delayed
 from redata.checks.data_volume import check_data_volume, check_data_valume_diff
 from redata.checks.data_schema import check_if_schema_changed, check_for_new_tables
-from redata.db_operations import DB
+from redata.db_operations import metrics_db
 
 
 VOLUME_INTERVAL = ['1 hour', '1 day', '7 days', '30 days']
 
 def run_checks():
-    tables = DB.execute("""
+    tables = metrics_db.execute("""
         SELECT *
         FROM metrics_table_metadata
     """)

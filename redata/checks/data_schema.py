@@ -2,7 +2,7 @@ import json
 import pdb
 from redata.setup_checks import setup_initial_query
 from sqlalchemy.sql import text
-from redata.db_operations import DB, source_db, metadata, get_current_table_schema
+from redata.db_operations import metrics_db, source_db, metadata, get_current_table_schema
 from sqlalchemy import update
 
 
@@ -22,7 +22,7 @@ def insert_schema_changed_record(table_name, operation, column_name, column_type
         column_type=column_type,
         column_count=column_count
     )
-    DB.execute(stmt)
+    metrics_db.execute(stmt)
 
 
 def update_to_current_schema(table, schema_cols):
@@ -32,7 +32,7 @@ def update_to_current_schema(table, schema_cols):
         metrics_table_metadata.c.table_name == table
     ).values(schema={'columns': schema_cols})
 
-    DB.execute(stmt)
+    metrics_db.execute(stmt)
 
 def check_for_new_tables():
     tables = source_db.table_names()
@@ -52,7 +52,7 @@ def check_if_schema_changed(table):
     def schema_to_dict(schema):
         return dict([(el['name'], el['type'])for el in schema])
 
-    get_last_schema = DB.execute(text("""
+    get_last_schema = metrics_db.execute(text("""
         SELECT schema FROM metrics_table_metadata WHERE table_name = :table
     """), {'table': table})
 

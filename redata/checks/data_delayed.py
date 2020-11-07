@@ -1,4 +1,4 @@
-from redata.db_operations import DB, source_db, metadata
+from redata.db_operations import metrics_db, source_db, metadata
 
 def check_data_delayed(table, time_column, time_type):
     result = source_db.execute(f"""
@@ -16,6 +16,6 @@ def check_data_delayed(table, time_column, time_type):
 
     print (f"Inserting stmt: {stmt}")
 
-    DB.execute(stmt)
+    metrics_db.execute(stmt)
 
     print (f"Successfull inserted delay for table {table}")

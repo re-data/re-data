@@ -12,10 +12,10 @@ def get_metrics_connection():
     return db
 
 source_db = get_monitored_db_connection()
-DB = get_metrics_connection()
+metrics_db = get_metrics_connection()
 
 metadata = MetaData()
-metadata.reflect(bind=DB)
+metadata.reflect(bind=metrics_db)
 
 def get_current_table_schema(table_name):
     result = source_db.execute(f"""

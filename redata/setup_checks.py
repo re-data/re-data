@@ -2,7 +2,7 @@ import pdb
 from sqlalchemy.sql import text
 import json
 from redata.db_operations import get_current_table_schema
-from redata.db_operations import DB
+from redata.db_operations import metrics_db, source_db
 
 def setup_initial_query(db_table_name):
 
@@ -21,7 +21,7 @@ def setup_initial_query(db_table_name):
         observed = []
 
         for c in columns:
-            counts = DB.execute(text(f"""
+            counts = source_db.execute(text(f"""
                 SELECT
                     max({c})
                 FROM
@@ -43,7 +43,7 @@ def setup_initial_query(db_table_name):
             'column_type': best_type,
             'schema': json.dumps({ 'columns': schema_cols })
         }
-        DB.execute(text("""
+        metrics_db.execute(text("""
             INSERT INTO metrics_table_metadata
             VALUES (NOW(), :table_name, :column_name, :column_type, :schema)
         """), params)
@@ -51,7 +51,7 @@ def setup_initial_query(db_table_name):
 
 
 def setup_metrics():
-    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_table_metadata (
+    metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_table_metadata (
         created_at timestamp default now(),
         table_name text,
         time_column text,
@@ -59,13 +59,13 @@ def setup_metrics():
         schema jsonb
         )"""
     )
-    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_data_delay (
+    metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_delay (
         table_name text,
         value integer,
         created_at timestamp default now()
         )"""
     )
-    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_table_schema_changes (
+    metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_table_schema_changes (
         created_at timestamp default now(),
         table_name text,
         operation text,
@@ -74,14 +74,14 @@ def setup_metrics():
         column_count integer
         )"""
     )
-    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume (
+    metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume (
         created_at timestamp default now(),
         table_name text,
         time_interval text,
         count bigint
         )"""
     )
-    DB.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume_diff (
+    metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume_diff (
         created_at timestamp default now(),
         from_time timestamp,
         table_name text,

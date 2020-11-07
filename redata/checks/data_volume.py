@@ -1,5 +1,5 @@
 import pdb
-from redata.db_operations import DB, source_db, metadata
+from redata.db_operations import metrics_db, source_db, metadata
 from sqlalchemy.sql import text
 
 def check_data_volume(table_name, time_column, time_interval):
@@ -20,13 +20,13 @@ def check_data_volume(table_name, time_column, time_interval):
         count=result.count
     )
     
-    DB.execute(stmt)
+    metrics_db.execute(stmt)
 
     print (f"Added to metrics data volume")
 
 
 def check_data_valume_diff(table_name, time_column):
-    from_time = DB.execute(text("""
+    from_time = metrics_db.execute(text("""
         SELECT max(created_at) as created_at
         FROM metrics_data_volume_diff
         WHERE table_name = :table_name
@@ -47,4 +47,4 @@ def check_data_valume_diff(table_name, time_column):
         count=result.count
     )
     
-    DB.execute(stmt)
+    metrics_db.execute(stmt)
