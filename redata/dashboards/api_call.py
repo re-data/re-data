@@ -12,6 +12,7 @@ import tempfile
 
 from grafanalib._gen import DashboardEncoder
 from redata.checks.data_schema import get_monitored_tables
+from redata import settings
 
 def dashboard_to_json(dashboard):
     result = json.dumps(
@@ -111,7 +112,7 @@ dashboard = Dashboard(
 ).auto_panel_ids()
 
 grafana_api = GrafanaFace(
-    auth=("admin","admin"),
+    auth=(settings.GF_SECURITY_ADMIN_USER, settings.GF_SECURITY_ADMIN_PASSWORD),
     host='192.168.99.100:3001'
 )
 
