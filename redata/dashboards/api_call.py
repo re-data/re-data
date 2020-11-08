@@ -13,6 +13,7 @@ import tempfile
 from grafanalib._gen import DashboardEncoder
 from redata.checks.data_schema import get_monitored_tables
 from redata import settings
+from redata.dashboards.create import get_dashboard_for_table
 
 def dashboard_to_json(dashboard):
     result = json.dumps(
@@ -21,95 +22,95 @@ def dashboard_to_json(dashboard):
     )
     return result
 
-dashboard = Dashboard(
-    title="Testing dashboard 2",
-    rows=[
-        Row(panels=[
-          Graph(
-              title="my db",
-              dataSource='Metrics DB',
-              targets=[
-                  {
-                    "format": "time_series",
-                    "group": [],
-                    "hide": False,
-                    "metricColumn": "none",
-                    "rawQuery": True,
-                    "rawSql": "SELECT\n  $__time(created_at),\n  time_interval,\n  count\nFROM\n  metrics_data_volume\nWHERE\n  $__timeFilter(created_at) \nORDER by\n  created_at desc",
-                    "refId": "A",
-                },
-              ],
-              yAxes=single_y_axis(format=SECONDS_FORMAT),
-          ),
-          Graph(
-              title="my db 2",
-              dataSource='Metrics DB',
-              targets=[
-                  {
-                    "format": "time_series",
-                    "group": [],
-                    "hide": False,
-                    "metricColumn": "none",
-                    "rawQuery": True,
-                    "rawSql": "SELECT\n  $__time(created_at),\n  time_interval,\n  count\nFROM\n  metrics_data_volume\nWHERE\n  $__timeFilter(created_at) \nORDER by\n  created_at desc",
-                    "refId": "A",
-                },
-              ],
-              yAxes=single_y_axis(format=SECONDS_FORMAT),
-          ),
-        ]),
-        Row(panels=[
-          Graph(
-              title="my db",
-              dataSource='Metrics DB',
-              targets=[
-                  {
-                    "format": "time_series",
-                    "group": [],
-                    "hide": False,
-                    "metricColumn": "none",
-                    "rawQuery": True,
-                    "rawSql": "SELECT\n  $__time(created_at),\n  time_interval,\n  count\nFROM\n  metrics_data_volume\nWHERE\n  $__timeFilter(created_at) \nORDER by\n  created_at desc",
-                    "refId": "A",
-                },
-              ],
-              yAxes=single_y_axis(format=SECONDS_FORMAT),
-          ),
-          Graph(
-              title="my db 2",
-              dataSource='Metrics DB',
-              targets=[
-                  {
-                    "format": "time_series",
-                    "group": [],
-                    "hide": False,
-                    "metricColumn": "none",
-                    "rawQuery": True,
-                    "rawSql": "SELECT\n  $__time(created_at),\n  time_interval,\n  count\nFROM\n  metrics_data_volume\nWHERE\n  $__timeFilter(created_at) \nORDER by\n  created_at desc",
-                    "refId": "A",
-                },
-              ],
-              yAxes=single_y_axis(format=SECONDS_FORMAT),
-          ),
-          Graph(
-              title="my db 2",
-              dataSource='Metrics DB',
-              targets=[
-                  {
-                    "format": "time_series",
-                    "group": [],
-                    "hide": False,
-                    "metricColumn": "none",
-                    "rawQuery": True,
-                    "rawSql": "SELECT\n  $__time(created_at),\n  time_interval,\n  count\nFROM\n  metrics_data_volume\nWHERE\n  $__timeFilter(created_at) \nORDER by\n  created_at desc",
-                    "refId": "A",
-                },
-              ],
-              yAxes=single_y_axis(format=SECONDS_FORMAT),
-          ),
-        ]),
-    ],
-).auto_panel_ids()
+# dashboard = Dashboard(
+#     title="Testing dashboard 2",
+#     rows=[
+#         Row(panels=[
+#           Graph(
+#               title="my db",
+#               dataSource='Metrics DB',
+#               targets=[
+#                   {
+#                     "format": "time_series",
+#                     "group": [],
+#                     "hide": False,
+#                     "metricColumn": "none",
+#                     "rawQuery": True,
+#                     "rawSql": "SELECT\n  $__time(created_at),\n  time_interval,\n  count\nFROM\n  metrics_data_volume\nWHERE\n  $__timeFilter(created_at) \nORDER by\n  created_at desc",
+#                     "refId": "A",
+#                 },
+#               ],
+#               yAxes=single_y_axis(format=SECONDS_FORMAT),
+#           ),
+#           Graph(
+#               title="my db 2",
+#               dataSource='Metrics DB',
+#               targets=[
+#                   {
+#                     "format": "time_series",
+#                     "group": [],
+#                     "hide": False,
+#                     "metricColumn": "none",
+#                     "rawQuery": True,
+#                     "rawSql": "SELECT\n  $__time(created_at),\n  time_interval,\n  count\nFROM\n  metrics_data_volume\nWHERE\n  $__timeFilter(created_at) \nORDER by\n  created_at desc",
+#                     "refId": "A",
+#                 },
+#               ],
+#               yAxes=single_y_axis(format=SECONDS_FORMAT),
+#           ),
+#         ]),
+#         Row(panels=[
+#           Graph(
+#               title="my db",
+#               dataSource='Metrics DB',
+#               targets=[
+#                   {
+#                     "format": "time_series",
+#                     "group": [],
+#                     "hide": False,
+#                     "metricColumn": "none",
+#                     "rawQuery": True,
+#                     "rawSql": "SELECT\n  $__time(created_at),\n  time_interval,\n  count\nFROM\n  metrics_data_volume\nWHERE\n  $__timeFilter(created_at) \nORDER by\n  created_at desc",
+#                     "refId": "A",
+#                 },
+#               ],
+#               yAxes=single_y_axis(format=SECONDS_FORMAT),
+#           ),
+#           Graph(
+#               title="my db 2",
+#               dataSource='Metrics DB',
+#               targets=[
+#                   {
+#                     "format": "time_series",
+#                     "group": [],
+#                     "hide": False,
+#                     "metricColumn": "none",
+#                     "rawQuery": True,
+#                     "rawSql": "SELECT\n  $__time(created_at),\n  time_interval,\n  count\nFROM\n  metrics_data_volume\nWHERE\n  $__timeFilter(created_at) \nORDER by\n  created_at desc",
+#                     "refId": "A",
+#                 },
+#               ],
+#               yAxes=single_y_axis(format=SECONDS_FORMAT),
+#           ),
+#           Graph(
+#               title="my db 2",
+#               dataSource='Metrics DB',
+#               targets=[
+#                   {
+#                     "format": "time_series",
+#                     "group": [],
+#                     "hide": False,
+#                     "metricColumn": "none",
+#                     "rawQuery": True,
+#                     "rawSql": "SELECT\n  $__time(created_at),\n  time_interval,\n  count\nFROM\n  metrics_data_volume\nWHERE\n  $__timeFilter(created_at) \nORDER by\n  created_at desc",
+#                     "refId": "A",
+#                 },
+#               ],
+#               yAxes=single_y_axis(format=SECONDS_FORMAT),
+#           ),
+#         ]),
+#     ],
+# ).auto_panel_ids()
 
 grafana_api = GrafanaFace(
     auth=(settings.GF_SECURITY_ADMIN_USER, settings.GF_SECURITY_ADMIN_PASSWORD),
@@ -119,7 +120,8 @@ grafana_api = GrafanaFace(
 if __name__ == "__main__":
 
     for table in get_monitored_tables():
-        dashboard.title = table
+
+        dashboard = get_dashboard_for_table(table)
 
         x = dashboard_to_json(dashboard)
         data = json.loads(x)

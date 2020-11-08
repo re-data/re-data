@@ -12,15 +12,30 @@ def check_avg(table_name, checked_column, time_column, time_interval):
         WHERE {time_column} > now() - INTERVAL '{time_interval}'
     """).first()
 
-    return {
-        'name': 'check_avg',
-        'value': result.avg
-    }
+    return result.avg
 
+avg_check_dict = {
+    'name': 'check_avg',
+    'func': check_avg,
+    'metrics_query': """
+        select
+            created_at as time, time_interval, check_value
+        from
+            metrics_data_values
+        where
+            table_name = '{}' and column_name = '{}' and check_name='check_avg'
+        order by
+        1
+    """
+}
 
 TYPE_CHECK_MAP = {
-    'bigint': [check_avg],
-    'integer': [check_avg]
+    'bigint': [
+        avg_check_dict
+    ],
+    'integer': [
+        avg_check_dict
+    ]
 }
 
 def check_data_values(table_name, time_column, time_interval):
@@ -33,14 +48,14 @@ def check_data_values(table_name, time_column, time_interval):
         col_name = col_dict['name']
         col_type = col_dict['type']
 
-        for func in TYPE_CHECK_MAP.get(col_type, []):
-            result = func(table_name, col_name, time_column, time_interval)
+        for check_dict in TYPE_CHECK_MAP.get(col_type, []):
+            result = check_dict['func'](table_name, col_name, time_column, time_interval)
 
             stmt = metrics_data_values.insert().values(
                 table_name=table_name,
                 column_name=col_name,
-                check_name=result['name'],
-                check_value=result['value'],
+                check_name=check_dict['name'],
+                check_value=result,
                 time_interval=time_interval
             )
 
