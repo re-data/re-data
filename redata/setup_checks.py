@@ -88,6 +88,15 @@ def setup_metrics():
         count bigint
         )"""
     )
+    metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_values (
+        table_name text,
+        column_name text,
+        check_name text,
+        check_value double precision,
+        time_interval text,
+        created_at timestamp default now()
+        )"""
+    )
 
     print ("Generated tracked metrics for table")
 

@@ -5,6 +5,7 @@ from airflow.operators.python_operator import PythonOperator
 from redata.checks.data_delayed import check_data_delayed
 from redata.checks.data_volume import check_data_volume, check_data_valume_diff
 from redata.checks.data_schema import check_if_schema_changed, check_for_new_tables
+from redata.checks.data_values import check_data_values
 from redata.db_operations import metrics_db
 
 
@@ -27,6 +28,7 @@ def run_checks_for_table(table):
     
     for interval in VOLUME_INTERVAL:
         check_data_volume(table.table_name, table.time_column, interval)
+        check_data_values(table.table_name, table.time_column, interval)
 
 
 def run_check_for_new_tables():
