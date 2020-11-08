@@ -3,16 +3,22 @@ from sqlalchemy.schema import MetaData
 
 def get_monitored_db_connection():
     db_string = "postgres://postgres:mysecretpassword@192.168.99.100:5432/postgres"
-    db = create_engine(db_string, echo=True)
+    db = create_engine(db_string)
     return db
 
 def get_metrics_connection():
     db_string = "postgres://postgres:mysecretpassword@192.168.99.100:5432/postgres"
-    db = create_engine(db_string, echo=True)
+    db = create_engine(db_string)
+    return db
+
+def get_grafana_connection():
+    db_string = "postgres://redata:mysecretpassword@192.168.99.100:5434/redata"
+    db = create_engine(db_string)
     return db
 
 source_db = get_monitored_db_connection()
 metrics_db = get_metrics_connection()
+grafana_db = get_grafana_connection()
 
 metadata = MetaData()
 metadata.reflect(bind=metrics_db)
