@@ -5,11 +5,12 @@ from grafanalib.core import (
 )
 from redata.db_operations import get_current_table_schema
 from redata.checks.data_values import TYPE_CHECK_MAP
+from redata import settings
 
 def get_single_panel(table, column, check_name, check_sql):
     graph = Graph(
         title=f'{table}:{column} {check_name}',
-        dataSource='Metrics DB',
+        dataSource=settings.REDATA_GRAFANA_SOURCE,
         targets=[
             {
                 "format": "time_series",
@@ -27,7 +28,6 @@ def get_single_panel(table, column, check_name, check_sql):
 
 def get_dashboard_for_table(table_name):
     schema = get_current_table_schema(table_name)
-
     all_rows = []
 
     for col_dict in schema:
@@ -48,7 +48,7 @@ def get_dashboard_for_table(table_name):
             )
 
     dashboard = Dashboard(
-        title=table_name,
+        title=f"table:{table_name}",
         rows=all_rows,
     ).auto_panel_ids()
 
