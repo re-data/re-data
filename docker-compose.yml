@@ -4,11 +4,23 @@ services:
   grafana:
     image: grafana/grafana:7.3.0
     ports:
-      - 3001:3000
+      - "3000:3000"
+    depends_on:
+      - postgres_grafana
+
     env_file:
       - .env
     tty: true
-    
+  
+  postgres_grafana:
+    image: postgres:12
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_USER=grafana
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=grafana
+
   postgres_redata:
     image: postgres:12
     ports:
@@ -18,7 +30,7 @@ services:
       - POSTGRES_PASSWORD=mysecretpassword
       - POSTGRES_DB=redata
 
-  postgres:
+  postgres_airflow:
     image: postgres:12
     environment:
       - POSTGRES_USER=airflow
@@ -31,7 +43,8 @@ services:
     image: apache/airflow
     restart: always
     depends_on:
-      - postgres
+      - postgres_airflow
+      - postgres_redata
       - webserver_airflow
     env_file:
       - .env
@@ -51,7 +64,8 @@ services:
     hostname: webserver
     restart: always
     depends_on:
-      - postgres
+      - postgres_airflow
+      - postgres_redata
     env_file:
       - .env
     volumes:

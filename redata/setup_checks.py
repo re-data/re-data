@@ -66,26 +66,26 @@ def setup_metrics():
         )"""
     )
     metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_table_schema_changes (
-        created_at timestamp default now(),
         table_name text,
-        operation text,
         column_name text,
         column_type text,
-        column_count integer
+        column_count integer,
+        operation text,
+        created_at timestamp default now()
         )"""
     )
     metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume (
-        created_at timestamp default now(),
         table_name text,
         time_interval text,
-        count bigint
+        count bigint,
+        created_at timestamp default now()
         )"""
     )
     metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume_diff (
-        created_at timestamp default now(),
-        from_time timestamp,
         table_name text,
-        count bigint
+        from_time timestamp,
+        count bigint,
+        created_at timestamp default now()
         )"""
     )
     metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_values (
