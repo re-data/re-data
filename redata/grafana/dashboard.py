@@ -1,3 +1,4 @@
+import pdb
 from grafanalib.core import (
     Alert, AlertCondition, Dashboard, Graph,
     GreaterThan, OP_AND, OPS_FORMAT, Row, RTYPE_SUM, SECONDS_FORMAT,
@@ -6,27 +7,9 @@ from grafanalib.core import (
 from redata.db_operations import get_current_table_schema
 from redata.checks.data_values import TYPE_CHECK_MAP
 from redata import settings
-from redata.metric_queries import table_delay
+from redata.grafana.panels.base import DelayOnTable, SchemaChange
 
-def get_delay_panel(table):
-    graph = Graph(
-        title=f'{table} curr_delay',
-        dataSource=settings.REDATA_GRAFANA_SOURCE,
-        targets=[
-            {
-                "format": "time_series",
-                "group": [],
-                "hide": False,
-                "metricColumn": "none",
-                "rawQuery": True,
-                "rawSql": table_delay.DELAY_QUERY.format(table_name=table),
-                "refId": "A",
-            },
-        ],
-        yAxes=single_y_axis(format='none'),
-    )
-    return graph
-
+    
 def get_single_panel(table, column, check_name, check_sql):
     graph = Graph(
         title=f'{table}:{column} {check_name}',
@@ -52,7 +35,8 @@ def get_dashboard_for_table(table_name):
 
     all_rows.append(
         Row(panels=[
-            get_delay_panel(table_name)
+            DelayOnTable(table_name).getPanel(),
+            SchemaChange(table_name).getPanel()
         ])
     )
 
