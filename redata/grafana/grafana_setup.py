@@ -39,10 +39,11 @@ if __name__ == "__main__":
 
     for table in get_monitored_tables():
 
-        dashboard = get_dashboard_for_table(table)
+        dashboard, override = get_dashboard_for_table(table)
 
         x = dashboard_to_json(dashboard)
         data = json.loads(x)
+        data = override(data)
 
         print (grafana_api.dashboard.update_dashboard(
             dashboard={

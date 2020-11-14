@@ -45,10 +45,34 @@ class GrafanaTablePanel(GrafanaPanel):
         graph = Table(
             title=self.title(),
             dataSource=self.datasource(),
-            targets=self.targets()
+            targets=self.targets(),
+            span=self.span
         )
         return graph
 
+class StatPanel(GrafanaPanel):
+
+    def targets(self):
+        return [
+            {
+                "format": "time_series",
+                "group": [],
+                "hide": False,
+                "metricColumn": "none",
+                "rawQuery": True,
+                "rawSql": self.query(),
+                "refId": "A",
+            }
+        ]
+   
+    def getPanel(self):
+        graph = SingleStat(
+            title=self.title(),
+            dataSource=self.datasource(),
+            targets=self.targets(),
+            span=self.span
+        )
+        return graph
 
 class PostgresTimeSeries(GrafanaGraphPanel):
 
@@ -65,34 +89,12 @@ class PostgresTimeSeries(GrafanaGraphPanel):
             }
         ]
 
-class DelayOnTable(PostgresTimeSeries):
-
-    def __init__(self, table_name) -> None:
-        self.table_name = table_name
-
-    def title(self):
-        return f'{self.table_name} curr_delay'
-
-    def yAxes(self):
-        return single_y_axis(format='s')
-
-    def query(self):
-        return """
-        SELECT
-            created_at AS "time",
-            value
-        FROM metrics_data_delay
-        WHERE
-            table_name = '{table_name}' and
-            $__timeFilter(created_at)
-        ORDER BY 1
-        """.format(table_name=self.table_name)
-
 
 class SchemaChange(GrafanaTablePanel):
 
     def __init__(self, table_name) -> None:
         self.table_name = table_name
+        self.span = 4
 
     def title(self):
         return f'{self.table_name} curr_delay'
@@ -127,63 +129,46 @@ class SchemaChange(GrafanaTablePanel):
             }
         ]
 
-@attr.s
-class VolumeGraphs(object):
-
-    table_name = attr.ib()
-    id = attr.ib(default=None)
-    span = attr.ib(default=None)
+class DelayOnTable(StatPanel):
 
     def __init__(self, table_name) -> None:
         self.table_name = table_name
+        self.span = 4
 
     def title(self):
-        return f'new_record_created in last (hour/day/week/month)'
+        return f'time_since_last_record_added'
 
-    def to_json_data(self):
-        return {
-            "datasource": "redata_metrics_db",
-            "fieldConfig": {
-            "defaults": {
-                "color": {
-                "mode": "continuous-blues"
-                },
-                "custom": {
-                "align": None,
-                "filterable": False
-                },
-                "mappings": [],
-                "unit": "short"
-            },
-            "overrides": []
-            },
-            "id": 5,
-            "options": {
-                "colorMode": "background",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                    "last"
-                    ],
-                    "fields": "",
-                    "values": False
-                },
-                "textMode": "auto"
-            },
-            "targets": [
-            {
-                "format": "time_series",
-                "group": [],
-                "hide": False,
-                "metricColumn": "none",
-                "queryType": "randomWalk",
-                "rawQuery": True,
-                "rawSql": "SELECT\n  created_at AS \"time\",\n  time_interval,\n  count\nFROM metrics_data_volume\nWHERE\n  table_name = '{}' and\n  $__timeFilter(created_at)\nORDER BY 1".format(self.table_name),
-                "refId": "A",
-            }
-            ],
-            "title": self.title(),
-            "type": "stat"
-        }
+    def query(self):
+        return """
+        SELECT
+            created_at AS "time",
+            value
+        FROM metrics_data_delay
+        WHERE
+            table_name = '{table_name}' and
+            $__timeFilter(created_at)
+        ORDER BY 1
+        """.format(table_name=self.table_name)
+
+
+class VolumeGraphs(StatPanel):
+    
+    def __init__(self, table_name) -> None:
+        self.table_name = table_name
+        self.span = 12
+
+    def title(self):
+        return f'new_record_created'
+
+    def query(self):
+        return """
+        SELECT
+            created_at AS "time",
+            time_interval,
+            count
+        FROM metrics_data_volume
+        WHERE
+            table_name = '{table_name}' and
+            $__timeFilter(created_at)
+        ORDER BY 1
+        """.format(table_name=self.table_name)
