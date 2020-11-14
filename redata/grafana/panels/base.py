@@ -1,9 +1,10 @@
 from redata import settings
 from grafanalib.core import (
-    Alert, AlertCondition, Dashboard, Graph, Table,
+    Alert, AlertCondition, Dashboard, Graph, Table, SingleStat,
     GreaterThan, OP_AND, OPS_FORMAT, Row, RTYPE_SUM, SECONDS_FORMAT,
     SHORT_FORMAT, single_y_axis, Target, TimeRange, YAxes, YAxis
 )
+import attr
 
 class GrafanaPanel:
 
@@ -105,8 +106,7 @@ class SchemaChange(GrafanaTablePanel):
             created_at AS "time",
             operation,
             column_name,
-            column_type,
-            column_count
+            column_type
         FROM metrics_table_schema_changes
         WHERE
             table_name = '{table_name}' and
@@ -126,3 +126,64 @@ class SchemaChange(GrafanaTablePanel):
                 "refId": "A",
             }
         ]
+
+@attr.s
+class VolumeGraphs(object):
+
+    table_name = attr.ib()
+    id = attr.ib(default=None)
+    span = attr.ib(default=None)
+
+    def __init__(self, table_name) -> None:
+        self.table_name = table_name
+
+    def title(self):
+        return f'new_record_created in last (hour/day/week/month)'
+
+    def to_json_data(self):
+        return {
+            "datasource": "redata_metrics_db",
+            "fieldConfig": {
+            "defaults": {
+                "color": {
+                "mode": "continuous-blues"
+                },
+                "custom": {
+                "align": None,
+                "filterable": False
+                },
+                "mappings": [],
+                "unit": "short"
+            },
+            "overrides": []
+            },
+            "id": 5,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                    "last"
+                    ],
+                    "fields": "",
+                    "values": False
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+            {
+                "format": "time_series",
+                "group": [],
+                "hide": False,
+                "metricColumn": "none",
+                "queryType": "randomWalk",
+                "rawQuery": True,
+                "rawSql": "SELECT\n  created_at AS \"time\",\n  time_interval,\n  count\nFROM metrics_data_volume\nWHERE\n  table_name = '{}' and\n  $__timeFilter(created_at)\nORDER BY 1".format(self.table_name),
+                "refId": "A",
+            }
+            ],
+            "title": self.title(),
+            "type": "stat"
+        }

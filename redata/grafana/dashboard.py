@@ -7,7 +7,7 @@ from grafanalib.core import (
 from redata.db_operations import get_current_table_schema
 from redata.checks.data_values import TYPE_CHECK_MAP
 from redata import settings
-from redata.grafana.panels.base import DelayOnTable, SchemaChange
+from redata.grafana.panels.base import DelayOnTable, SchemaChange, VolumeGraphs
 
     
 def get_single_panel(table, column, check_name, check_sql):
@@ -32,6 +32,12 @@ def get_single_panel(table, column, check_name, check_sql):
 def get_dashboard_for_table(table_name):
     schema = get_current_table_schema(table_name)
     all_rows = []
+
+    all_rows.append(
+        Row(panels=[
+            VolumeGraphs(table_name=table_name)
+        ])
+    )
 
     all_rows.append(
         Row(panels=[
