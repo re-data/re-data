@@ -30,14 +30,16 @@ def load_json_dashboard(file_name):
     
     return data
 
-grafana_api = GrafanaFace(
-    auth=(settings.GF_SECURITY_ADMIN_USER, settings.GF_SECURITY_ADMIN_PASSWORD),
-    host='localhost:3000'
-)
+def create_source_in_grafana(api):
+    datasource = get_postgres_datasource()
+    source = grafana_api.datasource.get_datasource_by_name(datasource['name'])
+    if not source:
+        print (grafana_api.datasource.create_datasource(datasource))
 
-if __name__ == "__main__":
 
-    home_data = load_json_dashboard('grafana/templates/home.json')
+def create_home_dashboard(api):
+    home_data = load_json_dashboard(settings.HOME_DASHBOARD_LOCATION)
+
     print (grafana_api.dashboard.update_dashboard(
         dashboard={
             'dashboard': home_data,
@@ -46,25 +48,31 @@ if __name__ == "__main__":
         }
     ))
 
+def create_dashboard_for_table(api, table):
+    dashboard, override = get_dashboard_for_table(table)
 
-    datasource = get_postgres_datasource()
-    source = grafana_api.datasource.get_datasource_by_name(datasource['name'])
+    x = dashboard_to_json(dashboard)
+    data = json.loads(x)
+    data = override(data)
 
-    if not source:
-        print (grafana_api.datasource.create_datasource(datasource))
+    print (grafana_api.dashboard.update_dashboard(
+        dashboard={
+            'dashboard': data,
+            'folderID': 0,
+            'overwrite': True
+        }
+    ))
+
+
+if __name__ == "__main__":
+
+    grafana_api = GrafanaFace(
+        auth=(settings.GF_SECURITY_ADMIN_USER, settings.GF_SECURITY_ADMIN_PASSWORD),
+        host='localhost:3000'
+    )
+
+    create_source_in_grafana(grafana_api)
+    create_home_dashboard(grafana_api)
 
     for table in get_monitored_tables():
-
-        dashboard, override = get_dashboard_for_table(table)
-
-        x = dashboard_to_json(dashboard)
-        data = json.loads(x)
-        data = override(data)
-
-        print (grafana_api.dashboard.update_dashboard(
-            dashboard={
-                'dashboard': data,
-                'folderID': 0,
-                'overwrite': True
-            }
-        ))
+        create_dashboard_for_table(grafana_api, table)

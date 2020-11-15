@@ -30,6 +30,11 @@ def get_single_panel(table, column, check_name, check_sql):
     return graph
 
 def custom_override(data):
+    """
+    This is hacky override of dashboards data prepared by
+    grafanalib to make them be what would it to be
+    """
+
     for i in range(0, 2):
         data['rows'][i]['panels'][0]['type'] = 'stat'
         data['rows'][i]['panels'][0]['fieldConfig'] = {
@@ -104,12 +109,10 @@ def get_dashboard_for_table(table_name):
             )
 
     dashboard = Dashboard(
-        title=f"table:{table_name}",
+        title=f"table:{table_name} (generated)",
         rows=all_rows,
         time=Time('now-24h', 'now')
     ).auto_panel_ids()
-
-    pdb
 
     return dashboard, custom_override
 

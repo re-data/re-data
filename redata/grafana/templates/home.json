@@ -15,7 +15,6 @@
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
-    "id": 9,
     "links": [],
     "panels": [
       {
@@ -442,6 +441,5 @@
     "timepicker": {},
     "timezone": "",
     "title": "Home (generated)",
-    "uid": "gqedQVoGk",
     "version": 12
   }

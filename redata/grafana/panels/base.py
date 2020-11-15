@@ -14,19 +14,31 @@ class GrafanaPanel:
     def query(self):
         pass
 
-    def targets(self):
-        pass
-
     def datasource(self):
         return settings.REDATA_GRAFANA_SOURCE
-
 
     def getPanel(self):
         pass
 
+    def targets(self):
+        return [
+            {
+                "format": self.format(),
+                "group": [],
+                "hide": False,
+                "metricColumn": "none",
+                "rawQuery": True,
+                "rawSql": self.query(),
+                "refId": "A",
+            }
+        ]
+
 
 class GrafanaGraphPanel(GrafanaPanel):
-    
+
+    def format(self):
+        return "time_series"
+
     def yAxes(self):
         return single_y_axis(format='none'),
 
@@ -40,6 +52,9 @@ class GrafanaGraphPanel(GrafanaPanel):
         return graph
 
 class GrafanaTablePanel(GrafanaPanel):
+    
+    def format(self):
+        return "table"
    
     def getPanel(self):
         graph = Table(
@@ -52,19 +67,9 @@ class GrafanaTablePanel(GrafanaPanel):
 
 class StatPanel(GrafanaPanel):
 
-    def targets(self):
-        return [
-            {
-                "format": "time_series",
-                "group": [],
-                "hide": False,
-                "metricColumn": "none",
-                "rawQuery": True,
-                "rawSql": self.query(),
-                "refId": "A",
-            }
-        ]
-   
+    def format(self):
+        return "time_series"
+
     def getPanel(self):
         graph = SingleStat(
             title=self.title(),
@@ -74,21 +79,6 @@ class StatPanel(GrafanaPanel):
         )
         return graph
 
-class PostgresTimeSeries(GrafanaGraphPanel):
-
-    def targets(self):
-        return [
-            {
-                "format": "time_series",
-                "group": [],
-                "hide": False,
-                "metricColumn": "none",
-                "rawQuery": True,
-                "rawSql": self.query(),
-                "refId": "A",
-            }
-        ]
-
 
 class SchemaChange(GrafanaTablePanel):
 
@@ -97,7 +87,7 @@ class SchemaChange(GrafanaTablePanel):
         self.span = 4
 
     def title(self):
-        return f'{self.table_name} curr_delay'
+        return f'{self.table_name} schema_changes'
 
     def yAxes(self):
         return single_y_axis(format='s')
@@ -115,19 +105,6 @@ class SchemaChange(GrafanaTablePanel):
             $__timeFilter(created_at)
         ORDER BY 1
         """.format(table_name=self.table_name)
-
-    def targets(self):
-        return [
-            {
-                "format": "table",
-                "group": [],
-                "hide": False,
-                "metricColumn": "none",
-                "rawQuery": True,
-                "rawSql": self.query(),
-                "refId": "A",
-            }
-        ]
 
 class DelayOnTable(StatPanel):
 
