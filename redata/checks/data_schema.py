@@ -7,7 +7,7 @@ from sqlalchemy import update
 
 
 def get_monitored_tables():
-    result = source_db.execute("""
+    result = metrics_db.execute("""
         SELECT * FROM metrics_table_metadata
     """)
     return list(el.table_name for el in result)

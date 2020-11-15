@@ -24,12 +24,28 @@ def dashboard_to_json(dashboard):
     )
     return result
 
+def load_json_dashboard(file_name):
+    with open(file_name) as json_file:
+        data = json.load(json_file)
+    
+    return data
+
 grafana_api = GrafanaFace(
     auth=(settings.GF_SECURITY_ADMIN_USER, settings.GF_SECURITY_ADMIN_PASSWORD),
     host='localhost:3000'
 )
 
 if __name__ == "__main__":
+
+    home_data = load_json_dashboard('grafana/templates/home.json')
+    print (grafana_api.dashboard.update_dashboard(
+        dashboard={
+            'dashboard': home_data,
+            'folderID': 0,
+            'overwrite': True
+        }
+    ))
+
 
     datasource = get_postgres_datasource()
     source = grafana_api.datasource.get_datasource_by_name(datasource['name'])

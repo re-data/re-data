@@ -46,17 +46,17 @@ def custom_override(data):
             "justifyMode": "auto",
             "orientation": "auto",
             "reduceOptions": {
-            "calcs": [
-                "last"
-            ],
+                "calcs": [
+                    "last"
+                ],
             "fields": "",
             "values": False
             },
             "textMode": "auto"
         }
     
-    data['rows'][1]['panels'][2]['type'] = 'table'
-    data['rows'][i]['panels'][2]['fieldConfig'] = {
+    del data['rows'][1]['panels'][2]['transform']
+    data['rows'][1]['panels'][2]['fieldConfig'] = {
         "defaults": {
             "color": {
                 "mode": "continuous-blues" 
