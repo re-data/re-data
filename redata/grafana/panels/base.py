@@ -6,88 +6,15 @@ from grafanalib.core import (
 )
 import attr
 
-class GrafanaPanel:
-
-    def title(self):
-        pass
-    
-    def query(self):
-        pass
-
-    def datasource(self):
-        return settings.REDATA_GRAFANA_SOURCE
-
-    def getPanel(self):
-        pass
-
-    def targets(self):
-        return [
-            {
-                "format": self.format(),
-                "group": [],
-                "hide": False,
-                "metricColumn": "none",
-                "rawQuery": True,
-                "rawSql": self.query(),
-                "refId": "A",
-            }
-        ]
-
-
-class GrafanaGraphPanel(GrafanaPanel):
-
-    def format(self):
-        return "time_series"
-
-    def yAxes(self):
-        return single_y_axis(format='none'),
-
-    def getPanel(self):
-        graph = Graph(
-            title=self.title(),
-            dataSource=self.datasource(),
-            yAxes=self.yAxes(),
-            targets=self.targets()
-        )
-        return graph
-
-class GrafanaTablePanel(GrafanaPanel):
-    
-    def format(self):
-        return "table"
-   
-    def getPanel(self):
-        graph = Table(
-            title=self.title(),
-            dataSource=self.datasource(),
-            targets=self.targets(),
-            span=self.span
-        )
-        return graph
-
-class StatPanel(GrafanaPanel):
-
-    def format(self):
-        return "time_series"
-
-    def getPanel(self):
-        graph = SingleStat(
-            title=self.title(),
-            dataSource=self.datasource(),
-            targets=self.targets(),
-            span=self.span
-        )
-        return graph
-
-
-class SchemaChange(GrafanaTablePanel):
+class SchemaChange():
 
     def __init__(self, table_name) -> None:
         self.table_name = table_name
         self.span = 4
 
-    def title(self):
-        return f'{self.table_name} schema_changes'
+    @staticmethod
+    def title():
+        return f'schema_changes'
 
     def yAxes(self):
         return single_y_axis(format='s')
@@ -106,20 +33,21 @@ class SchemaChange(GrafanaTablePanel):
         ORDER BY 1
         """.format(table_name=self.table_name)
 
-class DelayOnTable(StatPanel):
+class DelayOnTable():
 
     def __init__(self, table_name) -> None:
         self.table_name = table_name
         self.span = 4
 
-    def title(self):
-        return f'time_since_last_record_added'
+    @staticmethod
+    def title():
+        return f'time_since_last_record_created'
 
     def query(self):
         return """
         SELECT
             created_at AS "time",
-            value
+            value as "time_since_last_record_created"
         FROM metrics_data_delay
         WHERE
             table_name = '{table_name}' and
@@ -128,13 +56,36 @@ class DelayOnTable(StatPanel):
         """.format(table_name=self.table_name)
 
 
-class VolumeGraphs(StatPanel):
+class GroupByDate():
+
+    def __init__(self, table_name) -> None:
+        self.table_name = table_name
+
+    @staticmethod
+    def title():
+        return f'new_records_by_day'
+
+    def query(self):
+        return """
+        SELECT
+            created_at::date AS "time",
+            sum(count)
+        FROM metrics_data_volume_diff
+        WHERE
+            table_name = '{table_name}' and
+            $__timeFilter(created_at)
+        GROUP BY 1    
+        ORDER BY 1
+        """.format(table_name=self.table_name)
+
+
+class VolumeGraphs():
     
     def __init__(self, table_name) -> None:
         self.table_name = table_name
-        self.span = 12
 
-    def title(self):
+    @staticmethod
+    def title():
         return f'new_record_created'
 
     def query(self):
@@ -149,3 +100,5 @@ class VolumeGraphs(StatPanel):
             $__timeFilter(created_at)
         ORDER BY 1
         """.format(table_name=self.table_name)
+
+ALL_PANELS = VolumeGraphs, DelayOnTable, GroupByDate

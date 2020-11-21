@@ -63,7 +63,7 @@ def setup_metrics():
         table_name text,
         value integer,
         created_at timestamp default now()
-        )"""
+        );"""
     )
     metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_table_schema_changes (
         table_name text,
@@ -79,7 +79,9 @@ def setup_metrics():
         time_interval text,
         count bigint,
         created_at timestamp default now()
-        )"""
+        );
+        CREATE VIEW metris_data_volume_avg AS select avg(count), time_interval, table_name from metrics_data_volume group by time_interval, table_name;
+        """
     )
     metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume_diff (
         table_name text,

@@ -1,0 +1,29 @@
+[
+    {
+      "format": "time_series",
+      "group": [],
+      "hide": false,
+      "metricColumn": "none",
+      "rawQuery": true,
+      "rawSql": "__TO_REPLACE__",
+      "refId": "A",
+      "select": [
+        [
+          {
+            "params": [
+              "value"
+            ],
+            "type": "column"
+          }
+        ]
+      ],
+      "timeColumn": "time",
+      "where": [
+        {
+          "name": "$__timeFilter",
+          "params": [],
+          "type": "macro"
+        }
+      ]
+    }
+  ]

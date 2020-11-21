@@ -18,6 +18,7 @@ from redata import settings
 from redata.grafana.dashboard import get_dashboard_for_table
 from redata.grafana.source import get_postgres_datasource
 from redata.grafana.home_dashboard import create_home_dashboard
+from redata.grafana.table_dashboards import get_dashboard_for_table
 
 def dashboard_to_json(dashboard):
     result = json.dumps(
@@ -33,11 +34,7 @@ def create_source_in_grafana(grafana_api):
         print (grafana_api.datasource.create_datasource(datasource))
 
 def create_dashboard_for_table(grafana_api, table):
-    dashboard, override = get_dashboard_for_table(table)
-
-    x = dashboard_to_json(dashboard)
-    data = json.loads(x)
-    data = override(data)
+    data = get_dashboard_for_table(table)
 
     response = grafana_api.dashboard.update_dashboard(
         dashboard={
@@ -46,6 +43,7 @@ def create_dashboard_for_table(grafana_api, table):
             'overwrite': True
         }
     )
+    print (response)
 
     return {
         'table': table,
