@@ -12,8 +12,15 @@ def get_metrics_connection():
     db = create_engine(db_string)
     return db
 
+def get_grafana_db_connection():
+    db_string = settings.METRICS_DB_URL
+    db = create_engine(db_string)
+    return db
+
+
 source_db = get_monitored_db_connection()
 metrics_db = get_metrics_connection()
+grafana_db = get_grafana_db_connection()
 
 metadata = MetaData()
 metadata.reflect(bind=metrics_db)

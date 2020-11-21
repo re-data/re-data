@@ -1,445 +1,450 @@
 {
-    "annotations": {
-      "list": [
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 42,
+  "links": [],
+  "panels": [
+    {
+      "dashboardFilter": "",
+      "dashboardTags": [],
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "folderId": null,
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "limit": 10,
+      "nameFilter": "",
+      "onlyAlertsOnDashboard": false,
+      "pluginVersion": "7.3.0",
+      "show": "current",
+      "sortOrder": 1,
+      "stateFilter": [],
+      "targets": [
         {
-          "builtIn": 1,
-          "datasource": "-- Grafana --",
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "type": "dashboard"
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "alerting",
+      "type": "alertlist"
+    },
+    {
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a",
+        "#4040a0"
+      ],
+      "datasource": "redata_metrics_db",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 19,
+        "x": 5,
+        "y": 0
+      },
+      "id": 2,
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "pluginVersion": "7.3.0",
+      "polystat": {
+        "animationSpeed": 2500,
+        "columnAutoSize": false,
+        "columns": "__CUSTOM_OVERRIDE__",
+        "defaultClickThrough": "",
+        "defaultClickThroughNewTab": false,
+        "defaultClickThroughSanitize": false,
+        "displayLimit": 100,
+        "fontAutoColor": true,
+        "fontAutoScale": true,
+        "fontColor": "",
+        "fontSize": 12,
+        "fontType": "Roboto",
+        "globalDecimals": 2,
+        "globalDisplayMode": "all",
+        "globalDisplayTextTriggeredEmpty": "OK",
+        "globalOperatorName": "current",
+        "globalThresholds": [
+          {
+            "color": "#C0D8FF",
+            "state": 0,
+            "value": 0
+          },
+          {
+            "color": "#8AB8FF",
+            "state": 0,
+            "value": 10
+          },
+          {
+            "color": "#3274D9",
+            "state": 0,
+            "value": 100
+          },
+          {
+            "color": "#1F60C4",
+            "state": 0,
+            "value": 1000
+          }
+        ],
+        "globalUnitFormat": "short",
+        "gradientEnabled": true,
+        "hexagonSortByDirection": 1,
+        "hexagonSortByField": "name",
+        "maxMetrics": 0,
+        "polygonBorderColor": "black",
+        "polygonBorderSize": 2,
+        "polygonGlobalFillColor": "#0a50a1",
+        "radius": "",
+        "radiusAutoSize": true,
+        "rowAutoSize": true,
+        "rows": "",
+        "shape": "hexagon_pointed_top",
+        "tooltipDisplayMode": "all",
+        "tooltipDisplayTextTriggeredEmpty": "OK",
+        "tooltipFontSize": 12,
+        "tooltipFontType": "Roboto",
+        "tooltipPrimarySortDirection": 2,
+        "tooltipPrimarySortField": "thresholdLevel",
+        "tooltipSecondarySortDirection": 2,
+        "tooltipSecondarySortField": "value",
+        "tooltipTimestampEnabled": true,
+        "valueEnabled": true
+      },
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "savedComposites": [],
+      "savedOverrides": [
+
+      ],
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  created_at AS \"time\",\n  table_name, \n  count\nFROM metrics_data_volume\nWHERE\n  time_interval = '1 day' and\n  $__timeFilter(created_at)\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "check_value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "metrics_data_values",
+          "timeColumn": "created_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "check_for_data_volume",
+      "type": "grafana-polystat-panel",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
         }
       ]
     },
-    "editable": true,
-    "gnetId": null,
-    "graphTooltip": 0,
-    "links": [],
-    "panels": [
-      {
-        "dashboardFilter": "",
-        "dashboardTags": [],
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "custom": {}
-          },
-          "overrides": []
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
         },
-        "folderId": null,
-        "gridPos": {
-          "h": 8,
-          "w": 5,
-          "x": 0,
-          "y": 0
-        },
-        "id": 6,
-        "limit": 10,
-        "nameFilter": "",
-        "onlyAlertsOnDashboard": false,
-        "pluginVersion": "7.3.0",
-        "show": "current",
-        "sortOrder": 1,
-        "stateFilter": [],
-        "targets": [
-          {
-            "queryType": "randomWalk",
-            "refId": "A"
-          }
-        ],
-        "timeFrom": null,
-        "timeShift": null,
-        "title": "alerting",
-        "type": "alertlist"
+        "overrides": []
       },
-      {
-        "colors": [
-          "#299c46",
-          "rgba(237, 129, 40, 0.89)",
-          "#d44a3a",
-          "#4040a0"
-        ],
-        "datasource": "redata_metrics_db",
-        "description": "",
-        "fieldConfig": {
-          "defaults": {
-            "custom": {
-              "align": null,
-              "filterable": false
-            },
-            "mappings": []
-          }
-        },
-        "gridPos": {
-          "h": 11,
-          "w": 19,
-          "x": 5,
-          "y": 0
-        },
-        "id": 2,
-        "mappingType": 1,
-        "mappingTypes": [
-          {
-            "name": "value to text",
-            "value": 1
+      "folderId": null,
+      "gridPos": {
+        "h": 15,
+        "w": 5,
+        "x": 0,
+        "y": 8
+      },
+      "headings": false,
+      "id": 4,
+      "limit": 40,
+      "pluginVersion": "7.3.0",
+      "query": "",
+      "recent": false,
+      "search": true,
+      "starred": false,
+      "tags": [],
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "dashboards",
+      "type": "dashlist"
+    },
+    {
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a",
+        "#4040a0"
+      ],
+      "datasource": "redata_metrics_db",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
           },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "pluginVersion": "7.3.0",
-        "polystat": {
-          "animationSpeed": 2500,
-          "columnAutoSize": false,
-          "columns": 10,
-          "defaultClickThrough": "",
-          "defaultClickThroughNewTab": false,
-          "defaultClickThroughSanitize": false,
-          "displayLimit": 100,
-          "fontAutoColor": true,
-          "fontAutoScale": true,
-          "fontColor": "",
-          "fontSize": 12,
-          "fontType": "Roboto",
-          "globalDecimals": 2,
-          "globalDisplayMode": "all",
-          "globalDisplayTextTriggeredEmpty": "OK",
-          "globalOperatorName": "last",
-          "globalThresholds": [
-            {
-              "color": "#C0D8FF",
-              "state": 0,
-              "value": 0
-            },
-            {
-              "color": "#8AB8FF",
-              "state": 0,
-              "value": 10
-            },
-            {
-              "color": "#3274D9",
-              "state": 0,
-              "value": 100
-            },
-            {
-              "color": "#1F60C4",
-              "state": 0,
-              "value": 1000
-            }
-          ],
-          "globalUnitFormat": "short",
-          "gradientEnabled": true,
-          "hexagonSortByDirection": 1,
-          "hexagonSortByField": "name",
-          "maxMetrics": 0,
-          "polygonBorderColor": "black",
-          "polygonBorderSize": 2,
-          "polygonGlobalFillColor": "#0a50a1",
-          "radius": "",
-          "radiusAutoSize": true,
-          "rowAutoSize": true,
-          "rows": "",
-          "shape": "hexagon_pointed_top",
-          "tooltipDisplayMode": "all",
-          "tooltipDisplayTextTriggeredEmpty": "OK",
-          "tooltipFontSize": 12,
-          "tooltipFontType": "Roboto",
-          "tooltipPrimarySortDirection": 2,
-          "tooltipPrimarySortField": "thresholdLevel",
-          "tooltipSecondarySortDirection": 2,
-          "tooltipSecondarySortField": "value",
-          "tooltipTimestampEnabled": true,
-          "valueEnabled": true
-        },
-        "rangeMaps": [
-          {
-            "from": "null",
-            "text": "N/A",
-            "to": "null"
-          }
-        ],
-        "savedComposites": [],
-        "savedOverrides": [],
-        "targets": [
-          {
-            "format": "time_series",
-            "group": [],
-            "hide": false,
-            "metricColumn": "none",
-            "queryType": "randomWalk",
-            "rawQuery": true,
-            "rawSql": "SELECT\n  created_at AS \"time\",\n  left(table_name, 20), \n  count\nFROM metrics_data_volume\nWHERE\n  time_interval = '1 day' and\n  $__timeFilter(created_at)\nORDER BY 1",
-            "refId": "A",
-            "select": [
-              [
-                {
-                  "params": [
-                    "check_value"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "table": "metrics_data_values",
-            "timeColumn": "created_at",
-            "timeColumnType": "timestamp",
-            "where": [
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
               {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           }
-        ],
-        "timeFrom": null,
-        "timeShift": null,
-        "title": "check_for_data_volume",
-        "type": "grafana-polystat-panel",
-        "valueMaps": [
+        },
+        "overrides": [
           {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
+            "matcher": {
+              "id": "byRegexp",
+              "options": ""
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "metrics_table_schema_changes"
+            },
+            "properties": [
+              {
+                "id": "links"
+              }
+            ]
           }
         ]
       },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "custom": {}
-          },
-          "overrides": []
+      "gridPos": {
+        "h": 12,
+        "w": 19,
+        "x": 5,
+        "y": 11
+      },
+      "id": 7,
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
         },
-        "folderId": null,
-        "gridPos": {
-          "h": 15,
-          "w": 5,
-          "x": 0,
-          "y": 8
-        },
-        "headings": false,
-        "id": 4,
-        "limit": 40,
-        "pluginVersion": "7.3.0",
-        "query": "",
-        "recent": false,
-        "search": true,
-        "starred": false,
-        "tags": [],
-        "targets": [
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "pluginVersion": "7.3.0",
+      "polystat": {
+        "animationSpeed": 2500,
+        "columnAutoSize": false,
+        "columns": 10,
+        "defaultClickThrough": "",
+        "defaultClickThroughNewTab": false,
+        "defaultClickThroughSanitize": false,
+        "displayLimit": 100,
+        "fontAutoColor": true,
+        "fontAutoScale": true,
+        "fontColor": "",
+        "fontSize": 12,
+        "fontType": "Roboto",
+        "globalDecimals": 2,
+        "globalDisplayMode": "all",
+        "globalDisplayTextTriggeredEmpty": "OK",
+        "globalOperatorName": "current",
+        "globalThresholds": [
           {
-            "queryType": "randomWalk",
-            "refId": "A"
+            "color": "#C0D8FF",
+            "state": 0,
+            "value": 0
+          },
+          {
+            "color": "#8AB8FF",
+            "state": 0,
+            "value": 10
+          },
+          {
+            "color": "#3274D9",
+            "state": 0,
+            "value": 100
+          },
+          {
+            "color": "#1F60C4",
+            "state": 0,
+            "value": 1000
           }
         ],
-        "timeFrom": null,
-        "timeShift": null,
-        "title": "dashboards",
-        "type": "dashlist"
+        "globalUnitFormat": "s",
+        "gradientEnabled": true,
+        "hexagonSortByDirection": 1,
+        "hexagonSortByField": "name",
+        "maxMetrics": 0,
+        "polygonBorderColor": "black",
+        "polygonBorderSize": 2,
+        "polygonGlobalFillColor": "#0a50a1",
+        "radius": "",
+        "radiusAutoSize": true,
+        "rowAutoSize": true,
+        "rows": "",
+        "shape": "hexagon_pointed_top",
+        "tooltipDisplayMode": "all",
+        "tooltipDisplayTextTriggeredEmpty": "OK",
+        "tooltipFontSize": 12,
+        "tooltipFontType": "Roboto",
+        "tooltipPrimarySortDirection": 2,
+        "tooltipPrimarySortField": "thresholdLevel",
+        "tooltipSecondarySortDirection": 2,
+        "tooltipSecondarySortField": "value",
+        "tooltipTimestampEnabled": true,
+        "valueEnabled": true
       },
-      {
-        "colors": [
-          "#299c46",
-          "rgba(237, 129, 40, 0.89)",
-          "#d44a3a",
-          "#4040a0"
-        ],
-        "datasource": "redata_metrics_db",
-        "description": "",
-        "fieldConfig": {
-          "defaults": {
-            "custom": {
-              "align": null,
-              "filterable": false
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": [
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "savedComposites": [],
+      "savedOverrides": [],
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  created_at AS \"time\",\n  table_name,\n  value\nFROM metrics_data_delay\nWHERE\n  $__timeFilter(created_at)\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "check_value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "metrics_data_values",
+          "timeColumn": "created_at",
+          "timeColumnType": "timestamp",
+          "where": [
             {
-              "matcher": {
-                "id": "byRegexp",
-                "options": ""
-              },
-              "properties": []
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "metrics_table_schema_changes"
-              },
-              "properties": [
-                {
-                  "id": "links"
-                }
-              ]
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
             }
           ]
-        },
-        "gridPos": {
-          "h": 12,
-          "w": 19,
-          "x": 5,
-          "y": 11
-        },
-        "id": 7,
-        "mappingType": 1,
-        "mappingTypes": [
-          {
-            "name": "value to text",
-            "value": 1
-          },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "pluginVersion": "7.3.0",
-        "polystat": {
-          "animationSpeed": 2500,
-          "columnAutoSize": false,
-          "columns": 10,
-          "defaultClickThrough": "",
-          "defaultClickThroughNewTab": false,
-          "defaultClickThroughSanitize": false,
-          "displayLimit": 100,
-          "fontAutoColor": true,
-          "fontAutoScale": true,
-          "fontColor": "",
-          "fontSize": 12,
-          "fontType": "Roboto",
-          "globalDecimals": 2,
-          "globalDisplayMode": "all",
-          "globalDisplayTextTriggeredEmpty": "OK",
-          "globalOperatorName": "avg",
-          "globalThresholds": [
-            {
-              "color": "#C0D8FF",
-              "state": 0,
-              "value": 0
-            },
-            {
-              "color": "#8AB8FF",
-              "state": 0,
-              "value": 10
-            },
-            {
-              "color": "#3274D9",
-              "state": 0,
-              "value": 100
-            },
-            {
-              "color": "#1F60C4",
-              "state": 0,
-              "value": 1000
-            }
-          ],
-          "globalUnitFormat": "s",
-          "gradientEnabled": true,
-          "hexagonSortByDirection": 1,
-          "hexagonSortByField": "name",
-          "maxMetrics": 0,
-          "polygonBorderColor": "black",
-          "polygonBorderSize": 2,
-          "polygonGlobalFillColor": "#0a50a1",
-          "radius": "",
-          "radiusAutoSize": true,
-          "rowAutoSize": true,
-          "rows": "",
-          "shape": "hexagon_pointed_top",
-          "tooltipDisplayMode": "all",
-          "tooltipDisplayTextTriggeredEmpty": "OK",
-          "tooltipFontSize": 12,
-          "tooltipFontType": "Roboto",
-          "tooltipPrimarySortDirection": 2,
-          "tooltipPrimarySortField": "thresholdLevel",
-          "tooltipSecondarySortDirection": 2,
-          "tooltipSecondarySortField": "value",
-          "tooltipTimestampEnabled": true,
-          "valueEnabled": true
-        },
-        "rangeMaps": [
-          {
-            "from": "null",
-            "text": "N/A",
-            "to": "null"
-          }
-        ],
-        "savedComposites": [],
-        "savedOverrides": [],
-        "targets": [
-          {
-            "format": "time_series",
-            "group": [],
-            "hide": false,
-            "metricColumn": "none",
-            "queryType": "randomWalk",
-            "rawQuery": true,
-            "rawSql": "SELECT\n  created_at AS \"time\",\n  table_name,\n  value\nFROM metrics_data_delay\nWHERE\n  $__timeFilter(created_at)\nORDER BY 1",
-            "refId": "A",
-            "select": [
-              [
-                {
-                  "params": [
-                    "check_value"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "table": "metrics_data_values",
-            "timeColumn": "created_at",
-            "timeColumnType": "timestamp",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          }
-        ],
-        "timeFrom": null,
-        "timeShift": null,
-        "title": "check_for_delayed_data",
-        "type": "grafana-polystat-panel",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ]
-      }
-    ],
-    "schemaVersion": 26,
-    "style": "dark",
-    "tags": [],
-    "templating": {
-      "list": []
-    },
-    "time": {
-      "from": "now-24h",
-      "to": "now"
-    },
-    "timepicker": {},
-    "timezone": "",
-    "title": "Home (generated)",
-    "version": 12
-  }
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "check_for_delayed_data",
+      "type": "grafana-polystat-panel",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Home (generated)",
+  "uid": "-TKWbvoGk",
+  "version": 15
+}
