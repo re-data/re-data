@@ -10,10 +10,10 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--grafana", action="store_true", help="Run ingestion of crypto data"
+        "--grafana", action="store_true", help="Setup grafana dashboards, based on existing metrics"
     )
     parser.add_argument(
-        "--metrics", action="store_true", help="Run ingestion of stocks data"
+        "--metrics", action="store_true", help="Push metrics to redata"
     )
 
     args = parser.parse_args()
