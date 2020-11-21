@@ -170,7 +170,7 @@
             "metricColumn": "none",
             "queryType": "randomWalk",
             "rawQuery": true,
-            "rawSql": "SELECT\n  created_at AS \"time\",\n  table_name, 20,\n  count\nFROM metrics_data_volume\nWHERE\n  time_interval = '1 day' and\n  $__timeFilter(created_at)\nORDER BY 1",
+            "rawSql": "SELECT\n  created_at AS \"time\",\n  left(table_name, 20), \n  count\nFROM metrics_data_volume\nWHERE\n  time_interval = '1 day' and\n  $__timeFilter(created_at)\nORDER BY 1",
             "refId": "A",
             "select": [
               [

@@ -2,6 +2,7 @@ import pdb
 from redata import db_operations
 from redata.checks.data_schema import get_monitored_tables
 from grafana_api.grafana_face import GrafanaFace
+
 from grafanalib.core import (
     Alert, AlertCondition, Dashboard, Graph,
     GreaterThan, OP_AND, OPS_FORMAT, Row, RTYPE_SUM, SECONDS_FORMAT,
@@ -30,14 +31,14 @@ def load_json_dashboard(file_name):
     
     return data
 
-def create_source_in_grafana(api):
+def create_source_in_grafana(grafana_api):
     datasource = get_postgres_datasource()
     source = grafana_api.datasource.get_datasource_by_name(datasource['name'])
     if not source:
         print (grafana_api.datasource.create_datasource(datasource))
 
 
-def create_home_dashboard(api):
+def create_home_dashboard(grafana_api):
     home_data = load_json_dashboard(settings.HOME_DASHBOARD_LOCATION)
 
     print (grafana_api.dashboard.update_dashboard(
@@ -48,7 +49,7 @@ def create_home_dashboard(api):
         }
     ))
 
-def create_dashboard_for_table(api, table):
+def create_dashboard_for_table(grafana_api, table):
     dashboard, override = get_dashboard_for_table(table)
 
     x = dashboard_to_json(dashboard)
@@ -64,8 +65,7 @@ def create_dashboard_for_table(api, table):
     ))
 
 
-if __name__ == "__main__":
-
+def create_dashboards():
     grafana_api = GrafanaFace(
         auth=(settings.GF_SECURITY_ADMIN_USER, settings.GF_SECURITY_ADMIN_PASSWORD),
         host='localhost:3000'

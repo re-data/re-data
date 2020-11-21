@@ -14,4 +14,4 @@ REDATA_METRICS_DATABASE_NAME = os.environ['REDATA_METRICS_DATABASE_NAME']
 
 REDATA_GRAFANA_SOURCE = 'redata_metrics_db'
 
-HOME_DASHBOARD_LOCATION = 'grafana/templates/home.json'
+HOME_DASHBOARD_LOCATION = 'redata/grafana/templates/home.json'
