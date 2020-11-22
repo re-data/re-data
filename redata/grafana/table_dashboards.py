@@ -29,7 +29,7 @@ def get_dashboard_for_table(table_name):
         [(panel.title(), panel) for panel in ALL_PANELS]
     )
 
-    table_data['title'] = "table:" + table_name + "(generated)"
+    table_data['title'] = "table:" + table_name + " (generated)"
 
     for panel in panels:
         if per_title.get(panel['title']):

@@ -62,7 +62,6 @@
         "#4040a0"
       ],
       "datasource": "redata_metrics_db",
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -200,7 +199,8 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "check_for_data_volume",
+      "title": "new_records_created (in last 24h)",
+      "description": "Click on hexagon to go to dashboard showing more detailed info about given table",
       "type": "grafana-polystat-panel",
       "valueMaps": [
         {
@@ -253,7 +253,6 @@
         "#4040a0"
       ],
       "datasource": "redata_metrics_db",
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -421,7 +420,8 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "check_for_delayed_data",
+      "title": "time_since_last_record_created",
+      "description": "Click on hexagon to go to dashboard showing more detailed info about given table",
       "type": "grafana-polystat-panel",
       "valueMaps": [
         {

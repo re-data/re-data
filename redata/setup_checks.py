@@ -80,7 +80,6 @@ def setup_metrics():
         count bigint,
         created_at timestamp default now()
         );
-        CREATE VIEW metris_data_volume_avg AS select avg(count), time_interval, table_name from metrics_data_volume group by time_interval, table_name;
         """
     )
     metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_volume_diff (

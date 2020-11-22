@@ -32,7 +32,7 @@ def create_home_dashboard(grafana_api, dashboards):
     panels = home_data['panels']
     
     for panel in panels:
-        if panel['title'] in ['check_for_data_volume', 'check_for_delayed_data']:
+        if panel['title'] in ['new_records_created (in last 24h)', 'time_since_last_record_created']:
             panel['savedOverrides'] = generate_overrides(dashboards)
 
             # native polystat logic for column/row auto scalling works strange
