@@ -14,6 +14,7 @@ def update_panel_element(table_name, panel, panel_class):
     panel_obj = panel_class(table_name)
     targets = load_json_data(settings.TARGETS_DASHBOARD_LOCATION)
 
+    targets[0]['format'] = panel_obj.format()
     targets[0]['rawSql'] = panel_obj.query()
     panel['targets'] = targets
 

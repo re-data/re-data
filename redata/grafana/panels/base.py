@@ -5,6 +5,9 @@ class SchemaChange():
     def __init__(self, table_name) -> None:
         self.table_name = table_name
 
+    def format(self):
+        return 'table'
+
     @staticmethod
     def title():
         return 'schema_changes'
@@ -27,6 +30,9 @@ class SchemaChange():
 class CurrentSchema():
     def __init__(self, table_name):
         self.table_name = table_name
+    
+    def format(self):
+        return 'table'
 
     @staticmethod
     def title():
@@ -48,6 +54,9 @@ class DelayOnTable():
 
     def __init__(self, table_name) -> None:
         self.table_name = table_name
+
+    def format(self):
+        return 'time_series'
 
     @staticmethod
     def title():
@@ -71,6 +80,9 @@ class GroupByDate():
     def __init__(self, table_name) -> None:
         self.table_name = table_name
 
+    def format(self):
+        return 'time_series'
+
     @staticmethod
     def title():
         return f'new_records_by_day'
@@ -93,6 +105,9 @@ class VolumeGraphs():
     
     def __init__(self, table_name) -> None:
         self.table_name = table_name
+
+    def format(self):
+        return 'time_series'
 
     @staticmethod
     def title():

@@ -1,6 +1,6 @@
 [
     {
-      "format": "time_series",
+      "format": "__TO_REPLACE__",
       "group": [],
       "hide": false,
       "metricColumn": "none",

@@ -449,7 +449,7 @@
           }
         ],
         "timeFrom": null,
-        "title": "metrics_data_volume schema_changes",
+        "title": "schema_changes",
         "type": "table"
       },
       {
