@@ -419,35 +419,7 @@
         },
         "pluginVersion": "7.3.0",
         "repeat": null,
-        "targets": [
-          {
-            "format": "table",
-            "group": [],
-            "hide": false,
-            "metricColumn": "none",
-            "rawQuery": true,
-            "rawSql": "\n        SELECT\n            created_at AS \"time\",\n            operation,\n            column_name,\n            column_type\n        FROM metrics_table_schema_changes\n        WHERE\n            table_name = 'metrics_data_volume' and\n            $__timeFilter(created_at)\n        ORDER BY 1\n        ",
-            "refId": "A",
-            "select": [
-              [
-                {
-                  "params": [
-                    "value"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "timeColumn": "time",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          }
-        ],
+        "targets": "__TO__REPLACE__",
         "timeFrom": null,
         "title": "schema_changes",
         "type": "table"
@@ -489,38 +461,7 @@
           "showHeader": true
         },
         "pluginVersion": "7.3.0",
-        "targets": [
-          {
-            "format": "table",
-            "group": [],
-            "hide": false,
-            "metricColumn": "none",
-            "queryType": "randomWalk",
-            "rawQuery": true,
-            "rawSql": "SELECT\n  col.*\nFROM\n  metrics_table_metadata,\n  jsonb_to_recordset(schema->'columns') col(name text, type text)\nWHERE\n  table_name = 'metrics_data_values'",
-            "refId": "A",
-            "select": [
-              [
-                {
-                  "params": [
-                    "check_value"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "table": "metrics_data_values",
-            "timeColumn": "created_at",
-            "timeColumnType": "timestamp",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          }
-        ],
+        "targets": "__TO__REPLACE__",
         "timeFrom": null,
         "timeShift": null,
         "title": "current_table_schema",
