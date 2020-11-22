@@ -1,23 +1,13 @@
-from redata import settings
-from grafanalib.core import (
-    Alert, AlertCondition, Dashboard, Graph, Table, SingleStat,
-    GreaterThan, OP_AND, OPS_FORMAT, Row, RTYPE_SUM, SECONDS_FORMAT,
-    SHORT_FORMAT, single_y_axis, Target, TimeRange, YAxes, YAxis
-)
-import attr
+
 
 class SchemaChange():
 
     def __init__(self, table_name) -> None:
         self.table_name = table_name
-        self.span = 4
 
     @staticmethod
     def title():
-        return f'schema_changes'
-
-    def yAxes(self):
-        return single_y_axis(format='s')
+        return 'schema_changes'
 
     def query(self):
         return """
@@ -33,11 +23,31 @@ class SchemaChange():
         ORDER BY 1
         """.format(table_name=self.table_name)
 
+
+class CurrentSchema():
+    def __init__(self, table_name):
+        self.table_name = table_name
+
+    @staticmethod
+    def title():
+        return 'current_table_schema'
+
+    def query(self):
+        super().__init__()
+        return """
+        SELECT
+            col.*
+        FROM
+            metrics_table_metadata,
+            jsonb_to_recordset(schema->'columns') col(name text, type text)
+        WHERE
+            table_name = '{table_name}'
+        """.format(table_name=self.table_name)
+
 class DelayOnTable():
 
     def __init__(self, table_name) -> None:
         self.table_name = table_name
-        self.span = 4
 
     @staticmethod
     def title():
@@ -101,4 +111,4 @@ class VolumeGraphs():
         ORDER BY 1
         """.format(table_name=self.table_name)
 
-ALL_PANELS = VolumeGraphs, DelayOnTable, GroupByDate
+ALL_PANELS = VolumeGraphs, DelayOnTable, GroupByDate, SchemaChange, CurrentSchema

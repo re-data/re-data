@@ -368,87 +368,57 @@
           "x": 0,
           "y": 12
         },
-        "id":5,
+        "id": 5,
         "panels": [],
         "title": "schema_changes summary",
         "type": "row"
       },
       {
-        "columns": [],
         "datasource": "redata_metrics_db",
         "description": null,
-        "editable": true,
         "fieldConfig": {
           "defaults": {
             "color": {
-              "mode": "continuous-blues"
+              "mode": "thresholds"
             },
-            "custom": {}
+            "custom": {
+              "align": "center",
+              "displayMode": "color-background",
+              "filterable": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-blue",
+                  "value": null
+                }
+              ]
+            }
           },
           "overrides": []
         },
-        "fontSize": "100%",
         "gridPos": {
           "h": 7,
-          "w": 8,
+          "w": 12,
           "x": 0,
           "y": 13
         },
-        "height": null,
         "hideTimeOverride": false,
-        "id":6,
+        "id": 6,
         "links": [],
-        "pageSize": null,
-        "repeat": null,
-        "scroll": true,
-        "showHeader": true,
-        "sort": {
-          "col": null,
-          "desc": false
+        "options": {
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "column_name"
+            }
+          ]
         },
-        "styles": [
-          {
-            "alias": "Time",
-            "align": "auto",
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "link": false,
-            "linkTargetBlank": false,
-            "linkTooltip": "",
-            "linkUrl": "",
-            "pattern": "Time",
-            "type": "date"
-          },
-          {
-            "alias": "time",
-            "align": "auto",
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "link": false,
-            "linkTargetBlank": false,
-            "linkTooltip": "",
-            "linkUrl": "",
-            "pattern": "time",
-            "type": "date"
-          },
-          {
-            "alias": "",
-            "align": "auto",
-            "colorMode": null,
-            "colors": [
-              "rgba(50, 172, 45, 0.97)",
-              "rgba(237, 129, 40, 0.89)",
-              "rgba(245, 54, 54, 0.9)"
-            ],
-            "decimals": 2,
-            "link": false,
-            "linkTargetBlank": false,
-            "linkTooltip": "",
-            "linkUrl": "",
-            "pattern": "/.*/",
-            "thresholds": [],
-            "type": "number",
-            "unit": "short"
-          }
-        ],
+        "pluginVersion": "7.3.0",
+        "repeat": null,
         "targets": [
           {
             "format": "table",
@@ -457,16 +427,126 @@
             "metricColumn": "none",
             "rawQuery": true,
             "rawSql": "\n        SELECT\n            created_at AS \"time\",\n            operation,\n            column_name,\n            column_type\n        FROM metrics_table_schema_changes\n        WHERE\n            table_name = 'metrics_data_volume' and\n            $__timeFilter(created_at)\n        ORDER BY 1\n        ",
-            "refId": "A"
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "value"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "timeColumn": "time",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
           }
         ],
         "timeFrom": null,
         "title": "metrics_data_volume schema_changes",
-        "transform": "table",
-        "type": "table-old"
+        "type": "table"
       },
       {
-        "aliasColors": {},
+        "datasource": "redata_metrics_db",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": null,
+              "displayMode": "json-view",
+              "filterable": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 12,
+          "x": 12,
+          "y": 13
+        },
+        "id": 9,
+        "options": {
+          "showHeader": true
+        },
+        "pluginVersion": "7.3.0",
+        "targets": [
+          {
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "metricColumn": "none",
+            "queryType": "randomWalk",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  col.*\nFROM\n  metrics_table_metadata,\n  jsonb_to_recordset(schema->'columns') col(name text, type text)\nWHERE\n  table_name = 'metrics_data_values'",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "check_value"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "metrics_data_values",
+            "timeColumn": "created_at",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "current_table_schema",
+        "type": "table"
+      },
+      {
+        "collapsed": false,
+        "datasource": null,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 20
+        },
+        "id": 11,
+        "panels": [],
+        "title": "column_specific_stats",
+        "type": "row"
+      },
+      {
+        "aliasColors": {
+          "1 day": "dark-yellow",
+          "1 hour": "dark-blue",
+          "30 days": "super-light-blue",
+          "7 days": "semi-dark-blue"
+        },
         "bars": false,
         "dashLength": 10,
         "dashes": false,
@@ -487,10 +567,10 @@
           "h": 7,
           "w": 24,
           "x": 0,
-          "y": 20
+          "y": 21
         },
         "hiddenSeries": false,
-        "id":7,
+        "id": 7,
         "isNew": true,
         "legend": {
           "alignAsTable": false,
