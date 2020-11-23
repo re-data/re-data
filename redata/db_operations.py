@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.schema import MetaData
 from redata import settings
+from sqlalchemy.orm import sessionmaker
 
 def get_monitored_db_connection():
     db_string = settings.SOURCE_DB_URL
@@ -24,6 +25,9 @@ grafana_db = get_grafana_db_connection()
 
 metadata = MetaData()
 metadata.reflect(bind=metrics_db)
+
+MetricsSession = sessionmaker(bind=metrics_db)
+metrics_session = MetricsSession()
 
 def get_current_table_schema(table_name):
     result = source_db.execute(f"""

@@ -480,126 +480,6 @@
         "panels": [],
         "title": "column_specific_stats",
         "type": "row"
-      },
-      {
-        "aliasColors": {
-          "1 day": "dark-yellow",
-          "1 hour": "dark-blue",
-          "30 days": "super-light-blue",
-          "7 days": "semi-dark-blue"
-        },
-        "bars": false,
-        "dashLength": 10,
-        "dashes": false,
-        "datasource": "redata_metrics_db",
-        "description": null,
-        "editable": true,
-        "error": false,
-        "fieldConfig": {
-          "defaults": {
-            "custom": {}
-          },
-          "overrides": []
-        },
-        "fill": 1,
-        "fillGradient": 0,
-        "grid": {},
-        "gridPos": {
-          "h": 7,
-          "w": 24,
-          "x": 0,
-          "y": 21
-        },
-        "hiddenSeries": false,
-        "id": 7,
-        "isNew": true,
-        "legend": {
-          "alignAsTable": false,
-          "avg": false,
-          "current": false,
-          "hideEmpty": false,
-          "hideZero": false,
-          "max": false,
-          "min": false,
-          "rightSide": false,
-          "show": true,
-          "sideWidth": null,
-          "sort": null,
-          "sortDesc": false,
-          "total": false,
-          "values": false
-        },
-        "lines": true,
-        "linewidth": 2,
-        "links": [],
-        "nullPointMode": "connected",
-        "options": {
-          "alertThreshold": true
-        },
-        "percentage": false,
-        "pluginVersion": "7.3.0",
-        "pointradius": 5,
-        "points": false,
-        "renderer": "flot",
-        "repeat": null,
-        "seriesOverrides": [],
-        "spaceLength": 10,
-        "stack": false,
-        "steppedLine": false,
-        "targets": [
-          {
-            "format": "time_series",
-            "group": [],
-            "hide": false,
-            "metricColumn": "none",
-            "rawQuery": true,
-            "rawSql": "\n        select\n            created_at as time, time_interval, check_value\n        from\n            metrics_data_values\n        where\n            table_name = 'metrics_data_volume' and column_name = 'count' and check_name='check_avg'\n        order by\n        1\n    ",
-            "refId": "A"
-          }
-        ],
-        "thresholds": [],
-        "timeFrom": null,
-        "timeRegions": [],
-        "timeShift": null,
-        "title": "metrics_data_volume:count check_avg",
-        "tooltip": {
-          "msResolution": true,
-          "shared": true,
-          "sort": 0,
-          "value_type": "cumulative"
-        },
-        "type": "graph",
-        "xaxis": {
-          "buckets": null,
-          "mode": "time",
-          "name": null,
-          "show": true,
-          "values": []
-        },
-        "yaxes": [
-          {
-            "decimals": null,
-            "format": "none",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": 0,
-            "show": true
-          },
-          {
-            "decimals": null,
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": 0,
-            "show": true
-          }
-        ],
-        "yaxis": {
-          "align": false,
-          "alignLevel": null
-        }
       }
     ],
     "refresh": false,
@@ -610,7 +490,7 @@
       "list": []
     },
     "time": {
-      "from": "now-90d",
+      "from": "now-30d",
       "to": "now"
     },
     "timepicker": {

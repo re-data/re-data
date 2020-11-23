@@ -7,15 +7,14 @@ from redata.checks.data_volume import check_data_volume, check_data_valume_diff
 from redata.checks.data_schema import check_if_schema_changed, check_for_new_tables
 from redata.checks.data_values import check_data_values
 from redata.db_operations import metrics_db
+from redata.models.table import MonitoredTable
 
 
 VOLUME_INTERVAL = ['1 hour', '1 day', '7 days', '30 days']
 
 def run_checks():
-    tables = metrics_db.execute("""
-        SELECT *
-        FROM metrics_table_metadata
-    """)
+
+    tables = MonitoredTable.get_monitored_tables()
     
     for table in tables:
         run_checks_for_table(table)
@@ -28,7 +27,7 @@ def run_checks_for_table(table):
     
     for interval in VOLUME_INTERVAL:
         check_data_volume(table.table_name, table.time_column, interval)
-        check_data_values(table.table_name, table.time_column, interval)
+        # check_data_values(table.table_name, table.time_column, interval)
 
 
 def run_check_for_new_tables():

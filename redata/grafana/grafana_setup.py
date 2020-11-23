@@ -1,6 +1,5 @@
 import pdb
 from redata import db_operations
-from redata.checks.data_schema import get_monitored_tables
 from grafana_api.grafana_face import GrafanaFace
 
 from grafanalib.core import (
@@ -13,12 +12,11 @@ import json
 import tempfile
 
 from grafanalib._gen import DashboardEncoder
-from redata.checks.data_schema import get_monitored_tables
 from redata import settings
-from redata.grafana.dashboard import get_dashboard_for_table
 from redata.grafana.source import get_postgres_datasource
 from redata.grafana.home_dashboard import create_home_dashboard
 from redata.grafana.table_dashboards import get_dashboard_for_table
+from redata.models.table import MonitoredTable
 
 def dashboard_to_json(dashboard):
     result = json.dumps(
@@ -59,8 +57,9 @@ def create_dashboards():
     create_source_in_grafana(grafana_api)
     dashboards = []
 
-    for table in get_monitored_tables():
-        dash_data = create_dashboard_for_table(grafana_api, table)
+    monitored_tables = MonitoredTable.get_monitored_tables()
+    for table in monitored_tables:
+        dash_data = create_dashboard_for_table(grafana_api, table.table_name)
         dashboards.append(dash_data)
 
     create_home_dashboard(grafana_api, dashboards)

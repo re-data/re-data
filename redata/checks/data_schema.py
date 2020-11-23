@@ -1,16 +1,10 @@
 import json
 import pdb
-from redata.setup_checks import setup_initial_query
 from sqlalchemy.sql import text
 from redata.db_operations import metrics_db, source_db, metadata, get_current_table_schema
 from sqlalchemy import update
+from redata.models.table import MonitoredTable
 
-
-def get_monitored_tables():
-    result = metrics_db.execute("""
-        SELECT * FROM metrics_table_metadata
-    """)
-    return list(el.table_name for el in result)
 
 def insert_schema_changed_record(table_name, operation, column_name, column_type, column_count):
     metrics_data_valume = metadata.tables['metrics_table_schema_changes']
@@ -25,26 +19,18 @@ def insert_schema_changed_record(table_name, operation, column_name, column_type
     metrics_db.execute(stmt)
 
 
-def update_to_current_schema(table, schema_cols):
-    metrics_table_metadata = metadata.tables['metrics_table_metadata']
-
-    stmt = update(metrics_table_metadata).where(
-        metrics_table_metadata.c.table_name == table
-    ).values(schema={'columns': schema_cols})
-
-    metrics_db.execute(stmt)
-
 def check_for_new_tables():
     tables = source_db.table_names()
     
-    monitored_tables = set(get_monitored_tables())
+    monitored_tables = MonitoredTable.get_monitored_tables()
+    monitored_tables_names = set([table.table_name for table in monitored_tables])
 
     for table in tables:
-        if table not in monitored_tables:
+        if table not in monitored_tables_names:
             insert_schema_changed_record(
                 table, 'table created', None, None, None
             )
-            setup_initial_query(table)
+            MonitoredTable.setup_for_source_table(table)
 
 
 def check_if_schema_changed(table):
@@ -52,11 +38,9 @@ def check_if_schema_changed(table):
     def schema_to_dict(schema):
         return dict([(el['name'], el['type'])for el in schema])
 
-    get_last_schema = metrics_db.execute(text("""
-        SELECT schema FROM metrics_table_metadata WHERE table_name = :table
-    """), {'table': table})
+    get_last_schema = MonitoredTable.get_schema_for_table(table)
+    last_schema = get_last_schema['columns']
 
-    last_schema = get_last_schema.first()[0]['columns']
     current_schema = get_current_table_schema(table)
 
     if last_schema != current_schema:
@@ -80,4 +64,4 @@ def check_if_schema_changed(table):
                     print (f"Type of column: {el} changed from {prev_type} to {curr_type}")
                     insert_schema_changed_record(table, 'column added', el, current_dict[el], len(current_dict))
 
-        update_to_current_schema(table, current_schema)
+        MonitoredTable.update_schema_for_table(table, current_schema)

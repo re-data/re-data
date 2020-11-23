@@ -14,30 +14,6 @@ def check_avg(table_name, checked_column, time_column, time_interval):
 
     return result.avg
 
-avg_check_dict = {
-    'name': 'check_avg',
-    'func': check_avg,
-    'metrics_query': """
-        select
-            created_at as time, time_interval, check_value
-        from
-            metrics_data_values
-        where
-            table_name = '{}' and column_name = '{}' and check_name='check_avg'
-        order by
-        1
-    """
-}
-
-TYPE_CHECK_MAP = {
-    'bigint': [
-        avg_check_dict
-    ],
-    'integer': [
-        avg_check_dict
-    ]
-}
-
 def check_data_values(table_name, time_column, time_interval):
 
     schema = get_current_table_schema(table_name)

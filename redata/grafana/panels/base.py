@@ -44,7 +44,7 @@ class CurrentSchema():
         SELECT
             col.*
         FROM
-            metrics_table_metadata,
+            monitored_table,
             jsonb_to_recordset(schema->'columns') col(name text, type text)
         WHERE
             table_name = '{table_name}'
@@ -124,6 +124,41 @@ class VolumeGraphs():
             table_name = '{table_name}' and
             $__timeFilter(created_at)
         ORDER BY 1
+        """.format(table_name=self.table_name)
+
+
+class AvgValuesInColumn():
+    
+    def __init__(self, table_name, column_name) -> None:
+        self.table_name = table_name
+        self.column_name = column_name
+
+    def format(self):
+        return 'time_series'
+    
+    @staticmethod
+    def is_for(column_type):
+        if column_type in ['bigint', 'integer', 'double precision']:
+            return True
+        return False
+
+    @staticmethod
+    def title():
+        return f'NOT_EXISTING'
+
+    def title_for_obj(self):
+        return self.column_name + 'avg_in_column'
+
+    def query(self):
+        return """
+        SELECT
+            created_at as time, time_interval, check_value
+        FROM
+            metrics_data_values
+        WHERE
+            table_name = '{}' and column_name = '{}' and check_name='check_avg'
+        ORDER BY
+        1
         """.format(table_name=self.table_name)
 
 ALL_PANELS = VolumeGraphs, DelayOnTable, GroupByDate, SchemaChange, CurrentSchema
