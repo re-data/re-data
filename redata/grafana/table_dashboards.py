@@ -10,8 +10,8 @@ def load_json_data(file_name):
     
     return data
 
-def update_panel_element(table_name, panel, panel_class):
-    panel_obj = panel_class(table_name)
+def update_panel_element(table, panel, panel_class):
+    panel_obj = panel_class(table.table_name)
     targets = load_json_data(settings.TARGETS_DASHBOARD_LOCATION)
 
     targets[0]['format'] = panel_obj.format()
@@ -21,7 +21,7 @@ def update_panel_element(table_name, panel, panel_class):
     return panel
 
 
-def get_dashboard_for_table(table_name):
+def get_dashboard_for_table(table):
     table_data = load_json_data(settings.TABLE_DASHBOARD_LOCATION)
 
     panels = table_data['panels']
@@ -29,10 +29,11 @@ def get_dashboard_for_table(table_name):
         [(panel.title(), panel) for panel in ALL_PANELS]
     )
 
-    table_data['title'] = "table:" + table_name + " (generated)"
+    table_data['title'] = "table:" + table.table_name + " (generated)"
 
     for panel in panels:
         if per_title.get(panel['title']):
-            panel = update_panel_element(table_name, panel, per_title[panel['title']])
+            panel = update_panel_element(table, panel, per_title[panel['title']])
+
 
     return table_data

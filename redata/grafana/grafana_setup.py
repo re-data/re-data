@@ -59,7 +59,7 @@ def create_dashboards():
 
     monitored_tables = MonitoredTable.get_monitored_tables()
     for table in monitored_tables:
-        dash_data = create_dashboard_for_table(grafana_api, table.table_name)
+        dash_data = create_dashboard_for_table(grafana_api, table)
         dashboards.append(dash_data)
 
     create_home_dashboard(grafana_api, dashboards)

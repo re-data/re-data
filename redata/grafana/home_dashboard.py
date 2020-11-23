@@ -16,8 +16,8 @@ def generate_overrides(dashboards):
 
         override = load_json_data(settings.HOME_OVERRIDES_LOCATION)
         override['clickThrough'] = dashboard['dashboard']['url']
-        override['metricName'] = dashboard['table']
-        override['label'] = dashboard['table']
+        override['metricName'] = dashboard['table'].table_name
+        override['label'] = dashboard['table'].table_name
         
         override_list.append(
             override
