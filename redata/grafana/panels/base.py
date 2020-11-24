@@ -127,38 +127,35 @@ class VolumeGraphs():
         """.format(table_name=self.table_name)
 
 
-class AvgValuesInColumn():
+class CheckForColumn():
     
-    def __init__(self, table_name, column_name) -> None:
+    def __init__(self, table_name, column_name, check_name) -> None:
         self.table_name = table_name
         self.column_name = column_name
+        self.check_name = check_name
 
     def format(self):
         return 'time_series'
     
     @staticmethod
-    def is_for(column_type):
-        if column_type in ['bigint', 'integer', 'double precision']:
-            return True
-        return False
-
-    @staticmethod
     def title():
         return f'NOT_EXISTING'
 
     def title_for_obj(self):
-        return self.column_name + 'avg_in_column'
+        return 'column:{self.column_name}:{self.check_name}'
 
     def query(self):
-        return """
+        return f"""
         SELECT
             created_at as time, time_interval, check_value
         FROM
             metrics_data_values
         WHERE
-            table_name = '{}' and column_name = '{}' and check_name='check_avg'
+            table_name = '{self.table_name}' and
+            column_name = '{self.column_name}' and
+            check_name='{self.check_name}'
         ORDER BY
         1
-        """.format(table_name=self.table_name)
+        """
 
 ALL_PANELS = VolumeGraphs, DelayOnTable, GroupByDate, SchemaChange, CurrentSchema

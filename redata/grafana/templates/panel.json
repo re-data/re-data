@@ -12,27 +12,34 @@
       },
       "overrides": []
     },
+    "gridPos": {
+      "h": 7,
+      "w": 12,
+      "x": "__REPLACE__",
+      "y": "__REPLACE__"
+    },
+    
     "fill": 1,
     "fillGradient": 0,
     "grid": {},
     "hiddenSeries": false,
-    "id": 7,
+    "id": "__TO_REPLACE__",
     "isNew": true,
     "legend": {
-      "alignAsTable": false,
+      "alignAsTable": true,
       "avg": false,
-      "current": false,
+      "current": true,
       "hideEmpty": false,
       "hideZero": false,
       "max": false,
       "min": false,
-      "rightSide": false,
+      "rightSide": true,
       "show": true,
       "sideWidth": null,
       "sort": null,
       "sortDesc": false,
       "total": false,
-      "values": false
+      "values": true
     },
     "lines": true,
     "linewidth": 2,

@@ -2,37 +2,64 @@ from redata.checks.data_schema import check_for_new_tables
 from redata.db_operations import get_current_table_schema, metrics_db, source_db, metadata
 
 
-def check_avg(table_name, checked_column, time_column, time_interval):
+def check_generic(func_name, table_name, checked_column, time_column, time_interval):
 
     result = source_db.execute(f"""
         SELECT
-            AVG({checked_column})
+            {func_name}({checked_column}) as value
         FROM
             {table_name}
         WHERE {time_column} > now() - INTERVAL '{time_interval}'
     """).first()
 
-    return result.avg
+    metrics_data_values = metadata.tables['metrics_data_values']
+    stmt = metrics_data_values.insert().values(
+        table_name=table_name,
+        column_name=checked_column,
+        check_name=f'check_{func_name}',
+        check_value=result.value,
+        time_interval=time_interval
+    )
+    
+    metrics_db.execute(stmt)
 
-def check_data_values(table_name, time_column, time_interval):
+    print (f"Successfull inserted {func_name} for table {table_name}")
 
-    schema = get_current_table_schema(table_name)
+
+def check_avg(table_name, checked_column, time_column, time_interval):
+    check_generic(
+        'avg', table_name, checked_column, time_column, time_interval
+    )
+
+def check_min(table_name, checked_column, time_column, time_interval):
+    check_generic(
+        'min', table_name, checked_column, time_column, time_interval
+    )
+
+def check_max(table_name, checked_column, time_column, time_interval):
+    check_generic(
+        'max', table_name, checked_column, time_column, time_interval
+    )
+
+def check_count_nulls(table_name, checked_column, time_column, time_interval):
+    
+    result = source_db.execute(f"""
+        SELECT
+            count({checked_column}) as value
+        FROM
+            {table_name}
+        WHERE
+            {time_column} > now() - INTERVAL '{time_interval}' and
+            {checked_column} is null
+    """).first()
 
     metrics_data_values = metadata.tables['metrics_data_values']
-
-    for col_dict in schema:
-        col_name = col_dict['name']
-        col_type = col_dict['type']
-
-        for check_dict in TYPE_CHECK_MAP.get(col_type, []):
-            result = check_dict['func'](table_name, col_name, time_column, time_interval)
-
-            stmt = metrics_data_values.insert().values(
-                table_name=table_name,
-                column_name=col_name,
-                check_name=check_dict['name'],
-                check_value=result,
-                time_interval=time_interval
-            )
-
-            metrics_db.execute(stmt)
+    stmt = metrics_data_values.insert().values(
+        table_name=table_name,
+        column_name=checked_column,
+        check_name='check_count_nulls',
+        check_value=result.value,
+        time_interval=time_interval
+    )
+    
+    metrics_db.execute(stmt)
