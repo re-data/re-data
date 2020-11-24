@@ -98,6 +98,12 @@
         "show": true
       }
     ],
+    "aliasColors": {
+      "1 day": "super-light-blue",
+      "1 hour": "dark-blue",
+      "30 days": "dark-purple",
+      "7 days": "rgb(75, 155, 166)"
+    },
     "yaxis": {
       "align": false,
       "alignLevel": null
