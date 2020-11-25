@@ -18,4 +18,6 @@ HOME_DASHBOARD_LOCATION = 'redata/grafana/templates/home.json'
 HOME_OVERRIDES_LOCATION = 'redata/grafana/templates/overrides.json'
 TABLE_DASHBOARD_LOCATION = 'redata/grafana/templates/table.json'
 TARGETS_DASHBOARD_LOCATION = 'redata/grafana/templates/targets.json'
+
 CUSTOM_PANEL_LOCATION = 'redata/grafana/templates/panel.json'
+CUSTOM_ROW_LOCATION = 'redata/grafana/templates/row.json'

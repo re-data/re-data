@@ -39,6 +39,7 @@ def setup_metrics():
     metrics_db.execute("""CREATE TABLE IF NOT EXISTS metrics_data_values (
         table_name text,
         column_name text,
+        column_value text,
         check_name text,
         check_value double precision,
         time_interval text,

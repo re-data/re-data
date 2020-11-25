@@ -63,3 +63,47 @@ def check_count_nulls(table_name, checked_column, time_column, time_interval):
     )
     
     metrics_db.execute(stmt)
+
+
+def check_count_per_value(table_name, checked_column, time_column, time_interval):
+
+    check_distinct = source_db.execute(f"""
+        SELECT
+            count(distinct(value)) as ditinct
+        FROM {table_name}
+        WHERE
+            {time_column} > now() - INTERVAL '{time_interval}
+    """).first()
+
+    if check_distinct > 10:
+        # Skipping if more than 10 different values showing up in column
+        return
+
+    result = source_db.execute(f"""
+        SELECT
+            count(*) as count,
+            {checked_column} as value
+        FROM
+            {table_name}
+        WHERE
+            {time_column} > now() - INTERVAL '{time_interval}' and
+            {checked_column} is not null
+        GROUP BY
+            {checked_column}
+        ORDER BY
+            count DESC
+        LIMIT 10
+    """)
+
+    metrics_data_values = metadata.tables['metrics_data_values']
+    for row in result:
+        stmt = metrics_data_values.insert().values(
+            table_name=table_name,
+            column_name=checked_column,
+            column_value=row.value,
+            check_name='check_count_per_value',
+            check_value=row.count,
+            time_interval=time_interval
+        )
+    
+        metrics_db.execute(stmt)

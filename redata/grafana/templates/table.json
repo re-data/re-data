@@ -466,20 +466,6 @@
         "timeShift": null,
         "title": "current_table_schema",
         "type": "table"
-      },
-      {
-        "collapsed": false,
-        "datasource": null,
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 20
-        },
-        "id": 11,
-        "panels": [],
-        "title": "column_specific_stats",
-        "type": "row"
       }
     ],
     "refresh": false,

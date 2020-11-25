@@ -158,4 +158,31 @@ class CheckForColumn():
         1
         """
 
+class CheckForColumnByValue():
+        
+    def __init__(self, table_name, column_name, check_name, time_interval) -> None:
+        self.table_name = table_name
+        self.column_name = column_name
+        self.check_name = check_name
+        self.time_interval = time_interval
+
+    def format(self):
+        return 'time_series'
+    
+    def query(self):
+        return f"""
+        SELECT
+            created_at as time, column_value, check_value
+        FROM
+            metrics_data_values
+        WHERE
+            table_name = '{self.table_name}' and
+            column_name = '{self.column_name}' and
+            check_name='{self.check_name}' and
+            time_interval = '{self.time_interval}' and
+            column_value is not null
+        ORDER BY
+        1
+        """
+
 ALL_PANELS = VolumeGraphs, DelayOnTable, GroupByDate, SchemaChange, CurrentSchema
