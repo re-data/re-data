@@ -69,13 +69,13 @@ def check_count_per_value(table_name, checked_column, time_column, time_interval
 
     check_distinct = source_db.execute(f"""
         SELECT
-            count(distinct(value)) as ditinct
+            count(distinct({checked_column})) as count
         FROM {table_name}
         WHERE
-            {time_column} > now() - INTERVAL '{time_interval}
+            {time_column} > now() - INTERVAL '{time_interval}'
     """).first()
 
-    if check_distinct > 10:
+    if check_distinct.count > 10:
         # Skipping if more than 10 different values showing up in column
         return
 
