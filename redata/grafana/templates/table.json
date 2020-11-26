@@ -384,7 +384,7 @@
             "custom": {
               "align": "center",
               "displayMode": "color-background",
-              "filterable": false
+              "filterable": true
             },
             "mappings": [],
             "thresholds": {
@@ -413,7 +413,7 @@
           "sortBy": [
             {
               "desc": true,
-              "displayName": "column_name"
+              "displayName": "time"
             }
           ]
         },
