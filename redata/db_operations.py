@@ -18,7 +18,6 @@ def get_grafana_db_connection():
     db = create_engine(db_string)
     return db
 
-
 source_db = get_monitored_db_connection()
 metrics_db = get_metrics_connection()
 grafana_db = get_grafana_db_connection()

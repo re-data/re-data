@@ -32,10 +32,11 @@ if __name__ == "__main__":
         create_dashboards()
 
     if args.metrics:
+        print ("run_check_for_new_table")
+        run_check_for_new_tables()
+
         print("run_checks")
         run_checks()
 
-        print ("run_check_for_new_table")
-        run_check_for_new_tables()
 
     
