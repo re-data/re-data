@@ -14,30 +14,38 @@ services:
   
   postgres_grafana:
     image: postgres:12
+    env_file:
+      - .env
     ports:
-      - "5435:5432"
+      - "${GF_DATABASE_PORT}:5432"
+
     environment:
-      - POSTGRES_USER=grafana
-      - POSTGRES_PASSWORD=mysecretpassword
-      - POSTGRES_DB=grafana
+      - POSTGRES_USER=${GF_DATABASE_USER}
+      - POSTGRES_PASSWORD=${GF_DATABASE_PASSWORD}
+      - POSTGRES_DB=${GF_DATABASE_NAME}
 
   postgres_redata:
     image: postgres:12
+    env_file:
+      - .env
     ports:
       - "5434:5432"
+
     environment:
-      - POSTGRES_USER=redata
-      - POSTGRES_PASSWORD=mysecretpassword
-      - POSTGRES_DB=redata
+      - POSTGRES_USER=${REDATA_METRICS_DATABASE_USER}
+      - POSTGRES_PASSWORD=${REDATA_METRICS_DATABASE_PASSWORD}
+      - POSTGRES_DB=${REDATA_METRICS_DATABASE_NAME}
 
   postgres_airflow:
     image: postgres:12
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=airflow
-      - POSTGRES_PASSWORD=airflow
-      - POSTGRES_DB=airflow
+      - POSTGRES_USER=${AIRFLOW_CONN_METADATA_DB_USER}
+      - POSTGRES_PASSWORD=${AIRFLOW_CONN_METADATA_DB_PASSWORD}
+      - POSTGRES_DB=${AIRFLOW_CONN_METADATA_DB_NAME}
     ports:
-      - "5433:5432"
+      - "${AIRFLOW_CONN_METADATA_DB_PORT}:5432"
 
   scheduler_airflow:
     image: apache/airflow

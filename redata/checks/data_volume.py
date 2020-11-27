@@ -42,7 +42,7 @@ def check_data_valume_diff(table_name, time_column):
     result = source_db.execute(text(f"""
         SELECT count(*)
         FROM {table_name}
-        WHERE {time_column} > :from_time
+        WHERE {time_column} >= :from_time
     """), {'from_time': from_time}).first()
 
     metrics_data_valume = metadata.tables['metrics_data_volume_diff']
