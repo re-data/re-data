@@ -45,6 +45,7 @@ def run_checks_for_table(table):
     
         if column['type'] in ['text']:
             check_count_per_value(table.table_name, column['name'], table.time_column, '1 day')
+            check_count_nulls(table.table_name, column['name'], table.time_column, '1 day')
 
 def run_check_for_new_tables():
     check_for_new_tables()

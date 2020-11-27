@@ -1,4 +1,3 @@
-import pdb
 from sqlalchemy.sql import text
 import json
 
@@ -46,9 +45,3 @@ def setup_metrics():
         created_at timestamp default now()
         )"""
     )
-
-    print ("Generated tracked metrics for table")
-
-
-if __name__ == "__main__":
-    setup_metrics()

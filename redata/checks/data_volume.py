@@ -1,6 +1,7 @@
 import pdb
 from redata.db_operations import metrics_db, source_db, metadata
 from sqlalchemy.sql import text
+from datetime import datetime, date, time 
 
 def check_data_volume(table_name, time_column, time_interval):
 
@@ -32,6 +33,11 @@ def check_data_valume_diff(table_name, time_column):
         WHERE table_name = :table_name
         """), {'table_name': table_name}).first()
     from_time = from_time.created_at if from_time else None
+
+    if from_time is None:
+        # if now previous diff computed, compute from start of day
+        # mostly because we show that stat daily
+        from_time = datetime.combine(date.today(), time()) 
 
     result = source_db.execute(text(f"""
         SELECT count(*)

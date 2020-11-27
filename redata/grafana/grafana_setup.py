@@ -17,6 +17,7 @@ from redata.grafana.source import get_postgres_datasource
 from redata.grafana.home_dashboard import create_home_dashboard
 from redata.grafana.table_dashboards import get_dashboard_for_table
 from redata.models.table import MonitoredTable
+from grafana_api.grafana_api import GrafanaClientError
 
 def dashboard_to_json(dashboard):
     result = json.dumps(
@@ -27,8 +28,9 @@ def dashboard_to_json(dashboard):
 
 def create_source_in_grafana(grafana_api):
     datasource = get_postgres_datasource()
-    source = grafana_api.datasource.get_datasource_by_name(datasource['name'])
-    if not source:
+    try:
+        source = grafana_api.datasource.get_datasource_by_name(datasource['name'])
+    except GrafanaClientError:
         print (grafana_api.datasource.create_datasource(datasource))
 
 def create_dashboard_for_table(grafana_api, table):
