@@ -39,6 +39,11 @@ Visit http://localhost:3000 to check them (or docker IP in case of using docker 
 
 Visit http://localhost:8080 to check airflow jobs that are running, coputing DB metrics every 10 minutes.
 
+# Community
+
+* [Slack](https://redatahq.slack.com/) For general questions about using redata, problems and discussions with people making it :)
+
+
 
 # License
 Redata is licensed under the MIT license. See the [LICENSE](LICENSE) file for licensing information.
