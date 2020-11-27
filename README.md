@@ -38,7 +38,7 @@ python redata.py --grafana # generate grafana dashboards for your metrics
 ```
 
 And metrics should be ready to look at in your grafana :)
-Visit http://localhost:3000 to check them (or docker IP in case of using docker via virtulbox)
+Visit http://localhost:3000 to check them (use docker IP in case of using docker via virtulbox)
 
 Visit http://localhost:8080 to check airflow jobs that are running, coputing DB metrics every 10 minutes.
 
