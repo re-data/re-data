@@ -18,6 +18,9 @@ It gathers metrics on your data as:
 And later on makes those metrics visible under autmatically generated
 grafana dashboards.
 
+<img src="./docs/static/home.png" width="80%"></img>
+<img src="./docs/static/per_table.png" width="80%"></img>
+
 # Getting started
 
 ```
