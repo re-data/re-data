@@ -3,9 +3,7 @@ from redata.grafana.grafana_setup import create_dashboards
 from redata.models.setup_db import setup
 import argparse
 
-
-
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(
         description="Either create dashboards in grafana or run manual data ingestion of data metrics"
     )
@@ -37,6 +35,3 @@ if __name__ == "__main__":
 
         print("run_checks")
         run_checks()
-
-
-    

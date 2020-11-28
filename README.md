@@ -21,7 +21,7 @@ grafana dashboards.
 <img src="./docs/static/home.png" width="80%"></img>
 <img src="./docs/static/per_table.png" width="80%"></img>
 
-# Getting started
+# Getting started (local machine setup)
 
 ```
 
@@ -31,9 +31,12 @@ cp env_template .env
 
 docker-compose up
 
-python redata.py --tables # create tables for redata
-python redata.py --metrics # compute first metircs for you DB
-python redata.py --grafana # generate grafana dashboards for your metrics
+pip install -e .
+source .env.local
+
+redata --tables # create tables for redata
+redata --metrics # compute first metircs for you DB
+redata --grafana # generate grafana dashboards for your metrics
 
 ```
 
