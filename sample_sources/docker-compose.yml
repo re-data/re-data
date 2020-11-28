@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+
+  sample_postgres:
+    image: postgres:12
+    ports:
+      - "5455:5432"
+
+    environment:
+      - POSTGRES_USER=sample
+      - POSTGRES_PASSWORD=sample
+      - POSTGRES_DB=sample
