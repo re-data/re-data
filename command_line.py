@@ -35,3 +35,7 @@ def main():
 
         print("run_checks")
         run_checks()
+
+
+if __name__ == "__main__":
+    main()
