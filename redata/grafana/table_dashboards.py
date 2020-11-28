@@ -97,6 +97,5 @@ def get_dashboard_for_table(table):
                     column_name=column_name, check_name=check_name, time_interval='1 day'
                 )
             panels.append(panel)
-            print (f"panel " + panel['title'] + " added")
 
     return table_data

@@ -31,7 +31,7 @@ def create_dashboard_for_table(grafana_api, table):
             'overwrite': True
         }
     )
-    print (response)
+    print (f"Dashboard for table: {table.table_name} generated:", response)
 
     return {
         'table': table,

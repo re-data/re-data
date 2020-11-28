@@ -23,8 +23,6 @@ def check_data_volume(table_name, time_column, time_interval):
     
     metrics_db.execute(stmt)
 
-    print (f"Added to metrics data volume")
-
 
 def check_data_valume_diff(table_name, time_column):
     from_time = metrics_db.execute(text("""

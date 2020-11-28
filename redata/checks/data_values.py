@@ -23,8 +23,6 @@ def check_generic(func_name, table_name, checked_column, time_column, time_inter
     
     metrics_db.execute(stmt)
 
-    print (f"Successfull inserted {func_name} for table {table_name}")
-
 
 def check_avg(table_name, checked_column, time_column, time_interval):
     check_generic(

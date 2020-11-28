@@ -13,9 +13,4 @@ def check_data_delayed(table, time_column, time_type):
         table_name=table,
         value=result[0]
     )
-
-    print (f"Inserting stmt: {stmt}")
-
     metrics_db.execute(stmt)
-
-    print (f"Successfull inserted delay for table {table}")

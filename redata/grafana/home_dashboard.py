@@ -38,10 +38,13 @@ def create_home_dashboard(grafana_api, dashboards):
             # native polystat logic for column/row auto scalling works strange
             panel['polystat']['columns'] = min(10, len(dashboards))
 
-    print (grafana_api.dashboard.update_dashboard(
+    response = grafana_api.dashboard.update_dashboard(
         dashboard={
             'dashboard': home_data,
             'folderID': 0,
             'overwrite': True
         }
-    ))
+    )
+    print (f"Dashboard for home generated:", response)
+    return response
+

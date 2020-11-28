@@ -22,7 +22,7 @@ class MonitoredTable(Base):
 
     @classmethod
     def setup_for_source_table(cls, db_table_name):
-        print (f"running setup for {db_table_name}")
+        print (f"Running setup for {db_table_name}")
 
         preference = ['timestamp without time zone', 'timestamp with time zone', 'date']
         schema_cols = get_current_table_schema(db_table_name)
