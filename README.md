@@ -2,8 +2,9 @@
 Monitoring system for data teams.
 Computing health checks on data (via Airflow jobs), visualizing, and alerting on them in Grafana.
 
-Currently in early development stage, tested and should work for monitoring postgresql data.
-Other DBs, redshift, bigquery, s3, coming in the future.
+Currently in early development stage for now it was tested with Python 3.8.5 and postgressql DB.
+Other DBs and data sources, features like generated Grafana alerts, custom checks are to be added.
+
 
 # Introduction
 Redata helps data teams, monitor if data they are producting and data they are depending on is correct.
