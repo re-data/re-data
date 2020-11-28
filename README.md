@@ -26,12 +26,12 @@ grafana dashboards.
 ```
 
 git clone https://github.com/redata-team/redata.git
-docker-compose up
-
 cp env_template .env
 # change REDATA_SOURCE_DB_URL (last variable) in .env for URL to DB you would like to monitor
 
-python redata.py --tables # create tables for data
+docker-compose up
+
+python redata.py --tables # create tables for redata
 python redata.py --metrics # compute first metircs for you DB
 python redata.py --grafana # generate grafana dashboards for your metrics
 
