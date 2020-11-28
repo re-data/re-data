@@ -6,7 +6,7 @@ def get_postgres_datasource():
         'type': 'postgres',
         'typeLogoUrl': 'public/app/plugins/datasource/postgres/img/postgresql_logo.svg',
         'access': 'proxy',
-        'url': f'{settings.REDATA_METRICS_DATABASE_HOST}:{settings.REDATA_METRICS_DATABASE_PORT}',
+        'url': f'{settings.REDATA_METRICS_DATABASE_HOST}:5432', # use default port for communication internally
         'password': settings.REDATA_METRICS_DATABASE_PASSWORD,
         'user': settings.REDATA_METRICS_DATABASE_USER,
         'database': settings.REDATA_METRICS_DATABASE_NAME,

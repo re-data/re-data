@@ -17,7 +17,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${GF_DATABASE_PORT}:5432"
+      - "${GF_DATABASE_EXT_PORT}:5432"
 
     environment:
       - POSTGRES_USER=${GF_DATABASE_USER}
@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
     ports:
-      - "5434:5432"
+      - "${REDATA_METRICS_DATABASE_EXT_PORT}:5432"
 
     environment:
       - POSTGRES_USER=${REDATA_METRICS_DATABASE_USER}
@@ -40,12 +40,13 @@ services:
     image: postgres:12
     env_file:
       - .env
+    ports:
+      - "${AIRFLOW_CONN_METADATA_DB_EXT_PORT}:5432"
     environment:
       - POSTGRES_USER=${AIRFLOW_CONN_METADATA_DB_USER}
       - POSTGRES_PASSWORD=${AIRFLOW_CONN_METADATA_DB_PASSWORD}
       - POSTGRES_DB=${AIRFLOW_CONN_METADATA_DB_NAME}
-    ports:
-      - "${AIRFLOW_CONN_METADATA_DB_PORT}:5432"
+
 
   scheduler_airflow:
     image: apache/airflow
