@@ -13,10 +13,11 @@ REDATA_METRICS_DATABASE_NAME = os.environ['REDATA_METRICS_DATABASE_NAME']
 
 REDATA_GRAFANA_SOURCE = 'redata_metrics_db'
 
-HOME_DASHBOARD_LOCATION = 'redata/grafana/templates/home.json'
-HOME_OVERRIDES_LOCATION = 'redata/grafana/templates/overrides.json'
-TABLE_DASHBOARD_LOCATION = 'redata/grafana/templates/table.json'
-TARGETS_DASHBOARD_LOCATION = 'redata/grafana/templates/targets.json'
+TEMPLATES_DIR_LOCATION = 'redata/grafana/templates/'
+HOME_DASHBOARD_LOCATION = TEMPLATES_DIR_LOCATION + 'home.json'
+HOME_OVERRIDES_LOCATION = TEMPLATES_DIR_LOCATION + 'overrides.json'
+TABLE_DASHBOARD_LOCATION = TEMPLATES_DIR_LOCATION + 'table.json'
+TARGETS_DASHBOARD_LOCATION = TEMPLATES_DIR_LOCATION + 'targets.json'
 
-CUSTOM_PANEL_LOCATION = 'redata/grafana/templates/panel.json'
-CUSTOM_ROW_LOCATION = 'redata/grafana/templates/row.json'
+CUSTOM_PANEL_LOCATION = TEMPLATES_DIR_LOCATION + 'panel.json'
+CUSTOM_ROW_LOCATION = TEMPLATES_DIR_LOCATION + 'row.json'
