@@ -1,6 +1,6 @@
 # Redata
 Monitoring system for data teams.
-Computing health checks on data (via Airflow jobs), visualizing, and alerting on them in Grafana.
+Computing health checks on data (via Airflow jobs), visualizing them over time, and alerting on them in Grafana.
 
 Currently in early development stage for now it was tested with Python 3.8.5 and PostgreSQL.
 Other DBs and data sources, features like generated Grafana alerts, custom checks are to be added.
