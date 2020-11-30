@@ -27,9 +27,9 @@ Here is a our list :)
  
  * **Visualizing things normally not possible** - Things like schema changes, cannot be queried from DB, but computing metrics over time makes showing those possible.
  
- * **Visualizing how things that change over time** - If you are doing any updates to DB, like updating row status etc. it's impossible to visualize how things looked liked in the past and compare it to now (for alerting purposes etc.), adding metrics layer makes it easy.
+ * **Visualizing how things change over time** - If you are doing any updates to DB, like updating row status etc. it's impossible to visualize how things looked liked in the past and compare it to now (for alerting purposes etc.), adding metrics layer makes it easy.
  
- * **Automatic dashboards** - Last but not least it's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is almost impossible - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
+ * **Automatic dashboards** - Last but not least it's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is hard - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
 
 Here are some examples of how generated Grafana dashboards look like:
 
