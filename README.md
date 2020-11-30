@@ -19,6 +19,20 @@ It gathers metrics on your data as:
 And later on makes those metrics visible under autmatically generated
 grafana dashboards.
 
+# Benefits over doing monitoring yourself
+Grafana supports PostgreSQL and lot of others DBs, so what are benefits of using redata over setting monitoring yourself with couple of SQL queries?
+Here is a our list :)
+
+ * **Visualizing all tables together in one dashbard** - Computing metrics layer make it really easy to do visulizations for many/all tables at once and showing them under one dashboard.
+ 
+ * **Visualizing things normally not possible** - Things like schema changes, cannot be queried from DB, but computing metrics over time makes showing those possible.
+ 
+ * **Visualizing how things that change over time** - If you are doing any updates to DB, like updating row status etc. it's impossible to visualize how things looked liked in the past and compare it to now (for alerting purposes etc.), adding metrics layer makes it easy.
+ 
+ * **Automatic dashboards** - Last but not least it's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is almost impossible - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
+
+Here are some examples of how generated Grafana dashboards look like:
+
 <img src="./docs/static/home.png" width="80%"></img>
 <img src="./docs/static/per_table.png" width="80%"></img>
 
