@@ -27,10 +27,11 @@ def check_for_new_tables():
 
     for table in tables:
         if table not in monitored_tables_names:
-            insert_schema_changed_record(
-                table, 'table created', None, None, None
-            )
-            MonitoredTable.setup_for_source_table(table)
+            success = MonitoredTable.setup_for_source_table(table)
+            if success:
+                insert_schema_changed_record(
+                    table, 'table created', None, None, None
+                )
 
 
 def check_if_schema_changed(table):

@@ -1,15 +1,16 @@
 import pdb
-from redata.db_operations import metrics_db, source_db, metadata
+from redata.db_operations import metrics_db, source_db, metadata, get_interval_sep
 from sqlalchemy.sql import text
 from datetime import datetime, date, time 
 
 def check_data_volume(table_name, time_column, time_interval):
 
+    sep = get_interval_sep()
     result = source_db.execute(f"""
-        SELECT 
-            count(*)
+        SELECT
+            count(*) as count
         FROM {table_name}
-        WHERE  {time_column} > now() - INTERVAL '{time_interval}'
+        WHERE {time_column} > now() - INTERVAL {sep}{time_interval}{sep}
         
     """).first()
 
@@ -38,7 +39,7 @@ def check_data_valume_diff(table_name, time_column):
         from_time = datetime.combine(date.today(), time()) 
 
     result = source_db.execute(text(f"""
-        SELECT count(*)
+        SELECT count(*) as count
         FROM {table_name}
         WHERE {time_column} >= :from_time
     """), {'from_time': from_time}).first()

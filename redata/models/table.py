@@ -24,7 +24,12 @@ class MonitoredTable(Base):
     def setup_for_source_table(cls, db_table_name):
         print (f"Running setup for {db_table_name}")
 
-        preference = ['timestamp without time zone', 'timestamp with time zone', 'date']
+        preference = [
+            'timestamp without time zone',
+            'timestamp with time zone',
+            'date',
+            'datetime' #mysql
+        ]
         schema_cols = get_current_table_schema(db_table_name)
 
         # heuristics to find best column to sort by when computing stats about data
@@ -35,6 +40,7 @@ class MonitoredTable(Base):
 
         if len(proper_type) == 0:
             print (f"Not found column to sort by for {db_table_name}, skipping it for now")
+            return False
         else:
             if len(columns) > 1:
                 print (f"Found multiple columns to sort by {columns}, choosing {columns[0]}, please update in DB if needed")
@@ -52,6 +58,7 @@ class MonitoredTable(Base):
 
             metrics_session.add(table)
             metrics_session.commit()
+            return True
 
     @classmethod
     def get_monitored_tables(cls):

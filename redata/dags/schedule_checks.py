@@ -15,9 +15,8 @@ from redata.checks.data_values import (
 
 from redata.db_operations import metrics_db
 from redata.models.table import MonitoredTable
+from redata import settings
 
-
-VOLUME_INTERVAL = ['1 hour', '1 day', '7 days', '30 days']
 
 def run_checks():
 
@@ -35,20 +34,28 @@ def run_checks_for_table(table):
     check_data_valume_diff(table.table_name, table.time_column)
     print (f"Check for data volume diff table:{table.table_name} [DONE]")
     
-    for interval in VOLUME_INTERVAL:
+    for interval in settings.VOLUME_INTERVAL:
         check_data_volume(table.table_name, table.time_column, interval)
     
     print (f"Check for data volume table:{table.table_name} [DONE]")
 
     for column in table.schema['columns']:
-        for interval in VOLUME_INTERVAL:
-            if column['type'] in ['bigint', 'integer', 'double precision']:
+        for interval in settings.VOLUME_INTERVAL:
+            if column['type'] in [
+                'bigint',
+                'integer',
+                'double precision',
+                'int'
+            ]:
                 check_min(table.table_name, column['name'], table.time_column, interval)
                 check_max(table.table_name, column['name'], table.time_column, interval)
                 check_avg(table.table_name, column['name'], table.time_column, interval)
                 check_count_nulls(table.table_name, column['name'], table.time_column, interval)
     
-        if column['type'] in ['text']:
+        if column['type'] in [
+            'text',
+            'varchar'
+        ]:
             check_count_per_value(table.table_name, column['name'], table.time_column, '1 day')
             check_count_nulls(table.table_name, column['name'], table.time_column, '1 day')
     

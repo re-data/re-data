@@ -1,1 +1,2 @@
 REDATA_SOURCE_DB_URL=postgres://sample:sample@host.docker.internal:5455/sample
+REDATA_SOURCE_DB_URL=mysql+pymysql://root:sample@host.docker.internal:3337/sample

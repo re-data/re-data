@@ -1,15 +1,16 @@
 from redata.checks.data_schema import check_for_new_tables
-from redata.db_operations import get_current_table_schema, metrics_db, source_db, metadata
+from redata.db_operations import get_current_table_schema, metrics_db, source_db, metadata, get_interval_sep
 
 
 def check_generic(func_name, table_name, checked_column, time_column, time_interval):
 
+    sep = get_interval_sep()
     result = source_db.execute(f"""
         SELECT
             {func_name}({checked_column}) as value
         FROM
             {table_name}
-        WHERE {time_column} > now() - INTERVAL '{time_interval}'
+        WHERE {time_column} > now() - INTERVAL {sep}{time_interval}{sep}
     """).first()
 
     metrics_data_values = metadata.tables['metrics_data_values']
@@ -41,13 +42,14 @@ def check_max(table_name, checked_column, time_column, time_interval):
 
 def check_count_nulls(table_name, checked_column, time_column, time_interval):
     
+    sep = get_interval_sep()
     result = source_db.execute(f"""
         SELECT
             count({checked_column}) as value
         FROM
             {table_name}
         WHERE
-            {time_column} > now() - INTERVAL '{time_interval}' and
+            {time_column} > now() - INTERVAL {sep}{time_interval}{sep} and
             {checked_column} is null
     """).first()
 
@@ -65,12 +67,13 @@ def check_count_nulls(table_name, checked_column, time_column, time_interval):
 
 def check_count_per_value(table_name, checked_column, time_column, time_interval):
 
+    sep = get_interval_sep()
     check_distinct = source_db.execute(f"""
         SELECT
             count(distinct({checked_column})) as count
         FROM {table_name}
         WHERE
-            {time_column} > now() - INTERVAL '{time_interval}'
+            {time_column} > now() - INTERVAL {sep}{time_interval}{sep}
     """).first()
 
     if check_distinct.count > 10:
@@ -84,7 +87,7 @@ def check_count_per_value(table_name, checked_column, time_column, time_interval
         FROM
             {table_name}
         WHERE
-            {time_column} > now() - INTERVAL '{time_interval}' and
+            {time_column} > now() - INTERVAL {sep}{time_interval}{sep} and
             {checked_column} is not null
         GROUP BY
             {checked_column}
