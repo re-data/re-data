@@ -21,6 +21,9 @@ def get_grafana_db_connection():
 def get_interval_sep():
     return "'" if source_db.name != 'mysql' else ""
 
+def get_age_function():
+    return "age" if source_db.name != 'mysql' else "datediff"
+
 source_db = get_monitored_db_connection()
 metrics_db = get_metrics_connection()
 grafana_db = get_grafana_db_connection()
