@@ -21,14 +21,16 @@ Redata computes health metrics for your data, containing information like this:
 ## Automatic dashboards
 
 Having metrics in one common format, makes it possible to create dashboards automatically, for all (or chosen) tables
-in your data. Currently we support Grafana for visualizing those metrics.
+in your data. Currently there are 2 types of dashboard redata creates:
+* home dashboard, containing most important information about all tables
+* table dashboard, containing information specific to given table and columns in it
 
 Here are some examples of how generated Grafana dashboards look like:
 
 <img src="./docs/static/home.png" width="80%"></img>
 <img src="./docs/static/per_table.png" width="80%"></img>
 
-## All things included
+## Batteries included
 
 No need to setup Airflow, Grafana or DB for storing metrics. Redata will setup all of those via Docker images, you need to deploy only one thing.
 
