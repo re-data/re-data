@@ -34,7 +34,7 @@ Here are some examples of how generated Grafana dashboards look like:
 
 No need to setup Airflow, Grafana or DB for storing metrics. Redata will setup all of those via Docker images, you need to deploy only one thing.
 
-*Easy production deployment on AWS, GCP is something will be working on, currentlly you would need to figure it out yourself, what we have is docker-compose for setting up pieces to make it work*
+*Easy production deployment on AWS, GCP is something we will be working on, currentlly you would need to figure it out yourself, what we have is docker-compose for setting up pieces to make it work*
 
 # Benefits over doing monitoring yourself
 Grafana supports PostgreSQL and lot of others DBs, so what are benefits of using redata over setting monitoring yourself with couple of SQL queries?
@@ -46,9 +46,7 @@ Here is a our list :)
  
  * **Visualizing how things change over time** - If you are doing any updates to DB, like updating row status etc. it's impossible to visualize how things looked liked in the past and compare it to now (for alerting purposes etc.), adding metrics layer makes it easy.
  
- * **Automatic and up to date dashboards** - Last but not least it's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is hard - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
-
-
+ * **Automatic and up to date dashboards** - It's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is hard - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
 
 # Getting started (local machine setup)
 
