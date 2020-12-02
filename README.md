@@ -2,13 +2,15 @@
 Monitoring system for data teams.
 Computing health checks on data (via Airflow jobs), visualizing them over time, and alerting on them in Grafana.
 
-Currently in early development stage for now it was tested with Python 3.8.5 and PostgreSQL.
-Other DBs and data sources, features like generated Grafana alerts, custom checks are to be added.
+*Currently in early development stage (it was tested with Python 3.8.5 and PostgreSQL)
+Other DBs and data sources, features like generated Grafana alerts, custom checks are .to be added.*
 
 
-# Introduction
-Redata helps data teams, monitor if data they are producting and data they are depending on is correct.
-It gathers metrics on your data as:
+# Key features
+
+## Metrics layer
+
+Redata computes health metrics for your data, containing information like this:
 
 * time since last record was added
 * number of records added in last (hour/day/week/month)
@@ -16,8 +18,21 @@ It gathers metrics on your data as:
 * number of nulls in columns over time
 * other checks specific to columns in data and their types
 
-And later on makes those metrics visible under autmatically generated
-grafana dashboards.
+## Automatic dashboards
+
+Having metrics in one common format, makes it possible to create dashboards automatically, for all (or chosen) tables
+in your data. Currently we support Grafana for visualizing those metrics.
+
+Here are some examples of how generated Grafana dashboards look like:
+
+<img src="./docs/static/home.png" width="80%"></img>
+<img src="./docs/static/per_table.png" width="80%"></img>
+
+## All things included
+
+No need to setup Airflow, Grafana or DB for storing metrics. Redata will setup all of those via Docker images, you need to deploy only one thing.
+
+*Easy production deployment on AWS, GCP is something will be working on, currently it is something you would need to figure out yourself, what we have is docker-compose for setting up pieces to make it work*
 
 # Benefits over doing monitoring yourself
 Grafana supports PostgreSQL and lot of others DBs, so what are benefits of using redata over setting monitoring yourself with couple of SQL queries?
@@ -29,12 +44,9 @@ Here is a our list :)
  
  * **Visualizing how things change over time** - If you are doing any updates to DB, like updating row status etc. it's impossible to visualize how things looked liked in the past and compare it to now (for alerting purposes etc.), adding metrics layer makes it easy.
  
- * **Automatic dashboards** - Last but not least it's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is hard - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
+ * **Automatic and up to date dashboards** - Last but not least it's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is hard - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
 
-Here are some examples of how generated Grafana dashboards look like:
 
-<img src="./docs/static/home.png" width="80%"></img>
-<img src="./docs/static/per_table.png" width="80%"></img>
 
 # Getting started (local machine setup)
 
