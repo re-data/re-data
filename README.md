@@ -3,7 +3,7 @@ Monitoring system for data teams.
 Computing health checks on data (via Airflow jobs), visualizing them over time, and alerting on them in Grafana.
 
 *Currently in early development stage (it was tested with Python 3.8.5 and PostgreSQL)
-Other DBs and data sources, features like generated Grafana alerts, custom checks are .to be added.*
+Other DBs and data sources, features like generated Grafana alerts, custom checks are to be added.*
 
 
 # Key features
@@ -34,7 +34,7 @@ Here are some examples of how generated Grafana dashboards look like:
 
 No need to setup Airflow, Grafana or DB for storing metrics. Redata will setup all of those via Docker images, you need to deploy only one thing.
 
-*Easy production deployment on AWS, GCP is something will be working on, currently it is something you would need to figure out yourself, what we have is docker-compose for setting up pieces to make it work*
+*Easy production deployment on AWS, GCP is something will be working on, currentlly you would need to figure it out yourself, what we have is docker-compose for setting up pieces to make it work*
 
 # Benefits over doing monitoring yourself
 Grafana supports PostgreSQL and lot of others DBs, so what are benefits of using redata over setting monitoring yourself with couple of SQL queries?
