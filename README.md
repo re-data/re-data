@@ -54,7 +54,7 @@ Here is a our list :)
 
 git clone https://github.com/redata-team/redata.git
 cp env_template .env
-# crate REDATA_SOURCE_DB_URL_YOUR_DB_NAME variables (at the end of .env file, you can add multiple variables there)
+# create REDATA_SOURCE_DB_URL_YOUR_DB_NAME variables (at the end of .env file, you can add multiple variables there)
 
 docker-compose up
 
