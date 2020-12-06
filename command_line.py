@@ -1,6 +1,7 @@
 from redata.dags.schedule_checks import run_check_for_new_tables, run_checks
 from redata.grafana.grafana_setup import create_dashboards
 from redata.models.setup_db import setup
+from redata.db_operations import source_dbs
 import argparse
 
 def main():
@@ -30,11 +31,13 @@ def main():
         create_dashboards()
 
     if args.metrics:
-        print ("run_check_for_new_table")
-        run_check_for_new_tables()
 
-        print("run_checks")
-        run_checks()
+        for db in source_dbs:
+            print ("run_check_for_new_table")
+            run_check_for_new_tables(db)
+
+            print("run_checks")
+            run_checks(db)
 
 
 if __name__ == "__main__":

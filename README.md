@@ -54,7 +54,7 @@ Here is a our list :)
 
 git clone https://github.com/redata-team/redata.git
 cp env_template .env
-# change REDATA_SOURCE_DB_URL (last variable) in .env for URL to DB you would like to monitor
+# crate REDATA_SOURCE_DB_URL_YOUR_DB_NAME variables (at the end of .env file, you can add multiple variables there)
 
 docker-compose up
 
@@ -62,7 +62,7 @@ pip install -e .
 source .env.local
 
 redata --tables # create tables for redata
-redata --metrics # compute first metircs for you DB
+redata --metrics # compute first metircs for your DB
 redata --grafana # generate grafana dashboards for your metrics
 
 ```

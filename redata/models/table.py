@@ -21,7 +21,7 @@ class MonitoredTable(Base):
     schema = Column(JSONB)
 
     @classmethod
-    def setup_for_source_table(cls, db_table_name):
+    def setup_for_source_table(cls, db, db_table_name):
         print (f"Running setup for {db_table_name}")
 
         preference = [
@@ -30,7 +30,7 @@ class MonitoredTable(Base):
             'date',
             'datetime' #mysql
         ]
-        schema_cols = get_current_table_schema(db_table_name)
+        schema_cols = get_current_table_schema(db, db_table_name)
 
         # heuristics to find best column to sort by when computing stats about data
         proper_type = [col['name'] for col in schema_cols if col['type'] in preference]
@@ -40,7 +40,7 @@ class MonitoredTable(Base):
 
         if len(proper_type) == 0:
             print (f"Not found column to sort by for {db_table_name}, skipping it for now")
-            return False
+            return None
         else:
             if len(columns) > 1:
                 print (f"Found multiple columns to sort by {columns}, choosing {columns[0]}, please update in DB if needed")
@@ -53,16 +53,22 @@ class MonitoredTable(Base):
                 table_name=db_table_name,
                 time_column=col_name,
                 time_column_type=col_type,
-                schema={'columns': schema_cols}
+                schema={'columns': schema_cols},
+                source_db=db.name
             )
-
+            
             metrics_session.add(table)
             metrics_session.commit()
-            return True
+            return table
 
     @classmethod
-    def get_monitored_tables(cls):
-        return metrics_session.query(cls).filter(cls.active == True).all()
+    def get_monitored_tables(cls, db_name):
+        return (
+            metrics_session.query(cls)
+            .filter(cls.active == True)
+            .filter(cls.source_db == db_name)
+            .all()
+        )
 
     @classmethod
     def update_schema_for_table(cls, table, schema_cols):
@@ -70,8 +76,3 @@ class MonitoredTable(Base):
 
         table.schema = {'columns': schema_cols}
         metrics_session.commit()
-
-    @classmethod
-    def get_schema_for_table(cls, table):
-        table = metrics_session.query(cls).filter(cls.table_name == table).first()
-        return table.schema

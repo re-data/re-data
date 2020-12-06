@@ -3,8 +3,7 @@ from sqlalchemy.schema import MetaData
 from redata import settings
 from sqlalchemy.orm import sessionmaker
 
-def get_monitored_db_connection():
-    db_string = settings.SOURCE_DB_URL
+def get_monitored_db_connection(db_string):
     db = create_engine(db_string)
     return db
 
@@ -13,20 +12,27 @@ def get_metrics_connection():
     db = create_engine(db_string)
     return db
 
-def get_grafana_db_connection():
-    db_string = settings.METRICS_DB_URL
-    db = create_engine(db_string)
-    return db
 
-def get_interval_sep():
-    return "'" if source_db.name != 'mysql' else ""
+class DB(object):
+    def __init__(self, name, db):
+        self.name = name
+        self.db = db
 
-def get_age_function():
-    return "age" if source_db.name != 'mysql' else "datediff"
+    def get_interval_sep(self):
+        return "'" if self.db.name != 'mysql' else ""
 
-source_db = get_monitored_db_connection()
+    def get_age_function(self):
+        return "age" if self.db.name != 'mysql' else "timediff"
+
+    def execute(self, *args, **kwargs):
+        return self.db.execute(*args, **kwargs)
+
+
+source_dbs = [
+    DB(source_db['name'], get_monitored_db_connection(source_db['db_url']))
+    for source_db in settings.REDATA_SOURCE_DBS
+]
 metrics_db = get_metrics_connection()
-grafana_db = get_grafana_db_connection()
 
 metadata = MetaData()
 metadata.reflect(bind=metrics_db)
@@ -34,8 +40,8 @@ metadata.reflect(bind=metrics_db)
 MetricsSession = sessionmaker(bind=metrics_db)
 metrics_session = MetricsSession()
 
-def get_current_table_schema(table_name):
-    result = source_db.execute(f"""
+def get_current_table_schema(db, table_name):
+    result = db.execute(f"""
         SELECT 
             column_name, 
             data_type 

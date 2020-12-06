@@ -12,6 +12,7 @@ from redata.grafana.home_dashboard import create_home_dashboard
 from redata.grafana.table_dashboards import get_dashboard_for_table
 from redata.models.table import MonitoredTable
 from grafana_api.grafana_api import GrafanaClientError
+from redata.db_operations import source_dbs
 
 
 def create_source_in_grafana(grafana_api):
@@ -47,9 +48,10 @@ def create_dashboards():
     create_source_in_grafana(grafana_api)
     dashboards = []
 
-    monitored_tables = MonitoredTable.get_monitored_tables()
-    for table in monitored_tables:
-        dash_data = create_dashboard_for_table(grafana_api, table)
-        dashboards.append(dash_data)
+    for db in source_dbs:
+        monitored_tables = MonitoredTable.get_monitored_tables(db.name)
+        for table in monitored_tables:
+            dash_data = create_dashboard_for_table(grafana_api, table)
+            dashboards.append(dash_data)
 
     create_home_dashboard(grafana_api, dashboards)
