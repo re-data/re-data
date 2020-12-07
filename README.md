@@ -82,7 +82,7 @@ Join [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-jk8imy5f-OPjSHv7
 
 # Integrations
 
-Here are integrations we support on work on now, let us know if you'd really like to pritize something or your DB is not included on the list.
+Here are integrations we support or work on now. Let us know if you'd really like to pritize something or your DB is not included on the list.
 
 <table>
 	<thead>
