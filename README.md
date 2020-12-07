@@ -77,7 +77,7 @@ Visit http://localhost:8080 to check airflow jobs, turn on dag in airflow, so th
 
 # Community
 
-Join [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-jk8imy5f-OPjSHv7fCpfYUGyktw_qvw) for general questions about using redata, problems, prior and discussions with people making it :)
+Join [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-jk8imy5f-OPjSHv7fCpfYUGyktw_qvw) for general questions about using redata, problems, and discussions with people making it :)
 
 
 # Integrations
