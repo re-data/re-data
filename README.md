@@ -44,7 +44,7 @@ Here is a our list :)
 
  * **Visualizing all tables together in one dashbard** - Computing metrics layer make it really easy to do visulizations for many/all tables at once and showing them under one dashboard.
  
- * **Visualizing new (previously impossible) things ** - Things like schema changes, cannot be queried from DB, but computing metrics over time makes showing those possible.
+ * **Visualizing new, previously impossible things** - Things like schema changes, cannot be queried from DB, but computing metrics over time makes showing those possible.
  
  * **Visualizing how things change over time** - If you are doing any updates to DB, like updating row status etc. it's impossible to visualize how things looked liked in the past and compare it to now (for alerting purposes etc.), adding metrics layer makes it easy.
  
