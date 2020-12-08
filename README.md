@@ -15,6 +15,8 @@ Redata computes health metrics for your data, containing information like this:
 * number of nulls in columns over time
 * other checks specific to columns in data and their types
 
+*If you have DevOps experience, you can think of it as: prometheus, telegraf for data teams*
+
 ## Automatic dashboards
 
 Having metrics in one common format, makes it possible to create dashboards automatically, for all (or chosen) tables
