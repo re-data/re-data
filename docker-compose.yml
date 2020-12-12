@@ -61,7 +61,6 @@ services:
       - "8793:8793"
     volumes:
       - ./redata:/usr/local/redata
-      - ./scripts:/opt/airflow/scripts
     command: scheduler
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
