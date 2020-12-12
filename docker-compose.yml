@@ -63,7 +63,6 @@ services:
       - ./redata:/usr/local/redata
       - ./scripts:/opt/airflow/scripts
     command: scheduler
-    # entrypoint: ./scripts/airflow-schedule.sh
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
       interval: 30s
