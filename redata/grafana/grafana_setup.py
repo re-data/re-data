@@ -42,7 +42,7 @@ def create_dashboard_for_table(grafana_api, table):
 def create_dashboards():
     grafana_api = GrafanaFace(
         auth=(settings.GF_SECURITY_ADMIN_USER, settings.GF_SECURITY_ADMIN_PASSWORD),
-        host='localhost:3000'
+        host='grafana:3000'
     )
 
     create_source_in_grafana(grafana_api)

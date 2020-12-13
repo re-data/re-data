@@ -1,7 +1,6 @@
 FROM apache/airflow
-COPY . /usr/local/
+COPY . /usr/local/redata
 
-ENV PYTHONPATH "${PYTONPATH}:/usr/local/"
-WORKDIR /usr/local
-
+WORKDIR /usr/local/redata
 RUN pip3 install . --user
+

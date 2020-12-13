@@ -17,6 +17,7 @@ class HomeLastModifiedTime():
             FROM metrics_data_delay delay, monitored_table m
             WHERE
                 m.id = delay.table_id and
+                m.active = true and
                 $__timeFilter(delay.created_at)
             ORDER BY 1
         """ 
@@ -71,7 +72,6 @@ class SchemaChange():
         FROM metrics_table_schema_changes
         WHERE
             table_id = {self.table.id} and
-            m.active = true and
             $__timeFilter(created_at)
         ORDER BY 1
         """

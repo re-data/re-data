@@ -59,8 +59,7 @@ services:
       - .env
     ports:
       - "8793:8793"
-    volumes:
-      - ./redata:/usr/local/redata
+    entrypoint: /usr/local/redata/scripts/redata-start.sh
     command: scheduler
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
@@ -77,14 +76,11 @@ services:
       - postgres_redata
     env_file:
       - .env
-    volumes:
-      - ./redata:/usr/local/redata
-      - ./scripts:/opt/airflow/scripts
     ports:
       - "8080:8080"
-    entrypoint: ./scripts/airflow-entrypoint.sh
+    entrypoint: /usr/local/redata/scripts/airflow-entrypoint.sh
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
       interval: 30s
       timeout: 30s
-      retries: 32
+      retries: 3
