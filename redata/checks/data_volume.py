@@ -1,22 +1,23 @@
 import pdb
-from redata.db_operations import metrics_db, source_db, metadata
+from redata.db_operations import metrics_db, metadata
 from sqlalchemy.sql import text
 from datetime import datetime, date, time 
 
-def check_data_volume(table_name, time_column, time_interval):
+def check_data_volume(db, table, time_interval):
 
-    result = source_db.execute(f"""
-        SELECT 
-            count(*)
-        FROM {table_name}
-        WHERE  {time_column} > now() - INTERVAL '{time_interval}'
+    sep = db.get_interval_sep()
+    result = db.execute(f"""
+        SELECT
+            count(*) as count
+        FROM {table.table_name}
+        WHERE {table.time_column} > now() - INTERVAL {sep}{time_interval}{sep}
         
     """).first()
 
     metrics_data_valume = metadata.tables['metrics_data_volume']
 
     stmt = metrics_data_valume.insert().values(
-        table_name=table_name,
+        table_id=table.id,
         time_interval=time_interval,
         count=result.count
     )
@@ -24,12 +25,12 @@ def check_data_volume(table_name, time_column, time_interval):
     metrics_db.execute(stmt)
 
 
-def check_data_valume_diff(table_name, time_column):
+def check_data_valume_diff(db, table):
     from_time = metrics_db.execute(text("""
         SELECT max(created_at) as created_at
         FROM metrics_data_volume_diff
-        WHERE table_name = :table_name
-        """), {'table_name': table_name}).first()
+        WHERE table_id = :table_id
+        """), {'table_id': table.id}).first()
     from_time = from_time.created_at if from_time else None
 
     if from_time is None:
@@ -37,16 +38,16 @@ def check_data_valume_diff(table_name, time_column):
         # mostly because we show that stat daily
         from_time = datetime.combine(date.today(), time()) 
 
-    result = source_db.execute(text(f"""
-        SELECT count(*)
-        FROM {table_name}
-        WHERE {time_column} >= :from_time
+    result = db.execute(text(f"""
+        SELECT count(*) as count
+        FROM {table.table_name}
+        WHERE {table.time_column} >= :from_time
     """), {'from_time': from_time}).first()
 
     metrics_data_valume = metadata.tables['metrics_data_volume_diff']
 
     stmt = metrics_data_valume.insert().values(
-        table_name=table_name,
+        table_id=table.id,
         from_time=from_time,
         count=result.count
     )

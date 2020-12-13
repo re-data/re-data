@@ -11,7 +11,9 @@ setup(
         'grafana-api',
         'cattrs==1.0.0',
         'marshmallow-sqlalchemy==0.23.1',
-        'marshmallow<3.0.0,>=2.18.0'
+        'marshmallow<3.0.0,>=2.18.0',
+        'pymysql',
+        'cryptography'
     ],
     entry_points = {
         'console_scripts': ['redata=command_line:main'],

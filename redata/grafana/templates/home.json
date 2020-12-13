@@ -165,38 +165,7 @@
       "savedOverrides": [
 
       ],
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "queryType": "randomWalk",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  created_at AS \"time\",\n  table_name, \n  count\nFROM metrics_data_volume\nWHERE\n  time_interval = '1 day' and\n  $__timeFilter(created_at)\nORDER BY 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "check_value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "metrics_data_values",
-          "timeColumn": "created_at",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
+      "targets": "__REPLACE___",
       "timeFrom": null,
       "timeShift": null,
       "title": "new_records_created (in last 24h)",
@@ -386,38 +355,7 @@
       ],
       "savedComposites": [],
       "savedOverrides": [],
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "queryType": "randomWalk",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  created_at AS \"time\",\n  table_name,\n  value\nFROM metrics_data_delay\nWHERE\n  $__timeFilter(created_at)\nORDER BY 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "check_value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "metrics_data_values",
-          "timeColumn": "created_at",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
+      "targets": "__REPLACE___",
       "timeFrom": null,
       "timeShift": null,
       "title": "time_since_last_record_created",

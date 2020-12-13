@@ -1,24 +1,8 @@
-import json
 from redata import settings
-from redata.db_operations import grafana_db, metrics_db
+from redata.db_operations import metrics_db
 from grafana_api.grafana_face import GrafanaFace
 from redata.grafana.panels.base import ALL_PANELS, CheckForColumn, CheckForColumnByValue
-
-def load_json_data(file_name):
-    with open(file_name) as json_file:
-        data = json.load(json_file)
-    
-    return data
-
-def update_panel_element(table, panel, panel_class, **kwargs):
-    panel_obj = panel_class(table.table_name, **kwargs)
-    targets = load_json_data(settings.TARGETS_DASHBOARD_LOCATION)
-
-    targets[0]['format'] = panel_obj.format()
-    targets[0]['rawSql'] = panel_obj.query()
-    panel['targets'] = targets
-
-    return panel
+from redata.grafana.utils import load_json_data, update_panel_element
 
 
 def get_dashboard_for_table(table):
@@ -39,7 +23,7 @@ def get_dashboard_for_table(table):
     all_checks = metrics_db.execute(f"""
         SELECT DISTINCT column_name, check_name
         FROM metrics_data_values
-        WHERE table_name = '{table.table_name}'
+        WHERE table_id = '{table.id}'
         """
     )
     

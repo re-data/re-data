@@ -1,16 +1,19 @@
-from redata.db_operations import metrics_db, source_db, metadata
+from redata.db_operations import metrics_db, metadata
+from datetime import datetime
 
-def check_data_delayed(table, time_column, time_type):
-    result = source_db.execute(f"""
+def check_data_delayed(db, table):
+
+    age_fun = db.get_age_function()
+
+    result = db.execute(f"""
         SELECT 
-            EXTRACT (epoch from now() - max({time_column}))
-        FROM {table}
+            {age_fun}(now(), max({table.time_column}))
+        FROM {table.table_name}
     """).fetchall()[0]
 
     metrics_data_delay = metadata.tables['metrics_data_delay']
-
     stmt = metrics_data_delay.insert().values(
-        table_name=table,
-        value=result[0]
+        table_id=table.id,
+        value=result[0].total_seconds()
     )
     metrics_db.execute(stmt)

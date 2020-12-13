@@ -10,3 +10,12 @@ services:
       - POSTGRES_USER=sample
       - POSTGRES_PASSWORD=sample
       - POSTGRES_DB=sample
+
+  sample_mysql:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: sample
+      MYSQL_DATABASE: sample
+    ports:
+      - "3337:3306"

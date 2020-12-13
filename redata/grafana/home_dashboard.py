@@ -1,7 +1,8 @@
 import json
 from redata import settings
-from redata.db_operations import grafana_db
+from redata.grafana.utils import load_json_data, update_home_panel_element
 from grafana_api.grafana_face import GrafanaFace
+from redata.grafana.panels.base import HomeLastDayTraffic, HomeLastModifiedTime
 
 def load_json_data(file_name):
     with open(file_name) as json_file:
@@ -37,6 +38,13 @@ def create_home_dashboard(grafana_api, dashboards):
 
             # native polystat logic for column/row auto scalling works strange
             panel['polystat']['columns'] = min(10, len(dashboards))
+        
+        if panel['title'] == 'new_records_created (in last 24h)':
+            update_home_panel_element(panel, HomeLastDayTraffic)
+            
+        if panel['title'] == 'time_since_last_record_created':
+            update_home_panel_element(panel, HomeLastModifiedTime)
+            
 
     response = grafana_api.dashboard.update_dashboard(
         dashboard={

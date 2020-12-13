@@ -3,7 +3,6 @@ import os
 GF_SECURITY_ADMIN_USER=os.environ['GF_SECURITY_ADMIN_USER']
 GF_SECURITY_ADMIN_PASSWORD=os.environ['GF_SECURITY_ADMIN_PASSWORD']
 
-SOURCE_DB_URL = os.environ['REDATA_SOURCE_DB_URL']
 METRICS_DB_URL = os.environ['REDATA_METRICS_DB_URL']
 
 REDATA_METRICS_DATABASE_HOST = os.environ['REDATA_METRICS_DATABASE_HOST']
@@ -21,3 +20,14 @@ TARGETS_DASHBOARD_LOCATION = TEMPLATES_DIR_LOCATION + 'targets.json'
 
 CUSTOM_PANEL_LOCATION = TEMPLATES_DIR_LOCATION + 'panel.json'
 CUSTOM_ROW_LOCATION = TEMPLATES_DIR_LOCATION + 'row.json'
+
+VOLUME_INTERVAL = ['1 hour', '1 day', '7 day', '30 day']
+
+REDATA_SOURCE_DBS = [
+    {
+    'name': el.replace('REDATA_SOURCE_DB_URL_', ''),
+    'db_url': os.environ[el]
+    } for el in os.environ if el.startswith('REDATA_SOURCE_DB_URL_')
+]
+
+REDATA_AIRFLOW_SCHEDULE_INTERVAL = '*/10 * * * *'
