@@ -57,13 +57,13 @@ Here is a our list :)
 # Getting started (local machine setup)
 
 ```
-
 git clone https://github.com/redata-team/redata.git
+
 cp env_template .env
-# create REDATA_SOURCE_DB_URL_YOUR_DB_NAME variables (at the end of .env file, you can add multiple variables there)
+# create REDATA_SOURCE_DB_URL_YOUR_DB_NAME variables (at the end of .env file)
+# you can add multiple variables for many DBs you want to observe here
 
 docker-compose up
-
 ```
 
 And metrics should be ready to look at in your grafana :)
