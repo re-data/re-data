@@ -16,7 +16,7 @@ setup(
         'cryptography'
     ],
     entry_points = {
-        'console_scripts': ['redata=command_line:main'],
+        'console_scripts': ['redata=redata.command_line:main'],
     },
     packages=find_packages()
 )

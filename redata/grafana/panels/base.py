@@ -17,6 +17,7 @@ class HomeLastModifiedTime():
             FROM metrics_data_delay delay, monitored_table m
             WHERE
                 m.id = delay.table_id and
+                m.active = true and
                 $__timeFilter(delay.created_at)
             ORDER BY 1
         """ 
@@ -43,6 +44,7 @@ class HomeLastDayTraffic():
             WHERE
                 volume.time_interval = '1 day' and
                 m.id = volume.table_id and
+                m.active = true and
                 $__timeFilter(volume.created_at)
             ORDER BY 1
         """ 
