@@ -43,6 +43,7 @@ class HomeLastDayTraffic():
             WHERE
                 volume.time_interval = '1 day' and
                 m.id = volume.table_id and
+                m.active = true and
                 $__timeFilter(volume.created_at)
             ORDER BY 1
         """ 
@@ -70,6 +71,7 @@ class SchemaChange():
         FROM metrics_table_schema_changes
         WHERE
             table_id = {self.table.id} and
+            m.active = true and
             $__timeFilter(created_at)
         ORDER BY 1
         """
