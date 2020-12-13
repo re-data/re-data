@@ -1,3 +1,5 @@
+![License](https://img.shields.io/github/license/redata-team/redata)
+
 # Redata
 Monitoring system for data teams.
 Computing health checks on data (via Airflow jobs), visualizing them over time, and alerting on them in Grafana.
