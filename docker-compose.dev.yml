@@ -49,7 +49,7 @@ services:
 
 
   scheduler_airflow:
-    image: redata
+    image: apache/airflow
     restart: always
     depends_on:
       - postgres_airflow
@@ -69,7 +69,7 @@ services:
       retries: 3
 
   webserver_airflow:
-    image: redata
+    image: apache/airflow
     hostname: webserver
     restart: always
     depends_on:
