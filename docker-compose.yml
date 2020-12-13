@@ -60,12 +60,6 @@ services:
     ports:
       - "8793:8793"
     entrypoint: /usr/local/redata/scripts/redata-start.sh
-    command: scheduler
-    healthcheck:
-      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
-      interval: 30s
-      timeout: 30s
-      retries: 3
 
   webserver_airflow:
     image: redata
@@ -80,7 +74,7 @@ services:
       - "8080:8080"
     entrypoint: /usr/local/redata/scripts/airflow-entrypoint.sh
     healthcheck:
-      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+      test: ["CMD-SHELL", "[ -f /opt/airflow/airflow-webserver.pid ]"]
       interval: 30s
       timeout: 30s
       retries: 3

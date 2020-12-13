@@ -87,4 +87,4 @@ services:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
       interval: 30s
       timeout: 30s
-      retries: 32
+      retries: 3

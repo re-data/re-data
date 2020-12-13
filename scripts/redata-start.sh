@@ -3,3 +3,5 @@
 redata --tables
 redata --metrics
 redata --grafana
+
+airflow scheduler
