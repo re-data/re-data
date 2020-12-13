@@ -62,17 +62,10 @@ cp env_template .env
 
 docker-compose up
 
-pip install -e .
-source .env.local
-
-redata --tables # create tables for redata
-redata --metrics # compute first metircs for your DB
-redata --grafana # generate grafana dashboards for your metrics
-
 ```
 
 And metrics should be ready to look at in your grafana :)
-Visit http://localhost:3000 to check them (use docker IP in case of using docker via virtulbox)
+Visit http://localhost:3000 to check them (use docker IP in case of using docker via virtulbox, grafana default password is admin/admin)
 
 Visit http://localhost:8080 to check airflow jobs, turn on dag in airflow, so that checks run every 10 minutes.
 
