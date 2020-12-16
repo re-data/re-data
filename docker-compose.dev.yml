@@ -61,9 +61,10 @@ services:
       - "8793:8793"
     entrypoint: /usr/local/redata/scripts/redata-start.sh
     environment:
-      - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/redata/redata-dev/dags
+      - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/redata-dev/redata/dags
+      - PYTHONPATH=/usr/local/redata-dev
     volumes:
-      - ./redata:/usr/local/redata/redata-dev
+      - ./redata:/usr/local/redata-dev/redata
 
   webserver_airflow:
     image: redatateam/redata:0.0.1-alfa
