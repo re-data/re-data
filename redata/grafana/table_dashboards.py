@@ -5,7 +5,7 @@ from redata.grafana.panels.base import ALL_PANELS, CheckForColumn, CheckForColum
 from redata.grafana.utils import load_json_data, update_panel_element
 
 
-def get_dashboard_for_table(table):
+def get_dashboard_for_table(db, table):
     table_data = load_json_data(settings.TABLE_DASHBOARD_LOCATION)
 
     panels = table_data['panels']
@@ -13,7 +13,7 @@ def get_dashboard_for_table(table):
         [(panel.title(), panel) for panel in ALL_PANELS]
     )
 
-    table_data['title'] = "table:" + table.table_name + " (generated)"
+    table_data['title'] = f"source: {db.name} table: {table.table_name} (generated)"
 
     for panel in panels:
         if per_title.get(panel['title']):
