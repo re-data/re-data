@@ -22,8 +22,8 @@ def create_source_in_grafana(grafana_api):
     except GrafanaClientError:
         print (grafana_api.datasource.create_datasource(datasource))
 
-def create_dashboard_for_table(grafana_api, table):
-    data = get_dashboard_for_table(table)
+def create_dashboard_for_table(grafana_api, db, table):
+    data = get_dashboard_for_table(db, table)
 
     response = grafana_api.dashboard.update_dashboard(
         dashboard={
@@ -51,7 +51,7 @@ def create_dashboards():
     for db in source_dbs:
         monitored_tables = MonitoredTable.get_monitored_tables(db.name)
         for table in monitored_tables:
-            dash_data = create_dashboard_for_table(grafana_api, table)
+            dash_data = create_dashboard_for_table(grafana_api, db, table)
             dashboards.append(dash_data)
 
     create_home_dashboard(grafana_api, dashboards)
