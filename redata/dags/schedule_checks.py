@@ -42,21 +42,13 @@ def run_checks_for_table(db, table):
 
     for column in table.schema['columns']:
         for interval in settings.VOLUME_INTERVAL:
-            if column['type'] in [
-                'bigint',
-                'integer',
-                'double precision',
-                'int'
-            ]:
+            if db.is_numeric(column['type']):
                 check_min(db, table, column['name'], interval)
                 check_max(db, table, column['name'], interval)
                 check_avg(db, table, column['name'], interval)
                 check_count_nulls(db, table, column['name'], interval)
     
-        if column['type'] in [
-            'text',
-            'varchar'
-        ]:
+        if db.is_character(column['type']):
             check_count_per_value(db, table, column['name'], '1 day')
             check_count_nulls(db, table, column['name'], '1 day')
     

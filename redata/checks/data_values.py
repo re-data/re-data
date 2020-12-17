@@ -3,7 +3,6 @@ from redata.db_operations import get_current_table_schema, metrics_db, metadata
 
 
 def check_generic(func_name, db, table, checked_column, time_interval):
-
     sep = db.get_interval_sep()
     result = db.execute(f"""
         SELECT
@@ -45,7 +44,7 @@ def check_count_nulls(db, table, checked_column, time_interval):
     sep = db.get_interval_sep()
     result = db.execute(f"""
         SELECT
-            count({checked_column}) as value
+            count(*) as value
         FROM
             {table.table_name}
         WHERE
