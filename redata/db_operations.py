@@ -2,36 +2,34 @@ from sqlalchemy import create_engine
 from sqlalchemy.schema import MetaData
 from redata import settings
 from sqlalchemy.orm import sessionmaker
+from redata.backends.postgrsql import Postgres
+from redata.backends.mysql import MySQL
 
-def get_monitored_db_connection(db_string):
-    db = create_engine(db_string)
-    return db
+
+def get_db_object(db_source):
+
+    db_url = db_source['db_url']
+    db = create_engine(db_url)
+
+    if db_url.startswith('postgres'):
+        return Postgres(db_source['name'], db)
+
+    if db_url.startswith('mysql'):
+        return MySQL(db_source['name'], db)
+    
+    raise Exception('Not supported DB')
+    
 
 def get_metrics_connection():
     db_string = settings.METRICS_DB_URL
     db = create_engine(db_string)
     return db
 
-
-class DB(object):
-    def __init__(self, name, db):
-        self.name = name
-        self.db = db
-
-    def get_interval_sep(self):
-        return "'" if self.db.name != 'mysql' else ""
-
-    def get_age_function(self):
-        return "age" if self.db.name != 'mysql' else "timediff"
-
-    def execute(self, *args, **kwargs):
-        return self.db.execute(*args, **kwargs)
-
-
 source_dbs = [
-    DB(source_db['name'], get_monitored_db_connection(source_db['db_url']))
+    get_db_object(source_db)
     for source_db in settings.REDATA_SOURCE_DBS
 ]
+
 metrics_db = get_metrics_connection()
 
 metadata = MetaData()
