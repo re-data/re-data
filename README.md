@@ -71,8 +71,6 @@ Add this point Grafana should be running on http://localhost:3000 (or you docker
 
 First screen you will see there, is login screen. Default password is admin/admin, but if you want can you can change that in .env file (need to be done when staring docker)
 
-To go see dashboards in Grafana goto `Dashboards > Manage`. (Home is by default now showing all dahsboards)
-
 From the main dashboard named: `Home (generated)` you can go to any table specific dashboard, just by clicking tile that shows stats for given table
 
 ## Airflow
