@@ -59,7 +59,7 @@ def create_dashboards():
             dashboards.append(dash_data)
 
     home_response = create_home_dashboard(grafana_api, dashboards)
-    star_home_dashboard(grafana_api, response)
+    star_home_dashboard(grafana_api, home_response)
 
 
 
