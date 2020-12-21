@@ -38,7 +38,7 @@ def create_dashboard_for_table(grafana_api, db, table):
         'dashboard': response
     }
 
-def star_home_dashboard(grafana_api,home_response):
+def star_home_dashboard(grafana_api, home_response):
     response = grafana_api.user.star_actual_user_dashboard(home_response['id'])
     print('Home dashboard starred')
     return response
