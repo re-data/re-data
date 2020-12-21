@@ -66,11 +66,21 @@ cp env_template .env
 docker-compose up
 ```
 
-And metrics should be ready to look at in your grafana :)
-Visit http://localhost:3000 to check them (use docker IP in case of using docker via virtulbox, grafana default password is admin/admin)
+## Grafana
+Add this point Grafana should be running on http://localhost:3000 (or you docker IP in case of running docker via virtualbox)
 
-Visit http://localhost:8080 to check airflow jobs, turn on dag in airflow, so that checks run every 10 minutes.
+First screen you will see there, is login screen. Default password is admin/admin, but if you want can you can change that in .env file (need to be done when staring docker)
 
+To go see dashboards in Grafana goto `Dashboards > Manage`. (Home is by default now showing all dahsboards)
+
+From the main dashboard named: `Home (generated)` you can go to any table specific dashboard, just by clicking tile that shows stats for given table
+
+## Airflow
+Airflow should be running and available under: http://localhost:8080/ (or you docker IP)
+
+You should see `validation dag` there, turn in on and it will start running (every 10 minutes or other frequency if specified in `settings.py` file)
+
+You can also manually trigger running dag (by clicking first icon on Link tab)
 
 # Community
 
