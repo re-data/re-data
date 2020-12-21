@@ -13,8 +13,6 @@ from redata.grafana.table_dashboards import get_dashboard_for_table
 from redata.models.table import MonitoredTable
 from grafana_api.grafana_api import GrafanaClientError
 from redata.db_operations import source_dbs
-from redata.grafana.utils import load_json_data
-
 
 def create_source_in_grafana(grafana_api):
     datasource = get_postgres_datasource()
@@ -44,8 +42,6 @@ def star_home_dashboard(grafana_api,home_response):
     response = grafana_api.user.star_actual_user_dashboard(home_response['id'])
     print('Home dashboard starred')
     return response
-
-
 
 def create_dashboards():
     grafana_api = GrafanaFace(
