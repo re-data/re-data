@@ -115,3 +115,12 @@ Here are integrations we support or work on now. Let us know if you'd really lik
 
 # License
 Redata is licensed under the MIT license. See the [LICENSE](LICENSE) file for licensing information.
+
+
+# Contributing
+
+We love all contributions, bigger and smaller.
+
+Checkout our list of [good first issues](https://github.com/redata-team/redata/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and see if you like anything from there. Also feel welcome to join our [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-jk8imy5f-OPjSHv7fCpfYUGyktw_qvw) and suggest ideas, or setup no pressure session with Redata [here](https://calendly.com/mateuszklimek/30min).
+
+
