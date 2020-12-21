@@ -14,7 +14,6 @@ from redata.models.table import MonitoredTable
 from grafana_api.grafana_api import GrafanaClientError
 from redata.db_operations import source_dbs
 
-
 def create_source_in_grafana(grafana_api):
     datasource = get_postgres_datasource()
     try:
@@ -39,6 +38,11 @@ def create_dashboard_for_table(grafana_api, db, table):
         'dashboard': response
     }
 
+def star_home_dashboard(grafana_api,home_response):
+    response = grafana_api.user.star_actual_user_dashboard(home_response['id'])
+    print('Home dashboard starred')
+    return response
+
 def create_dashboards():
     grafana_api = GrafanaFace(
         auth=(settings.GF_SECURITY_ADMIN_USER, settings.GF_SECURITY_ADMIN_PASSWORD),
@@ -54,4 +58,8 @@ def create_dashboards():
             dash_data = create_dashboard_for_table(grafana_api, db, table)
             dashboards.append(dash_data)
 
-    create_home_dashboard(grafana_api, dashboards)
+    home_response = create_home_dashboard(grafana_api, dashboards)
+    star_home_dashboard(grafana_api, response)
+
+
+
