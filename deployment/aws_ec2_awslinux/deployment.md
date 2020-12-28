@@ -50,6 +50,6 @@ That's all, you have your data under observation by now! :)
 
 ## Troubleshooting
 
-If you have any problems with running obove please join our [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-jk8imy5f-OPjSHv7fCpfYUGyktw_qvw)
+If you have any problems with running above please join our [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-jk8imy5f-OPjSHv7fCpfYUGyktw_qvw)
 We will be happy to help! :)
 
