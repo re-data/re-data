@@ -10,5 +10,5 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
 mkdir redata && cd redata
-wget https://raw.githubusercontent.com/airbytehq/airbyte/master/{env_template,docker-compose.yaml}
-cp env_template .env
+wget https://raw.githubusercontent.com/redata-team/redata/master/{env_template,docker-compose.yml}
+mv env_template .env
