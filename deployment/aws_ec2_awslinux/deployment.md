@@ -31,16 +31,14 @@ Start docker-compose, (you may need to exit and join by ssh again for machine to
 ```
 docker-compose up -d
 # -d for deamon mode, so that it runs in background
-
 ```
 
 ## Connect to metrics and observe your data
 
-Go back to you local computer with and ssh with tunneling to redata
+Go back to you local computer and ssh with tunneling to redata
 
 ```
 ssh -i PATH_TO_SSH_KEY -L 3000:localhost:3000 -L 8080:localhost:8080 -N -f ec2-user@PUBLIC_DNS_OF_MACHINE
-
 ```
 
 You should be able to go to `localhost:3000` and login to Grafana (with admin/admin password if didn't changed)
