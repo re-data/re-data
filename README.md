@@ -83,9 +83,9 @@ You can also manually trigger running dag (by clicking first icon on Link tab)
 
 # Deploying on production
 
-Redata uses `docker` and `docker-compose` for deployment, this makes it easy to deploy in the claud, or in your on premise enviroment. 
+Redata uses `docker` and `docker-compose` for deployment, this makes it easy to deploy in the cloud, or in your on premise enviroment. 
 
-Look at instructions for specfic providers:
+Look at sample setup instructions for specfic cloud providers:
 
  - [AWS EC2 deployment](deployment/aws_ec2_awslinux/deployment.md),
  - [GCP Compute Engine deployment](deployment/gcp_compute_engine_debian/deployment.md)
