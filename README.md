@@ -80,6 +80,16 @@ You should see `validation dag` there, turn in on and it will start running (eve
 
 You can also manually trigger running dag (by clicking first icon on Link tab)
 
+
+# Deploying on production
+
+Redata uses `docker` and `docker-compose` for deployment, this makes it easy to deploy in the claud, or in your on premise enviroment. 
+
+Look at instructions for specfic providers:
+
+ - [AWS EC2 deployment](deployment/aws_ec2_awslinux/deployment.md).
+ - GCP will soon be added here :)
+
 # Community
 
 Join [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-jk8imy5f-OPjSHv7fCpfYUGyktw_qvw) for general questions about using redata, problems, and discussions with people making it :)
