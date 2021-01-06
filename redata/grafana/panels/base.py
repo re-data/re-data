@@ -139,7 +139,7 @@ class GroupByDate():
     def query(self):
         return f"""
         SELECT
-            created_at::date AS "time",
+            date AS "time",
             sum(count)
         FROM metrics_data_volume_diff
         WHERE
