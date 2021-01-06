@@ -28,12 +28,12 @@ GF_INSTALL_PLUGINS=grafana-polystat-panel,grafana-clock-panel,grafana-simple-jso
 GF_SECURITY_ADMIN_USER=admin
 GF_SECURITY_ADMIN_PASSWORD=admin
 
-# those are used inside grafana to setup source
-# so they need o reference db from inside (by name)
-# not as localhost
+REDATA_AIRFLOW_SCHEDULE_INTERVAL='*/10 * * * *'
+
 REDATA_METRICS_DATABASE_HOST=postgres_redata
 REDATA_METRICS_DATABASE_USER=redata
 REDATA_METRICS_DATABASE_EXT_PORT=5434
+
 REDATA_METRICS_DATABASE_PASSWORD=mysecretpassword
 REDATA_METRICS_DATABASE_NAME=redata
 
