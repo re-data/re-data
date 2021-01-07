@@ -18,7 +18,11 @@ def get_db_object(db_source):
         return MySQL(db_source['name'], db)
     
     raise Exception('Not supported DB')
-    
+
+def get_db_by_name(name):
+    for source_db in settings.REDATA_SOURCE_DBS:
+        if source_db['name'] == name:
+            return create_engine(source_db['db_url'])
 
 def get_metrics_connection():
     db_string = settings.METRICS_DB_URL

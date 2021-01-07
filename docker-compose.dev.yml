@@ -65,6 +65,7 @@ services:
       - PYTHONPATH=/usr/local/redata-dev
     volumes:
       - ./redata:/usr/local/redata-dev/redata
+      - ./tests:/usr/local/redata-dev/tests
 
   webserver_airflow:
     image: redatateam/redata:0.0.1-alfa
