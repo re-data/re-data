@@ -70,13 +70,9 @@ with DAG('validation_dag', description='Validate data',
             dag=dag
         )
 
-        dag >> run_checks_op
-
         check_new_tables_op = PythonOperator(
             task_id='run_check_for_new_tables_{}'.format(source_db.name),
             python_callable=run_check_for_new_tables,
             op_kwargs={'db': source_db},
             dag=dag
         )
-
-        dag >> check_new_tables_op
