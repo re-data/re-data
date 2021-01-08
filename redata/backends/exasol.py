@@ -39,8 +39,9 @@ class Exasol(DB):
             /*snapshot execution*/
             SELECT
               column_name AS "name",
-              column_type AS "type"
+              lower(type_name) AS "type"
             FROM sys.exa_all_columns
+            LEFT JOIN sys.exa_sql_types ON type_id = column_type_id
             WHERE column_schema = current_schema
                 AND column_table = {table_name}
             """,
@@ -58,29 +59,20 @@ class Exasol(DB):
         return [
             'tinyint',
             'smallint',
-            'int',
             'integer',
             'bigint',
             'decimal',
-            'dec',
             'float',
-            'double',
             'double precision'
         ]
+
 
     @staticmethod
     def character_types():
         return [
             'char',
             'varchar',
-            'blob',
-            'tinyblob',
-            'tinytext',
-            'mediumblob',
-            'mediumtext',
-            'longblob',
-            'longtext',
-            'enum'
+            'long varchar'
         ]
 
 
