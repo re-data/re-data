@@ -24,19 +24,21 @@ class MonitoredTable(Base):
     def setup_for_source_table(cls, db, db_table_name):
         print (f"Running setup for {db_table_name}")
 
-        preference = [
-            'timestamp without time zone',
-            'timestamp with time zone',
-            'date',
-            'datetime' #mysql
-        ]
+        try:
+            preference = db.datetime_types()
+        except AttributeError:
+            preference = [
+                'timestamp without time zone',
+                'timestamp with time zone',
+                'date',
+                'datetime' #mysql
+            ]
+
         schema_cols = get_current_table_schema(db, db_table_name)
 
         # heuristics to find best column to sort by when computing stats about data
         proper_type = [col['name'] for col in schema_cols if col['type'] in preference]
-        columns = [c for c in proper_type if c.find('creat') != -1 ]
-
-        colname, col_type = None, None
+        columns = [c for c in proper_type if c.lower().find('creat') != -1 ]
 
         if len(proper_type) == 0:
             print (f"Not found column to sort by for {db_table_name}, skipping it for now")

@@ -75,6 +75,14 @@ class Exasol(DB):
             'long varchar'
         ]
 
+    @staticmethod
+    def datetime_types():
+        return [
+            'timestamp',
+            'timestamp with local time zone',
+            'date'
+        ]
+
 
 def extended_mapper(val, data_type):
     """
