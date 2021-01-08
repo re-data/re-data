@@ -5,14 +5,18 @@ from datetime import datetime, date, time
 
 def check_data_volume(db, table, time_interval):
 
-    sep = db.get_interval_sep()
-    result = db.execute(f"""
-        SELECT
-            count(*) as count
-        FROM {table.table_name}
-        WHERE {table.time_column} > now() - INTERVAL {sep}{time_interval}{sep}
-        
-    """).first()
+    try:
+        interval_part = db.make_interval(time_interval)
+        result = db.check_data_volume(table, where_timecol=f"> now() - {interval_part}")
+    except AttributeError:
+        sep = db.get_interval_sep()
+        result = db.execute(f"""
+            SELECT
+                count(*) as count
+            FROM {table.table_name}
+            WHERE {table.time_column} > now() - INTERVAL {sep}{time_interval}{sep}
+            
+        """).first()
 
     metrics_data_valume = metadata.tables['metrics_data_volume']
 
@@ -38,11 +42,14 @@ def check_data_valume_diff(db, table):
         # mostly because we show that stat daily
         from_time = datetime.combine(date.today(), time()) 
 
-    result = db.execute(text(f"""
-        SELECT count(*) as count
-        FROM {table.table_name}
-        WHERE {table.time_column} >= :from_time
-    """), {'from_time': from_time}).first()
+    try:
+        result = db.check_data_volume(table, where_timecol=f">= '{from_time}'")
+    except AttributeError:
+        result = db.execute(text(f"""
+            SELECT count(*) as count
+            FROM {table.table_name}
+            WHERE {table.time_column} >= :from_time
+        """), {'from_time': from_time}).first()
 
     metrics_data_valume = metadata.tables['metrics_data_volume_diff']
 

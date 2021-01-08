@@ -1,5 +1,6 @@
 import datetime
 import decimal
+from types import SimpleNamespace
 from urllib.parse import urlparse
 
 import pyexasol
@@ -24,11 +25,36 @@ class Exasol(DB):
     def __init__(self, name, db):
         super().__init__(name, db)
 
+    def check_data_delayed(self, table):
+        return self.db.execute(f"""
+            SELECT 
+                now() - max({table.time_column})
+            FROM {table.table_name}
+        """).fetchone()
+
+    def check_data_volume(self, table, where_timecol):
+        result = self.db.execute(
+            f"""
+            SELECT
+                count(*) as "count"
+            FROM {table.table_name}
+            WHERE {table.time_column} {where_timecol}
+            """,
+            fetch_dict=True,
+        ).fetchone()
+        return SimpleNamespace(**result)
+
     def execute(self, *args, **kwargs):
-        self.db.execute(*args, **kwargs)
+        return self.db.execute(*args, **kwargs)
     
+    # doesn't work w/ Exasol:
     def get_interval_sep(self):
         return ""
+
+    # better:
+    def make_interval(self, interval):
+        parts=interval.split()
+        return f"INTERVAL '{parts[0]}' {parts[1]}"
     
     def get_age_function(self):
         return "timediff"
