@@ -1,5 +1,22 @@
-from redata.backends.base import DB
 import datetime
+from urllib.parse import urlparse
+
+import pyexasol
+from redata.backends.base import DB
+
+
+class ExasolEngine(object):
+    def __init__(self, url):
+        self.creds = parse_url(url)
+
+    def execute(self, *args, **kwargs):
+        with pyexasol.connect(**self.creds, fetch_mapper=extended_mapper) as conn:
+            return conn.execute(*args, **kwargs)
+
+    def table_names(self):
+        with self.execute("select table_name from exa_all_tables where table_schema = current_schema") as stmt:
+            return stmt.fetchcol()
+
 
 
 class Exasol(DB):
@@ -7,8 +24,7 @@ class Exasol(DB):
         super().__init__(name, db)
 
     def execute(self, *args, **kwargs):
-        with pyexasol.connect(**self.db, fetch_mapper=extended_mapper) as conn:
-            return conn.execute(*args, **kwargs)
+        self.db.execute(*args, **kwargs)
 
     @staticmethod
     def numeric_types():
@@ -103,3 +119,24 @@ def extended_mapper(val, data_type):
         return td
     else:
         return val
+
+
+def parse_url(url):
+    # Parse exa+pyexasol://user:password@hostname:port/schema
+    params = urlparse(url)
+
+    default_schema = params.path.strip('/')
+    port = params.port or '8563'
+
+    assert params.scheme == 'exa+pyexasol', f"invalid url for Exasol connection: {url}"
+    assert params.hostname is not None, f"bad connection URL, missing hostname: {url}"
+    assert params.username is not None, f"bad connection URL, missing username: {url}"
+    assert params.password is not None, f"bad connection URL, missing password: {url}"
+    assert len(default_schema) > 0, f"bad connection URL, missing default schema: {url}"
+
+    return dict(
+        dsn=f"{params.hostname}:{port}",
+        user=params.username,
+        password=params.password,
+        schema=default_schema
+    )

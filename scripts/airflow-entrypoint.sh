@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-airflow upgradedb
+airflow db upgrade
 airflow webserver

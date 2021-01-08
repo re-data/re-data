@@ -4,35 +4,14 @@ from redata import settings
 from sqlalchemy.orm import sessionmaker
 from redata.backends.postgrsql import Postgres
 from redata.backends.mysql import MySQL
-from redata.backends.exasol import Exasol
-from urllib.parse import urlparse
-
-def parse_exasol_url(url):
-    # Parse exa+pyexasol://user:password@hostname:port/schema
-    params = urlparse(url)
-
-    default_schema = params.path.strip('/')
-    port = params.port or '8563'
-
-    assert params.scheme == 'exa+pyexasol', f"invalid url for Exasol connection: {url}"
-    assert params.hostname is not None, f"bad connection URL, missing hostname: {url}"
-    assert params.username is not None, f"bad connection URL, missing username: {url}"
-    assert params.password is not None, f"bad connection URL, missing password: {url}"
-    assert len(default_schema) > 0, f"bad connection URL, missing default schema: {url}"
-
-    return dict(
-        dsn=f"{params.hostname}:{port}",
-        user=params.username,
-        password=params.password,
-        schema=default_schema
-    )
+from redata.backends.exasol import Exasol, ExasolEngine
 
 
 def get_db_object(db_source):
     db_url = db_source['db_url']
 
     if db_url.startswith('exa+pyexasol'):
-        return Exasol(db_source['name'], parse_exasol_url(db_url))
+        return Exasol(db_source['name'], ExasolEngine(db_url))
 
     db = create_engine(db_url)
 
