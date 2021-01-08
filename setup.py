@@ -12,6 +12,7 @@ setup(
         'cattrs==1.0.0',
         'marshmallow-sqlalchemy==0.23.1',
         'marshmallow<3.0.0,>=2.18.0',
+        'pyexasol',
         'pymysql',
         'cryptography'
     ],
