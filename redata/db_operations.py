@@ -43,16 +43,19 @@ MetricsSession = sessionmaker(bind=metrics_db)
 metrics_session = MetricsSession()
 
 def get_current_table_schema(db, table_name):
-    result = db.execute(f"""
-        SELECT 
-            column_name, 
-            data_type 
-        FROM 
-            information_schema.columns
-        WHERE 
-            table_name = '{table_name}';
-    """)
-    
-    all_cols = list(result)
-    schema_cols =  [ {'name': c_name, 'type': c_type} for c_name, c_type in all_cols]
-    return schema_cols
+    try:
+        return db.get_table_schema(table_name)
+    except AttributeError:
+        result = db.execute(f"""
+            SELECT 
+                column_name, 
+                data_type 
+            FROM 
+                information_schema.columns
+            WHERE 
+                table_name = '{table_name}';
+        """)
+        
+        all_cols = list(result)
+        schema_cols =  [ {'name': c_name, 'type': c_type} for c_name, c_type in all_cols]
+        return schema_cols

@@ -1,4 +1,5 @@
 import datetime
+import decimal
 from urllib.parse import urlparse
 
 import pyexasol
@@ -9,8 +10,8 @@ class ExasolEngine(object):
     def __init__(self, url):
         self.creds = parse_url(url)
 
-    def execute(self, *args, **kwargs):
-        with pyexasol.connect(**self.creds, fetch_mapper=extended_mapper) as conn:
+    def execute(self, *args, fetch_dict=False, **kwargs):
+        with pyexasol.connect(**self.creds, fetch_dict=fetch_dict, fetch_mapper=extended_mapper) as conn:
             return conn.execute(*args, **kwargs)
 
     def table_names(self):
@@ -25,6 +26,32 @@ class Exasol(DB):
 
     def execute(self, *args, **kwargs):
         self.db.execute(*args, **kwargs)
+    
+    def get_interval_sep(self):
+        return ""
+    
+    def get_age_function(self):
+        return "timediff"
+
+    def get_table_schema(self, table_name):
+        st = self.db.execute(
+            """
+            /*snapshot execution*/
+            SELECT
+              column_name AS "name",
+              column_type AS "type"
+            FROM sys.exa_all_columns
+            WHERE column_schema = current_schema
+                AND column_table = {table_name}
+            """,
+            {'table_name': table_name.upper()},
+            fetch_dict=True,
+        )
+
+        res = st.fetchall()
+        print(res)
+        return res
+
 
     @staticmethod
     def numeric_types():
@@ -55,13 +82,6 @@ class Exasol(DB):
             'longtext',
             'enum'
         ]
-    
-
-    def get_interval_sep(self):
-        return ""
-    
-    def get_age_function(self):
-        return "timediff"
 
 
 def extended_mapper(val, data_type):
