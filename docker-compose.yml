@@ -59,6 +59,8 @@ services:
       - .env
     ports:
       - "8793:8793"
+    volumes:
+      - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
     entrypoint: /usr/local/redata/scripts/redata-start.sh
 
   webserver_airflow:
@@ -72,9 +74,14 @@ services:
       - .env
     ports:
       - "8080:8080"
+    volumes:
+      - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
     entrypoint: /usr/local/redata/scripts/airflow-entrypoint.sh
     healthcheck:
       test: ["CMD-SHELL", "[ -f /opt/airflow/airflow-webserver.pid ]"]
       interval: 30s
       timeout: 30s
       retries: 3
+
+volumes:
+  airflowlogs: {}
