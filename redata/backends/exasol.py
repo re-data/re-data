@@ -27,10 +27,77 @@ class Exasol(DB):
 
     def check_data_delayed(self, table):
         return self.db.execute(f"""
-            SELECT 
-                now() - max({table.time_column})
+            SELECT
+                now() - max([{table.time_column}])
             FROM {table.table_name}
         """).fetchone()
+
+    def check_col(self, table, checked_column, func_name, time_interval):
+        interval_part = self.make_interval(time_interval)
+        result = self.db.execute(
+            f"""
+            SELECT
+                {func_name}([{checked_column}]) as "value"
+            FROM
+                {table.table_name}
+            WHERE [{table.time_column}] > now() - {interval_part}
+            """,
+            fetch_dict=True,
+        ).fetchone()
+        return SimpleNamespace(**result)
+
+    def check_count_nulls(self, table, checked_column, time_interval):
+        interval_part = self.make_interval(time_interval)
+        result = self.db.execute(
+            f"""
+            SELECT
+                count(*) as "value"
+            FROM
+                {table.table_name}
+            WHERE [{table.time_column}] > now() - {interval_part}
+              AND [{checked_column}] IS NULL
+            """,
+            fetch_dict=True,
+        ).fetchone()
+        return SimpleNamespace(**result)
+
+    def check_count_per_value(self, table, checked_column, time_interval):
+        interval_part = self.make_interval(time_interval)
+        distinct_count = self.db.execute(
+            f"""
+            SELECT
+                count(distinct([{checked_column}])) as "count"
+            FROM
+                {table.table_name}
+            WHERE [{table.time_column}] > now() - {interval_part}
+            """,
+            fetch_dict=True,
+        ).fetchval()
+
+        if distinct_count > 10:
+            # Skipping if more than 10 different values showing up in column
+            # - here we need to return an empty list, as the actual check will still proceed
+            return []
+
+        result = self.db.execute(
+            f"""
+            SELECT
+                count(*) as "count",
+                [{checked_column}] as "value"
+            FROM
+                {table.table_name}
+            WHERE
+                [{table.time_column}] > now() - {interval_part} and
+                [{checked_column}] is not null
+            GROUP BY
+                [{checked_column}]
+            ORDER BY
+                "count" DESC
+            LIMIT 10
+            """,
+            fetch_dict=True,
+        ).fetchall()
+        return [SimpleNamespace(**row) for row in result]
 
     def check_data_volume(self, table, where_timecol):
         result = self.db.execute(
@@ -38,7 +105,7 @@ class Exasol(DB):
             SELECT
                 count(*) as "count"
             FROM {table.table_name}
-            WHERE {table.time_column} {where_timecol}
+            WHERE [{table.time_column}] {where_timecol}
             """,
             fetch_dict=True,
         ).fetchone()
@@ -49,7 +116,7 @@ class Exasol(DB):
     
     # doesn't work w/ Exasol:
     def get_interval_sep(self):
-        return ""
+        raise RuntimeError("use make_interval() to construct INTERVAL parts for Exasol")
 
     # better:
     def make_interval(self, interval):
@@ -57,7 +124,7 @@ class Exasol(DB):
         return f"INTERVAL '{parts[0]}' {parts[1]}"
     
     def get_age_function(self):
-        return "timediff"
+        raise RuntimeError("age function not supported for Exasol")
 
     def get_table_schema(self, table_name):
         st = self.db.execute(
