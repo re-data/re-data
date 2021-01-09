@@ -28,7 +28,6 @@ def generate_overrides(dashboards):
     return override_list
 
 def get_best_column_count(dashboards_num):
-    import pdb; pdb.set_trace()
     if dashboards_num <= 10:
         return dashboards_num
     
