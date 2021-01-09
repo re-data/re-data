@@ -23,6 +23,8 @@ GF_INSTALL_PLUGINS=grafana-polystat-panel,grafana-clock-panel,grafana-simple-jso
 GF_SECURITY_ADMIN_USER=admin
 GF_SECURITY_ADMIN_PASSWORD=admin
 
+REDATA_AIRFLOW_SCHEDULE_INTERVAL="*/10 * * * *"
+
 # those are used inside grafana to setup source
 # so they need o reference db from inside (by name)
 # not as localhost
