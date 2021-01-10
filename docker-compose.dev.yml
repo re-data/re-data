@@ -65,6 +65,7 @@ services:
       - PYTHONPATH=/usr/local/redata-dev
     volumes:
       - ./redata:/usr/local/redata-dev/redata
+      - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
 
   webserver_airflow:
     image: redatateam/redata:0.0.1-alfa
@@ -77,9 +78,14 @@ services:
       - .env
     ports:
       - "8080:8080"
+    volumes:
+      - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
     entrypoint: /usr/local/redata/scripts/airflow-entrypoint.sh
     healthcheck:
       test: ["CMD-SHELL", "[ -f /opt/airflow/airflow-webserver.pid ]"]
       interval: 30s
       timeout: 30s
       retries: 3
+
+volumes:
+  airflowlogs: {}
