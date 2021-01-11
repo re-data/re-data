@@ -1,4 +1,10 @@
 import datetime
+import itertools
+import re
+from collections import defaultdict
+
+from sqlalchemy.sql.sqltypes import Date
+from redata import settings
 from redata.models.base import Base
 from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON
 from redata.db_operations import get_current_table_schema
@@ -36,29 +42,51 @@ class MonitoredTable(Base):
 
         schema_cols = get_current_table_schema(db, db_table_name)
 
-        # heuristics to find best column to sort by when computing stats about data
-        proper_type = [col['name'] for col in schema_cols if col['type'] in preference]
-        columns = [c for c in proper_type if c.lower().find('creat') != -1 ]
+        table = MonitoredTable(
+            table_name=db_table_name,
+            schema={'columns': schema_cols},
+            source_db=db.name
+        )
 
-        if len(proper_type) == 0:
+        # heuristics to find best column to sort by when computing stats about data
+        # TODO: could probably look up in a provided table of regex + score, with higher scored matches being preferred
+
+        blacklist_regex = settings.REDATA_TIME_COL_BLACKLIST_REGEX
+        matching_cols = [col['name'] for col in schema_cols if col['type'] in preference and re.search(blacklist_regex, col['name']) is None]
+
+        cols_by_ts = defaultdict(list)
+        now_ts = datetime.datetime.now()
+        # collect time cols that have max values at or before "now"
+        for col in matching_cols:
+            try:
+                # use a datasource check if available
+                max_ts = ensure_datetime(db.check_col(table, col, 'max').value)
+            except AttributeError:
+                # else, just assign now()
+                max_ts = now_ts
+            if max_ts <= now_ts:
+                cols_by_ts[max_ts].append(col)
+
+        candidates = list(itertools.chain(
+            *[cols for ts, cols in sorted(cols_by_ts.items(), reverse=True)]
+        ))
+        preferred = [col for col in candidates if col.lower().find('creat') != -1]
+
+        if len(candidates) == 0:
             print (f"Not found column to sort by for {db_table_name}, skipping it for now")
             return None
         else:
-            if len(columns) > 1:
-                print (f"Found multiple columns to sort by {columns}, choosing {columns[0]}, please update in DB if needed")
-
-            col_name = columns[0] if columns else proper_type[0]
+            col_name = preferred[0] if preferred else candidates[0]
             col_type = [col['type'] for col in schema_cols if col['name'] == col_name][0]
-            print (f"Found column to sort by {col_name}")
 
-            table = MonitoredTable(
-                table_name=db_table_name,
-                time_column=col_name,
-                time_column_type=col_type,
-                schema={'columns': schema_cols},
-                source_db=db.name
-            )
-            
+            if len(candidates) > 1:
+                print (f"Found multiple columns to sort by {candidates}, choosing {col_name}, please update in DB if needed")
+            else:
+                print (f"Found column to sort by {col_name}")
+
+            table.time_column=col_name
+            table.time_column_type=col_type
+
             metrics_session.add(table)
             metrics_session.commit()
             return table
@@ -78,3 +106,12 @@ class MonitoredTable(Base):
 
         table.schema = {'columns': schema_cols}
         metrics_session.commit()
+
+
+def ensure_datetime(d):
+    if isinstance(d, datetime.datetime):
+        return d
+    elif isinstance(d, datetime.date):
+        return datetime.datetime(d.year, d.month, d.day)
+    else:
+        raise TypeError("argument must be date or datetime")

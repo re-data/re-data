@@ -32,15 +32,19 @@ class Exasol(DB):
             FROM {table.table_name}
         """).fetchone()
 
-    def check_col(self, table, checked_column, func_name, time_interval):
-        interval_part = self.make_interval(time_interval)
+    def check_col(self, table, checked_column, func_name, time_interval=None):
+        interval_part = ""
+        if time_interval:
+            time_interval = self.make_interval(time_interval)
+            interval_part = f"WHERE [{table.time_column}] > now() - {time_interval}"
+
         result = self.db.execute(
             f"""
             SELECT
                 {func_name}([{checked_column}]) as "value"
             FROM
                 {table.table_name}
-            WHERE [{table.time_column}] > now() - {interval_part}
+            {interval_part}
             """,
             fetch_dict=True,
         ).fetchone()
@@ -229,6 +233,7 @@ def extended_mapper(val, data_type):
                 seconds=seconds,
                 microseconds=microseconds
             )
+        print(f"INTERVAL extraction - value: {val}, timedelta: {td}, seconds: {td.total_seconds()}")
         return td
     else:
         return val
