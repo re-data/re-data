@@ -39,8 +39,10 @@ def create_dashboard_for_table(grafana_api, db, table):
     }
 
 def star_home_dashboard(grafana_api, home_response):
+    grafana_api.user.unstar_actual_user_dashboard(home_response['id'])
+    # it's a bit hacky, unstaring so that starring doesn't throw an error
     response = grafana_api.user.star_actual_user_dashboard(home_response['id'])
-    print('Home dashboard starred')
+    print(response)
     return response
 
 def create_dashboards():

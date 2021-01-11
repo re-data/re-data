@@ -1,5 +1,3 @@
-![License](https://img.shields.io/github/license/redata-team/redata)
-
 # Redata
 Monitoring system for data teams.
 Computing health checks on data (via Airflow jobs), visualizing them over time, and alerting on them in Grafana.
@@ -77,7 +75,7 @@ First screen you will see there, is login screen. Default password is admin/admi
 From the main dashboard named: `Home (generated)` you can go to any table specific dashboard, just by clicking tile that shows stats for given table
 
 ## Airflow
-Airflow should be running and available under: http://localhost:8080/ (or you docker IP)
+Airflow should be running and available under: http://localhost:8080/ (or you docker IP, default password is also admin/admin if it wasn't changed in .env)
 
 You should see `validation dag` there, turn in on and it will start running (every 10 minutes or other frequency if specified in `settings.py` file)
 
