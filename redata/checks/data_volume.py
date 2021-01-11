@@ -36,7 +36,7 @@ def check_data_valume_diff(db, table):
     if from_time is None:
         # if now previous diff computed, compute from start of day
         # mostly because we show that stat daily
-        from_time = datetime.combine(date.today(), time()) 
+        from_time = datetime.combine(date.today(), time())
 
     result = db.execute(text(f"""
         SELECT count(*) as count

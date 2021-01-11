@@ -30,11 +30,13 @@ class MonitoredTable(Base):
             'date',
             'datetime' #mysql
         ]
+        preference = db.datetime_types()
+
         schema_cols = get_current_table_schema(db, db_table_name)
 
         # heuristics to find best column to sort by when computing stats about data
         proper_type = [col['name'] for col in schema_cols if col['type'] in preference]
-        columns = [c for c in proper_type if c.find('creat') != -1 ]
+        columns = [c for c in proper_type if c.find('crat') != -1 ]
 
         colname, col_type = None, None
 
@@ -56,7 +58,7 @@ class MonitoredTable(Base):
                 schema={'columns': schema_cols},
                 source_db=db.name
             )
-            
+
             metrics_session.add(table)
             metrics_session.commit()
             return table

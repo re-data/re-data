@@ -13,7 +13,8 @@ setup(
         'marshmallow-sqlalchemy==0.23.1',
         'marshmallow<3.0.0,>=2.18.0',
         'pymysql',
-        'cryptography'
+        'cryptography',
+        'pybigquery'
     ],
     entry_points = {
         'console_scripts': ['redata=redata.command_line:main'],
