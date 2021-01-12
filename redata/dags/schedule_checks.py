@@ -28,6 +28,7 @@ def run_checks(db):
 
 
 def run_checks_for_table(db, table):
+    print (f"Running checks for table:{table.table_name} [BEGIN]")
     check_data_delayed(db, table)
     print (f"Check data delayed table:{table.table_name} [DONE]")
     check_if_schema_changed(db, table)
@@ -53,6 +54,7 @@ def run_checks_for_table(db, table):
             check_count_nulls(db, table, column['name'], '1 day')
     
     print (f"Check for data values table:{table.table_name} [DONE]")
+    print (f"Running checks for table:{table.table_name} [DONE]")
 
 def run_check_for_new_tables(db):
     check_for_new_tables(db)

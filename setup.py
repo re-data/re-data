@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     version='0.0.1',
@@ -12,6 +12,7 @@ setup(
         'cattrs==1.0.0',
         'marshmallow-sqlalchemy==0.23.1',
         'marshmallow<3.0.0,>=2.18.0',
+        'pyexasol',
         'pymysql',
         'cryptography'
     ],
