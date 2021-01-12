@@ -30,16 +30,7 @@ class MonitoredTable(Base):
     def setup_for_source_table(cls, db, db_table_name):
         print (f"Running setup for {db_table_name}")
 
-        try:
-            preference = db.datetime_types()
-        except AttributeError:
-            preference = [
-                'timestamp without time zone',
-                'timestamp with time zone',
-                'date',
-                'datetime' #mysql
-            ]
-
+        valid_types = db.datetime_types()
         schema_cols = get_current_table_schema(db, db_table_name)
 
         table = MonitoredTable(
@@ -51,8 +42,9 @@ class MonitoredTable(Base):
         # heuristics to find best column to sort by when computing stats about data
         # TODO: could probably look up in a provided table of regex + score, with higher scored matches being preferred
 
+        # list all date/timestamp columns, filtering out anything that's blacklisted in configuration
         blacklist_regex = settings.REDATA_TIME_COL_BLACKLIST_REGEX
-        matching_cols = [col['name'] for col in schema_cols if col['type'] in preference and re.search(blacklist_regex, col['name']) is None]
+        matching_cols = [col['name'] for col in schema_cols if col['type'] in valid_types and re.search(blacklist_regex, col['name']) is None]
 
         # from matches, collect time cols that have max values at or before "now"
         cols_by_ts = defaultdict(list)
@@ -62,15 +54,21 @@ class MonitoredTable(Base):
             if max_ts <= now_ts:
                 cols_by_ts[max_ts].append(col)
 
+        # list of all viable candidates, ordered by latest timestamp first
         candidates = list(itertools.chain(
             *[cols for ts, cols in sorted(cols_by_ts.items(), reverse=True)]
         ))
+
+        # list of preferred columns out of the viable ones, by name filtering
         preferred = [col for col in candidates if col.lower().find('creat') != -1]
 
         if len(candidates) == 0:
+            # no columns found? ignore table..
+            # TODO: add it, but set to disabled, for screening via web UI when we have one
             print (f"Not found column to sort by for {db_table_name}, skipping it for now")
             return None
         else:
+            # if multiple columns found, primarily select from 'preferred' if exists, then set up the table
             col_name = preferred[0] if preferred else candidates[0]
             col_type = [col['type'] for col in schema_cols if col['name'] == col_name][0]
 
