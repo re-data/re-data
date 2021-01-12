@@ -4,3 +4,6 @@
 .DS_Store
 .vscode
 .python-version
+
+# Adding venv folder
+venv/
