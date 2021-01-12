@@ -118,6 +118,7 @@ Here are integrations we support or work on now. Let us know if you'd really lik
 		<tr><td><img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/AirflowLogo.png/320px-AirflowLogo.png" /></td><td style="width: 200px;">Apache Airflow           </td><td>Supported, view all your checks in Airflow </td></tr>
 		<tr><td><img height="40" src="https://www.sqlalchemy.org/img/sqla_logo.png" />                                         </td><td style="width: 200px;">Other SQL DBs</td><td>Experimental support via using SQLAlchemy</td></tr>
 		<tr><td><img height="40" src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a1/Grafana_logo.svg/125px-Grafana_logo.svg.png" />                                             </td><td style="width: 200px;">Grafana        </td><td>Supported, view metrics here</td></tr>
+		<tr><td><img height="40" src="https://www.exasol.com/app/uploads/2020/03/header-logo.svg" />                           </td><td style="width: 200px;">Exasol</td><td>Supported</td></tr>
 	</tbody>
 </table>
 
