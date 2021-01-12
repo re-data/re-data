@@ -32,7 +32,7 @@ class Exasol(DB):
             FROM {table.table_name}
         """).fetchone()
 
-    def check_col(self, table, checked_column, func_name, time_interval=None):
+    def check_generic(self, func_name, table, checked_column, time_interval):
         interval_part = ""
         if time_interval:
             time_interval = self.make_interval(time_interval)
@@ -118,14 +118,12 @@ class Exasol(DB):
     def execute(self, *args, **kwargs):
         return self.db.execute(*args, **kwargs)
     
-    # doesn't work w/ Exasol:
     def get_interval_sep(self):
         raise RuntimeError("use make_interval() to construct INTERVAL parts for Exasol")
 
-    # better:
-    def make_interval(self, interval):
-        parts=interval.split()
-        return f"INTERVAL '{parts[0]}' {parts[1]}"
+    def get_max_timestamp(self, table, column):
+        result = self.db.execute(f'SELECT max([{column}]) FROM [{table.table_name}]').fetchval()
+        return self.ensure_datetime(result)
     
     def get_age_function(self):
         raise RuntimeError("age function not supported for Exasol")
@@ -147,9 +145,11 @@ class Exasol(DB):
         )
 
         res = st.fetchall()
-        print(res)
         return res
 
+    def make_interval(self, interval):
+        parts=interval.split()
+        return f"INTERVAL '{parts[0]}' {parts[1]}"
 
     @staticmethod
     def numeric_types():
@@ -233,7 +233,6 @@ def extended_mapper(val, data_type):
                 seconds=seconds,
                 microseconds=microseconds
             )
-        print(f"INTERVAL extraction - value: {val}, timedelta: {td}, seconds: {td.total_seconds()}")
         return td
     else:
         return val

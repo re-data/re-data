@@ -4,7 +4,7 @@ from redata.db_operations import get_current_table_schema, metrics_db, metadata
 
 def check_generic(func_name, db, table, checked_column, time_interval):
     try:
-        result = db.check_col(table, checked_column, func_name, time_interval)
+        result = db.check_generic(func_name, table, checked_column, time_interval)
     except AttributeError:
         sep = db.get_interval_sep()
         result = db.execute(f"""

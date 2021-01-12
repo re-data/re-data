@@ -54,16 +54,11 @@ class MonitoredTable(Base):
         blacklist_regex = settings.REDATA_TIME_COL_BLACKLIST_REGEX
         matching_cols = [col['name'] for col in schema_cols if col['type'] in preference and re.search(blacklist_regex, col['name']) is None]
 
+        # from matches, collect time cols that have max values at or before "now"
         cols_by_ts = defaultdict(list)
         now_ts = datetime.datetime.now()
-        # collect time cols that have max values at or before "now"
         for col in matching_cols:
-            try:
-                # use a datasource check if available
-                max_ts = ensure_datetime(db.check_col(table, col, 'max').value)
-            except AttributeError:
-                # else, just assign now()
-                max_ts = now_ts
+            max_ts = db.get_max_timestamp(table, col)
             if max_ts <= now_ts:
                 cols_by_ts[max_ts].append(col)
 
@@ -106,12 +101,3 @@ class MonitoredTable(Base):
 
         table.schema = {'columns': schema_cols}
         metrics_session.commit()
-
-
-def ensure_datetime(d):
-    if isinstance(d, datetime.datetime):
-        return d
-    elif isinstance(d, datetime.date):
-        return datetime.datetime(d.year, d.month, d.day)
-    else:
-        raise TypeError("argument must be date or datetime")
