@@ -10,6 +10,9 @@ class DB(object):
 
     def get_max_timestamp(self, table, column):
         result = self.db.execute(f'SELECT max({column}) as value FROM "{table.table_name}"').first()
+        if not result.value:
+            # No data yet in this column
+            return None
         return self.ensure_datetime(result.value)
 
     def is_numeric(self, col_type):
