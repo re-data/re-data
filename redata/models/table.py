@@ -44,14 +44,18 @@ class MonitoredTable(Base):
 
         # list all date/timestamp columns, filtering out anything that's blacklisted in configuration
         blacklist_regex = settings.REDATA_TIME_COL_BLACKLIST_REGEX
-        matching_cols = [col['name'] for col in schema_cols if col['type'] in valid_types and re.search(blacklist_regex, col['name']) is None]
+        matching_cols = [
+            col['name'] for col in schema_cols
+            if col['type'] in valid_types and
+            (not blacklist_regex or re.search(blacklist_regex, col['name']) is None)
+        ]
 
         # from matches, collect time cols that have max values at or before "now"
         cols_by_ts = defaultdict(list)
         now_ts = datetime.datetime.now()
         for col in matching_cols:
             max_ts = db.get_max_timestamp(table, col)
-            if max_ts <= now_ts:
+            if not max_ts or max_ts <= now_ts:
                 cols_by_ts[max_ts].append(col)
 
         # list of all viable candidates, ordered by latest timestamp first
