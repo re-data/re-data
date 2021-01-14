@@ -48,8 +48,8 @@ def check_data_volume_diff(db, table):
         result = db.execute(f"""
             SELECT {table.time_column}::date as date, count(*) as count
             FROM {table.table_name}
-            WHERE {table.time_column} >= :from_time
-            GROUP BY {table.time_column}::date""", {'from_time': from_time}
+            WHERE {table.time_column} >= '{from_time}'
+            GROUP BY {table.time_column}::date"""
         ).fetchall()
 
     metrics_data_volume = metadata.tables['metrics_data_volume_diff']
