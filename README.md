@@ -1,5 +1,3 @@
-![License](https://img.shields.io/github/license/redata-team/redata)
-
 # Redata
 Monitoring system for data teams.
 Computing health checks on data (via Airflow jobs), visualizing them over time, and alerting on them in Grafana.
@@ -77,7 +75,7 @@ First screen you will see there, is login screen. Default password is admin/admi
 From the main dashboard named: `Home (generated)` you can go to any table specific dashboard, just by clicking tile that shows stats for given table
 
 ## Airflow
-Airflow should be running and available under: http://localhost:8080/ (or you docker IP)
+Airflow should be running and available under: http://localhost:8080/ (or you docker IP, default password is also admin/admin if it wasn't changed in .env)
 
 You should see `validation dag` there, turn in on and it will start running (every 10 minutes or other frequency if specified in `settings.py` file)
 
@@ -95,7 +93,7 @@ Look at sample setup instructions for specfic cloud providers:
 
 # Community
 
-Join [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-jk8imy5f-OPjSHv7fCpfYUGyktw_qvw) for general questions about using redata, problems, and discussions with people making it :)
+Join [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-kmor0h0k-LdABQKDwSfQwC8sglkdpVw) for general questions about using redata, problems, and discussions with people making it :)
 
 
 # Integrations
@@ -110,16 +108,17 @@ Here are integrations we support or work on now. Let us know if you'd really lik
 		</tr>
 	</thead>
 	<tbody>
-		<tr><td><img height="40" src="https://wiki.postgresql.org/images/3/30/PostgreSQL_logo.3colors.120x120.png" />          </td><td style="width: 200px;">Postgres                 </td><td>Supported</td></tr>
+		<tr><td><img height="40" src="https://wiki.postgresql.org/images/3/30/PostgreSQL_logo.3colors.120x120.png" /></td><td style="width: 200px;"><a href="https://www.postgresql.org/">PostgreSQL</a></td><td>Supported</td></tr>
+		<tr><td><img height="40" src="https://www.mysql.com/common/logos/powered-by-mysql-167x86.png" /></td><td style="width: 200px;"><a href="https://www.mysql.com/">MySQL</a></td><td>Supported</td></tr>
+		<tr><td><img height="40" src="./docs/static/Exasol_clean_navy.png" /></td><td style="width: 200px;"><a href="https://www.exasol.com/">Exasol</a></td><td>Supported</td></tr>
+		<tr><td><img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/AirflowLogo.png/320px-AirflowLogo.png" /></td><td style="width: 200px;"><a href="https://airflow.apache.org/">Apache Airflow</a></td><td>Supported, view all your checks in Airflow </td></tr>
+		<tr><td><img height="40" src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a1/Grafana_logo.svg/125px-Grafana_logo.svg.png" /></td><td style="width: 200px;"><a href="https://grafana.com/">Grafana</a></td><td>Supported, view metrics here</td></tr>
+		<tr><td><img height="40" src="https://www.sqlalchemy.org/img/sqla_logo.png" /></td><td style="width: 200px;">Other SQL DBs</td><td>Experimental support via using SQLAlchemy</td></tr>
 		<tr><td><img height="40" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVBiUjawSeBBj7T2v64nKYk7SWuLQ3g1vugg&usqp=CAU" /></td><td style="width: 200px;">BigQuery</td><td>In development</td></tr>
-		<tr><td><img height="40" src="https://www.mysql.com/common/logos/powered-by-mysql-167x86.png" />                       </td><td style="width: 200px;">MySQL                    </td><td>Supported</td></tr>
-		<tr><td><img height="40" src="https://www.blazeclan.com/wp-content/uploads/2013/08/Amazon-Redshift-%E2%80%93-11-Key-Points-to-Remember.png" />                 </td><td style="width: 200px;">AWS Redshift             </td><td>In development</td></tr>
-		<tr><td><img height="40" src="https://braze-marketing-assets.s3.amazonaws.com/images/partner_logos/amazon-s3.png" />   </td><td style="width: 200px;">AWS S3                   </td><td>In development</td></tr>
-  <tr><td><img height="40" src="https://static.wikia.nocookie.net/logopedia/images/7/7f/Microsoft_Office_Excel_%282018%E2%80%93present%29.svg/revision/latest/scale-to-width-down/52?cb=20190927105356" />   </td><td style="width: 200px;">Excel                   </td><td>Planned</td></tr>
-		<tr><td><img height="40" src="https://www.snowflake.com/wp-content/themes/snowflake/img/snowflake-logo-blue@2x.png" /> </td><td style="width: 200px;">Snowflake                </td><td>Planned</td></tr>
-		<tr><td><img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/AirflowLogo.png/320px-AirflowLogo.png" /></td><td style="width: 200px;">Apache Airflow           </td><td>Supported, view all your checks in Airflow </td></tr>
-		<tr><td><img height="40" src="https://www.sqlalchemy.org/img/sqla_logo.png" />                                         </td><td style="width: 200px;">Other SQL DBs</td><td>Experimental support via using SQLAlchemy</td></tr>
-		<tr><td><img height="40" src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a1/Grafana_logo.svg/125px-Grafana_logo.svg.png" />                                             </td><td style="width: 200px;">Grafana        </td><td>Supported, view metrics here</td></tr>
+		<tr><td><img height="40" src="https://www.blazeclan.com/wp-content/uploads/2013/08/Amazon-Redshift-%E2%80%93-11-Key-Points-to-Remember.png" /></td><td style="width: 200px;">AWS Redshift</td><td>In development</td></tr>
+		<tr><td><img height="40" src="https://braze-marketing-assets.s3.amazonaws.com/images/partner_logos/amazon-s3.png" />   </td><td style="width: 200px;">AWS S3</td><td>In development</td></tr>
+  		<tr><td><img height="40" src="https://static.wikia.nocookie.net/logopedia/images/7/7f/Microsoft_Office_Excel_%282018%E2%80%93present%29.svg/revision/latest/scale-to-width-down/52?cb=20190927105356" />   </td><td style="width: 200px;">Excel</td><td>Planned</td></tr>
+		<tr><td><img height="40" src="https://www.snowflake.com/wp-content/themes/snowflake/img/snowflake-logo-blue@2x.png" /> </td><td style="width: 200px;">Snowflake</td><td>Planned</td></tr>
 	</tbody>
 </table>
 

@@ -5,14 +5,18 @@ from datetime import datetime, date, time
 
 def check_data_volume(db, table, time_interval):
 
-    sep = db.get_interval_sep()
-    result = db.execute(f"""
-        SELECT
-            count(*) as count
-        FROM {table.table_name}
-        WHERE {table.time_column} > now() - INTERVAL {sep}{time_interval}{sep}
-        
-    """).first()
+    try:
+        interval_part = db.make_interval(time_interval)
+        result = db.check_data_volume(table, where_timecol=f"> now() - {interval_part}")
+    except AttributeError:
+        sep = db.get_interval_sep()
+        result = db.execute(f"""
+            SELECT
+                count(*) as count
+            FROM {table.table_name}
+            WHERE {table.time_column} > now() - INTERVAL {sep}{time_interval}{sep}
+            
+        """).first()
 
     metrics_data_valume = metadata.tables['metrics_data_volume']
 
@@ -25,7 +29,7 @@ def check_data_volume(db, table, time_interval):
     metrics_db.execute(stmt)
 
 
-def check_data_valume_diff(db, table):
+def check_data_volume_diff(db, table):
     from_time = metrics_db.execute(text("""
         SELECT max(created_at) as created_at
         FROM metrics_data_volume_diff
@@ -38,12 +42,15 @@ def check_data_valume_diff(db, table):
         # mostly because we show that stat daily
         from_time = datetime.combine(date.today(), time()) 
 
-    result = db.execute(text(f"""
-        SELECT {table.time_column}::date as date, count(*) as count
-        FROM {table.table_name}
-        WHERE {table.time_column} >= :from_time
-        GROUP BY {table.time_column}::date
-    """), {'from_time': from_time}).fetchall()
+    try:
+        result = db.check_data_volume_diff(table, where_timecol=f">= '{from_time}'")
+    except AttributeError:
+        result = db.execute(f"""
+            SELECT {table.time_column}::date as date, count(*) as count
+            FROM {table.table_name}
+            WHERE {table.time_column} >= :from_time
+            GROUP BY {table.time_column}::date""", {'from_time': from_time}
+        ).fetchall()
 
     metrics_data_volume = metadata.tables['metrics_data_volume_diff']
 

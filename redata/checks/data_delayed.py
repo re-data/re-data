@@ -3,13 +3,16 @@ from datetime import datetime
 
 def check_data_delayed(db, table):
 
-    age_fun = db.get_age_function()
+    try:
+        result = db.check_data_delayed(table)
+    except AttributeError:
+        age_fun = db.get_age_function()
 
-    result = db.execute(f"""
-        SELECT 
-            {age_fun}(now(), max({table.time_column}))
-        FROM {table.table_name}
-    """).fetchall()[0]
+        result = db.execute(f"""
+            SELECT 
+                {age_fun}(now(), max({table.time_column}))
+            FROM {table.table_name}
+        """).fetchall()[0]
 
     metrics_data_delay = metadata.tables['metrics_data_delay']
     stmt = metrics_data_delay.insert().values(

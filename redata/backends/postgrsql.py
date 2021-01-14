@@ -26,7 +26,15 @@ class Postgres(DB):
             'char',
             'text'
         ]
-    
+
+    @staticmethod
+    def datetime_types():
+        return [
+            'timestamp without time zone',
+            'timestamp with time zone',
+            'date',
+        ]
+
     def get_interval_sep(self):
         return "'"
     
