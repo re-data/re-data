@@ -119,7 +119,7 @@ class Exasol(DB):
         result = self.db.execute(
             f"""
             SELECT
-                CAST({table.time_column} AS DATE)
+                CAST({table.time_column} AS DATE),
                 count(*) as "count"
             FROM {table.table_name}
             WHERE [{table.time_column}] {where_timecol}
