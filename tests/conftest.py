@@ -1,8 +1,14 @@
 # STL imports
+import os
 import tempfile
+from dotenv import load_dotenv
 
 # Third parties imports
 from pytest_postgresql import factories
+
+env_path = '.'
+
+load_dotenv(os.path.join(env_path, '.env_tests'))
 
 
 # Create a postgres instance
