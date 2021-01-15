@@ -1,6 +1,5 @@
 from redata.dags.schedule_checks import run_check_for_new_tables, run_checks
 from redata.grafana.grafana_setup import create_dashboards
-from redata.models.setup_db import setup
 from redata.db_operations import source_dbs
 import argparse
 
