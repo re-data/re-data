@@ -15,17 +15,11 @@ def main():
     parser.add_argument(
         "--metrics", action="store_true", help="Push metrics to redata"
     )
-    parser.add_argument(
-        "--tables", action="store_true", help="Create information about tables to be observed"
-    )
 
     args = parser.parse_args()
 
-    if not any((args.grafana, args.metrics, args.tables)):
-        print("Specify at least one of --grafana --metrics --tables")
-
-    if args.tables:
-        setup()
+    if not any((args.grafana, args.metrics)):
+        print("Specify at least one of --grafana --metrics ")
 
     if args.grafana:
         create_dashboards()

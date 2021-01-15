@@ -1,7 +1,8 @@
 import pdb
-from redata.db_operations import metrics_db, metadata
+from redata.db_operations import metrics_session, metrics_db
 from sqlalchemy.sql import text
 from datetime import datetime, date, time 
+from redata.models.metrics import MetricsDataVolume, MetricsDataVolumeDiff
 
 def check_data_volume(db, table, time_interval):
 
@@ -18,15 +19,15 @@ def check_data_volume(db, table, time_interval):
             
         """).first()
 
-    metrics_data_valume = metadata.tables['metrics_data_volume']
 
-    stmt = metrics_data_valume.insert().values(
+    metric = MetricsDataVolume(
         table_id=table.id,
         time_interval=time_interval,
         count=result.count
     )
-    
-    metrics_db.execute(stmt)
+
+    metrics_session.add(metric)
+    metrics_session.commit()
 
 
 def check_data_volume_diff(db, table):
@@ -52,12 +53,12 @@ def check_data_volume_diff(db, table):
             GROUP BY {table.time_column}::date"""
         ).fetchall()
 
-    metrics_data_volume = metadata.tables['metrics_data_volume_diff']
 
     for r in result:
-        stmt = metrics_data_volume.insert().values(
+        metric = MetricsDataVolumeDiff(
             table_id=table.id,
             date=r.date,
             count=r.count
         )
-        metrics_db.execute(stmt)
+        metrics_session.add(metric)
+    metrics_session.commit()

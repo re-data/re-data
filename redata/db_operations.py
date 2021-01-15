@@ -40,9 +40,6 @@ source_dbs = [
 
 metrics_db = get_metrics_connection()
 
-metadata = MetaData()
-metadata.reflect(bind=metrics_db)
-
 MetricsSession = sessionmaker(bind=metrics_db)
 metrics_session = MetricsSession()
 
