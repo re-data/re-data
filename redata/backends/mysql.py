@@ -33,7 +33,14 @@ class MySQL(DB):
             'longtext',
             'enum'
         ]
-    
+
+    @staticmethod
+    def datetime_types():
+        return [
+            'datetime',
+            'timestamp',
+            'date'
+        ]
 
     def get_interval_sep(self):
         return ""

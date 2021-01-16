@@ -1,6 +1,21 @@
 from redata.backends.base import DB
 from datetime import timedelta
 from sqlalchemy.sql import text
+from sqlalchemy import create_engine
+
+
+class BigQueryEngine(object):
+    BIG_QUERY_CREDS_PATH =  '/opt/creds/bigquery/creds.json'
+
+    def __init__(self, db_url):
+        self.db = create_engine(db_url, credentials_path=self.BIG_QUERY_CREDS_PATH)
+    
+    def execute(self, *args, **kwargs):
+        return self.db.execute(*args, **kwargs)
+
+    def table_names(self):
+        return self.db.table_names()
+
 
 class BigQuery(DB):
     def __init__(self, name, db, dataset):
@@ -31,6 +46,7 @@ class BigQuery(DB):
     
     def get_interval_sep(self):
         return "'"
+        
     
     def get_age_function(self):
         return "DATE_DIFF"

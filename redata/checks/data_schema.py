@@ -1,22 +1,22 @@
 import json
 import pdb
 from sqlalchemy.sql import text
-from redata.db_operations import metrics_db, metadata, get_current_table_schema, metrics_session
+from redata.db_operations import get_current_table_schema, metrics_session
 from sqlalchemy import update
 from redata.models.table import MonitoredTable
+from redata.models.metrics import MetricsSchemaChanges
 
 
 def insert_schema_changed_record(table, operation, column_name, column_type, column_count):
-    metrics_data_valume = metadata.tables['metrics_table_schema_changes']
-
-    stmt = metrics_data_valume.insert().values(
+    metric = MetricsSchemaChanges(
         table_id=table.id,
         operation=operation,
         column_name=column_name,
         column_type=column_type,
         column_count=column_count
     )
-    metrics_db.execute(stmt)
+    metrics_session.add(metric)
+    metrics_session.commit()
 
 
 def check_for_new_tables(db):
