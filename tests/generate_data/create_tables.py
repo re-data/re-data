@@ -27,10 +27,10 @@ def create_tables(db_name, num_tables):
     print ("running sample table creation for: ", db_name)
 
     for el in range(num_tables):
-        db.execute(
+        db.db.execute(
             CREATE_TABLE.substitute(num=el)
         )
-        db.execute(
+        db.db.execute(
             INSERT_ROWS.substitute(num=el)
         )
 
