@@ -1,7 +1,8 @@
 import pdb
-from redata.db_operations import metrics_db, metadata
+from redata.db_operations import metrics_session, metrics_db
 from sqlalchemy.sql import text
 from datetime import datetime, date, time 
+from redata.models.metrics import MetricsDataVolume, MetricsDataVolumeDiff
 
 def check_data_volume(db, table, time_interval):
 
@@ -18,18 +19,18 @@ def check_data_volume(db, table, time_interval):
             
         """).first()
 
-    metrics_data_valume = metadata.tables['metrics_data_volume']
 
-    stmt = metrics_data_valume.insert().values(
+    metric = MetricsDataVolume(
         table_id=table.id,
         time_interval=time_interval,
         count=result.count
     )
-    
-    metrics_db.execute(stmt)
+
+    metrics_session.add(metric)
+    metrics_session.commit()
 
 
-def check_data_valume_diff(db, table):
+def check_data_volume_diff(db, table):
     from_time = metrics_db.execute(text("""
         SELECT max(created_at) as created_at
         FROM metrics_data_volume_diff
@@ -43,20 +44,21 @@ def check_data_valume_diff(db, table):
         from_time = datetime.combine(date.today(), time()) 
 
     try:
-        result = db.check_data_volume(table, where_timecol=f">= '{from_time}'")
+        result = db.check_data_volume_diff(table, where_timecol=f">= '{from_time}'")
     except AttributeError:
-        result = db.execute(text(f"""
-            SELECT count(*) as count
+        result = db.execute(f"""
+            SELECT {table.time_column}::date as date, count(*) as count
             FROM {table.table_name}
-            WHERE {table.time_column} >= :from_time
-        """), {'from_time': from_time}).first()
+            WHERE {table.time_column} >= '{from_time}'
+            GROUP BY {table.time_column}::date"""
+        ).fetchall()
 
-    metrics_data_valume = metadata.tables['metrics_data_volume_diff']
 
-    stmt = metrics_data_valume.insert().values(
-        table_id=table.id,
-        from_time=from_time,
-        count=result.count
-    )
-    
-    metrics_db.execute(stmt)
+    for r in result:
+        metric = MetricsDataVolumeDiff(
+            table_id=table.id,
+            date=r.date,
+            count=r.count
+        )
+        metrics_session.add(metric)
+    metrics_session.commit()

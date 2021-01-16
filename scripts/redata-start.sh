@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
+cd redata
 
-redata --tables
+alembic upgrade head
+
 redata --metrics
 redata --grafana
 

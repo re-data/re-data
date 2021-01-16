@@ -3,6 +3,7 @@ from redata import settings
 from redata.grafana.utils import load_json_data, update_home_panel_element
 from grafana_api.grafana_face import GrafanaFace
 from redata.grafana.panels.base import HomeLastDayTraffic, HomeLastModifiedTime
+import math
 
 def load_json_data(file_name):
     with open(file_name) as json_file:
@@ -26,6 +27,12 @@ def generate_overrides(dashboards):
     
     return override_list
 
+def get_best_column_count(dashboards_num):
+    if dashboards_num <= 10:
+        return dashboards_num
+    
+    return int(math.sqrt(dashboards_num * 4))
+
 
 def create_home_dashboard(grafana_api, dashboards):
     home_data = load_json_data(settings.HOME_DASHBOARD_LOCATION)
@@ -37,7 +44,7 @@ def create_home_dashboard(grafana_api, dashboards):
             panel['savedOverrides'] = generate_overrides(dashboards)
 
             # native polystat logic for column/row auto scalling works strange
-            panel['polystat']['columns'] = min(10, len(dashboards))
+            panel['polystat']['columns'] = get_best_column_count(len(dashboards))
         
         if panel['title'] == 'new_records_created (in last 24h)':
             update_home_panel_element(panel, HomeLastDayTraffic)

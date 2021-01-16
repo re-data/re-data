@@ -1,8 +1,8 @@
 from setuptools import find_packages, setup
 
 setup(
-    version='0.0.1',
-    author='Mateusz Klimek',
+    version='0.0.2',
+    author='redata-team',
     description='Monitoring system for data teams',
     name='redata',
     install_requires=[
@@ -14,7 +14,8 @@ setup(
         'marshmallow<3.0.0,>=2.18.0',
         'pyexasol',
         'pymysql',
-        'cryptography'
+        'cryptography',
+        'alembic'
     ],
     entry_points = {
         'console_scripts': ['redata=redata.command_line:main'],

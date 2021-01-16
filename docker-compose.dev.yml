@@ -49,7 +49,7 @@ services:
 
 
   scheduler_airflow:
-    image: redatateam/redata:0.0.1-alfa
+    image: redatateam/redata:0.0.2-alfa
     restart: always
     depends_on:
       - postgres_airflow
@@ -65,10 +65,11 @@ services:
       - PYTHONPATH=/usr/local/redata-dev
     volumes:
       - ./redata:/usr/local/redata-dev/redata
+      - ./tests:/usr/local/redata-dev/tests
       - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
 
   webserver_airflow:
-    image: redatateam/redata:0.0.1-alfa
+    image: redatateam/redata:0.0.2-alfa
     hostname: webserver
     restart: always
     depends_on:

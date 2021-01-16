@@ -114,6 +114,20 @@ class Exasol(DB):
             fetch_dict=True,
         ).fetchone()
         return SimpleNamespace(**result)
+    
+    def check_data_volume_diff(self, table, where_timecol):
+        result = self.db.execute(
+            f"""
+            SELECT
+                CAST({table.time_column} AS DATE),
+                count(*) as "count"
+            FROM {table.table_name}
+            WHERE [{table.time_column}] {where_timecol}
+            GROUP BY CAST({table.time_column} AS DATE)
+            """,
+            fetch_dict=True,
+        ).fetchall()
+        return SimpleNamespace(**result)
 
     def execute(self, *args, **kwargs):
         return self.db.execute(*args, **kwargs)

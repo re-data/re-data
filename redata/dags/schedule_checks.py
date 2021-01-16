@@ -3,7 +3,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 
 from redata.checks.data_delayed import check_data_delayed
-from redata.checks.data_volume import check_data_volume, check_data_valume_diff
+from redata.checks.data_volume import check_data_volume, check_data_volume_diff
 from redata.db_operations import source_dbs
 from redata.checks.data_schema import check_if_schema_changed, check_for_new_tables
 from redata.checks.data_values import (
@@ -29,13 +29,13 @@ def run_checks(db):
 
 def run_checks_for_table(db, table):
     print (f"Running checks for table:{table.table_name} [BEGIN]")
+    check_data_volume_diff(db, table)
+    print (f"Check for data volume diff table:{table.table_name} [DONE]")
     check_data_delayed(db, table)
     print (f"Check data delayed table:{table.table_name} [DONE]")
     check_if_schema_changed(db, table)
     print (f"Check for schema changes table:{table.table_name} [DONE]")
-    check_data_valume_diff(db, table)
-    print (f"Check for data volume diff table:{table.table_name} [DONE]")
-    
+
     for interval in settings.VOLUME_INTERVAL:
         check_data_volume(db, table, interval)
     
