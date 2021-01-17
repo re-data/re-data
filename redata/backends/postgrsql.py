@@ -1,6 +1,5 @@
 from redata.backends.base import DB
 from redata.backends.sql_alchemy import SqlAlchemy
-from datetime import datetime, timedelta
 
 class Postgres(SqlAlchemy):
     def __init__(self, name, db):

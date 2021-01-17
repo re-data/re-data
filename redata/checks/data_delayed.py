@@ -3,16 +3,7 @@ from redata.models.metrics import MetricsDataDelay
 from datetime import datetime
 
 def check_data_delayed(db, table):
-    try:
-        result = db.check_data_delayed(table)
-    except AttributeError:
-        age_fun = db.get_age_function()
-
-        result = db.execute(f"""
-            SELECT 
-                {age_fun}(now(), max({table.time_column}))
-            FROM {table.table_name}
-        """).fetchall()[0]
+    result = db.check_data_delayed(table)
 
     if result[0]:
         metric = MetricsDataDelay(

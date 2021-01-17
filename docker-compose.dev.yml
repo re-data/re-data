@@ -70,7 +70,7 @@ services:
       - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
 
   webserver_airflow:
-    image: apache/airflow
+    image: redatateam/redata:0.0.2-alfa
     hostname: webserver
     restart: always
     depends_on:

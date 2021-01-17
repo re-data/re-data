@@ -145,4 +145,16 @@ class SqlAlchemy(DB):
 
         return result
 
-
+    def get_table_schema(self, table_name):
+        
+        result = self.db.execute(f"""
+            SELECT 
+                column_name, 
+                data_type 
+            FROM 
+                information_schema.columns
+            WHERE 
+                table_name = '{table_name}';
+        """)
+        
+        return [ {'name': c_name, 'type': c_type} for c_name, c_type in result]

@@ -1,6 +1,7 @@
 from redata.backends.base import DB
+from redata.backends.sql_alchemy import SqlAlchemy
 
-class MySQL(DB):
+class MySQL(SqlAlchemy):
     def __init__(self, name, db):
         super().__init__(name, db)
 
@@ -41,9 +42,3 @@ class MySQL(DB):
             'timestamp',
             'date'
         ]
-
-    def get_interval_sep(self):
-        return ""
-    
-    def get_age_function(self):
-        return "timediff"
