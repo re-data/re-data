@@ -103,26 +103,27 @@ class Exasol(DB):
         ).fetchall()
         return [SimpleNamespace(**row) for row in result]
 
-    def check_data_volume(self, table, where_timecol):
+    def check_data_volume(self, table, time_interval):
+        interval_part = self.db.make_interval(time_interval)
         result = self.db.execute(
             f"""
             SELECT
                 count(*) as "count"
             FROM {table.table_name}
-            WHERE [{table.time_column}] {where_timecol}
+            WHERE [{table.time_column}] > now() - {interval_part}
             """,
             fetch_dict=True,
         ).fetchone()
         return SimpleNamespace(**result)
     
-    def check_data_volume_diff(self, table, where_timecol):
+    def check_data_volume_diff(self, table, from_time):
         result = self.db.execute(
             f"""
             SELECT
                 CAST({table.time_column} AS DATE),
                 count(*) as "count"
             FROM {table.table_name}
-            WHERE [{table.time_column}] {where_timecol}
+            WHERE [{table.time_column}] >= '{from_time}'
             GROUP BY CAST({table.time_column} AS DATE)
             """,
             fetch_dict=True,

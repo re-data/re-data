@@ -1,10 +1,9 @@
 from sqlalchemy import create_engine
-from sqlalchemy.schema import MetaData
 from redata import settings
 from sqlalchemy.orm import sessionmaker
 from redata.backends.postgrsql import Postgres
 from redata.backends.mysql import MySQL
-from redata.backends.bigquery import BigQuery, BigQueryEngine
+from redata.backends.bigquery import BigQuery
 from redata.backends.exasol import Exasol, ExasolEngine
 
 
@@ -16,8 +15,9 @@ def get_db_object(db_source):
         return Exasol(db_source['name'], ExasolEngine(db_url))
 
     if db_url.startswith('bigquery'):
-        dataset = db_url[db_url.rfind('/') + 1:]
-        return BigQuery(db_source['name'], BigQueryEngine(db_url), dataset)
+        BIG_QUERY_CREDS_PATH =  '/opt/creds/bigquery/creds.json'
+        db = create_engine(db_url, credentials_path=BIG_QUERY_CREDS_PATH)
+        return BigQuery(db_source['name'], db)
     
     db = create_engine(db_url)
 
@@ -64,6 +64,4 @@ def get_current_table_schema(db, table_name):
                 table_name = '{table_name}';
         """)
         
-        all_cols = list(result)
-        schema_cols =  [ {'name': c_name, 'type': c_type} for c_name, c_type in all_cols]
-        return schema_cols
+        return [ {'name': c_name, 'type': c_type} for c_name, c_type in result]

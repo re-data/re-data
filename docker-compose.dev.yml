@@ -64,13 +64,13 @@ services:
       - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/redata-dev/redata/dags
       - PYTHONPATH=/usr/local/redata-dev
     volumes:
+      - ${REDATA_BIGQUERY_KEY_FILE}:/opt/creds/bigquery/creds.json
       - ./redata:/usr/local/redata-dev/redata
       - ./tests:/usr/local/redata-dev/tests
       - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
-      - ${REDATA_BIGQUERY_KEY_FILE}:/opt/creds/bigquery/creds.json
 
   webserver_airflow:
-    image: redatateam/redata:0.0.2-alfa
+    image: apache/airflow
     hostname: webserver
     restart: always
     depends_on:

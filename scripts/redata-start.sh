@@ -3,6 +3,8 @@ cd redata
 
 alembic upgrade head
 
+cd ..
+
 redata --metrics
 redata --grafana
 

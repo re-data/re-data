@@ -28,6 +28,7 @@ def run_checks(db):
 
 
 def run_checks_for_table(db, table):
+
     print (f"Running checks for table:{table.table_name} [BEGIN]")
     check_data_volume_diff(db, table)
     print (f"Check for data volume diff table:{table.table_name} [DONE]")
@@ -38,7 +39,6 @@ def run_checks_for_table(db, table):
 
     for interval in settings.VOLUME_INTERVAL:
         check_data_volume(db, table, interval)
-    
     print (f"Check for data volume table:{table.table_name} [DONE]")
 
     for column in table.schema['columns']:

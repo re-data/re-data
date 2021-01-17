@@ -105,7 +105,7 @@ def check_count_per_value(db, table, checked_column, time_interval):
             LIMIT 10
         """)
 
-    for row in result:
+    for row in (result or []):
 
         metric = MetricsDataValues(
             table_id=table.id,

@@ -5,10 +5,8 @@ from datetime import datetime, date, time
 from redata.models.metrics import MetricsDataVolume, MetricsDataVolumeDiff
 
 def check_data_volume(db, table, time_interval):
-
     try:
-        interval_part = db.make_interval(time_interval)
-        result = db.check_data_volume(table, where_timecol=f"> now() - {interval_part}")
+        result = db.check_data_volume(table, time_interval)
     except AttributeError:
         sep = db.get_interval_sep()
         result = db.execute(f"""
@@ -44,7 +42,7 @@ def check_data_volume_diff(db, table):
         from_time = datetime.combine(date.today(), time())
 
     try:
-        result = db.check_data_volume_diff(table, where_timecol=f">= '{from_time}'")
+        result = db.check_data_volume_diff(table, from_time=from_time)
     except AttributeError:
         result = db.execute(f"""
             SELECT {table.time_column}::date as date, count(*) as count
@@ -53,8 +51,7 @@ def check_data_volume_diff(db, table):
             GROUP BY {table.time_column}::date"""
         ).fetchall()
 
-
-    for r in result:
+    for r in (result or []):
         metric = MetricsDataVolumeDiff(
             table_id=table.id,
             date=r.date,

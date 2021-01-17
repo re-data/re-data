@@ -1,26 +1,14 @@
+from redata.backends.sql_alchemy import SqlAlchemy
 from redata.backends.base import DB
 from datetime import timedelta
 from sqlalchemy.sql import text
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
+from datetime import datetime, timedelta
 
 
-class BigQueryEngine(object):
-    BIG_QUERY_CREDS_PATH =  '/opt/creds/bigquery/creds.json'
-
-    def __init__(self, db_url):
-        self.db = create_engine(db_url, credentials_path=self.BIG_QUERY_CREDS_PATH)
-    
-    def execute(self, *args, **kwargs):
-        return self.db.execute(*args, **kwargs)
-
-    def table_names(self):
-        return self.db.table_names()
-
-
-class BigQuery(DB):
-    def __init__(self, name, db, dataset):
+class BigQuery(SqlAlchemy):
+    def __init__(self, name, db):
         super().__init__(name, db)
-        self.dataset = dataset
     
     @staticmethod
     def numeric_types():
@@ -43,42 +31,31 @@ class BigQuery(DB):
             'TIMESTAMP',
             'DATETIME'
         ]
-    
-    def get_interval_sep(self):
-        return "'"
-        
-    
-    def get_age_function(self):
-        return "DATE_DIFF"
 
-    def check_data_delayed(self, table):
-        result = self.db.execute(f"""
-            SELECT
-                TIMESTAMP_DIFF(CURRENT_TIMESTAMP(), max(crated_at), SECOND) as total_seconds
-            FROM {self.dataset}.{table.table_name}
-        """)
-        seconds = result.fetchall()[0][0]
-        return [timedelta(seconds=seconds)]
+    def get_time_to_compare(self, time_interval):
+        to_compare = self.transorm_by_interval(time_interval)
+        return self.get_timestamp(to_compare)
 
+    def get_timestamp(self, from_time):
+        return func.timestamp(from_time)
+
+    def to_naive_timestamp(self, from_time):
+        return from_time.replace(tzinfo=None)
     
-    def check_data_volume_diff(self, table, from_time):
-        result = self.db.execute(text(f"""
-            SELECT count(*) as count
-            FROM {table.table_name}
-            WHERE {table.time_column} >= TIMESTAMP(:from_time)
-        """), {'from_time': from_time}).first()
-        return result
-
+    def get_max_timestamp(self, table, column):
+        ts_tz =  super().get_max_timestamp(table, column)
+        return ts_tz.replace(tzinfo=None)
 
     def get_table_schema(self, table_name):
+        dataset, table_name = table_name.split('.')
         result = self.db.execute(f"""
             SELECT
                 column_name as name,
                 data_type as type
             FROM
-                {self.dataset}.INFORMATION_SCHEMA.COLUMNS
+                {dataset}.INFORMATION_SCHEMA.COLUMNS
             WHERE
                 table_name = '{table_name}'
         """)
-        return result.fetchall()
+        return [ {'name': c_name, 'type': c_type} for c_name, c_type in result]
         
