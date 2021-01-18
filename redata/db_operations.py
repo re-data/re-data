@@ -5,6 +5,7 @@ from redata.backends.postgrsql import Postgres
 from redata.backends.mysql import MySQL
 from redata.backends.bigquery import BigQuery
 from redata.backends.exasol import Exasol, ExasolEngine
+from redata import settings
 
 
 
@@ -15,8 +16,7 @@ def get_db_object(db_source):
         return Exasol(db_source['name'], ExasolEngine(db_url))
 
     if db_url.startswith('bigquery'):
-        BIG_QUERY_CREDS_PATH =  '/opt/creds/bigquery/creds.json'
-        db = create_engine(db_url, credentials_path=BIG_QUERY_CREDS_PATH)
+        db = create_engine(db_url, credentials_path=settings.REDATA_BIGQUERY_DOCKER_CREDS_FILE_PATH)
         return BigQuery(db_source['name'], db)
     
     db = create_engine(db_url)
