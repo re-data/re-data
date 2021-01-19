@@ -30,10 +30,10 @@ class SqlAlchemy(DB):
         return from_time
 
     def get_time_to_compare(self, time_interval):
-        before = self.transorm_by_interval(time_interval)
+        before = self.transform_by_interval(time_interval)
         return before
 
-    def transorm_by_interval(self, time_interval):
+    def transform_by_interval(self, time_interval):
         parts = time_interval.split(' ')
         if parts[-1] == 'day':
             to_compare = datetime.utcnow() - timedelta(days=int(parts[0]))
@@ -146,7 +146,7 @@ class SqlAlchemy(DB):
         return result
 
     def get_table_schema(self, table_name):
-        
+
         result = self.db.execute(f"""
             SELECT 
                 column_name, 

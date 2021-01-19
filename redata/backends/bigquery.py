@@ -33,7 +33,7 @@ class BigQuery(SqlAlchemy):
         ]
 
     def get_time_to_compare(self, time_interval):
-        to_compare = self.transorm_by_interval(time_interval)
+        to_compare = self.transform_by_interval(time_interval)
         return self.get_timestamp(to_compare)
 
     def get_timestamp(self, from_time):
