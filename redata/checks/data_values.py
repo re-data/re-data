@@ -1,5 +1,5 @@
 from redata.checks.data_schema import check_for_new_tables
-from redata.db_operations import get_current_table_schema, metrics_db, metrics_session
+from redata.db_operations import metrics_db, metrics_session
 from redata.models.metrics import MetricsDataValues
 
 

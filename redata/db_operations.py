@@ -49,6 +49,3 @@ metrics_db = get_metrics_connection()
 
 MetricsSession = sessionmaker(bind=metrics_db)
 metrics_session = MetricsSession()
-
-def get_current_table_schema(db, table_name):
-    return db.get_table_schema(table_name)
