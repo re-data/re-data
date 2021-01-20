@@ -49,7 +49,7 @@ services:
 
 
   scheduler_airflow:
-    image: redatateam/redata:0.0.2-alfa
+    image: redatateam/redata:0.0.3-alfa
     restart: always
     depends_on:
       - postgres_airflow
@@ -64,12 +64,13 @@ services:
       - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/redata-dev/redata/dags
       - PYTHONPATH=/usr/local/redata-dev
     volumes:
+      - ${REDATA_BIGQUERY_KEY_FILE:-./redata/deployment/empty.json}:${REDATA_DEFAULT_BIGQUERY_DOCKER_CREDS_FILE_PATH}
       - ./redata:/usr/local/redata-dev/redata
       - ./tests:/usr/local/redata-dev/tests
       - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
 
   webserver_airflow:
-    image: redatateam/redata:0.0.2-alfa
+    image: redatateam/redata:0.0.3-alfa
     hostname: webserver
     restart: always
     depends_on:

@@ -1,18 +1,24 @@
 from sqlalchemy import create_engine
-from sqlalchemy.schema import MetaData
 from redata import settings
 from sqlalchemy.orm import sessionmaker
 from redata.backends.postgrsql import Postgres
 from redata.backends.mysql import MySQL
+from redata.backends.bigquery import BigQuery
 from redata.backends.exasol import Exasol, ExasolEngine
+from redata import settings
+
 
 
 def get_db_object(db_source):
     db_url = db_source['db_url']
-
+    
     if db_url.startswith('exa+pyexasol'):
         return Exasol(db_source['name'], ExasolEngine(db_url))
 
+    if db_url.startswith('bigquery'):
+        db = create_engine(db_url, credentials_path=settings.REDATA_BIGQUERY_DOCKER_CREDS_FILE_PATH)
+        return BigQuery(db_source['name'], db)
+    
     db = create_engine(db_url)
 
     if db_url.startswith('postgres'):
@@ -20,7 +26,8 @@ def get_db_object(db_source):
 
     if db_url.startswith('mysql'):
         return MySQL(db_source['name'], db)
-    
+
+
     raise Exception('Not supported DB')
 
 def get_db_by_name(name):
@@ -42,21 +49,3 @@ metrics_db = get_metrics_connection()
 
 MetricsSession = sessionmaker(bind=metrics_db)
 metrics_session = MetricsSession()
-
-def get_current_table_schema(db, table_name):
-    try:
-        return db.get_table_schema(table_name)
-    except AttributeError:
-        result = db.execute(f"""
-            SELECT 
-                column_name, 
-                data_type 
-            FROM 
-                information_schema.columns
-            WHERE 
-                table_name = '{table_name}';
-        """)
-        
-        all_cols = list(result)
-        schema_cols =  [ {'name': c_name, 'type': c_type} for c_name, c_type in all_cols]
-        return schema_cols

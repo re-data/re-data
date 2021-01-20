@@ -1,20 +1,10 @@
 from redata.checks.data_schema import check_for_new_tables
-from redata.db_operations import get_current_table_schema, metrics_db, metrics_session
+from redata.db_operations import metrics_db, metrics_session
 from redata.models.metrics import MetricsDataValues
 
 
 def check_generic(func_name, db, table, checked_column, time_interval):
-    try:
-        result = db.check_generic(func_name, table, checked_column, time_interval)
-    except AttributeError:
-        sep = db.get_interval_sep()
-        result = db.execute(f"""
-            SELECT
-                {func_name}({checked_column}) as value
-            FROM
-                {table.table_name}
-            WHERE {table.time_column} > now() - INTERVAL {sep}{time_interval}{sep}
-        """).first()
+    result = db.check_generic(func_name, table, checked_column, time_interval)
 
     metric = MetricsDataValues(
         table_id=table.id,
@@ -45,19 +35,7 @@ def check_max(db, table, checked_column, time_interval):
 
 def check_count_nulls(db, table, checked_column, time_interval):
     
-    try:
-        result = db.check_count_nulls(table, checked_column, time_interval)
-    except AttributeError:
-        sep = db.get_interval_sep()
-        result = db.execute(f"""
-            SELECT
-                count(*) as value
-            FROM
-                {table.table_name}
-            WHERE
-                {table.time_column} > now() - INTERVAL {sep}{time_interval}{sep} and
-                {checked_column} is null
-        """).first()
+    result = db.check_count_nulls(table, checked_column, time_interval)
 
     metric = MetricsDataValues(
         table_id=table.id,
@@ -72,40 +50,9 @@ def check_count_nulls(db, table, checked_column, time_interval):
 
 
 def check_count_per_value(db, table, checked_column, time_interval):
+    result = db.check_count_per_value(table, checked_column, time_interval)
 
-    try:
-        result = db.check_count_per_value(table, checked_column, time_interval)
-    except AttributeError:
-        sep = db.get_interval_sep()
-        check_distinct = db.execute(f"""
-            SELECT
-                count(distinct({checked_column})) as count
-            FROM {table.table_name}
-            WHERE
-                {table.time_column} > now() - INTERVAL {sep}{time_interval}{sep}
-        """).first()
-
-        if check_distinct.count > 10:
-            # Skipping if more than 10 different values showing up in column
-            return
-
-        result = db.execute(f"""
-            SELECT
-                count(*) as count,
-                {checked_column} as value
-            FROM
-                {table.table_name}
-            WHERE
-                {table.time_column} > now() - INTERVAL {sep}{time_interval}{sep} and
-                {checked_column} is not null
-            GROUP BY
-                {checked_column}
-            ORDER BY
-                count DESC
-            LIMIT 10
-        """)
-
-    for row in result:
+    for row in (result or []):
 
         metric = MetricsDataValues(
             table_id=table.id,

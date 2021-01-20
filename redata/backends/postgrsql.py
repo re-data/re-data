@@ -1,6 +1,7 @@
 from redata.backends.base import DB
+from redata.backends.sql_alchemy import SqlAlchemy
 
-class Postgres(DB):
+class Postgres(SqlAlchemy):
     def __init__(self, name, db):
         super().__init__(name, db)
     
@@ -34,9 +35,3 @@ class Postgres(DB):
             'timestamp with time zone',
             'date',
         ]
-
-    def get_interval_sep(self):
-        return "'"
-    
-    def get_age_function(self):
-        return "age"

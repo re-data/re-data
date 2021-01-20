@@ -1,7 +1,7 @@
 import json
 import pdb
 from sqlalchemy.sql import text
-from redata.db_operations import get_current_table_schema, metrics_session
+from redata.db_operations import metrics_session
 from sqlalchemy import update
 from redata.models.table import MonitoredTable
 from redata.models.metrics import MetricsSchemaChanges
@@ -42,7 +42,7 @@ def check_if_schema_changed(db, table):
     last_schema = table.schema['columns']
     table_name = table.table_name
 
-    current_schema = get_current_table_schema(db, table.table_name)
+    current_schema = db.get_table_schema(table.table_name)
     print (table.table_name, current_schema)
 
     if last_schema != current_schema:

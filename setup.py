@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    version='0.0.2',
+    version='0.0.3',
     author='redata-team',
     description='Monitoring system for data teams',
     name='redata',
@@ -15,6 +15,7 @@ setup(
         'pyexasol',
         'pymysql',
         'cryptography',
+        'pybigquery',
         'alembic'
     ],
     entry_points = {

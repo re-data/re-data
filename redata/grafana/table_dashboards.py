@@ -44,7 +44,7 @@ def get_dashboard_for_table(db, table):
             y_pos += 7
 
         panel = load_json_data(settings.CUSTOM_ROW_LOCATION)
-        panel['title'] = f"check for {column_name} column"
+        panel['title'] = f"{column_name} column"
         panel['id'] = next_id
         panel['gridPos']["y"] = y_pos
         panel['gridPos']["x"] = x_pos

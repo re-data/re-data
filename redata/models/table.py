@@ -7,7 +7,6 @@ from sqlalchemy.sql.sqltypes import Date
 from redata import settings
 from redata.models.base import Base
 from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON
-from redata.db_operations import get_current_table_schema
 from sqlalchemy.dialects.postgresql import JSONB
 from redata.db_operations import metrics_session
 import json
@@ -31,7 +30,7 @@ class MonitoredTable(Base):
         print (f"Running setup for {db_table_name}")
 
         valid_types = db.datetime_types()
-        schema_cols = get_current_table_schema(db, db_table_name)
+        schema_cols = db.get_table_schema(db_table_name)
 
         table = MonitoredTable(
             table_name=db_table_name,

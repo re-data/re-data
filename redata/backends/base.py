@@ -9,7 +9,7 @@ class DB(object):
         return self.db.execute(*args, **kwargs)
 
     def get_max_timestamp(self, table, column):
-        result = self.db.execute(f'SELECT max({column}) as value FROM "{table.table_name}"').first()
+        result = self.db.execute(f'SELECT max({column}) as value FROM {table.table_name}').first()
         if not result.value:
             # No data yet in this column
             return None
