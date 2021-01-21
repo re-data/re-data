@@ -2,14 +2,19 @@
 import pytest
 import pdb
 
+# Custom imports
+from redata.backends.postgrsql import Postgres
+from redata.backends.base import DB
+
 MAKE_Q = "CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);"
 INSERT_Q = "INSERT INTO test VALUES(1, 2, 'c');"
 SELECT_Q = "SELECT * FROM test;"
 
 
 def test_check_data_delayed(postgresql):
-    #pdb.set_trace()
+    # pdb.set_trace()
     from redata.checks.data_delayed import check_data_delayed  # pylint:disable=import-outside-toplevel
+    from redata.models.table import MonitoredTable
 
     # Create a table in the database
     cur = postgresql.cursor()
@@ -22,9 +27,8 @@ def test_check_data_delayed(postgresql):
     cur.execute(SELECT_Q)
     table = cur.fetchall()
 
-    from redata.db_operations import get_db_object
-
-    db = get_db_object(postgresql)
+    db = Postgres('test', cur)
+    table = MonitoredTable()
 
     check_data_delayed(db, table)
 
