@@ -6,8 +6,14 @@ import pdb
 from redata.backends.postgrsql import Postgres
 from redata.backends.base import DB
 
-MAKE_Q = "CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);"
-INSERT_Q = "INSERT INTO test VALUES(1, 2, 'c');"
+MAKE_Q = '''
+CREATE TABLE test
+(id serial PRIMARY KEY,
+    num integer,
+    data varchar,
+    date timestamp NOT NULL default CURRENT_TIMESTAMP);
+    '''
+INSERT_Q = "INSERT INTO test VALUES(1, 2, 'c', '01/01/2020');"
 SELECT_Q = "SELECT * FROM test;"
 
 
@@ -25,10 +31,12 @@ def test_check_data_delayed(postgresql):
 
     # Get the tables
     cur.execute(SELECT_Q)
-    table = cur.fetchall()
+    # table = cur.fetchall()
 
     db = Postgres('test', cur)
     table = MonitoredTable()
+
+    table.setup_for_source_table(db, 'test')
 
     check_data_delayed(db, table)
 
