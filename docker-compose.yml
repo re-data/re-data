@@ -4,7 +4,7 @@ services:
   grafana:
     image: grafana/grafana:7.3.0
     ports:
-      - "3000:3000"
+      - "3000:${GRAFANA_WEB_PORT}"
     depends_on:
       - postgres_grafana
 

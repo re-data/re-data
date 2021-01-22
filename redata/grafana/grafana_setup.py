@@ -48,7 +48,7 @@ def star_home_dashboard(grafana_api, home_response):
 def create_dashboards():
     grafana_api = GrafanaFace(
         auth=(settings.GF_SECURITY_ADMIN_USER, settings.GF_SECURITY_ADMIN_PASSWORD),
-        host='grafana:3000'
+        host=f'{settings.GRAFANA_WEB_HOST}:{settings.GRAFANA_WEB_PORT}'
     )
 
     create_source_in_grafana(grafana_api)

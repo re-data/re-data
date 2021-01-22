@@ -27,6 +27,9 @@ GF_INSTALL_PLUGINS=grafana-polystat-panel,grafana-clock-panel,grafana-simple-jso
 GF_SECURITY_ADMIN_USER=admin
 GF_SECURITY_ADMIN_PASSWORD=admin
 
+GRAFANA_WEB_HOST=grafana
+GRAFANA_WEB_PORT=3000
+
 REDATA_DEFAULT_BIGQUERY_DOCKER_CREDS_FILE_PATH='/opt/creds/bigquery/creds.json'
 
 REDATA_AIRFLOW_SCHEDULE_INTERVAL="0 * * * *"
