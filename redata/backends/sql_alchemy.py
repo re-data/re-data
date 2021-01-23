@@ -69,6 +69,9 @@ class SqlAlchemy(DB):
         ]).label('max_time')]).select_from(q_table)
 
         result = self.db.execute(stmt).first()
+
+        if result[0] is None:
+            return [None]
         
         result_time = self.to_naive_timestamp(result.max_time)
 
