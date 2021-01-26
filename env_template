@@ -17,12 +17,6 @@ AIRFLOW_SECURITY_ADMIN_USER=admin
 AIRFLOW_SECURITY_ADMIN_PASSWORD=admin
 AIRFLOW_SECURITY_ADMIN_EMAIL=admin@example.com
 
-GF_DATABASE_TYPE=postgres
-GF_DATABASE_HOST=postgres_grafana
-GF_DATABASE_USER=grafana
-GF_DATABASE_EXT_PORT=5435
-GF_DATABASE_PASSWORD=mysecretpassword
-GF_DATABASE_NAME=grafana
 GF_INSTALL_PLUGINS=grafana-polystat-panel,grafana-clock-panel,grafana-simple-json-datasource
 GF_SECURITY_ADMIN_USER=admin
 GF_SECURITY_ADMIN_PASSWORD=admin

@@ -5,25 +5,11 @@ services:
     image: grafana/grafana:7.3.0
     ports:
       - "3000:${GRAFANA_WEB_PORT}"
-    depends_on:
-      - postgres_grafana
 
     env_file:
       - .env
     tty: true
   
-  postgres_grafana:
-    image: postgres:12
-    env_file:
-      - .env
-    ports:
-      - "${GF_DATABASE_EXT_PORT}:5432"
-
-    environment:
-      - POSTGRES_USER=${GF_DATABASE_USER}
-      - POSTGRES_PASSWORD=${GF_DATABASE_PASSWORD}
-      - POSTGRES_DB=${GF_DATABASE_NAME}
-
   postgres_redata:
     image: postgres:12
     env_file:
