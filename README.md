@@ -89,6 +89,7 @@ Redata uses `docker` and `docker-compose` for deployment, this makes it easy to 
 Look at sample setup instructions for specfic cloud providers:
 
  - [AWS EC2 deployment](deployment/aws_ec2_awslinux/deployment.md),
+ - [AWS Fargate via Pulumi](deployment/pulumi_aws_fargate/README.md),
  - [GCP Compute Engine deployment](deployment/gcp_compute_engine_debian/deployment.md)
 
 # Community
