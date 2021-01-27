@@ -16,7 +16,8 @@ setup(
         'pymysql',
         'cryptography',
         'pybigquery',
-        'alembic'
+        'alembic',
+        'scipy'
     ],
     entry_points = {
         'console_scripts': ['redata=redata.command_line:main'],
