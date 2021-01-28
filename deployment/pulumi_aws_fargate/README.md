@@ -65,7 +65,6 @@ Then add the secrets (you'll get prompted for the contents):
     pulumi config set --secret airflow-admin-password
     pulumi config set --secret airflow-db-password
     pulumi config set --secret grafana-admin-password
-    pulumi config set --secret grafana-db-password
     pulumi config set --secret redata-db-password
 
 Finally, add a source.. let's use the Redata db itself as an example:
@@ -73,6 +72,7 @@ Finally, add a source.. let's use the Redata db itself as an example:
     pulumi config set --secret --path 'sources.redata'
     # Enter the connection URL for Redata DB as the secret:
     #   postgres://redata:<THE_REDATA_DB_PASSWORD>@redata-postgres.db.redata:5432/redata
+    # (may need to URL-encode passwords with special characters, eg. using `urllib.parse.quote_plus()` in Python 3 for example)
 
 Adjust the configuration as needed, of course; especially passwords, Redata image version. The example above sets up just a single database source, the Redata db itself, which probably isn't too interesting in the long run.
 
