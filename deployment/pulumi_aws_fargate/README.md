@@ -36,14 +36,15 @@ Initialize a Pulumi stack in this directory:
 
     pulumi stack init dev
 
-Create `Pulumi.dev.yaml` with the required configuration:
+## Configuration
+
+Create `Pulumi.dev.yaml` with the _required_ configuration:
 
 ```
 config:
   aws:profile: <your-profile-name> # from ~/.aws/credentials
   aws:region: <your-aws-region>
   redata:airflow-admin-email: admin@example.com
-  redata:vpc_id: <vpc-id-to-deploy-in>
   redata:aws-private-subnet-ids: # need 1 or more
     - <private-subnet-id-for-AZ-1>
     - <private-subnet-id-for-AZ-2>
@@ -53,9 +54,6 @@ config:
     - <public-subnet-id-for-AZ-2>
     - <public-subnet-id-for-AZ-3>
   redata:aws-vpc-id: <vpc-id-to-deploy-in>
-  #redata:private-zone-db: db.redata
-  #redata:private-zone-sd: sd.redata
-  #redata:protect-persistent-storage: false
   redata:redata-image: redatateam/redata:0.0.4-alfa
   redata:target-domain: <your-public-domain>
   redata:target-domain-cert: <your-acm-cert-arn>
@@ -74,12 +72,47 @@ Finally, add a source.. let's use the Redata db itself as an example:
 
     pulumi config set --secret --path 'sources.redata'
     # Enter the connection URL for Redata DB as the secret:
-    #   postgres://redata:<THE_REDATA_DB_PASSWORD>@redata-postgres.redata.db.local:5432/redata
+    #   postgres://redata:<THE_REDATA_DB_PASSWORD>@redata-postgres.db.redata:5432/redata
 
 Adjust the configuration as needed, of course; especially passwords, Redata image version. The example above sets up just a single database source, the Redata db itself, which probably isn't too interesting in the long run.
 
 - ECS services and RDS databases will run in the private subnets
 - An application load balancer will be set up and configured for the public subnets
+
+_**NOTE:** For other things you can configure, see below + review the beginning of `__main__.py`.._
+
+
+### Access Control
+
+If you want to restrict access to your Redata installation to particular CIDR blocks, configure the `allowed-cidr-blocks` parameter:
+
+    pulumi config set --path 'allowed-cidr-blocks[0]' 10.1.0.0/16
+    pulumi config set --path 'allowed-cidr-blocks[1]' 10.2.100.0/24
+    pulumi config set --path 'allowed-cidr-blocks[2]' 10.2.101.45/32
+
+..but of course with real, public IP CIDRs above, that match what you want to allow.
+
+### AWS Tagging
+
+By default, all taggable resources (according to `taggable.py`) will get two tags:
+
+  - `pulumi:project` (with the name of the project, eg. `redata` unless you rename it in `Pulumi.yaml`)
+  - `pulumi:stack` (with the name of the stack, eg. `dev` in the above example)
+
+Custom tags can be added by setting the `tags` config item using the CLI:
+
+    pulumi config set --path tags.my-tag-name my-tag-value
+
+If you have tag names containing `:`, it's easiest to edit `Pulumi.dev.yaml` (or whatever matches your stack) and add it:
+
+```
+config:
+  # ...
+  redata:tags:
+    my:tag: my-value
+  # ...
+```
+
 
 ## Deployment
 
@@ -92,40 +125,52 @@ You should get output like:
 ```
 Previewing update (dev)
 
-View Live: https://app.pulumi.com/.../redata-aws-fargate/dev/previews/...
+View Live: https://app.pulumi.com/.../redata/dev/previews/...
 
-     Type                             Name                    Plan       
- +   pulumi:pulumi:Stack              redata-aws-fargate-dev  create     
- +   ├─ aws:ecs:Cluster               redata-cluster          create     
- +   ├─ aws:ec2:SecurityGroup         redata-lb-secgrp        create     
- +   ├─ aws:cloudwatch:LogGroup       redata-log-group        create     
- +   ├─ aws:iam:Role                  task-exec-role          create     
- +   ├─ aws:lb:TargetGroup            grafana-web-tg          create     
- +   ├─ aws:iam:RolePolicyAttachment  task-exec-policy        create     
- +   ├─ aws:lb:LoadBalancer           redata-lb               create     
- +   ├─ aws:ec2:SecurityGroup         redata-svc-secgrp       create     
- +   ├─ aws:ec2:SecurityGroup         redata-db-secgrp        create     
- +   ├─ aws:lb:Listener               redata-listener         create     
- +   ├─ aws:rds:Instance              grafana-postgres        create     
- +   ├─ aws:lb:ListenerRule           grafana-listener-rule   create     
- +   ├─ aws:ecs:TaskDefinition        grafana-web-task        create     
- +   └─ aws:ecs:Service               grafana-web-svc         create     
+     Type                                         Name                                     Plan       
+ +   pulumi:pulumi:Stack                          redata-dev                               create     
+ +   ├─ redata:cluster:FileSystem                 redata-efs                               create     
+ +   ├─ aws:cloudwatch:LogGroup                   redata-log-group                         create     
+ ...
+ +   ├─ aws:route53:Record                        redata-postgres-cname                    create     
+ +   ├─ aws:route53:Record                        airflow-postgres-cname                   create     
+ +   ├─ aws:ecs:TaskDefinition                    grafana-web-task                         create     
+ +   ├─ aws:ecs:TaskDefinition                    airflow-scheduler-task                   create     
+ +   └─ aws:ecs:TaskDefinition                    airflow-web-task                         create     
  
 Resources:
-    + 15 to create
+    + 47 to create
 
 Do you want to perform this update? yes
 Updating (dev)
 
-View Live: https://app.pulumi.com/.../redata-aws-fargate/dev/updates/...
+View Live: https://app.pulumi.com/.../redata/dev/updates/1
 
-... 
- 
+     Type                                         Name                                     Status
+ +   pulumi:pulumi:Stack                          redata-dev                               created
+ +   ├─ redata:cluster:FileSystem                 redata-efs                               created
+ +   ├─ aws:cloudwatch:LogGroup                   redata-log-group                         created
+ +   ├─ aws:ecs:Cluster                           redata-cluster                           created
+ +   ├─ aws:iam:Role                              redata-task-exec-role                    created
+ +   ├─ aws:iam:Role                              redata-app-role                          created
+ +   ├─ aws:ec2:SecurityGroup                     redata-lb-secgrp                         created
+ +   ├─ aws:efs:FileSystem                        redata-efs                               created
+ +   ├─ aws:servicediscovery:PrivateDnsNamespace  redata-sd-local-namespace                created
+ +   ├─ aws:route53:Zone                          redata-db-zone                           created
+ +   ├─ redata:service:BackendService             airflow-scheduler                        created
+ +   │  └─ aws:servicediscovery:Service           airflow-scheduler-sd-svc                 created
+ +   ├─ aws:rds:SubnetGroup                       redata-rds-subnetgroup                   created
+...
 Outputs:
-  + grafana-url: "http://redata-lb-cea9555-1717597926.eu-west-1.elb.amazonaws.com/grafana"
+    airflow-db-alias   : "airflow-postgres.db.redata:5432"
+    airflow-db-endpoint: "airflow-postgres...rds.amazonaws.com:5432"
+    airflow-web-url    : "https://redata.<your-public-domain>/airflow"
+    grafana-web-url    : "https://redata.<your-public-domain>/grafana"
+    redata-db-alias    : "redata-postgres.db.redata:5432"
+    redata-db-endpoint : "redata-postgres...rds.amazonaws.com:5432"
 
 Resources:
-    + 15 created
+    + 47 created
 
-Duration: 5m34s
+Duration: 5m14s
 ```
