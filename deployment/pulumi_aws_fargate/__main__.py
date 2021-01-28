@@ -39,6 +39,9 @@ redata_sources = config.require_secret_object('sources')
 
 # --- OPTIONAL CONFIG ---
 
+# Allowed CIDR blocks for accessing the HTTPS load balancer (by default public access)
+allowed_cidr_blocks = config.get_object('allowed-cidr-blocks') or ['0.0.0.0/0']
+
 # Private zones for DB aliases + Service Discovery
 private_zone_db = config.get('private-zone-db') or "db.redata"
 private_zone_sd = config.get('private-zone-sd') or "sd.redata"
@@ -123,7 +126,7 @@ alb_secgrp = aws.ec2.SecurityGroup('redata-lb-secgrp',
         protocol='tcp',
         from_port=443,
         to_port=443,
-        cidr_blocks=['0.0.0.0/0'],
+        cidr_blocks=allowed_cidr_blocks,
     )],
       egress=[aws.ec2.SecurityGroupEgressArgs(
         protocol='-1',

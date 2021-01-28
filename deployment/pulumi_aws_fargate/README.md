@@ -79,8 +79,18 @@ Adjust the configuration as needed, of course; especially passwords, Redata imag
 - ECS services and RDS databases will run in the private subnets
 - An application load balancer will be set up and configured for the public subnets
 
-_**NOTE:** For other things you can configure, review the beginning of `__main__.py`.._
+_**NOTE:** For other things you can configure, see below + review the beginning of `__main__.py`.._
 
+
+### Access Control
+
+If you want to restrict access to your Redata installation to particular CIDR blocks, configure the `allowed-cidr-blocks` parameter:
+
+    pulumi config set --path 'allowed-cidr-blocks[0]' 10.1.0.0/16
+    pulumi config set --path 'allowed-cidr-blocks[1]' 10.2.100.0/24
+    pulumi config set --path 'allowed-cidr-blocks[2]' 10.2.101.45/32
+
+..but of course with real, public IP CIDRs above, that match what you want to allow.
 
 ### AWS Tagging
 
