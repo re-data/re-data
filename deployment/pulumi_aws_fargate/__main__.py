@@ -5,6 +5,7 @@ import pulumi_aws as aws
 from pulumi import export, Output, ResourceOptions
 
 import pulumi_redata as redata
+from autotag import register_auto_tags
 
 aws_config = pulumi.Config('aws')
 
@@ -12,6 +13,7 @@ aws_account_id = aws.get_caller_identity().account_id
 aws_region = aws_config.require('region')
 
 config = pulumi.Config()
+
 
 # --- REQUIRED CONFIG ---
 
@@ -48,12 +50,22 @@ protect_persistent_storage = config.get_bool('protect-persistent-storage') or Fa
 redata_airflow_schedule_interval = config.get("redata-airflow-schedule-interval") or "0 * * * *"
 redata_time_col_blacklist_regex = config.get("redata-time-col-blacklist-regex") or ""
 
+# Extra tags to apply to all taggable resources
+tags = config.get_object('tags') or {}
 
 # --- DERIVED / INTERNAL DEFINITIONS ---
 
 airflow_base_log_folder = "/opt/airflow/logs"
 base_url = f"https://{target_domain}"
 grafana_db_folder = "/var/lib/grafana"
+
+
+# Automatically inject tags.
+register_auto_tags({
+    'pulumi:project': pulumi.get_project(),
+    'pulumi:stack': pulumi.get_stack(),
+    **tags,
+})
 
 
 #
