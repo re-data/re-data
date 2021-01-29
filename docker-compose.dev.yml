@@ -35,7 +35,7 @@ services:
 
 
   scheduler_airflow:
-    image: redatateam/redata:0.0.4-alfa
+    image: redatateam/redata:0.0.5-alfa
     restart: always
     depends_on:
       - postgres_airflow
@@ -56,7 +56,7 @@ services:
       - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
 
   webserver_airflow:
-    image: redatateam/redata:0.0.4-alfa
+    image: redatateam/redata:0.0.5-alfa
     hostname: webserver
     restart: always
     depends_on:
