@@ -104,7 +104,7 @@ class Exasol(DB):
         return [SimpleNamespace(**row) for row in result]
 
     def check_data_volume(self, table, time_interval):
-        interval_part = self.db.make_interval(time_interval)
+        interval_part = self.make_interval(time_interval)
         result = self.db.execute(
             f"""
             SELECT
@@ -120,15 +120,15 @@ class Exasol(DB):
         result = self.db.execute(
             f"""
             SELECT
-                CAST({table.time_column} AS DATE),
+                CAST("{table.time_column}" AS DATE) as "date",
                 count(*) as "count"
-            FROM {table.table_name}
-            WHERE [{table.time_column}] >= '{from_time}'
-            GROUP BY CAST({table.time_column} AS DATE)
+            FROM "{table.table_name}"
+            WHERE "{table.time_column}" >= '{from_time}'
+            GROUP BY 1
             """,
             fetch_dict=True,
         ).fetchall()
-        return SimpleNamespace(**result)
+        return [SimpleNamespace(**r) for r in result]
 
     def execute(self, *args, **kwargs):
         return self.db.execute(*args, **kwargs)
