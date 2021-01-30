@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('text', sa.String(), nullable=True),
     sa.Column('severity', sa.Integer(), nullable=True),
     sa.Column('table_id', sa.Integer(), nullable=True),
-    sa.Column('alert_type', sa.Integer(), nullable=True),
+    sa.Column('alert_type', sa.String(), nullable=True),
     sa.Column('created_at', sa.TIMESTAMP(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )

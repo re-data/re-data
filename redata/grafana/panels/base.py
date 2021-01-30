@@ -49,6 +49,31 @@ class HomeLastDayTraffic():
             ORDER BY 1
         """ 
 
+class HomeAlerts():
+
+    def format(self):
+        return 'table'
+    
+    @staticmethod
+    def title():
+        return 'recent_alerts'
+    
+    def query(self):
+        return f"""
+            SELECT
+                m.table_name,
+                alert.text,
+                alert.alert_type,
+                alert.created_at
+            FROM
+                alerts_alert alert,
+                monitored_table m
+            WHERE
+                alert.table_id = m.id AND
+                $__timeFilter(volume.created_at)
+            ORDER BY
+                alert.created_at DESC
+        """
 
 class SchemaChange():
 

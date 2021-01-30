@@ -11,7 +11,7 @@ class Alert(Base):
     text = Column(String)
     severity = Column(Integer)
     table_id = Column(Integer)
-    alert_type = Column(Integer)
+    alert_type = Column(String)
 
     created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True)
     

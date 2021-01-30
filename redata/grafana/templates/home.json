@@ -64,39 +64,10 @@
         "sortBy": []
       },
       "pluginVersion": "7.3.0",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "queryType": "randomWalk",
-          "rawQuery": true,
-          "rawSql": "SELECT text, severity, alert_type, created_at from alerts_alert",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
+      "targets": "__REPLACE___",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Recent alerts",
+      "title": "recent_alerts",
       "type": "table"
     },
     {
@@ -118,7 +89,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 12,
         "w": 19,
         "x": 5,
         "y": 0
@@ -234,7 +205,7 @@
       },
       "folderId": null,
       "gridPos": {
-        "h": 20,
+        "h": 32,
         "w": 5,
         "x": 0,
         "y": 8
