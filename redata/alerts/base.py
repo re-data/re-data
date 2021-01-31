@@ -11,6 +11,9 @@ from datetime import datetime, timedelta
 def alert_on_z_score(df, table, check_col, alert_type, checked_txt):
     df = df[df[check_col].notnull()]
 
+    if len(df) <= 1:
+        return
+
     last_el_zscore = stats.zscore(df[check_col])[-1]
     last_el = df[check_col].iloc[-1]
     
@@ -22,7 +25,7 @@ def alert_on_z_score(df, table, check_col, alert_type, checked_txt):
         
         alert_desc = 'above' if last_el_zscore > 0 else 'below'
 
-        print (f"Adding volume alert about table {table.table_name}")
+        print (f"Adding alert about table {table.table_name}")
 
         alert = Alert(
             text=f"""

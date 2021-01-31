@@ -65,6 +65,7 @@ def run_check_for_new_tables(db):
 def run_compute_alerts(db):
     check_alert.volume_alert(db)
     check_alert.delay_alert(db)
+    check_alert.values_alert(db)
 
 with DAG('validation_dag', description='Validate data',
           schedule_interval=settings.REDATA_AIRFLOW_SCHEDULE_INTERVAL,

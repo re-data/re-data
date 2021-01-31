@@ -28,7 +28,160 @@
           "x": 0,
           "y": 0
         },
-        "id":1,
+        "id": 1,
+        "panels": [],
+        "title": "alerts",
+        "type": "row"
+      },
+      {
+        "datasource": "redata_metrics_db",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": null,
+              "filterable": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 12,
+          "x": 0,
+          "y": 1
+        },
+        "id": 2,
+        "options": {
+          "showHeader": true
+        },
+        "pluginVersion": "7.3.0",
+        "targets": "__TO_REPLACE__",
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "recent_alerts",
+        "type": "table"
+      },
+      {
+        "alert": "__TO__REPLACE__",
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "redata_metrics_db",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {}
+          },
+          "overrides": []
+        },
+        "fill": 1,
+        "fillGradient": 0,
+        "gridPos": {
+          "h": 5,
+          "w": 12,
+          "x": 12,
+          "y": 1
+        },
+        "hiddenSeries": false,
+        "id": 3,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "7.3.0",
+        "pointradius": 1,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": "__TO__REPLACE__",
+        "thresholds": [
+          {
+            "colorMode": "critical",
+            "fill": true,
+            "line": true,
+            "op": "gt",
+            "value": 0
+          }
+        ],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "alerts_by_day",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "collapsed": false,
+        "datasource": null,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 6
+        },
+        "id":4,
         "panels": [],
         "title": "new_records summary",
         "type": "row"
@@ -82,11 +235,11 @@
           "h": 4,
           "w": 24,
           "x": 0,
-          "y": 1
+          "y": 11
         },
         "height": null,
         "hideTimeOverride": false,
-        "id":2,
+        "id":5,
         "interval": null,
         "links": [],
         "mappingType": 1,
@@ -161,11 +314,11 @@
           "h": 7,
           "w": 12,
           "x": 0,
-          "y": 5
+          "y": 11
         },
         "hiddenSeries": false,
         "hideTimeOverride": false,
-        "id":3,
+        "id":6,
         "legend": {
           "alignAsTable": false,
           "avg": true,
@@ -280,11 +433,11 @@
           "h": 7,
           "w": 12,
           "x": 12,
-          "y": 5
+          "y": 11
         },
         "hiddenSeries": false,
         "hideTimeOverride": false,
-        "id":4,
+        "id":7,
         "interval": null,
         "legend": {
           "alignAsTable": true,
@@ -366,9 +519,9 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 12
+          "y": 18
         },
-        "id": 5,
+        "id": 8,
         "panels": [],
         "title": "schema_changes summary",
         "type": "row"
@@ -403,10 +556,10 @@
           "h": 7,
           "w": 12,
           "x": 0,
-          "y": 13
+          "y": 18
         },
         "hideTimeOverride": false,
-        "id": 6,
+        "id": 9,
         "links": [],
         "options": {
           "showHeader": true,
@@ -454,9 +607,9 @@
           "h": 7,
           "w": 12,
           "x": 12,
-          "y": 13
+          "y": 19
         },
-        "id": 9,
+        "id": 12,
         "options": {
           "showHeader": true
         },

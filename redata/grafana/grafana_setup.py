@@ -1,6 +1,7 @@
 import pdb
 from redata import db_operations
 from grafana_api.grafana_face import GrafanaFace
+import grafana_api
 
 import subprocess
 import json
@@ -13,6 +14,7 @@ from redata.grafana.table_dashboards import get_dashboard_for_table
 from redata.models.table import MonitoredTable
 from grafana_api.grafana_api import GrafanaClientError
 from redata.db_operations import source_dbs
+from redata.grafana.channel import get_slack_notification_channel
 
 def create_source_in_grafana(grafana_api):
     datasource = get_postgres_datasource()
@@ -20,6 +22,14 @@ def create_source_in_grafana(grafana_api):
         source = grafana_api.datasource.get_datasource_by_name(datasource['name'])
     except GrafanaClientError:
         print (grafana_api.datasource.create_datasource(datasource))
+
+
+def create_notifcation_channels(grafana_api):
+    channels = grafana_api.notifications.get_channels()
+    if len(channels) == 0 and settings.REDATA_SLACK_NOTIFICATION_URL:
+        channel = get_slack_notification_channel()
+        print (grafana_api.notifications.create_channel(channel))
+
 
 def create_dashboard_for_table(grafana_api, db, table):
     data = get_dashboard_for_table(db, table)
@@ -52,6 +62,7 @@ def create_dashboards():
     )
 
     create_source_in_grafana(grafana_api)
+    create_notifcation_channels(grafana_api)
     dashboards = []
 
     for db in source_dbs:

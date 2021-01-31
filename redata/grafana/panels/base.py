@@ -70,7 +70,7 @@ class HomeAlerts():
                 monitored_table m
             WHERE
                 alert.table_id = m.id AND
-                $__timeFilter(volume.created_at)
+                $__timeFilter(alert.created_at)
             ORDER BY
                 alert.created_at DESC
         """
@@ -100,6 +100,62 @@ class SchemaChange():
             $__timeFilter(created_at)
         ORDER BY 1
         """
+
+
+class AlertsTable():
+    def __init__(self, table):
+        self.table = table
+
+    def format(self):
+        return 'table'
+    
+    @staticmethod
+    def title():
+        return 'recent_alerts'
+    
+    def query(self):
+        return f"""
+            SELECT
+                alert.text,
+                alert.alert_type,
+                alert.created_at
+            FROM
+                alerts_alert alert
+            WHERE
+                table_id = {self.table.id} and
+                $__timeFilter(alert.created_at)
+            ORDER BY
+                alert.created_at DESC
+        """
+
+class AlertsByDay():
+    def __init__(self, table):
+        self.table = table
+
+    def format(self):
+        return 'time_series'
+    
+    @staticmethod
+    def title():
+        return 'alerts_by_day'
+
+    def query(self):
+        return f"""
+            SELECT
+                alert.created_at::date as time,
+                alert.alert_type,
+                count(*)
+            FROM
+                alerts_alert alert
+            WHERE
+                table_id = {self.table.id} and
+                $__timeFilter(alert.created_at)
+            GROUP BY
+                alert.created_at::date, alert.alert_type
+            ORDER BY
+                alert.created_at::date DESC
+        """
+
 
 
 class CurrentSchema():
@@ -259,4 +315,4 @@ class CheckForColumnByValue():
         1
         """
 
-ALL_PANELS = VolumeGraphs, DelayOnTable, GroupByDate, SchemaChange, CurrentSchema
+ALL_PANELS = VolumeGraphs, DelayOnTable, GroupByDate, SchemaChange, CurrentSchema, AlertsTable, AlertsByDay
