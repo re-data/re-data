@@ -34,6 +34,16 @@ Here are some examples of how generated Grafana dashboards look like:
 <br>
 *Get an in-depth view of your table, learn about any schema changes, volume fluctuations, nulls in columns, and other useful metrics.*
 
+## Smart alerts
+
+Redata compares metrics computed in the past to current metrics and alerts if anomalies are found. This means that situations like this:
+ * sudden drops or increases in the volume of new records added to your tables
+ * longer than expected break between data arrivals
+ * significantly different maximal/minimal/avg numbers in any of table columns
+ * and more
+
+Would be detected, and you will be alerted. Redata supports Slack (with others tools possible to integerate for you via Grafana) so you can also set up alerts to your favorite support channel.
+
 ## Batteries included
 
 No need to setup Airflow, Grafana or DB for storing metrics. Redata will setup all of those via Docker images, you need to deploy only one thing.
@@ -50,6 +60,8 @@ Here is a our list :)
  * **Visualizing how things change over time** - If you are doing any updates to DB, like updating row status etc. it's impossible to visualize how things looked liked in the past and compare it to now (for alerting purposes etc.), adding metrics layer makes it easy.
  
  * **Automatic and up to date dashboards** - It's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is hard - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
+ 
+ * **Smart alerts** - Once tables are detected redata automatically tracks their health and looks for anomalies there. It's hard to do that alerting yourself and scalling it for all tables requires even more effort.
 
 # Getting started (local machine setup)
 
@@ -115,6 +127,7 @@ Here are integrations we support or work on now. Let us know if you'd really lik
 		<tr><td><img height="40" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVBiUjawSeBBj7T2v64nKYk7SWuLQ3g1vugg&usqp=CAU" /></td><td style="width: 200px;"><a href="https://cloud.google.com/bigquery">BigQuery</a></td><td>Supported</td></tr>
 		<tr><td><img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/AirflowLogo.png/320px-AirflowLogo.png" /></td><td style="width: 200px;"><a href="https://airflow.apache.org/">Apache Airflow</a></td><td>Supported, view all your checks in Airflow </td></tr>
 		<tr><td><img height="40" src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a1/Grafana_logo.svg/125px-Grafana_logo.svg.png" /></td><td style="width: 200px;"><a href="https://grafana.com/">Grafana</a></td><td>Supported, view metrics here</td></tr>
+		<tr><td><img height="40" src="https://assets.brandfolder.com/pl546j-7le8zk-btwjnu/v/2925183/view@2x.png?v=1610642000" /></td><td style="width: 200px;"><a href="https://grafana.com/">Slack</a></td><td>Supported, get alerts on Slack</td></tr>
 		<tr><td><img height="40" src="https://www.sqlalchemy.org/img/sqla_logo.png" /></td><td style="width: 200px;">Other SQL DBs</td><td>Experimental support via using SQLAlchemy</td></tr>
 		<tr><td><img height="40" src="https://www.blazeclan.com/wp-content/uploads/2013/08/Amazon-Redshift-%E2%80%93-11-Key-Points-to-Remember.png" /></td><td style="width: 200px;">AWS Redshift</td><td>In development</td></tr>
 		<tr><td><img height="40" src="https://braze-marketing-assets.s3.amazonaws.com/images/partner_logos/amazon-s3.png" />   </td><td style="width: 200px;">AWS S3</td><td>In development</td></tr>
