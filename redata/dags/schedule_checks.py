@@ -42,7 +42,6 @@ def run_checks_for_table(db, table):
         check_data_volume(db, table, interval)
     print (f"Check for data volume table:{table.table_name} [DONE]")
 
-    print (table.schema['columns'])
     for column in table.schema['columns']:
         for interval in settings.VOLUME_INTERVAL:
             if db.is_numeric(column['type']):
@@ -93,6 +92,5 @@ with DAG('validation_dag', description='Validate data',
             dag=dag
         )
 
-        run_checks_op >> compute_alerts_op
         check_new_tables_op >> compute_alerts_op
 
