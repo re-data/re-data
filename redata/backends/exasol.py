@@ -237,16 +237,17 @@ def extended_mapper(val, data_type):
             if td.microseconds > 0:
                 seconds = 86399 - td.seconds
                 microseconds = 1000000 - td.microseconds
+                sub_days = 1
             elif td.seconds > 0:
                 seconds = 86400 - td.seconds
                 microseconds = 0
+                sub_days = 1
             else:
                 seconds = 0
                 microseconds = 0
+                sub_days = 0
             td = datetime.timedelta(
-                days=td.days - 1,
-                seconds=seconds,
-                microseconds=microseconds
+                days=td.days - sub_days, seconds=seconds, microseconds=microseconds
             )
         return td
     else:
