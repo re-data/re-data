@@ -19,40 +19,56 @@
   "links": [],
   "panels": [
     {
-      "dashboardFilter": "",
-      "dashboardTags": [],
-      "datasource": null,
+      "datasource": "redata_metrics_db",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "text"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 581
+              }
+            ]
+          }
+        ]
       },
-      "folderId": null,
       "gridPos": {
         "h": 8,
-        "w": 5,
-        "x": 0,
+        "w": 19,
+        "x": 5,
         "y": 0
       },
       "id": 6,
-      "limit": 10,
-      "nameFilter": "",
-      "onlyAlertsOnDashboard": false,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
       "pluginVersion": "7.3.0",
-      "show": "current",
-      "sortOrder": 1,
-      "stateFilter": [],
-      "targets": [
-        {
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
+      "targets": "__REPLACE___",
       "timeFrom": null,
       "timeShift": null,
-      "title": "alerting",
-      "type": "alertlist"
+      "title": "recent_alerts",
+      "type": "table"
     },
     {
       "colors": [
@@ -73,7 +89,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 12,
         "w": 19,
         "x": 5,
         "y": 0
@@ -189,7 +205,7 @@
       },
       "folderId": null,
       "gridPos": {
-        "h": 15,
+        "h": 32,
         "w": 5,
         "x": 0,
         "y": 8

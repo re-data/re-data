@@ -1,4 +1,4 @@
-from redata.dags.schedule_checks import run_check_for_new_tables, run_checks
+from redata.dags.schedule_checks import run_check_for_new_tables, run_checks, run_compute_alerts
 from redata.grafana.grafana_setup import create_dashboards
 from redata.db_operations import source_dbs
 import argparse
@@ -31,6 +31,9 @@ def main():
 
             print("run_checks")
             run_checks(db)
+
+            print ("run alerts")
+            run_compute_alerts(db)
 
 
 if __name__ == "__main__":

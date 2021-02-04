@@ -2,7 +2,7 @@ import json
 from redata import settings
 from redata.grafana.utils import load_json_data, update_home_panel_element
 from grafana_api.grafana_face import GrafanaFace
-from redata.grafana.panels.base import HomeLastDayTraffic, HomeLastModifiedTime
+from redata.grafana.panels.base import HomeLastDayTraffic, HomeLastModifiedTime, HomeAlerts
 import math
 
 def load_json_data(file_name):
@@ -51,6 +51,9 @@ def create_home_dashboard(grafana_api, dashboards):
             
         if panel['title'] == 'time_since_last_record_created':
             update_home_panel_element(panel, HomeLastModifiedTime)
+        
+        if panel['title'] == 'recent_alerts':
+            update_home_panel_element(panel, HomeAlerts)
             
 
     response = grafana_api.dashboard.update_dashboard(

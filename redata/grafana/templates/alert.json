@@ -1,0 +1,35 @@
+{
+    "alertRuleTags": {},
+    "conditions": [
+      {
+        "evaluator": {
+          "params": [
+            0
+          ],
+          "type": "gt"
+        },
+        "operator": {
+          "type": "and"
+        },
+        "query": {
+          "params": [
+            "A",
+            "24h",
+            "now"
+          ]
+        },
+        "reducer": {
+          "params": [],
+          "type": "max"
+        },
+        "type": "query"
+      }
+    ],
+    "executionErrorState": "alerting",
+    "for": "0m",
+    "frequency": "5m",
+    "handler": 1,
+    "name": "__TO__REPLACE__",
+    "noDataState": "ok",
+    "notifications": []
+  }

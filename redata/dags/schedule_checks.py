@@ -14,6 +14,7 @@ from redata.checks.data_values import (
     check_count_per_value
 )
 
+from redata.alerts import check_alert
 from redata.db_operations import metrics_db
 from redata.models.table import MonitoredTable
 from redata import settings
@@ -60,6 +61,11 @@ def run_check_for_new_tables(db):
     check_for_new_tables(db)
 
 
+def run_compute_alerts(db):
+    check_alert.volume_alert(db)
+    check_alert.delay_alert(db)
+    check_alert.values_alert(db)
+
 with DAG('validation_dag', description='Validate data',
           schedule_interval=settings.REDATA_AIRFLOW_SCHEDULE_INTERVAL,
           start_date=datetime(2017, 3, 20), catchup=False) as dag:
@@ -78,3 +84,13 @@ with DAG('validation_dag', description='Validate data',
             op_kwargs={'db': source_db},
             dag=dag
         )
+
+        compute_alerts_op = PythonOperator(
+            task_id='compute_alerts_{}'.format(source_db.name),
+            python_callable=run_compute_alerts,
+            op_kwargs={'db': source_db},
+            dag=dag
+        )
+
+        check_new_tables_op >> compute_alerts_op
+
