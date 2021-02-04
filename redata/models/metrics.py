@@ -10,7 +10,7 @@ class MetricsDataDelay(Base):
     id = Column(Integer, primary_key=True)
     table_id = Column(Integer, index=True)
     value = Column(Integer)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
 
 
 class MetricsSchemaChanges(Base):
@@ -22,7 +22,7 @@ class MetricsSchemaChanges(Base):
     column_type = Column(String)
     column_count = Column(Integer)
     operation = Column(String)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
 
 
 class MetricsDataVolume(Base):
@@ -32,7 +32,7 @@ class MetricsDataVolume(Base):
     table_id = Column(Integer, index=True)
     time_interval = Column(String)
     count = Column(BigInteger)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
 
 
 class MetricsDataVolumeDiff(Base):
@@ -42,7 +42,7 @@ class MetricsDataVolumeDiff(Base):
     table_id = Column(Integer, index=True)
     date = Column(Date)
     count = Column(BigInteger)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
 
 
 class MetricsDataValues(Base):
@@ -56,4 +56,4 @@ class MetricsDataValues(Base):
     check_name = Column(String)
     check_value = Column(Float)
     time_interval = Column(String)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)

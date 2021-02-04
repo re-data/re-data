@@ -19,7 +19,7 @@ AIRFLOW_SECURITY_ADMIN_EMAIL=admin@example.com
 
 GF_INSTALL_PLUGINS=grafana-polystat-panel,grafana-clock-panel,grafana-simple-json-datasource
 GF_SECURITY_ADMIN_USER=admin
-GF_SECURITY_ADMIN_PASSWORD=admin
+GF_SECURITY_ADMIN_PASSWORD=mysecretpassword
 
 GRAFANA_WEB_HOST=grafana
 GRAFANA_WEB_PORT=3000

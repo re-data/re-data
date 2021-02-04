@@ -11,7 +11,7 @@ services:
     tty: true
   
   postgres_redata:
-    image: postgres:12
+    image: timescale/timescaledb:latest-pg12
     env_file:
       - .env
     ports:
