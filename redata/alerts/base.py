@@ -21,7 +21,7 @@ def alert_on_z_score(df, table, check_col, alert_type, checked_txt):
     if math.isnan(last_el_zscore):
         return
 
-    if abs(last_el_zscore) > settings.ACCEPATBLE_Z_SCORE_DIFF:
+    if abs(last_el_zscore) > settings.ACCEPTABLE_Z_SCORE_DIFF:
         
         alert_desc = 'above' if last_el_zscore > 0 else 'below'
 
