@@ -35,7 +35,7 @@ services:
 
 
   scheduler_airflow:
-    image: redatateam/redata:0.0.6-alfa
+    image: redatateam/redata:0.0.7-alfa
     restart: always
     depends_on:
       - postgres_airflow
@@ -51,7 +51,7 @@ services:
     entrypoint: /usr/local/redata/scripts/redata-start.sh
 
   webserver_airflow:
-    image: redatateam/redata:0.0.6-alfa
+    image: redatateam/redata:0.0.7-alfa
     hostname: webserver
     restart: always
     depends_on:
