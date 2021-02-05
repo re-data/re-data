@@ -49,5 +49,5 @@ That's all, you have your data under observation by now! :)
 
 ## Troubleshooting
 
-If you have any problems with running above please join our [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-kmor0h0k-LdABQKDwSfQwC8sglkdpVw)
+If you have any problems with running above please join our [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-lrp4khvb-kIS6ct4WzJTy~JNVzwB5yw)
 We will be happy to help! :)
