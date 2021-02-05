@@ -66,7 +66,7 @@ def check_if_schema_changed(db, table):
 
                 if curr_type != prev_type:
                     print (f"Type of column: {el} changed from {prev_type} to {curr_type}")
-                    insert_schema_changed_record(table, 'column added', el, current_dict[el], len(current_dict))
+                    insert_schema_changed_record(table, 'column changed', el, current_dict[el], len(current_dict))
         
         table.schema = {'columns': current_schema}
         metrics_session.commit()
