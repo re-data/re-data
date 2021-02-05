@@ -36,10 +36,10 @@ class MyView(ModelView):
 
     def _user_formatter(view, context, model, name):
         if model.time_column:
-            markupstring = '<select name="cars" id="cars">'
+            markupstring = '<select name="time" id="time">'
             for el in model.schema['columns']:
                 if el['type'] == "timestamp without time zone":
-                    markupstring += f'<option value="volvo">{el["name"]}</option>'
+                    markupstring += f'<option value="name">{el["name"]}</option>'
             markupstring += '</select>'
             return Markup(markupstring)
         else:
@@ -53,11 +53,11 @@ class MyView(ModelView):
 
 
     column_formatters = {
-        'time_column': _user_formatter,
         'created_at' : _user_formatter_time
     }
 
-    column_editable_list = ['active']
+    column_editable_list = ['active','time_column']
+    column_exclude_list = ['schema']
 
 
 
@@ -67,6 +67,5 @@ admin = Admin(app, name='Redata', template_mode='bootstrap3')
 
 admin.add_view(MyView(MonitoredTable, db.session))
 
-app.debug = True
 
 app.run()
