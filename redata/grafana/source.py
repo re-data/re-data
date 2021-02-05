@@ -11,6 +11,6 @@ def get_postgres_datasource():
         'user': settings.REDATA_METRICS_DATABASE_USER,
         'database': settings.REDATA_METRICS_DATABASE_NAME,
         'basicAuth': False,
-        'jsonData': {'postgresVersion': 903, 'sslmode': 'disable'},
+        'jsonData': {'postgresVersion': 1200, 'sslmode': 'disable', 'timescaledb': True},
         'readOnly': False
     }

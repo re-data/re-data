@@ -11,7 +11,7 @@ services:
     tty: true
   
   postgres_redata:
-    image: postgres:12
+    image: timescale/timescaledb:latest-pg12
     env_file:
       - .env
     ports:
@@ -35,7 +35,7 @@ services:
 
 
   scheduler_airflow:
-    image: redatateam/redata:0.0.6-alfa
+    image: redatateam/redata:0.0.7-alfa
     restart: always
     depends_on:
       - postgres_airflow
@@ -56,7 +56,7 @@ services:
       - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
 
   webserver_airflow:
-    image: redatateam/redata:0.0.6-alfa
+    image: redatateam/redata:0.0.7-alfa
     hostname: webserver
     restart: always
     depends_on:
