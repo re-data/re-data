@@ -39,13 +39,15 @@ def check_if_schema_changed(db, table):
     def schema_to_dict(schema):
         return dict([(el['name'], el['type'])for el in schema])
 
+    def sorted_to_compare(schema):
+        return sorted(schema, key=lambda x: sorted(x.items()))
+
     last_schema = table.schema['columns']
     table_name = table.table_name
 
     current_schema = db.get_table_schema(table.table_name)
-    print (table.table_name, current_schema)
 
-    if last_schema != current_schema:
+    if sorted_to_compare(last_schema) != sorted_to_compare(current_schema):
         last_dict = schema_to_dict(last_schema)
         current_dict = schema_to_dict(current_schema)
 
@@ -65,6 +67,6 @@ def check_if_schema_changed(db, table):
                 if curr_type != prev_type:
                     print (f"Type of column: {el} changed from {prev_type} to {curr_type}")
                     insert_schema_changed_record(table, 'column added', el, current_dict[el], len(current_dict))
-
-        table.schema = current_schema
+        
+        table.schema = {'columns': current_schema}
         metrics_session.commit()
