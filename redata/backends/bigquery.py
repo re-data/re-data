@@ -7,8 +7,6 @@ from datetime import datetime, timedelta
 
 
 class BigQuery(SqlAlchemy):
-    def __init__(self, name, db):
-        super().__init__(name, db)
     
     @staticmethod
     def numeric_types():
@@ -46,14 +44,14 @@ class BigQuery(SqlAlchemy):
         ts_tz =  super().get_max_timestamp(table, column)
         return ts_tz.replace(tzinfo=None)
 
-    def get_table_schema(self, table_name):
-        dataset, table_name = table_name.split('.')
+    def get_table_schema(self, table_name, namespace):
+
         result = self.db.execute(f"""
             SELECT
                 column_name as name,
                 data_type as type
             FROM
-                {dataset}.INFORMATION_SCHEMA.COLUMNS
+                {namespace}.INFORMATION_SCHEMA.COLUMNS
             WHERE
                 table_name = '{table_name}'
         """)

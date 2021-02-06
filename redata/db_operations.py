@@ -13,19 +13,19 @@ def get_db_object(db_source):
     db_url = db_source['db_url']
     
     if db_url.startswith('exa+pyexasol'):
-        return Exasol(db_source['name'], ExasolEngine(db_url))
+        return Exasol(db_source['name'], ExasolEngine(db_url), schema=db_source['schema'])
 
     if db_url.startswith('bigquery'):
         db = create_engine(db_url, credentials_path=settings.REDATA_BIGQUERY_DOCKER_CREDS_FILE_PATH)
-        return BigQuery(db_source['name'], db)
+        return BigQuery(db_source['name'], db, schema=db_source['schema'])
     
     db = create_engine(db_url)
 
     if db_url.startswith('postgres'):
-        return Postgres(db_source['name'], db)
+        return Postgres(db_source['name'], db, schema=db_source['schema'])
 
     if db_url.startswith('mysql'):
-        return MySQL(db_source['name'], db)
+        return MySQL(db_source['name'], db, schema=db_source['schema'])
 
 
     raise Exception('Not supported DB')

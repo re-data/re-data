@@ -5,16 +5,29 @@ from datetime import datetime, timedelta
 
 class SqlAlchemy(DB):
 
-    def __init__(self, name, db):
+    def __init__(self, name, db, schema=None):
         super().__init__(name, db)
-        self.metadata = MetaData()	
-        self.metadata.reflect(bind=db)
+        self.namespaces = (
+            [None] if not schema
+            else schema.split(',')
+        )
+
+        self.per_namespace = {}
+
+        for namespace in self.namespaces:
+            metadata = MetaData(schema=namespace)	
+            metadata.reflect(bind=db)
+
+            self.per_namespace[namespace] = metadata
+
+    def get_table_obj(self, table):
+        return self.per_namespace[table.namespace].tables[table.full_table_name]
 
     def check_data_volume(self, table, time_interval):
         
         to_compare = self.get_time_to_compare(time_interval)
 
-        q_table = self.metadata.tables[table.table_name]
+        q_table = self.get_table_obj(table)
 
         stmt = select([func.count().label('count')]).select_from(q_table)
         stmt = stmt.where(q_table.c[table.time_column] > (to_compare))
@@ -42,7 +55,7 @@ class SqlAlchemy(DB):
         return to_compare
     
     def check_data_volume_diff(self, table, from_time):
-        q_table = self.metadata.tables[table.table_name]
+        q_table = self.get_table_obj(table)
 
         from_time = self.get_timestamp(from_time)
         casted_date = cast(q_table.c[table.time_column], Date)
@@ -62,7 +75,7 @@ class SqlAlchemy(DB):
     
     def check_data_delayed(self, table):
 
-        q_table = self.metadata.tables[table.table_name]
+        q_table = self.get_table_obj(table)
 
         stmt = select([
             func.max(q_table.c[table.time_column
@@ -81,7 +94,7 @@ class SqlAlchemy(DB):
     def check_generic(self, func_name, table, checked_column, time_interval):
 
         to_compare = self.get_time_to_compare(time_interval)
-        q_table = self.metadata.tables[table.table_name]
+        q_table = self.get_table_obj(table)
 
         fun = getattr(func, func_name)
 
@@ -98,8 +111,7 @@ class SqlAlchemy(DB):
     def check_count_nulls(self, table, checked_column, time_interval):
         
         to_compare = self.get_time_to_compare(time_interval)
-
-        q_table = self.metadata.tables[table.table_name]
+        q_table = self.get_table_obj(table)
         stmt = select([func.count().label('value')]).select_from(q_table)
 
         stmt = stmt.where(
@@ -115,7 +127,7 @@ class SqlAlchemy(DB):
     def check_count_per_value(self, table, checked_column, time_interval):
 
         to_compare = self.get_time_to_compare(time_interval)
-        q_table = self.metadata.tables[table.table_name]
+        q_table = self.get_table_obj(table)
 
         column = q_table.c[checked_column]
 
@@ -148,8 +160,9 @@ class SqlAlchemy(DB):
 
         return result
 
-    def get_table_schema(self, table_name):
+    def get_table_schema(self, table_name, namespace):
 
+        schema_check = f"and table_schema = '{namespace}'" or '' 
         result = self.db.execute(f"""
             SELECT 
                 column_name, 
@@ -157,7 +170,8 @@ class SqlAlchemy(DB):
             FROM 
                 information_schema.columns
             WHERE 
-                table_name = '{table_name}';
+                table_name = '{table_name}' and
+                table_schema = '{namespace}'
         """)
         
         return [ {'name': c_name, 'type': c_type} for c_name, c_type in result]

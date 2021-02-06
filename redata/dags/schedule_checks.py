@@ -22,10 +22,11 @@ from redata import settings
 
 def run_checks(db):
 
-    tables = MonitoredTable.get_monitored_tables(db.name)
-    
-    for table in tables:
-        run_checks_for_table(db, table)
+    for namespace in db.namespaces:
+        tables = MonitoredTable.get_monitored_tables_per_namespace(db.name, namespace)
+        
+        for table in tables:
+            run_checks_for_table(db, table)
 
 
 def run_checks_for_table(db, table):

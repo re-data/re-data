@@ -1,5 +1,6 @@
 from redata.dags.schedule_checks import run_check_for_new_tables, run_checks, run_compute_alerts
 from redata.grafana.grafana_setup import create_dashboards
+from redata.sample_data.generate import create_sample_tables_in_redata
 from redata.db_operations import source_dbs
 import argparse
 
@@ -13,6 +14,10 @@ def main():
     )
     parser.add_argument(
         "--metrics", action="store_true", help="Push metrics to redata"
+    )
+
+    parser.add_argument(
+        "--generate-sample-data", action="store_true", help="Add sample data to REDATA DB for demonstration"
     )
 
     args = parser.parse_args()
@@ -34,6 +39,9 @@ def main():
 
             print ("run alerts")
             run_compute_alerts(db)
+
+    if args.generate_sample_data:
+        create_sample_tables_in_redata()
 
 
 if __name__ == "__main__":

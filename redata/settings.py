@@ -30,7 +30,8 @@ VOLUME_INTERVAL = ['1 hour', '1 day', '7 day', '30 day']
 REDATA_SOURCE_DBS = [
     {
     'name': el.replace('REDATA_SOURCE_DB_URL_', ''),
-    'db_url': os.environ[el]
+    'db_url': os.environ[el],
+    'schema': os.environ.get(el.replace('_URL_', '_SCHEMA_', 1), None)
     } for el in os.environ if el.startswith('REDATA_SOURCE_DB_URL_')
 ]
 

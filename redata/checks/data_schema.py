@@ -20,18 +20,20 @@ def insert_schema_changed_record(table, operation, column_name, column_type, col
 
 
 def check_for_new_tables(db):
-    tables = db.db.table_names()
     
-    monitored_tables = MonitoredTable.get_monitored_tables(db.name)
-    monitored_tables_names = set([table.table_name for table in monitored_tables])
+    for namespace in db.namespaces:
+        tables = db.db.table_names(namespace)
+        
+        monitored_tables = MonitoredTable.get_monitored_tables_per_namespace(db.name, namespace)
+        monitored_tables_names = set([table.table_name for table in monitored_tables])
 
-    for table_name in tables:
-        if table_name not in monitored_tables_names:
-            table = MonitoredTable.setup_for_source_table(db, table_name)
-            if table:
-                insert_schema_changed_record(
-                    table, 'table created', None, None, None
-                )
+        for table_name in tables:
+            if table_name not in monitored_tables_names:
+                table = MonitoredTable.setup_for_source_table(db, table_name, namespace)
+                if table:
+                    insert_schema_changed_record(
+                        table, 'table created', None, None, None
+                    )
 
 
 def check_if_schema_changed(db, table):
@@ -45,7 +47,7 @@ def check_if_schema_changed(db, table):
     last_schema = table.schema['columns']
     table_name = table.table_name
 
-    current_schema = db.get_table_schema(table.table_name)
+    current_schema = db.get_table_schema(table.table_name, table.namespace)
 
     if sorted_to_compare(last_schema) != sorted_to_compare(current_schema):
         last_dict = schema_to_dict(last_schema)

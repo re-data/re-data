@@ -22,8 +22,9 @@ class ExasolEngine(object):
 
 
 class Exasol(DB):
-    def __init__(self, name, db):
+    def __init__(self, name, db, schema=None):
         super().__init__(name, db)
+        self.schema = schema
 
     def check_data_delayed(self, table):
         return self.db.execute(f"""
@@ -143,7 +144,7 @@ class Exasol(DB):
     def get_age_function(self):
         raise RuntimeError("age function not supported for Exasol")
 
-    def get_table_schema(self, table_name):
+    def get_table_schema(self, table_name, namespace):
         st = self.db.execute(
             """
             /*snapshot execution*/
@@ -152,7 +153,7 @@ class Exasol(DB):
               lower(type_name) AS "type"
             FROM sys.exa_all_columns
             LEFT JOIN sys.exa_sql_types ON type_id = column_type_id
-            WHERE column_schema = current_schema
+            WHERE column_schema = {namespace}
                 AND column_table = {table_name}
             """,
             {'table_name': table_name.upper()},
