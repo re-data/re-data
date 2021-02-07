@@ -47,9 +47,17 @@ def create_sample_tables_in_redata():
         'team1',
         'team2',
         'team3',
+        'team4',
+        'team5',
+        'team6',
+        'team7',
         'c1',
         'c2',
-        'c3'
+        'c3',
+        'c4',
+        'c5',
+        'c6',
+        'c7'
     ]
 
     types = [

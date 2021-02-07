@@ -23,14 +23,17 @@ class SqlAlchemy(DB):
     def get_table_obj(self, table):
         return self.per_namespace[table.namespace].tables[table.full_table_name]
 
-    def check_data_volume(self, table, time_interval):
-        
-        to_compare = self.get_time_to_compare(time_interval)
+
+    def check_data_volume(self, table, time_interval, conf):
+        to_compare = self.get_time_to_compare(time_interval, conf.for_time)
 
         q_table = self.get_table_obj(table)
 
         stmt = select([func.count().label('count')]).select_from(q_table)
-        stmt = stmt.where(q_table.c[table.time_column] > (to_compare))
+        stmt = stmt.where(
+            (q_table.c[table.time_column] > to_compare) &
+            (q_table.c[table.time_column] < conf.for_time)
+        )
 
         result = self.db.execute(stmt).first()
 
@@ -42,19 +45,19 @@ class SqlAlchemy(DB):
     def to_naive_timestamp(self, from_time):
         return from_time
 
-    def get_time_to_compare(self, time_interval):
-        before = self.transform_by_interval(time_interval)
+    def get_time_to_compare(self, time_interval, for_time):
+        before = self.transform_by_interval(time_interval, for_time)
         return before
 
-    def transform_by_interval(self, time_interval):
+    def transform_by_interval(self, time_interval, for_time):
         parts = time_interval.split(' ')
         if parts[-1] == 'day':
-            to_compare = datetime.utcnow() - timedelta(days=int(parts[0]))
+            to_compare = for_time - timedelta(days=int(parts[0]))
         if parts[-1] == 'hour':
-            to_compare = datetime.utcnow() - timedelta(hours=int(parts[0]))
+            to_compare = for_time - timedelta(hours=int(parts[0]))
         return to_compare
     
-    def check_data_volume_diff(self, table, from_time):
+    def check_data_volume_diff(self, table, from_time, conf):
         q_table = self.get_table_obj(table)
 
         from_time = self.get_timestamp(from_time)
@@ -65,7 +68,10 @@ class SqlAlchemy(DB):
             func.count().label('count')
         ]).select_from(q_table)
 
-        stmt = stmt.where(q_table.c[table.time_column] > from_time)
+        stmt = stmt.where(
+            (q_table.c[table.time_column] > from_time) &
+            (q_table.c[table.time_column] < conf.for_time)
+        )
 
         stmt = stmt.group_by(casted_date)
 
@@ -73,13 +79,15 @@ class SqlAlchemy(DB):
         
         return result
     
-    def check_data_delayed(self, table):
+    def check_data_delayed(self, table, conf):
 
         q_table = self.get_table_obj(table)
 
         stmt = select([
             func.max(q_table.c[table.time_column
         ]).label('max_time')]).select_from(q_table)
+
+        stmt = stmt.where(q_table.c[table.time_column] < conf.for_time)
 
         result = self.db.execute(stmt).first()
 
@@ -88,12 +96,12 @@ class SqlAlchemy(DB):
         
         result_time = self.to_naive_timestamp(result.max_time)
 
-        return [datetime.utcnow() - result_time]
+        return [conf.for_time - result_time]
 
 
-    def check_generic(self, func_name, table, checked_column, time_interval):
+    def check_generic(self, func_name, table, checked_column, time_interval, conf):
 
-        to_compare = self.get_time_to_compare(time_interval)
+        to_compare = self.get_time_to_compare(time_interval, conf.for_time)
         q_table = self.get_table_obj(table)
 
         fun = getattr(func, func_name)
@@ -102,20 +110,24 @@ class SqlAlchemy(DB):
             fun(q_table.c[checked_column]).label('value')
         ]).select_from(q_table)
 
-        stmt = stmt.where(q_table.c[table.time_column] > to_compare)
+        stmt = stmt.where(
+            (q_table.c[table.time_column] > to_compare) &
+            (q_table.c[table.time_column] < conf.for_time)
+        )
 
         result = self.db.execute(stmt).first()
 
         return result
 
-    def check_count_nulls(self, table, checked_column, time_interval):
+    def check_count_nulls(self, table, checked_column, time_interval, conf):
         
-        to_compare = self.get_time_to_compare(time_interval)
+        to_compare = self.get_time_to_compare(time_interval, conf.for_time)
         q_table = self.get_table_obj(table)
         stmt = select([func.count().label('value')]).select_from(q_table)
 
         stmt = stmt.where(
             (q_table.c[table.time_column] > to_compare) &
+            (q_table.c[table.time_column] < conf.for_time) &
             (q_table.c[checked_column] == None)
         )
 
@@ -124,9 +136,9 @@ class SqlAlchemy(DB):
         return result
 
 
-    def check_count_per_value(self, table, checked_column, time_interval):
+    def check_count_per_value(self, table, checked_column, time_interval, conf):
 
-        to_compare = self.get_time_to_compare(time_interval)
+        to_compare = self.get_time_to_compare(time_interval, conf.for_time)
         q_table = self.get_table_obj(table)
 
         column = q_table.c[checked_column]
@@ -136,7 +148,8 @@ class SqlAlchemy(DB):
         ]).select_from(q_table)
 
         stmt = stmt.where(
-            q_table.c[table.time_column] > to_compare
+            (q_table.c[table.time_column] > to_compare) &
+            (q_table.c[table.time_column] < conf.for_time)
         )
 
         result = self.db.execute(stmt).first()
@@ -151,6 +164,7 @@ class SqlAlchemy(DB):
 
         stmt = stmt.where(
             (q_table.c[table.time_column] > to_compare) &
+            (q_table.c[table.time_column] < conf.for_time) &
             (column != None)
         )
         
