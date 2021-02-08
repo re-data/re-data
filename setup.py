@@ -17,7 +17,9 @@ setup(
         'cryptography',
         'pybigquery',
         'alembic',
-        'scipy'
+        'scipy',
+        'flask',
+        'flask_admin'
     ],
     entry_points = {
         'console_scripts': ['redata=redata.command_line:main'],
