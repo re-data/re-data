@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import chi2
 
-class Mahalanobis_distance():
+class MahalanobisDistance():
 
     """
         Description:
@@ -16,8 +16,6 @@ class Mahalanobis_distance():
         Parameters:
         -----------
 
-            means_vector [optional numpy means vector]
-            cov [optional numpy covariance matrix]
             p_value [optional float]: probability of obtaining test results at least as extreme as the results actually
                              observed, under the assumption that the null hypothesis is correct
 
@@ -35,40 +33,22 @@ class Mahalanobis_distance():
         fine using the z_score.
     """
 
-    def __init__(self, means_vector=None, cov_matrix=None, p_value=0.05):
-        
-        self.means_vector = means_vector
-        self.cov_matrix = cov_matrix
+    def __init__(self, p_value=0.05):
+
         self.p_value = p_value
 
-    def compute_mahalanobis_individual(self, vector):
+    def compute_mahalanobis_individual(self, vector, means_vector, cov_matrix):
 
-        x_mu = vector - self.means_vector
-        inv_covmat = np.linalg.inv(self.cov_matrix)
+        x_mu = vector - means_vector
+        inv_covmat = np.linalg.inv(cov_matrix)
 
         distance = np.dot(np.dot(x_mu, inv_covmat), x_mu.T)
         p_value = 1 - chi2.cdf(distance, len(vector) - 1)
 
         if p_value < self.p_value:
-            # Warning
-            pass 
+            print(f"The record {vector} was detected as an outlier")
 
-    def multidimensional_outliers(self, data):
-
-        if self.means_vector == None:
-            self.means_vector = np.mean(data, axis=1)
-        if self.cov_matrix == None:
-            self.cov_matrix = np.cov(data)
+    def multidimensional_outliers(self, data, means_vector, cov_matrix):
         
         for i in range(data.shape[1]):
-            self.compute_mahalanobis_individual(data[:,i])
-
-""" Example of mahalanobis distance
-
-from pandas import read_csv
-
-data = read_csv("/home/guillermo/Escritorio/redata/redata/sample_sources/data.csv", sep=",")
-
-Mahalanobis_distance().multidimensional_outliers(data.values.T)
-"""
-
+            self.compute_mahalanobis_individual(data[:,i], means_vector, cov_matrix)
