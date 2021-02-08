@@ -75,5 +75,17 @@ services:
       timeout: 30s
       retries: 3
 
+  redata_ui:
+    image: redatateam/redata:0.0.5-alfa
+    hostname: redataui
+    restart: always
+    depends_on:
+      - postgres_redata
+    env_file:
+      - .env
+    ports:
+      - "5000:5000"
+    entrypoint: /usr/local/redata/scripts/redata-ui.sh
+
 volumes:
   airflowlogs: {}
