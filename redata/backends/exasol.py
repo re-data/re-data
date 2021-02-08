@@ -15,8 +15,8 @@ class ExasolEngine(object):
         with pyexasol.connect(**self.creds, fetch_dict=fetch_dict, fetch_mapper=extended_mapper) as conn:
             return conn.execute(*args, **kwargs)
 
-    def table_names(self):
-        with self.execute("select table_name from exa_all_tables where table_schema = current_schema") as stmt:
+    def table_names(self, namespace):
+        with self.execute("select table_name from exa_all_tables where table_schema = {namespace}") as stmt:
             return stmt.fetchcol()
 
 
@@ -26,18 +26,26 @@ class Exasol(DB):
         super().__init__(name, db)
         self.schema = schema
 
-    def check_data_delayed(self, table):
+    def check_data_delayed(self, table, conf):
+        for_time = conf.for_time
         return self.db.execute(f"""
             SELECT
-                now() - max([{table.time_column}])
+                '{for_time}' - max([{table.time_column}])
             FROM {table.table_name}
+            WHERE [{table.time_column}] < '{for_time}'
         """).fetchone()
 
-    def check_generic(self, func_name, table, checked_column, time_interval):
+    def get_time_range_query(self, table, for_time, time_interval):
+        time_interval = self.make_interval(time_interval)
+        return f"""
+            WHERE [{table.time_column}] > '{for_time}' - {time_interval}
+            AND [{table.time_column}] < '{for_time}'
+        """
+
+    def check_generic(self, func_name, table, checked_column, time_interval, conf):
         interval_part = ""
         if time_interval:
-            time_interval = self.make_interval(time_interval)
-            interval_part = f"WHERE [{table.time_column}] > now() - {time_interval}"
+            interval_part = self.get_time_range_query(table, conf.for_time, time_interval)
 
         result = self.db.execute(
             f"""
@@ -51,30 +59,30 @@ class Exasol(DB):
         ).fetchone()
         return SimpleNamespace(**result)
 
-    def check_count_nulls(self, table, checked_column, time_interval):
-        interval_part = self.make_interval(time_interval)
+    def check_count_nulls(self, table, checked_column, time_interval, conf):
+        interval_part = self.get_time_range_query(table, conf.for_time, time_interval)
         result = self.db.execute(
             f"""
             SELECT
                 count(*) as "value"
             FROM
                 {table.table_name}
-            WHERE [{table.time_column}] > now() - {interval_part}
+            {interval_part}
               AND [{checked_column}] IS NULL
             """,
             fetch_dict=True,
         ).fetchone()
         return SimpleNamespace(**result)
 
-    def check_count_per_value(self, table, checked_column, time_interval):
-        interval_part = self.make_interval(time_interval)
+    def check_count_per_value(self, table, checked_column, time_interval, conf):
+        interval_part = self.get_time_range_query(table, conf.for_time, time_interval)
         distinct_count = self.db.execute(
             f"""
             SELECT
                 count(distinct([{checked_column}])) as "count"
             FROM
                 {table.table_name}
-            WHERE [{table.time_column}] > now() - {interval_part}
+            {interval_part}
             """,
             fetch_dict=True,
         ).fetchval()
@@ -91,9 +99,8 @@ class Exasol(DB):
                 [{checked_column}] as "value"
             FROM
                 {table.table_name}
-            WHERE
-                [{table.time_column}] > now() - {interval_part} and
-                [{checked_column}] is not null
+            {interval_part}
+            AND [{checked_column}] is not null
             GROUP BY
                 [{checked_column}]
             ORDER BY
@@ -104,27 +111,28 @@ class Exasol(DB):
         ).fetchall()
         return [SimpleNamespace(**row) for row in result]
 
-    def check_data_volume(self, table, time_interval):
-        interval_part = self.make_interval(time_interval)
+    def check_data_volume(self, table, time_interval, conf):
+        interval_part = self.get_time_range_query(table, conf.for_time, time_interval)
         result = self.db.execute(
             f"""
             SELECT
                 count(*) as "count"
             FROM {table.table_name}
-            WHERE [{table.time_column}] > now() - {interval_part}
+            {interval_part}
             """,
             fetch_dict=True,
         ).fetchone()
         return SimpleNamespace(**result)
     
-    def check_data_volume_diff(self, table, from_time):
+    def check_data_volume_diff(self, table, from_time, conf):
         result = self.db.execute(
             f"""
             SELECT
                 CAST("{table.time_column}" AS DATE) as "date",
                 count(*) as "count"
             FROM "{table.table_name}"
-            WHERE "{table.time_column}" >= '{from_time}'
+            WHERE [{table.time_column}] >= '{from_time}'
+                  [{table.time_column}] < '{conf.for_time}'
             GROUP BY 1
             """,
             fetch_dict=True,
