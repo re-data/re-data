@@ -42,7 +42,7 @@ def alert_on_z_score(df, table, check_col, alert_type, checked_txt, conf):
         metrics_session.commit()
 
 
-def get_last_results(db, table, metrics_table, conf, days=7):
+def get_last_results(db, table, metrics_table, conf, days=21):
 
     for_time = conf.for_time
     dt = for_time - timedelta(days=days)
