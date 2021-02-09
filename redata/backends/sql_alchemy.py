@@ -6,35 +6,37 @@ from datetime import datetime, timedelta
 class SqlAlchemy(DB):
 
     def __init__(self, name, db, schema=None):
-        super().__init__(name, db)
-        self.namespaces = (
-            [None] if not schema
-            else schema.split(',')
-        )
-
-        self.per_namespace = {}
-
-        for namespace in self.namespaces:
-            metadata = MetaData(schema=namespace)	
-            metadata.reflect(bind=db)
-
-            self.per_namespace[namespace] = metadata
+        super().__init__(name, db, schema)
 
     def get_table_obj(self, table):
-        return self.per_namespace[table.namespace].tables[table.full_table_name]
+        if not getattr(self, '_per_namespace', None):
+            for namespace in self.namespaces:
+                metadata = MetaData(schema=namespace)	
+                metadata.reflect(bind=self.db)
+                self._per_namespace[namespace] = metadata
 
+        return self._per_namespace[table.namespace].tables[table.full_table_name]
 
-    def check_data_volume(self, table, time_interval, conf):
-        to_compare = self.get_time_to_compare(time_interval, conf.for_time)
+    def table_names(self, namespace):
+        return self.db.table_names()
 
+    def filtered_by_time(self, stmt, table, interval, conf):
         q_table = self.get_table_obj(table)
 
-        stmt = select([func.count().label('count')]).select_from(q_table)
-        stmt = stmt.where(
-            (q_table.c[table.time_column] > to_compare) &
-            (q_table.c[table.time_column] < conf.for_time)
-        )
+        start = self.get_time_to_compare(interval, conf.for_time)
+        stop = self.get_timestamp(conf.for_time)
 
+        stmt = stmt.where(
+            (q_table.c[table.time_column] > start) &
+            (q_table.c[table.time_column] < stop)
+        )
+        return stmt
+
+    def check_data_volume(self, table, time_interval, conf):
+        q_table = self.get_table_obj(table)
+        stmt = select([func.count().label('count')]).select_from(q_table)
+
+        stmt = self.filtered_by_time(stmt, table, time_interval, conf)
         result = self.db.execute(stmt).first()
 
         return result
@@ -60,7 +62,8 @@ class SqlAlchemy(DB):
     def check_data_volume_diff(self, table, from_time, conf):
         q_table = self.get_table_obj(table)
 
-        from_time = self.get_timestamp(from_time)
+        start = self.get_timestamp(from_time)
+        stop = self.get_timestamp(conf.for_time)
         casted_date = cast(q_table.c[table.time_column], Date)
 
         stmt = select([
@@ -69,8 +72,8 @@ class SqlAlchemy(DB):
         ]).select_from(q_table)
 
         stmt = stmt.where(
-            (q_table.c[table.time_column] > from_time) &
-            (q_table.c[table.time_column] < conf.for_time)
+            (q_table.c[table.time_column] > start) &
+            (q_table.c[table.time_column] < stop)
         )
 
         stmt = stmt.group_by(casted_date)
@@ -87,7 +90,7 @@ class SqlAlchemy(DB):
             func.max(q_table.c[table.time_column
         ]).label('max_time')]).select_from(q_table)
 
-        stmt = stmt.where(q_table.c[table.time_column] < conf.for_time)
+        stmt = stmt.where(q_table.c[table.time_column] < self.get_timestamp(conf.for_time))
 
         result = self.db.execute(stmt).first()
 
@@ -100,8 +103,6 @@ class SqlAlchemy(DB):
 
 
     def check_generic(self, func_name, table, checked_column, time_interval, conf):
-
-        to_compare = self.get_time_to_compare(time_interval, conf.for_time)
         q_table = self.get_table_obj(table)
 
         fun = getattr(func, func_name)
@@ -109,27 +110,20 @@ class SqlAlchemy(DB):
         stmt = select([
             fun(q_table.c[checked_column]).label('value')
         ]).select_from(q_table)
-
-        stmt = stmt.where(
-            (q_table.c[table.time_column] > to_compare) &
-            (q_table.c[table.time_column] < conf.for_time)
-        )
+        
+        stmt = self.filtered_by_time(stmt, table, time_interval, conf)
 
         result = self.db.execute(stmt).first()
 
         return result
 
     def check_count_nulls(self, table, checked_column, time_interval, conf):
-        
-        to_compare = self.get_time_to_compare(time_interval, conf.for_time)
         q_table = self.get_table_obj(table)
         stmt = select([func.count().label('value')]).select_from(q_table)
 
-        stmt = stmt.where(
-            (q_table.c[table.time_column] > to_compare) &
-            (q_table.c[table.time_column] < conf.for_time) &
-            (q_table.c[checked_column] == None)
-        )
+        stmt = stmt.where((q_table.c[checked_column] == None))
+
+        stmt = self.filtered_by_time(stmt, table, time_interval, conf)
 
         result = self.db.execute(stmt).first()
 
@@ -138,7 +132,6 @@ class SqlAlchemy(DB):
 
     def check_count_per_value(self, table, checked_column, time_interval, conf):
 
-        to_compare = self.get_time_to_compare(time_interval, conf.for_time)
         q_table = self.get_table_obj(table)
 
         column = q_table.c[checked_column]
@@ -147,10 +140,7 @@ class SqlAlchemy(DB):
             func.count(distinct(column)).label('count')
         ]).select_from(q_table)
 
-        stmt = stmt.where(
-            (q_table.c[table.time_column] > to_compare) &
-            (q_table.c[table.time_column] < conf.for_time)
-        )
+        stmt = self.filtered_by_time(stmt, table, time_interval, conf)
 
         result = self.db.execute(stmt).first()
 
@@ -162,11 +152,8 @@ class SqlAlchemy(DB):
             (column).label('value')
         ]).select_from(q_table)
 
-        stmt = stmt.where(
-            (q_table.c[table.time_column] > to_compare) &
-            (q_table.c[table.time_column] < conf.for_time) &
-            (column != None)
-        )
+        stmt = self.filtered_by_time(stmt, table, time_interval, conf)
+        stmt = stmt.where((column != None))
         
         stmt = stmt.group_by(column).order_by(desc('count')).limit(10)
 
@@ -175,8 +162,7 @@ class SqlAlchemy(DB):
         return result
 
     def get_table_schema(self, table_name, namespace):
-
-        schema_check = f"and table_schema = '{namespace}'" or '' 
+        schema_check = f"and table_schema = '{namespace}'" if namespace else ''
         result = self.db.execute(f"""
             SELECT 
                 column_name, 
@@ -184,8 +170,8 @@ class SqlAlchemy(DB):
             FROM 
                 information_schema.columns
             WHERE 
-                table_name = '{table_name}' and
-                table_schema = '{namespace}'
+                table_name = '{table_name}'
+                {schema_check}
         """)
         
         return [ {'name': c_name, 'type': c_type} for c_name, c_type in result]

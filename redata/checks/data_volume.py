@@ -1,4 +1,3 @@
-import pdb
 from redata.db_operations import metrics_session, metrics_db
 from sqlalchemy.sql import text
 from datetime import datetime, date, time 

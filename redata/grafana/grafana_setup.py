@@ -1,4 +1,3 @@
-import pdb
 from redata import db_operations
 from grafana_api.grafana_face import GrafanaFace
 import grafana_api

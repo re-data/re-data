@@ -1,5 +1,4 @@
 import json
-import pdb
 from sqlalchemy.sql import text
 from redata.db_operations import metrics_session
 from sqlalchemy import update
@@ -23,7 +22,7 @@ def insert_schema_changed_record(table, operation, column_name, column_type, col
 def check_for_new_tables(db, conf):
     
     for namespace in db.namespaces:
-        tables = db.db.table_names(namespace)
+        tables = db.table_names(namespace)
         
         monitored_tables = MonitoredTable.get_monitored_tables_per_namespace(db.name, namespace)
         monitored_tables_names = set([table.table_name for table in monitored_tables])

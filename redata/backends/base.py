@@ -1,9 +1,14 @@
 from datetime import date, datetime
 
 class DB(object):
-    def __init__(self, name, db):
+    def __init__(self, name, db, schema):
         self.name = name
         self.db = db
+        self.namespaces = (
+            [None] if not schema
+            else schema.split(',')
+        )
+
 
     def execute(self, *args, **kwargs):
         return self.db.execute(*args, **kwargs)

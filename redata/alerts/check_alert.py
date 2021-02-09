@@ -44,6 +44,6 @@ def values_alert(db, table, conf):
         if row['column_value']:
             df = df[df['column_value'] == row['column_value']]
 
-        check_text = f'column: {row.column_name}, values for {row.check_name}, interval: {row.time_interval}'
+        check_text = f'column: {row.column_name}, values for {row.check_name}'
         alert_on_z_score(df, table, 'check_value', row['check_name'], check_text, conf)
     
