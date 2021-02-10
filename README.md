@@ -26,11 +26,11 @@ in your data. Currently there are 2 types of dashboard redata creates:
 
 Here are some examples of how generated Grafana dashboards look like:
 
-<img src="./docs/static/home.png" width="80%"></img>
+<img src="./docs/static/home_dashboard.png" width="80%"></img>
 <br>
 *Get a glimpse of what's happening in all your tables on one screen. If you see, any suspicious numbers click on the tile for more details on this specific table.* 
 
-<img src="./docs/static/per_table.png" width="80%"></img>
+<img src="./docs/static/table_dashboard.png" width="80%"></img>
 <br>
 *Get an in-depth view of your table, learn about any schema changes, volume fluctuations, nulls in columns, and other useful metrics.*
 
