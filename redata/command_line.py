@@ -23,7 +23,7 @@ def main():
     )
 
     parser.add_argument(
-        "--backfill", action="store_true", help="Backfill metrics data"
+        "--backfill", action="store_true", help="Run backfill for last 30 days of metrics data"
     )
 
     args = parser.parse_args()
