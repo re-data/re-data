@@ -16,15 +16,17 @@ class ExasolEngine(object):
             return conn.execute(*args, **kwargs)
 
     def table_names(self, namespace):
-        with self.execute("select table_name from exa_all_tables where table_schema = {namespace}") as stmt:
+        schema_el = f"'{namespace}'" if namespace else "current_schema"
+        with self.execute("select table_name from exa_all_tables where table_schema = {schema_el}") as stmt:
             return stmt.fetchcol()
 
 
-
 class Exasol(DB):
-    def __init__(self, name, db, schema=None):
-        super().__init__(name, db)
-        self.schema = schema
+    def __init__(self, name, db, schema):
+        super().__init__(name, db, schema)
+
+    def table_names(self, namespace):
+        return self.db.table_names(namespace)
 
     def check_data_delayed(self, table, conf):
         for_time = conf.for_time
@@ -153,6 +155,7 @@ class Exasol(DB):
         raise RuntimeError("age function not supported for Exasol")
 
     def get_table_schema(self, table_name, namespace):
+        schema_el = f"'{namespace}'" if namespace else "current_schema"
         st = self.db.execute(
             """
             /*snapshot execution*/
