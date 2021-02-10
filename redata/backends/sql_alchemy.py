@@ -10,6 +10,7 @@ class SqlAlchemy(DB):
 
     def get_table_obj(self, table):
         if not getattr(self, '_per_namespace', None):
+            self._per_namespace = {}
             for namespace in self.namespaces:
                 metadata = MetaData(schema=namespace)	
                 metadata.reflect(bind=self.db)
@@ -18,7 +19,7 @@ class SqlAlchemy(DB):
         return self._per_namespace[table.namespace].tables[table.full_table_name]
 
     def table_names(self, namespace):
-        return self.db.table_names()
+        return self.db.table_names(namespace)
 
     def filtered_by_time(self, stmt, table, interval, conf):
         q_table = self.get_table_obj(table)

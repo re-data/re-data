@@ -23,12 +23,12 @@ def main():
     )
 
     parser.add_argument(
-        "--backfill", action="store_true", help="Run backfill for last 30 days of metrics data"
+        "--backfill", dest='backfill_days', action="store", nargs='?', type=int, help="Run backfill for last X days of metrics data"
     )
 
     args = parser.parse_args()
 
-    if not any((args.grafana, args.metrics, args.backfill, args.generate_sample_data)):
+    if not any((args.grafana, args.metrics, args.backfill_days, args.generate_sample_data)):
         print("Specify at least one of --grafana --metrics ")
 
     if args.grafana:
@@ -50,11 +50,12 @@ def main():
         create_sample_tables_in_redata()
 
 
-    if args.backfill:
+    if args.backfill_days:
+        days = args.backfill_days
         
         for db in source_dbs:
             run_check_for_new_tables(db, Conf(datetime.utcnow()))
-            past = datetime.utcnow() - timedelta(days=30)
+            past = datetime.utcnow() - timedelta(days=days)
 
             while past <= datetime.utcnow():
                 run_checks(db, Conf(past))

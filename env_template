@@ -47,5 +47,8 @@ REDATA_ACCEPTABLE_Z_SCORE_DIFF=3.0
 
 # REDATA_SOURCE_DB_URL_BIGQUERY=bigquery://PROJECT_NAME/
 
+# If you have multiple schemas/namespaces in DB and want to run Redata on specifc ones specify:
+# REDATA_SOURCE_DB_SCHEMA_DBNAME=schama1,schema2
+
 # creds_file_for_big_query ONLY NEEDED if not on GCP 
 # REDATA_BIGQUERY_HOST_KEY_PATH=PATH_TO_JSON_CREDS_FILE
