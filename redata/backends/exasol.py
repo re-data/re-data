@@ -17,7 +17,7 @@ class ExasolEngine(object):
 
     def table_names(self, namespace):
         schema_el = f"'{namespace}'" if namespace else "current_schema"
-        with self.execute("select table_name from exa_all_tables where table_schema = {schema_el}") as stmt:
+        with self.execute(f"select table_name from exa_all_tables where table_schema = {schema_el}") as stmt:
             return stmt.fetchcol()
 
 
