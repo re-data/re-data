@@ -148,3 +148,5 @@ We love all contributions, bigger and smaller.
 Checkout our list of [good first issues](https://github.com/redata-team/redata/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and see if you like anything from there. Also feel welcome to join our [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-lrp4khvb-kIS6ct4WzJTy~JNVzwB5yw) and suggest ideas, or setup no pressure session with Redata [here](https://calendly.com/mateuszklimek/30min). 
 
 More details on how to tests your changes under: [CONTRIBUTING](https://github.com/redata-team/redata/blob/master/CONTRIBUTING.md)
+
+If you got this far and like what we are building, support us! Star https://github.com/redata-team/redata on Github :)
