@@ -35,7 +35,7 @@ services:
 
 
   scheduler_airflow:
-    image: redatateam/redata:0.0.8-alfa
+    image: redatateam/redata:0.0.9-alfa
     restart: always
     depends_on:
       - postgres_airflow
@@ -56,7 +56,7 @@ services:
       - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
 
   webserver_airflow:
-    image: redatateam/redata:0.0.8-alfa
+    image: redatateam/redata:0.0.9-alfa
     hostname: webserver
     restart: always
     depends_on:
@@ -76,7 +76,7 @@ services:
       retries: 3
 
   redata_ui:
-    image: redatateam/redata:0.0.5-alfa
+    image: redatateam/redata:0.0.9-alfa
     hostname: redataui
     restart: always
     depends_on:
@@ -86,6 +86,8 @@ services:
     ports:
       - "5000:5000"
     entrypoint: /usr/local/redata/scripts/redata-ui.sh
+    volumes:
+      - ./redata:/usr/local/redata-dev/redata
 
 volumes:
   airflowlogs: {}
