@@ -1,7 +1,11 @@
+<p align="left">
+<a href="https://join.slack.com/t/redatahq/shared_invite/zt-lrp4khvb-kIS6ct4WzJTy~JNVzwB5ywg"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"></a>
+</p>
+
+
 # Redata
 Monitoring system for data teams.
 Computing health checks on data (via Airflow jobs), visualizing them over time, and alerting on them in Grafana.
-
 
 # Key features
 
