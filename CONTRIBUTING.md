@@ -53,5 +53,5 @@ docker-compose -f docker-compose.dev.yml up
 This will delete docker containers created and restart them from scratch using your code changes.
 If after that, grafana metrics are computed you are ready to make PR.
 
-Ps. We will soon add tests to make contributing and developing easier, for now treat starting docker and seeing now errors as tests ;)
+Ps. We will soon add tests to make contributing and developing easier, for now treat starting docker and seeing no errors as tests ;)
 
