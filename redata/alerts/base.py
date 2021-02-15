@@ -8,7 +8,7 @@ from redata.models.alerts import Alert
 from datetime import datetime, timedelta
 
 
-def alert_on_z_score(df, table, check_col, alert_type, checked_txt):
+def alert_on_z_score(df, table, check_col, alert_type, checked_txt, conf):
     df = df[df[check_col].notnull()]
 
     if len(df) <= 1:
@@ -34,16 +34,19 @@ def alert_on_z_score(df, table, check_col, alert_type, checked_txt):
             """,
             severity=2,
             table_id=table.id,
-            alert_type=alert_type
+            alert_type=alert_type,
+            created_at=conf.for_time
         )
 
         metrics_session.add(alert)
         metrics_session.commit()
 
 
-def get_last_results(db, table, metrics_table, days=7):
+def get_last_results(db, table, metrics_table, conf, days=21):
 
-    dt = datetime.utcnow() - timedelta(days=days)
+    for_time = conf.for_time
+    dt = for_time - timedelta(days=days)
+    
 
     sql_df = pd.read_sql(
         f"""
@@ -51,6 +54,7 @@ def get_last_results(db, table, metrics_table, days=7):
             FROM {metrics_table}
             WHERE
                 created_at > '{dt}' and
+                created_at < '{for_time}' and
                 table_id = {table.id}
             ORDER BY
                 created_at

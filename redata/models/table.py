@@ -24,18 +24,27 @@ class MonitoredTable(Base):
     time_column = Column(String)
     time_column_type = Column(String)
     schema = Column(JSONB)
+    namespace = Column(String)
+
+    @property
+    def full_table_name(self):
+        if not self.namespace:
+            return self.table_name
+        else:
+            return f'{self.namespace}.{self.table_name}'
 
     @classmethod
-    def setup_for_source_table(cls, db, db_table_name):
+    def setup_for_source_table(cls, db, db_table_name, namespace):
         print (f"Running setup for {db_table_name}")
 
         valid_types = db.datetime_types()
-        schema_cols = db.get_table_schema(db_table_name)
+        schema_cols = db.get_table_schema(db_table_name, namespace)
 
         table = MonitoredTable(
             table_name=db_table_name,
             schema={'columns': schema_cols},
-            source_db=db.name
+            source_db=db.name,
+            namespace=namespace
         )
 
         # heuristics to find best column to sort by when computing stats about data
@@ -93,6 +102,16 @@ class MonitoredTable(Base):
             metrics_session.query(cls)
             .filter(cls.active == True)
             .filter(cls.source_db == db_name)
+            .all()
+        )
+
+    @classmethod
+    def get_monitored_tables_per_namespace(cls, db_name, namespace):
+        return (
+            metrics_session.query(cls)
+            .filter(cls.active == True)
+            .filter(cls.source_db == db_name)
+            .filter(cls.namespace == namespace)
             .all()
         )
 

@@ -7,48 +7,43 @@ from redata.alerts.base import alert_on_z_score, get_last_results
 from redata import settings
 
 
-def volume_alert(db):
-    tables = MonitoredTable.get_monitored_tables(db.name)
 
-    for table in tables:
+def volume_alert(db, table, conf):
 
-        sql_df = get_last_results(db, table, 'metrics_data_volume')
-       
-        for interval in settings.VOLUME_INTERVAL:
-            filtered = sql_df[sql_df['time_interval'] == interval]    
-            checked_txt = f'volume in interval: {interval}'
+    sql_df = get_last_results(db, table, 'metrics_data_volume', conf)
 
-            alert_on_z_score(filtered, table, 'count', 'volume_alert', checked_txt)
+    filtered = sql_df[sql_df['time_interval'] == settings.INTERVAL_FOR_ALERTS]    
+    checked_txt = f'volume in interval: {settings.INTERVAL_FOR_ALERTS}'
+
+    alert_on_z_score(filtered, table, 'count', 'volume_alert', checked_txt, conf)
 
 
-def delay_alert(db):
-    tables = MonitoredTable.get_monitored_tables(db.name)
+def delay_alert(db, table, conf):
 
-    for table in tables:
+    sql_df = get_last_results(db, table, 'metrics_data_delay', conf)
 
-        sql_df = get_last_results(db, table, 'metrics_data_delay')
-
-        checked_txt = f'delay since last data'
-        alert_on_z_score(sql_df, table, 'value', 'delay_alert', checked_txt)
+    checked_txt = f'delay since last data'
+    alert_on_z_score(sql_df, table, 'value', 'delay_alert', checked_txt, conf)
 
 
-def values_alert(db):
-    tables = MonitoredTable.get_monitored_tables(db.name)
+def values_alert(db, table, conf):
 
-    for table in tables:
+    sql_df = get_last_results(db, table, 'metrics_data_values', conf)
 
-        sql_df = get_last_results(db, table, 'metrics_data_values')
+    sql_df = sql_df[sql_df['time_interval'] == settings.INTERVAL_FOR_ALERTS]
 
-        checks_df = sql_df[['check_name', 'time_interval', 'column_name']].drop_duplicates()
+    checks_df = sql_df[['check_name', 'column_name', 'column_value']].drop_duplicates()
 
-        for i, row in checks_df.iterrows():
+    for i, row in checks_df.iterrows():
 
-            df = sql_df[
-                (sql_df['check_name'] == row['check_name']) &
-                (sql_df['time_interval'] == row['time_interval']) &
-                (sql_df['column_name'] == row['column_name'])
-            ]
+        df = sql_df[
+            (sql_df['check_name'] == row['check_name']) &
+            (sql_df['column_name'] == row['column_name'])
+        ]
 
-            check_text = f'values for {row.check_name} in column: {row.column_name}, interval: {row.time_interval}'
-            alert_on_z_score(df, table, 'check_value', row['check_name'], check_text)
+        if row['column_value']:
+            df = df[df['column_value'] == row['column_value']]
+
+        check_text = f'column: {row.column_name}, values for {row.check_name}'
+        alert_on_z_score(df, table, 'check_value', row['check_name'], check_text, conf)
     

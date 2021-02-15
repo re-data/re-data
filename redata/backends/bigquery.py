@@ -4,11 +4,10 @@ from datetime import timedelta
 from sqlalchemy.sql import text
 from sqlalchemy import create_engine, func
 from datetime import datetime, timedelta
+from sqlalchemy.schema import MetaData
 
 
 class BigQuery(SqlAlchemy):
-    def __init__(self, name, db):
-        super().__init__(name, db)
     
     @staticmethod
     def numeric_types():
@@ -32,8 +31,8 @@ class BigQuery(SqlAlchemy):
             'DATETIME'
         ]
 
-    def get_time_to_compare(self, time_interval):
-        to_compare = self.transform_by_interval(time_interval)
+    def get_time_to_compare(self, time_interval, conf):
+        to_compare = self.transform_by_interval(time_interval, conf)
         return self.get_timestamp(to_compare)
 
     def get_timestamp(self, from_time):
@@ -46,14 +45,28 @@ class BigQuery(SqlAlchemy):
         ts_tz =  super().get_max_timestamp(table, column)
         return ts_tz.replace(tzinfo=None)
 
-    def get_table_schema(self, table_name):
-        dataset, table_name = table_name.split('.')
+    def get_table_obj(self, table):
+        if not getattr(self, '_tables', None):
+            metadata = MetaData()	
+            metadata.reflect(bind=self.db)
+            self._tables = metadata.tables
+
+        return self._tables[table.full_table_name]
+
+    def table_names(self, namespace):
+        names = self.db.table_names(namespace)
+
+        # Bigquery returns full names as tablesnames, trimming it here
+        return [full_name.split('.')[1] for full_name in names]
+
+    def get_table_schema(self, table_name, namespace):
+
         result = self.db.execute(f"""
             SELECT
                 column_name as name,
                 data_type as type
             FROM
-                {dataset}.INFORMATION_SCHEMA.COLUMNS
+                {namespace}.INFORMATION_SCHEMA.COLUMNS
             WHERE
                 table_name = '{table_name}'
         """)

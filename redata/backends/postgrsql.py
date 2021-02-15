@@ -2,8 +2,6 @@ from redata.backends.base import DB
 from redata.backends.sql_alchemy import SqlAlchemy
 
 class Postgres(SqlAlchemy):
-    def __init__(self, name, db):
-        super().__init__(name, db)
     
     @staticmethod
     def numeric_types():

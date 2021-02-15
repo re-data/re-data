@@ -107,7 +107,8 @@
           "total": false,
           "values": false
         },
-        "lines": true,
+        "lines": false,
+        "points": true,
         "linewidth": 1,
         "nullPointMode": "null",
         "options": {
@@ -115,8 +116,7 @@
         },
         "percentage": false,
         "pluginVersion": "7.3.0",
-        "pointradius": 1,
-        "points": false,
+        "pointradius": 3,
         "renderer": "flot",
         "seriesOverrides": [],
         "spaceLength": 10,
@@ -462,7 +462,7 @@
         },
         "percentage": false,
         "pluginVersion": "7.3.0",
-        "pointradius": 1,
+        "pointradius": 2,
         "points": true,
         "renderer": "flot",
         "repeat": null,
