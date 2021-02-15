@@ -11,14 +11,15 @@ class HomeLastModifiedTime():
     def query(self):
         return f"""
             SELECT
-                delay.created_at AS time,
+                metric.created_at AS time,
                 m.table_name,
-                delay.value
-            FROM metrics_data_delay delay, monitored_table m
+                (metric.result->>'value')::float
+            FROM metric metric, monitored_table m
             WHERE
-                m.id = delay.table_id and
+                m.id = metric.table_id and
                 m.active = true and
-                $__timeFilter(delay.created_at)
+                metric.metric = 'check_data_delayed' and
+                $__timeFilter(metric.created_at)
             ORDER BY 1
         """ 
 
@@ -35,18 +36,16 @@ class HomeLastDayTraffic():
     def query(self):
         return f"""
             SELECT
-                volume.created_at AS time,
+                metric.created_at AS time,
                 m.table_name,
-                volume.count
-            FROM
-                metrics_data_volume volume,
-                monitored_table m
+                (metric.result->>'value')::float
+            FROM metric metric, monitored_table m
             WHERE
-                volume.time_interval = '1 day' and
-                m.id = volume.table_id and
+                m.id = metric.table_id and
                 m.active = true and
-                $__timeFilter(volume.created_at)
-            ORDER BY 1
+                metric.metric = 'check_data_volume' and
+                params ->> 'time_interval' = '1 day' and
+                $__timeFilter(metric.created_at)
         """ 
 
 class HomeAlerts():

@@ -1,7 +1,9 @@
 from redata.models.base import Base
-from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON, BigInteger, Date, Float, Index
+from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, BigInteger, Date, Float, Index
+from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime
 from sqlalchemy import Index
+from sqlalchemy import ForeignKey
 
 
 class MetricsDataDelay(Base):
@@ -57,3 +59,20 @@ class MetricsDataValues(Base):
     check_value = Column(Float)
     time_interval = Column(String)
     created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
+
+
+class MetricFromCheck(Base):
+    __tablename__ = 'metric'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    check_id = Column(Integer, ForeignKey('checks.id'), index=True)
+    table_id = Column(Integer, ForeignKey('monitored_table.id'), index=True)
+    table_column = Column(String)
+
+    metric = Column(String)
+    params = Column(JSONB)
+    result = Column(JSONB)
+
+    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
+
+    

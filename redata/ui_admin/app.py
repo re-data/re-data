@@ -4,6 +4,7 @@ from flask_admin import Admin
 from flask import redirect, url_for
 from flask_admin.contrib.sqla import ModelView
 from redata.models.table import MonitoredTable
+from redata.models.checks import Check
 from redata import settings
 from redata.db_operations import metrics_session
 
@@ -34,10 +35,14 @@ class MonitoredTableView(ModelView):
 def admin_redirect():
     return redirect('/admin')
 
+class ChecksTableView(ModelView):
+    pass
+
 
 admin = Admin(app, name='Redata', template_mode='bootstrap3')
 
 admin.add_view(MonitoredTableView(MonitoredTable, metrics_session))
+admin.add_view(ChecksTableView(Check, metrics_session))
 
 
 if __name__ == "__main__":

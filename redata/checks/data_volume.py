@@ -6,15 +6,9 @@ from redata.models.metrics import MetricsDataVolume, MetricsDataVolumeDiff
 def check_data_volume(db, table, time_interval, conf):
     result = db.check_data_volume(table, time_interval, conf)
 
-    metric = MetricsDataVolume(
-        table_id=table.id,
-        time_interval=time_interval,
-        count=result.count,
-        created_at=conf.for_time
-    )
-
-    metrics_session.add(metric)
-    metrics_session.commit()
+    return [{
+        'check_data_volume': result.count
+    }]
 
 
 def check_data_volume_diff(db, table, conf):
@@ -34,12 +28,16 @@ def check_data_volume_diff(db, table, conf):
 
     result = db.check_data_volume_diff(table, from_time=from_time, conf=conf)
 
-    for r in (result or []):
-        metric = MetricsDataVolumeDiff(
-            table_id=table.id,
-            date=r.date,
-            count=r.count,
-            created_at=conf.for_time
+    results = []
+    for row in (result or []):
+        results.append(
+            {
+                'check_data_volume_diff': {
+                    'count': row.count,
+                    'date': str(row.date)
+                }                
+            }
         )
-        metrics_session.add(metric)
-    metrics_session.commit()
+
+    return results
+

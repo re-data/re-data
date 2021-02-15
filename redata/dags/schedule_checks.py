@@ -19,7 +19,18 @@ from redata.db_operations import metrics_db
 from redata.models.table import MonitoredTable
 from redata import settings
 from redata.conf import Conf
+from redata.models.checks import Check
+from redata.models.metrics import MetricFromCheck
+from redata.db_operations import metrics_session
+from redata.grafana.grafana_setup import create_dashboards
 
+import importlib
+
+def get_function(func_string):
+    mod_name, func_name = func_string.rsplit('.', 1)
+    mod = importlib.import_module(mod_name)
+    func = getattr(mod, func_name)
+    return func
 
 def run_checks(db, conf):
 
@@ -29,35 +40,54 @@ def run_checks(db, conf):
         for table in tables:
             run_checks_for_table(db, table, conf)
 
+def get_metrics(row, column):
+    metrics = []
+    for key, val in row.items():
+        if key.startswith(column) or not column:
+            metrics.append({
+                'name': key.replace(column, '', 1),
+                'value': val
+            })
+    return metrics
+
 
 def run_checks_for_table(db, table, conf):
 
-    print (f"Running checks for table:{table.table_name} [BEGIN]")
-    check_data_volume_diff(db, table, conf)
-    print (f"Check for data volume diff table:{table.table_name} [DONE]")
-    check_data_delayed(db, table, conf)
-    print (f"Check data delayed table:{table.table_name} [DONE]")
-    check_if_schema_changed(db, table, conf)
-    print (f"Check for schema changes table:{table.table_name} [DONE]")
+    checks = metrics_session.query(Check).filter(
+        Check.table_id == table.id
+    ).all()
 
-    for interval in settings.VOLUME_INTERVAL:
-        check_data_volume(db, table, interval, conf)
-    print (f"Check for data volume table:{table.table_name} [DONE]")
+    for check in checks:
+        query = check.query
+        if check.query['type'] == 'standard':
+            func = get_function(check.query['path'])
+            result = func(db=db, table=table, conf=conf, **check.query['params'])
+        else:
+            #TODO run raw query on DB
+            result = None
+        
+        for row in result:
+            columns = check.columns or ['']
 
-    for column in table.schema['columns']:
-        for interval in settings.VOLUME_INTERVAL:
-            if db.is_numeric(column['type']):
-                check_min(db, table, column['name'], interval, conf)
-                check_max(db, table, column['name'], interval, conf)
-                check_avg(db, table, column['name'], interval, conf)
-                check_count_nulls(db, table, column['name'], interval, conf)
+            for c in columns:
+                metrics = get_metrics(row, c)
+
+                for m in metrics:
+
+                    m = MetricFromCheck(
+                        check_id=check.id,
+                        table_id=table.id,
+                        table_column=c if c else None,
+                        params=check.query['params'],
+                        metric=m['name'],
+                        result={
+                            'value': m['value']
+                        },
+                        created_at=conf.for_time
+                    )
+                    metrics_session.add(m)
     
-        if db.is_character(column['type']):
-            check_count_per_value(db, table, column['name'], '1 day', conf)
-            check_count_nulls(db, table, column['name'], '1 day', conf)
-    
-    print (f"Check for data values table:{table.table_name} [DONE]")
-    print (f"Running checks for table:{table.table_name} [DONE]")
+    metrics_session.commit()
 
 def run_check_for_new_tables(db, conf):
     check_for_new_tables(db, conf)
@@ -77,6 +107,12 @@ def run_compute_alerts_for_table(db, table, conf):
     check_alert.delay_alert(db, table, conf)
     check_alert.values_alert(db, table, conf)
     print (f"Checking alerts for table:{table.table_name} [DONE]")
+
+
+def generate_grafana():
+    print (f"Generating grafana dashboards: [BEGIN]")
+    create_dashboards()
+    print (f"Generating grafana dashboards: [DONE]")
 
 with DAG('validation_dag', description='Validate data',
           schedule_interval=settings.REDATA_AIRFLOW_SCHEDULE_INTERVAL,
@@ -101,6 +137,12 @@ with DAG('validation_dag', description='Validate data',
             task_id='compute_alerts_{}'.format(source_db.name),
             python_callable=run_compute_alerts,
             op_kwargs={'db': source_db, 'conf': Conf(datetime.utcnow())},
+            dag=dag
+        )
+
+        generate_grafana = PythonOperator(
+            task_id='generate_grafana_{}'.format(source_db.name),
+            python_callable=generate_grafana,
             dag=dag
         )
 
