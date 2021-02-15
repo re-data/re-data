@@ -18,7 +18,7 @@ docker-compose -f docker-compose.dev.yml up
 
 This way, your docker is using your version of code. You don't need to restart docker to changes to take affect.
 
-There is one additonal command you would need for testing:
+In this mode you can also manually trigger couple important actions on Redata:
 
 
 ```
@@ -30,6 +30,12 @@ There is one additonal command you would need for testing:
 
 ./redata-dev.sh --tables
 # Creates internal tables for redata metrics
+
+./redata-dev.sh --generate-sample-data
+# Generates sample data to observe, with 30 day history to properly test alerts
+
+./redata-dev.sh --backfill X
+# Run backfill from X days ego and compute daily metrics on tables
 ```
 
 This enable you to quickly check if changes you made are working correctly.
@@ -47,5 +53,5 @@ docker-compose -f docker-compose.dev.yml up
 This will delete docker containers created and restart them from scratch using your code changes.
 If after that, grafana metrics are computed you are ready to make PR.
 
-Ps. We will soon add tests to make contributing and developing easier ;)
+Ps. We will soon add tests to make contributing and developing easier, for now treat starting docker and seeing now errors as tests ;)
 
