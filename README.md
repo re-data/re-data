@@ -1,7 +1,11 @@
+<p align="left">
+<a href="https://join.slack.com/t/redatahq/shared_invite/zt-lrp4khvb-kIS6ct4WzJTy~JNVzwB5ywg"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"></a>
+</p>
+
+
 # Redata
 Monitoring system for data teams.
 Computing health checks on data (via Airflow jobs), visualizing them over time, and alerting on them in Grafana.
-
 
 # Key features
 
@@ -67,7 +71,7 @@ Here is a our list :)
 
 ```
 git clone https://github.com/redata-team/redata.git
-cp env_template .env
+cd redata ; cp env_template .env
 
 # create REDATA_SOURCE_DB_URL_YOUR_DB_NAME variables (at the end of .env file)
 # you can add multiple variables for many DBs you want to observe here
