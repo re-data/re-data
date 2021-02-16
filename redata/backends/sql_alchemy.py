@@ -60,29 +60,6 @@ class SqlAlchemy(DB):
             to_compare = for_time - timedelta(hours=int(parts[0]))
         return to_compare
     
-    def check_data_volume_diff(self, table, from_time, conf):
-        q_table = self.get_table_obj(table)
-
-        start = self.get_timestamp(from_time)
-        stop = self.get_timestamp(conf.for_time)
-        casted_date = cast(q_table.c[table.time_column], Date)
-
-        stmt = select([
-            casted_date.label('date'),
-            func.count().label('count')
-        ]).select_from(q_table)
-
-        stmt = stmt.where(
-            (q_table.c[table.time_column] > start) &
-            (q_table.c[table.time_column] < stop)
-        )
-
-        stmt = stmt.group_by(casted_date)
-
-        result = self.db.execute(stmt).fetchall()
-        
-        return result
-    
     def check_data_delayed(self, table, conf):
 
         q_table = self.get_table_obj(table)

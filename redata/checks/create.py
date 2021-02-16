@@ -4,7 +4,6 @@ from redata.db_operations import metrics_db, metrics_session
 standard_checks = [
     {'func': 'data_schema.check_if_schema_changed', 'params': {}},
     {'func': 'data_delayed.check_data_delayed', 'params': {}},
-    {'func': 'data_volume.check_data_volume_diff', 'params': {}},
     {'func': 'data_volume.check_data_volume', 'params': {'time_interval': '1 day'}},
 ]
 
