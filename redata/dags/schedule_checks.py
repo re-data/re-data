@@ -40,16 +40,6 @@ def run_checks(db, conf):
         for table in tables:
             run_checks_for_table(db, table, conf)
 
-def get_metrics(row, column):
-    metrics = []
-    for key, val in row.items():
-        if key.startswith(column) or not column:
-            metrics.append({
-                'name': key.replace(column, '', 1),
-                'value': val
-            })
-    return metrics
-
 
 def run_checks_for_table(db, table, conf):
 
@@ -66,31 +56,12 @@ def run_checks_for_table(db, table, conf):
             #TODO run raw query on DB
             result = None
         
-        for row in result:
-            columns = check.columns or ['']
-
-            for c in columns:
-                metrics = get_metrics(row, c)
-
-                for m in metrics:
-
-                    m = MetricFromCheck(
-                        check_id=check.id,
-                        table_id=table.id,
-                        table_column=c if c else None,
-                        params=check.query['params'],
-                        metric=m['name'],
-                        result={
-                            'value': m['value']
-                        },
-                        created_at=conf.for_time
-                    )
-                    metrics_session.add(m)
-    
-    metrics_session.commit()
+        MetricFromCheck.add_metrics(result, check, conf)
+      
 
 def run_check_for_new_tables(db, conf):
     check_for_new_tables(db, conf)
+
 
 def run_compute_alerts(db, conf):
 
@@ -103,9 +74,9 @@ def run_compute_alerts(db, conf):
 
 def run_compute_alerts_for_table(db, table, conf):
     print (f"Checking alerts for table:{table.table_name} [BEGIN]")
-    check_alert.volume_alert(db, table, conf)
-    check_alert.delay_alert(db, table, conf)
-    check_alert.values_alert(db, table, conf)
+    for check in table.checks:
+            check_alert.alert(db, check, conf)
+
     print (f"Checking alerts for table:{table.table_name} [DONE]")
 
 

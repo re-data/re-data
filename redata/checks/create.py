@@ -27,3 +27,4 @@ def create_for_detected_table(table):
         )
 
         metrics_session.add(model_check)
+    metrics_session.commit()

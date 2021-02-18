@@ -8,6 +8,7 @@ from redata import settings
 from redata.models.base import Base
 from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import relationship
 from redata.db_operations import metrics_session
 import json
 
@@ -25,6 +26,8 @@ class MonitoredTable(Base):
     time_column_type = Column(String)
     schema = Column(JSONB)
     namespace = Column(String)
+
+    checks = relationship("Check", backref="table")
 
     @property
     def full_table_name(self):

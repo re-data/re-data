@@ -89,13 +89,13 @@ class SchemaChange():
     def query(self):
         return f"""
         SELECT
-            created_at AS "time",
-            operation,
-            column_name,
-            column_type
-        FROM metrics_table_schema_changes
+            result -> 'value' ->> 'operation' as operation,
+            result -> 'value' ->> 'column_name' as column_name,
+            result -> 'value' ->> 'columnt_type' as column_type
+        FROM metric
         WHERE
             table_id = {self.table.id} and
+            metric = 'check_if_schema_changed' and
             $__timeFilter(created_at)
         ORDER BY 1
         """
@@ -195,37 +195,12 @@ class DelayOnTable():
         return f"""
         SELECT
             created_at AS "time",
-            value as "time_since_last_record_created"
-        FROM metrics_data_delay
+            (result ->> 'value')::float as delay
+        FROM metric
         WHERE
             table_id = {self.table.id} and
+            metric = 'check_data_delayed' and
             $__timeFilter(created_at)
-        ORDER BY 1
-        """
-
-
-class GroupByDate():
-
-    def __init__(self, table) -> None:
-        self.table = table
-
-    def format(self):
-        return 'time_series'
-
-    @staticmethod
-    def title():
-        return f'new_records_by_day'
-
-    def query(self):
-        return f"""
-        SELECT
-            date AS "time",
-            sum(count)
-        FROM metrics_data_volume_diff
-        WHERE
-            table_id = {self.table.id} and
-            $__timeFilter(created_at)
-        GROUP BY 1    
         ORDER BY 1
         """
 
@@ -246,11 +221,12 @@ class VolumeGraphs():
         return f"""
         SELECT
             created_at AS "time",
-            time_interval,
-            count
-        FROM metrics_data_volume
+            (result ->> 'value')::float as volume_24h
+        FROM metric
         WHERE
             table_id = {self.table.id} and
+            metric = 'check_data_volume' and
+            params ->> 'time_interval' = '1 day' and
             $__timeFilter(created_at)
         ORDER BY 1
         """
@@ -314,4 +290,4 @@ class CheckForColumnByValue():
         1
         """
 
-ALL_PANELS = VolumeGraphs, DelayOnTable, GroupByDate, SchemaChange, CurrentSchema, AlertsTable, AlertsByDay
+ALL_PANELS = VolumeGraphs, DelayOnTable, SchemaChange, CurrentSchema, AlertsTable, AlertsByDay

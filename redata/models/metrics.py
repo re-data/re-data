@@ -1,5 +1,6 @@
 from redata.models.base import Base
 from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, BigInteger, Date, Float, Index
+from redata.db_operations import metrics_session
 from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime
 from sqlalchemy import Index
@@ -74,5 +75,43 @@ class MetricFromCheck(Base):
     result = Column(JSONB)
 
     created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
+
+    @classmethod
+    def get_metrics(cls, row, column):
+        metrics = []
+        for key, val in row.items():
+            if key.startswith(column) or not column:
+                metrics.append({
+                    'name': key.replace(column, '', 1),
+                    'value': val
+                })
+        return metrics
+
+    @classmethod
+    def add_metrics(cls, metrics, check, conf):
+
+        print (metrics, check.columns, check.metrics, check.name)
+        for row in metrics:
+            
+            for c in check.columns or ['']:
+                metrics = cls.get_metrics(row, c)
+
+                for m in metrics:
+
+                    m = MetricFromCheck(
+                        check_id=check.id,
+                        table_id=check.table.id,
+                        table_column=c if c else None,
+                        params=check.query['params'],
+                        metric=m['name'],
+                        result={
+                            'value': m['value']
+                        },
+                        created_at=conf.for_time
+                    )
+                    metrics_session.add(m)
+            
+            metrics_session.commit()
+
 
     

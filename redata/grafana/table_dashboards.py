@@ -8,24 +8,19 @@ from redata.grafana.utils import load_json_data, update_panel_element
 def get_dashboard_for_table(db, table):
     table_data = load_json_data(settings.TABLE_DASHBOARD_LOCATION)
 
-    panels = table_data['panels']
+    base_panels = table_data['panels']
     per_title = dict(
         [(panel.title(), panel) for panel in ALL_PANELS]
     )
 
     table_data['title'] = f"source: {db.name} table: {table.table_name} (generated)"
 
-    for panel in panels:
+    for panel in base_panels:
         if per_title.get(panel['title']):
             panel = update_panel_element(table, panel, per_title[panel['title']])
 
-
-    all_checks = metrics_db.execute(f"""
-        SELECT DISTINCT column_name, check_name
-        FROM metrics_data_values
-        WHERE table_id = '{table.id}'
-        """
-    )
+    all_checks = table.checks
+    return table_data
     
     next_id = 20
     y_pos = 20

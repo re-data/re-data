@@ -77,7 +77,6 @@
       },
       {
         "alert": "__TO__REPLACE__",
-        "aliasColors": {},
         "bars": false,
         "dashLength": 10,
         "dashes": false,
@@ -141,6 +140,11 @@
           "sort": 0,
           "value_type": "individual"
         },
+        "aliasColors": {
+          "check_data_delayed": "red",
+          "check_data_volume": "yellow",
+          "check_if_schema_changed": "purple"
+        },
         "type": "graph",
         "xaxis": {
           "buckets": null,
@@ -187,116 +191,10 @@
         "type": "row"
       },
       {
-        "cacheTimeout": null,
-        "colorBackground": false,
-        "colorValue": false,
-        "colors": [
-          "rgba(50, 172, 45, 0.97)",
-          "rgba(237, 129, 40, 0.89)",
-          "rgba(245, 54, 54, 0.9)"
-        ],
-        "datasource": "redata_metrics_db",
-        "decimals": null,
-        "description": null,
-        "editable": true,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "continuous-blues"
-            },
-            "custom": {},
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            },
-            "unit": "short"
-          },
-          "overrides": []
-        },
-        "format": "none",
-        "gauge": {
-          "maxValue": 100,
-          "minValue": 0,
-          "show": false,
-          "thresholdLabels": false,
-          "thresholdMarkers": true
-        },
-        "gridPos": {
-          "h": 4,
-          "w": 24,
-          "x": 0,
-          "y": 11
-        },
-        "height": null,
-        "hideTimeOverride": false,
-        "id":5,
-        "interval": null,
-        "links": [],
-        "mappingType": 1,
-        "mappingTypes": [
-          {
-            "name": "value to text",
-            "value": 1
-          },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "maxDataPoints": 100,
-        "nullPointMode": "connected",
-        "nullText": null,
-        "options": {
-          "colorMode": "background",
-          "graphMode": "area",
-          "justifyMode": "auto",
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "last"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "textMode": "auto"
-        },
-        "pluginVersion": "7.3.0",
-        "postfix": "",
-        "postfixFontSize": "50%",
-        "prefix": "",
-        "prefixFontSize": "50%",
-        "rangeMaps": [],
-        "repeat": null,
-        "sparkline": {
-          "fillColor": "rgba(31, 118, 189, 0.18)",
-          "full": false,
-          "lineColor": "rgb(31, 120, 193)",
-          "show": false
-        },
-        "targets": "__TO_REPLACE__",
-        "thresholds": "",
-        "timeFrom": null,
-        "title": "new_record_created",
-        "type": "stat",
-        "valueFontSize": "80%",
-        "valueMaps": [],
-        "valueName": "avg"
-      },
-      {
         "aliasColors": {
-          "sum": "dark-blue"
+          "volume_24h": "dark-blue"
         },
-        "bars": true,
+        "bars": false,
         "dashLength": 10,
         "dashes": false,
         "datasource": "redata_metrics_db",
@@ -309,7 +207,7 @@
           "overrides": []
         },
         "fill": 1,
-        "fillGradient": 0,
+        "fillGradient": 5,
         "gridPos": {
           "h": 7,
           "w": 12,
@@ -319,20 +217,7 @@
         "hiddenSeries": false,
         "hideTimeOverride": false,
         "id":6,
-        "legend": {
-          "alignAsTable": false,
-          "avg": true,
-          "current": true,
-          "hideEmpty": false,
-          "hideZero": false,
-          "max": false,
-          "min": false,
-          "rightSide": false,
-          "show": false,
-          "total": false,
-          "values": true
-        },
-        "lines": false,
+        "lines": true,
         "linewidth": 1,
         "links": [],
         "nullPointMode": "null",
@@ -354,7 +239,20 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "new_records_by_day",
+        "title": "new_record_created",
+        "legend": {
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "hideEmpty": false,
+          "hideZero": false,
+          "max": true,
+          "min": true,
+          "rightSide": false,
+          "show": true,
+          "total": false,
+          "values": true
+        },
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -393,9 +291,7 @@
       },
       {
         "aliasColors": {
-          "delay": "dark-blue",
-          "time_since_last_record_created": "dark-blue",
-          "value": "dark-blue"
+          "delay": "dark-blue"
         },
         "bars": false,
         "cacheTimeout": null,

@@ -3,11 +3,11 @@ from sqlalchemy.sql import text
 from redata.db_operations import metrics_session
 from sqlalchemy import update
 from redata.models.table import MonitoredTable
-from redata.models.metrics import MetricsSchemaChanges
+from redata.models.metrics import MetricFromCheck
 from redata.checks.create import create_for_detected_table
 
 
-def schema_changed_record(table, operation, column_name, column_type, column_count, conf):
+def schema_changed_record(operation, column_name, column_type, column_count, conf):
     return {
         'check_if_schema_changed': {
             'operation': operation,
@@ -31,12 +31,15 @@ def check_for_new_tables(db, conf):
             if table_name not in monitored_tables_names:
                 table = MonitoredTable.setup_for_source_table(db, table_name, namespace)
                 if table:
-                    results.append(schema_changed_record(
-                        table, 'table detected', None, None, None, conf
-                    ))
                     create_for_detected_table(table)
+                    for check in table.checks:
+                        if check.name == 'check_if_schema_changed':
+                            MetricFromCheck.add_metrics(
+                                [schema_changed_record('table detected', None, None, None, conf)],
+                                check,
+                                conf
+                            )
 
-    return results            
 
 
 def check_if_schema_changed(db, table, conf):
@@ -60,19 +63,19 @@ def check_if_schema_changed(db, table, conf):
         for el in last_dict:
             if el not in current_dict:
                 print (f"{el} was removed from schema")
-                results.append(schema_changed_record(table, 'column removed', el, last_dict[el], len(current_dict), conf))
+                results.append(schema_changed_record('column removed', el, last_dict[el], len(current_dict), conf))
 
         for el in current_dict:
             if el not in last_dict:
                 print (f"{el} was added to schema")
-                results.append(schema_changed_record(table, 'column added', el, current_dict[el], len(current_dict), conf))
+                results.append(schema_changed_record('column added', el, current_dict[el], len(current_dict), conf))
             else:
                 prev_type = last_dict[el]
                 curr_type = current_dict[el]
 
                 if curr_type != prev_type:
                     print (f"Type of column: {el} changed from {prev_type} to {curr_type}")
-                    results.append(schema_changed_record(table, 'column changed', el, current_dict[el], len(current_dict), conf))
+                    results.append(schema_changed_record('column changed', el, current_dict[el], len(current_dict), conf))
         
         table.schema = {'columns': current_schema}
         metrics_session.commit()
