@@ -13,8 +13,7 @@ class Check(Base):
     
     name = Column(String, nullable=False)
 
-    columns = Column(ARRAY(String))
-    metrics = Column(ARRAY(String))
+    metrics = Column(JSONB)
 
     query = Column(JSONB, nullable=False)
 

@@ -4,12 +4,12 @@ from redata.db_operations import metrics_db, metrics_session
 
 from redata.models.table import MonitoredTable
 from redata.alerts.base import alert_on_z_score, get_last_results
-from redata.models import Alert
+from redata.models import Alert, Metric
 
 from redata import settings
 
 def alert(db, check, conf):
-    if check.name == 'check_if_schema_changed':
+    if check.name == Metric.SCHEMA_CHANGE:
         alert_for_schema_change(db, check, conf)
     else:
 

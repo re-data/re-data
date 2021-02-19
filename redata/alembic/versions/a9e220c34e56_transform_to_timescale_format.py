@@ -7,13 +7,6 @@ Create Date: 2021-02-04 14:29:53.635430
 """
 from alembic import op
 import sqlalchemy as sa
-from redata.models.metrics import (
-    MetricsDataDelay,
-    MetricsSchemaChanges,
-    MetricsDataVolume,
-    MetricsDataVolumeDiff,
-    MetricsDataValues
-)
 
 # revision identifiers, used by Alembic.
 revision = 'a9e220c34e56'
@@ -23,14 +16,13 @@ depends_on = None
 
 
 all_to_migrate = [
-    MetricsDataDelay, MetricsSchemaChanges, MetricsDataVolume,
-    MetricsDataVolumeDiff, MetricsDataValues
+    'metrics_data_delay', 'metrics_table_schema_changes', 'metrics_data_volume',
+    'metrics_data_volume_diff', 'metrics_data_values'
 ]
 
 def upgrade():
 
-    for table in all_to_migrate:
-        table_name = table.__tablename__
+    for table_name in all_to_migrate:
 
         op.drop_constraint(f'{table_name}_pkey', f'{table_name}', type_='primary')
         op.create_primary_key(f"{table_name}_pkey", f"{table_name}", ["id", "created_at"])

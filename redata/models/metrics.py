@@ -7,47 +7,6 @@ from sqlalchemy import Index
 from sqlalchemy import ForeignKey
 
 
-class MetricsDataDelay(Base):
-    __tablename__ = 'metrics_data_delay'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    table_id = Column(Integer, index=True)
-    value = Column(Integer)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
-
-
-class MetricsSchemaChanges(Base):
-    __tablename__ = 'metrics_table_schema_changes'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    table_id = Column(Integer, index=True)
-    column_name = Column(String)
-    column_type = Column(String)
-    column_count = Column(Integer)
-    operation = Column(String)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
-
-
-class MetricsDataVolume(Base):
-    __tablename__ = 'metrics_data_volume'
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    table_id = Column(Integer, index=True)
-    time_interval = Column(String)
-    count = Column(BigInteger)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
-
-
-class MetricsDataVolumeDiff(Base):
-    __tablename__ = 'metrics_data_volume_diff'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    table_id = Column(Integer, index=True)
-    date = Column(Date)
-    count = Column(BigInteger)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
-
-
 class MetricsDataValues(Base):
     __tablename__ = 'metrics_data_values'
     
@@ -60,6 +19,39 @@ class MetricsDataValues(Base):
     check_value = Column(Float)
     time_interval = Column(String)
     created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
+
+
+class Metric(object):
+    COUNT = 'count_rows'
+    SCHEMA_CHANGE = 'schema_change'
+    DELAY = 'delay'
+
+    MAX = 'max'
+    MIN = 'min'
+    AVG = 'avg'
+    SUM = 'sum'
+
+    EMPTY = 'empty'
+    EMPTY_PR = 'empty_pr'
+
+    MAX_LENGTH = 'max_length'
+    MIN_LENGTH = 'min_length'
+    AVG_LENGTH = 'avg_length'
+
+    COUNT_NULLS = 'count_nulls'
+    COUNT_EMPTY = 'count_empty'
+
+    FOR_NUMERICAL_COL = [
+        MAX, MIN, MAX, SUM,
+        EMPTY
+    ]
+
+    FOR_TEXT_COL = [
+        MAX_LENGTH, MIN_LENGTH, AVG_LENGTH,
+        EMPTY
+    ]
+
+    TABEL_METRIC = '__table__metric__'
 
 
 class MetricFromCheck(Base):
@@ -77,35 +69,24 @@ class MetricFromCheck(Base):
     created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
 
     @classmethod
-    def get_metrics(cls, row, column):
-        metrics = []
-        for key, val in row.items():
-            if key.startswith(column) or not column:
-                metrics.append({
-                    'name': key.replace(column, '', 1),
-                    'value': val
-                })
-        return metrics
+    def add_metrics(cls, results, check, conf):
 
-    @classmethod
-    def add_metrics(cls, metrics, check, conf):
-
-        print (metrics, check.columns, check.metrics, check.name)
-        for row in metrics:
+        print (results, check.metrics, check.metrics, check.name)
+        for row in results:
             
-            for c in check.columns or ['']:
-                metrics = cls.get_metrics(row, c)
+            for col, metrics in check.metrics.items():
 
                 for m in metrics:
+                    select_name = col + '_'  + m if col != Metric.TABEL_METRIC else m
 
                     m = MetricFromCheck(
                         check_id=check.id,
                         table_id=check.table.id,
-                        table_column=c if c else None,
+                        table_column=col if col else None,
                         params=check.query['params'],
-                        metric=m['name'],
+                        metric=m,
                         result={
-                            'value': m['value']
+                            'value': row[select_name]
                         },
                         created_at=conf.for_time
                     )

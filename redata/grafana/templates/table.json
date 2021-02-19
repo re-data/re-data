@@ -141,9 +141,9 @@
           "value_type": "individual"
         },
         "aliasColors": {
-          "check_data_delayed": "red",
-          "check_data_volume": "yellow",
-          "check_if_schema_changed": "purple"
+          "delay": "red",
+          "count_rows": "yellow",
+          "schema_change": "purple"
         },
         "type": "graph",
         "xaxis": {

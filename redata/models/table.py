@@ -29,6 +29,9 @@ class MonitoredTable(Base):
 
     checks = relationship("Check", backref="table")
 
+    def __str__(self):
+        return f"{self.namespace}.{self.table_name}"
+
     @property
     def full_table_name(self):
         if not self.namespace:

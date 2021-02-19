@@ -1,3 +1,4 @@
+from redata.models import Metric
 
 class HomeLastModifiedTime():
 
@@ -43,7 +44,7 @@ class HomeLastDayTraffic():
             WHERE
                 m.id = metric.table_id and
                 m.active = true and
-                metric.metric = 'check_data_volume' and
+                metric.metric = '{Metric.COUNT}' and
                 params ->> 'time_interval' = '1 day' and
                 $__timeFilter(metric.created_at)
         """ 
@@ -95,7 +96,7 @@ class SchemaChange():
         FROM metric
         WHERE
             table_id = {self.table.id} and
-            metric = 'check_if_schema_changed' and
+            metric = '{Metric.SCHEMA_CHANGE}' and
             $__timeFilter(created_at)
         ORDER BY 1
         """
@@ -225,7 +226,7 @@ class VolumeGraphs():
         FROM metric
         WHERE
             table_id = {self.table.id} and
-            metric = 'check_data_volume' and
+            metric = '{Metric.COUNT}' and
             params ->> 'time_interval' = '1 day' and
             $__timeFilter(created_at)
         ORDER BY 1
