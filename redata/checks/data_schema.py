@@ -5,7 +5,7 @@ from sqlalchemy import update
 from redata.models.table import MonitoredTable
 from redata.models.metrics import MetricFromCheck
 from redata.checks.create import create_for_detected_table
-from redata.models import Metric
+from redata.metric import Metric
 
 
 def schema_changed_record(operation, column_name, column_type, column_count, conf):
@@ -32,7 +32,7 @@ def check_for_new_tables(db, conf):
             if table_name not in monitored_tables_names:
                 table = MonitoredTable.setup_for_source_table(db, table_name, namespace)
                 if table:
-                    create_for_detected_table(table)
+                    create_for_detected_table(db, table)
                     for check in table.checks:
                         if check.name == Metric.SCHEMA_CHANGE:
                             MetricFromCheck.add_metrics(
@@ -43,7 +43,7 @@ def check_for_new_tables(db, conf):
 
 
 
-def check_if_schema_changed(db, table, conf):
+def check_if_schema_changed(db, table, check, conf):
 
     def schema_to_dict(schema):
         return dict([(el['name'], el['type'])for el in schema])

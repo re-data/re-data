@@ -23,6 +23,11 @@ def update_panel_element(table, panel, panel_class, **kwargs):
     targets[0]['rawSql'] = panel_obj.query()
     panel['targets'] = targets
 
+    if getattr(panel_obj, 'metric', None):
+        panel['aliasColors'] = {
+            panel_obj.metric: "dark-blue"
+        }
+
     if panel.get('alert'):
         panel['alert'] = alert_element(table)
 

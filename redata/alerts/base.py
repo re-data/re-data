@@ -40,12 +40,11 @@ def alert_on_z_score(df, check, alert_type, checked_txt, conf):
         metrics_session.commit()
 
 
-def get_last_results(db, check, conf, days=21):
+def get_last_results(db, check, table_col, metric, conf, days=21):
 
     for_time = conf.for_time
     dt = for_time - timedelta(days=days)
     
-
     sql_df = pd.read_sql(
         f"""
             SELECT (result ->> 'value') as result
@@ -53,7 +52,9 @@ def get_last_results(db, check, conf, days=21):
             WHERE
                 created_at > '{dt}' and
                 created_at < '{for_time}' and
-                check_id = {check.id}
+                check_id = {check.id} and
+                table_column = '{table_col}' and
+                metric = '{metric}'
             ORDER BY
                 created_at
         """,

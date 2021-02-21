@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 
 import pyexasol
 from redata.backends.base import DB
+from redata.metric import Metric
 
 
 class ExasolEngine(object):
@@ -118,7 +119,7 @@ class Exasol(DB):
         result = self.db.execute(
             f"""
             SELECT
-                count(*) as "count"
+                count(*) as "{Metric.COUNT}"
             FROM {table.table_name}
             {interval_part}
             """,

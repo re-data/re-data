@@ -2,8 +2,24 @@ from redata.backends.base import DB
 from sqlalchemy import select, Interval, func, text, cast, Date, distinct, desc
 from sqlalchemy.schema import MetaData
 from datetime import datetime, timedelta
+from sqlalchemy import func
+from redata.metric import Metric
+from sqlalchemy import case
+from decimal import Decimal
 
 class SqlAlchemy(DB):
+
+    METRIC_TO_FUNC = {
+        Metric.MAX: func.max,
+        Metric.MIN: func.min,
+        Metric.AVG: func.avg,
+        Metric.SUM: func.sum,
+        Metric.COUNT_NULLS: lambda x: func.sum(case([(x == None, 1)], else_=0)),
+        Metric.MAX_LENGTH: lambda x: func.max(func.length(x)),
+        Metric.MIN_LENGTH: lambda x: func.min(func.length(x)),
+        Metric.AVG_LENGTH: lambda x: func.avg(func.length(x)),
+        Metric.COUNT_EMPTY: lambda x: func.sum(case([(x == None, 1), (x == '', 1)], else_=0)),
+    }
 
     def __init__(self, name, db, schema=None):
         super().__init__(name, db, schema)
@@ -35,7 +51,7 @@ class SqlAlchemy(DB):
 
     def check_data_volume(self, table, time_interval, conf):
         q_table = self.get_table_obj(table)
-        stmt = select([func.count().label('count')]).select_from(q_table)
+        stmt = select([func.count().label(Metric.COUNT)]).select_from(q_table)
 
         stmt = self.filtered_by_time(stmt, table, time_interval, conf)
         result = self.db.execute(stmt).first()
@@ -79,34 +95,28 @@ class SqlAlchemy(DB):
 
         return [conf.for_time - result_time]
 
+    def check_column_values(self, table, metrics, time_interval, conf):
 
-    def check_generic(self, func_name, table, checked_column, time_interval, conf):
         q_table = self.get_table_obj(table)
 
-        fun = getattr(func, func_name)
-
-        stmt = select([
-            fun(q_table.c[checked_column]).label('value')
-        ]).select_from(q_table)
+        to_select = []
+        for column, checks in metrics.items():
+            for check in checks:
+                if check in self.METRIC_TO_FUNC:
+                    func = self.METRIC_TO_FUNC[check]
+                    select_item = func(q_table.c[column]).label(column + '_' + check)
+                    to_select.append(select_item)
         
-        stmt = self.filtered_by_time(stmt, table, time_interval, conf)
-
-        result = self.db.execute(stmt).first()
-
-        return result
-
-    def check_count_nulls(self, table, checked_column, time_interval, conf):
-        q_table = self.get_table_obj(table)
-        stmt = select([func.count().label('value')]).select_from(q_table)
-
-        stmt = stmt.where((q_table.c[checked_column] == None))
+        stmt = select(to_select).select_from(q_table)
 
         stmt = self.filtered_by_time(stmt, table, time_interval, conf)
+        result = dict(self.db.execute(stmt).first())
 
-        result = self.db.execute(stmt).first()
+        for key, val in result.items():
+            if type(val) == Decimal:
+                result[key] = float(val)
 
         return result
-
 
     def check_count_per_value(self, table, checked_column, time_interval, conf):
 

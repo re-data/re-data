@@ -1,4 +1,4 @@
-from redata.models import Metric
+from redata.metric import Metric
 
 class HomeLastModifiedTime():
 
@@ -19,7 +19,7 @@ class HomeLastModifiedTime():
             WHERE
                 m.id = metric.table_id and
                 m.active = true and
-                metric.metric = 'check_data_delayed' and
+                metric.metric = '{Metric.DELAY}' and
                 $__timeFilter(metric.created_at)
             ORDER BY 1
         """ 
@@ -200,7 +200,7 @@ class DelayOnTable():
         FROM metric
         WHERE
             table_id = {self.table.id} and
-            metric = 'check_data_delayed' and
+            metric = '{Metric.DELAY}' and
             $__timeFilter(created_at)
         ORDER BY 1
         """
@@ -235,10 +235,10 @@ class VolumeGraphs():
 
 class CheckForColumn():
     
-    def __init__(self, table, column_name, check_name) -> None:
+    def __init__(self, table, column, metric) -> None:
         self.table = table
-        self.column_name = column_name
-        self.check_name = check_name
+        self.column = column
+        self.metric = metric
 
     def format(self):
         return 'time_series'
@@ -248,45 +248,19 @@ class CheckForColumn():
         return f'NOT_EXISTING'
 
     def title_for_obj(self):
-        return 'column:{self.column_name}:{self.check_name}'
+        return 'column:{self.column}:{self.metric}'
 
     def query(self):
         return f"""
         SELECT
-            created_at as time, time_interval, check_value
+            created_at as time,
+            (result ->> 'value')::float as {self.metric} 
         FROM
-            metrics_data_values
+            metric
         WHERE
             table_id = {self.table.id} and
-            column_name = '{self.column_name}' and
-            check_name='{self.check_name}'
-        ORDER BY
-        1
-        """
-
-class CheckForColumnByValue():
-        
-    def __init__(self, table, column_name, check_name, time_interval) -> None:
-        self.table = table
-        self.column_name = column_name
-        self.check_name = check_name
-        self.time_interval = time_interval
-
-    def format(self):
-        return 'time_series'
-    
-    def query(self):
-        return f"""
-        SELECT
-            created_at as time, column_value, check_value
-        FROM
-            metrics_data_values
-        WHERE
-            table_id = {self.table.id} and
-            column_name = '{self.column_name}' and
-            check_name='{self.check_name}' and
-            time_interval = '{self.time_interval}' and
-            column_value is not null
+            table_column = '{self.column}' and
+            metric = '{self.metric}'
         ORDER BY
         1
         """

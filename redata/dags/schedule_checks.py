@@ -6,13 +6,6 @@ from redata.checks.data_delayed import check_data_delayed
 from redata.checks.data_volume import check_data_volume
 from redata.db_operations import source_dbs
 from redata.checks.data_schema import check_if_schema_changed, check_for_new_tables
-from redata.checks.data_values import (
-    check_avg,
-    check_min,
-    check_max,
-    check_count_nulls,
-    check_count_per_value
-)
 
 from redata.alerts import check_alert
 from redata.db_operations import metrics_db
@@ -51,7 +44,7 @@ def run_checks_for_table(db, table, conf):
         query = check.query
         if check.query['type'] == 'standard':
             func = get_function(check.query['path'])
-            result = func(db=db, table=table, conf=conf, **check.query['params'])
+            result = func(db=db, table=table, check=check, conf=conf, **check.query['params'])
         else:
             #TODO run raw query on DB
             result = None

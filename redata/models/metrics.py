@@ -5,53 +5,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime
 from sqlalchemy import Index
 from sqlalchemy import ForeignKey
-
-
-class MetricsDataValues(Base):
-    __tablename__ = 'metrics_data_values'
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    table_id = Column(Integer, index=True)
-
-    column_name = Column(String)
-    column_value = Column(String)
-    check_name = Column(String)
-    check_value = Column(Float)
-    time_interval = Column(String)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True)
-
-
-class Metric(object):
-    COUNT = 'count_rows'
-    SCHEMA_CHANGE = 'schema_change'
-    DELAY = 'delay'
-
-    MAX = 'max'
-    MIN = 'min'
-    AVG = 'avg'
-    SUM = 'sum'
-
-    EMPTY = 'empty'
-    EMPTY_PR = 'empty_pr'
-
-    MAX_LENGTH = 'max_length'
-    MIN_LENGTH = 'min_length'
-    AVG_LENGTH = 'avg_length'
-
-    COUNT_NULLS = 'count_nulls'
-    COUNT_EMPTY = 'count_empty'
-
-    FOR_NUMERICAL_COL = [
-        MAX, MIN, MAX, SUM,
-        EMPTY
-    ]
-
-    FOR_TEXT_COL = [
-        MAX_LENGTH, MIN_LENGTH, AVG_LENGTH,
-        EMPTY
-    ]
-
-    TABEL_METRIC = '__table__metric__'
+from redata.metric import Metric
 
 
 class MetricFromCheck(Base):
@@ -77,7 +31,7 @@ class MetricFromCheck(Base):
             for col, metrics in check.metrics.items():
 
                 for m in metrics:
-                    select_name = col + '_'  + m if col != Metric.TABEL_METRIC else m
+                    select_name = col + '_'  + m if col != Metric.TABLE_METRIC else m
 
                     m = MetricFromCheck(
                         check_id=check.id,

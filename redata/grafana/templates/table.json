@@ -108,7 +108,7 @@
         },
         "lines": false,
         "points": true,
-        "linewidth": 1,
+        "linewidth": 2,
         "nullPointMode": "null",
         "options": {
           "alertThreshold": true
@@ -218,7 +218,7 @@
         "hideTimeOverride": false,
         "id":6,
         "lines": true,
-        "linewidth": 1,
+        "linewidth": 2,
         "links": [],
         "nullPointMode": "null",
         "options": {
