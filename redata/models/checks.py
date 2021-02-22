@@ -18,3 +18,6 @@ class Check(Base):
     query = Column(JSONB, nullable=False)
 
     created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+
+    def __str__(self):
+        return self.name

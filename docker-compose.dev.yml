@@ -89,6 +89,8 @@ services:
     volumes:
       - ./redata:/usr/local/redata-dev/redata
       - ./scripts:/usr/local/redata-dev/scripts
+    environment:
+      - PYTHONPATH=/usr/local/redata-dev
 
 volumes:
   airflowlogs: {}

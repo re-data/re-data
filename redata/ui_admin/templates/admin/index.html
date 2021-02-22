@@ -1,12 +1,41 @@
 {% extends 'admin/master.html' %}
-
 {% block body %}
-  <h1>Welcome to Redata</h1>
+{{ super() }}
 
-  <h3>You can modify tables which are monitored here</h3>
-  <p>
-    To do that go to monitored table table and unactivie/active tables and setup time columns for them.<br>
-    Time column is used to determine when given record was created, currently your tables needs to have
-    that column in order to be monitored.
-  </p>
-{% endblock %}
+<style>
+</style>
+
+<div class="row-fluid">
+
+    <div>
+        {% if current_user.is_authenticated %}
+        <h2>Hi {{ current_user.login }}!</h2>
+        {% else %}
+        <div>
+        <h1>Welcome to Redata</h1>
+        <p class="lead">
+            Open-Source data observability platform
+        </p>
+        <form method="POST" action="">
+            {{ form.hidden_tag() if form.hidden_tag }}
+            {% for f in form if f.type != 'CSRFTokenField' %}
+            <div>
+            {{ f.label }}
+            {{ f }}
+            {% if f.errors %}
+            <ul>
+                {% for e in f.errors %}
+                <li>{{ e }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            </div>
+            {% endfor %}
+            <button class="btn btn-primary" type="submit">Log in</button>
+        </form>
+        {{ link | safe }}
+        {% endif %}
+    </div>
+
+</div>
+{% endblock body %}

@@ -1,6 +1,7 @@
 from redata.dags.schedule_checks import run_check_for_new_tables, run_checks, run_compute_alerts
 from redata.grafana.grafana_setup import create_dashboards
 from redata.sample_data.generate import create_sample_tables_in_redata
+from redata.models import User
 from redata.db_operations import source_dbs
 import argparse
 from datetime import datetime, timedelta
@@ -20,6 +21,10 @@ def main():
 
     parser.add_argument(
         "--generate-sample-data", action="store_true", help="Add sample data to REDATA DB for demonstration"
+    )
+
+    parser.add_argument(
+        "--generate-admin-user", action="store_true", help="Generate admin user"
     )
 
     parser.add_argument(
@@ -63,6 +68,9 @@ def main():
                 run_compute_alerts(db, Conf(past))
                 
                 past += timedelta(days=1)
+
+    if args.generate_admin_user:
+        User.generate_admin_user_if_not_exist()
 
 
 if __name__ == "__main__":
