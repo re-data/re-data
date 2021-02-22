@@ -46,6 +46,14 @@ def upgrade():
     op.create_index(op.f('ix_metric_check_id'), 'metric', ['check_id'], unique=False)
     op.create_index(op.f('ix_metric_created_at'), 'metric', ['created_at'], unique=False)
     op.create_index(op.f('ix_metric_table_id'), 'metric', ['table_id'], unique=False)
+    op.create_index(op.f('ix_metric_table_column'), 'metric', ['metric'], unique=False)
+    op.create_index(op.f('ix_metric_metric'), 'metric', ['metric'], unique=False)
+
+    op.execute(f"""
+        SELECT create_hypertable('metric', 'created_at', migrate_data => true)
+    """)
+
+
     op.drop_index('ix_metrics_data_volume_diff_created_at', table_name='metrics_data_volume_diff')
     op.drop_index('ix_metrics_data_volume_diff_table_id', table_name='metrics_data_volume_diff')
     op.drop_table('metrics_data_volume_diff')

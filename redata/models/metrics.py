@@ -14,9 +14,9 @@ class MetricFromCheck(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     check_id = Column(Integer, ForeignKey('checks.id'), index=True)
     table_id = Column(Integer, ForeignKey('monitored_table.id'), index=True)
-    table_column = Column(String)
+    table_column = Column(String, index=True)
 
-    metric = Column(String)
+    metric = Column(String, index=True)
     params = Column(JSONB)
     result = Column(JSONB)
 

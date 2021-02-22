@@ -68,7 +68,7 @@ def create_column_checks(db, table):
 
     check = Check(
         table_id=table.id,
-        name='check_column_values',
+        name='column_values',
         metrics=metrics,
         query={
             'type': 'standard',
