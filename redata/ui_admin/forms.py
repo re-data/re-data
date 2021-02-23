@@ -8,8 +8,8 @@ from redata.models import User
 
 # Define login and registration forms (for flask-login)
 class LoginForm(form.Form):
-    login = fields.StringField(validators=[validators.required()])
-    password = fields.PasswordField(validators=[validators.required()])
+    login = fields.StringField(validators=[validators.required()], render_kw={"placeholder": "Username", 'class': 'form-element'})
+    password = fields.PasswordField(validators=[validators.required()], render_kw={"placeholder": "Password", 'class': 'form-element'})
 
     def validate_login(self, field):
         user = self.get_user()

@@ -20,6 +20,7 @@ setup(
         'scipy',
         'flask',
         'flask_admin',
+        'Flask-Login'
     ],
     entry_points = {
         'console_scripts': ['redata=redata.command_line:main'],

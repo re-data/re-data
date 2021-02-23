@@ -33,8 +33,9 @@ def main():
 
     args = parser.parse_args()
 
-    if not any((args.grafana, args.metrics, args.backfill_days, args.generate_sample_data)):
-        print("Specify at least one of --grafana --metrics ")
+    if not any((args.grafana, args.metrics, args.backfill_days, args.generate_sample_data, args.generate_sample_data)):
+        print ("No arugments supplied, write -h to get list of possible commands")
+    
 
     if args.grafana:
         create_dashboards()

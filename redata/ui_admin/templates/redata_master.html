@@ -1,5 +1,10 @@
 {% extends 'admin/base.html' %}
 
+{% block head_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/redata.css') }}">
+{% endblock %}
+
 {% block access_control %}
 {% if current_user.is_authenticated %}
 <div class="btn-group pull-right">

@@ -2,39 +2,37 @@
 {% block body %}
 {{ super() }}
 
-<style>
-</style>
-
 <div class="row-fluid">
 
     <div>
         {% if current_user.is_authenticated %}
         <h2>Hi {{ current_user.login }}!</h2>
         {% else %}
-        <div>
-        <h1>Welcome to Redata</h1>
-        <p class="lead">
-            Open-Source data observability platform
-        </p>
-        <form method="POST" action="">
-            {{ form.hidden_tag() if form.hidden_tag }}
-            {% for f in form if f.type != 'CSRFTokenField' %}
-            <div>
-            {{ f.label }}
-            {{ f }}
-            {% if f.errors %}
-            <ul>
-                {% for e in f.errors %}
-                <li>{{ e }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            </div>
-            {% endfor %}
-            <button class="btn btn-primary" type="submit">Log in</button>
-        </form>
-        {{ link | safe }}
-        {% endif %}
+        <div class="wrapper">
+          <form method="POST" action="" class="form-signin">
+            <img class="redata-logo" src="{{ url_for('static', filename='img/redata-logo.svg') }}">
+            <h2 class="form-signin-heading">Welcome to Redata</h2>
+            <p class="form-login-text lead">
+                Please log in
+            </p>
+              {{ form.hidden_tag() if form.hidden_tag }}
+              {% for f in form if f.type != 'CSRFTokenField' %}
+              <div class="form-field">
+              {{ f.label }}:
+              {{ f }}
+              {% if f.errors %}
+              <ul class="form-error">
+                  {% for e in f.errors %}
+                  <li>{{ e }}</li>
+                  {% endfor %}
+              </ul>
+              {% endif %}
+              </div>
+              {% endfor %}
+              <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+          </form>
+          {{ link | safe }}
+          {% endif %}
     </div>
 
 </div>
