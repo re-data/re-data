@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
-cd redata/ui_admin
 
-python app.py
+waitress-serve --port ${REDATA_ADMIN_PORT} --call "redata.ui_admin.app:create_app"

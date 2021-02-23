@@ -49,3 +49,5 @@ class User(Base):
             user = cls(login=os.environ.get('REDATA_ADMIN_USER'), password=generate_password_hash(os.environ.get('REDATA_ADMIN_PASSWORD')))
             metrics_session.add(user)
             metrics_session.commit()
+
+            print ("Created admin user")

@@ -28,6 +28,7 @@ class MonitoredTable(Base):
     namespace = Column(String)
 
     checks = relationship("Check", backref="table")
+    alerts = relationship("Alert", backref="table")
 
     def __str__(self):
         return f"{self.namespace}.{self.table_name}"

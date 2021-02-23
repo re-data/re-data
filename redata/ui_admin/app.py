@@ -8,21 +8,16 @@ from flask import request
 from werkzeug.security import generate_password_hash
 from flask_admin.contrib.sqla import ModelView
 
-from redata.models import MonitoredTable, Check, User
+from redata.models import MonitoredTable, Check, User, Alert
 from redata import settings
 from redata.db_operations import metrics_session
 from redata.ui_admin.forms import LoginForm
+from flask import Blueprint
 
-
-app = Flask(__name__)
-
-# set optional bootswatch theme
-app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
-app.config['SQLALCHEMY_DATABASE_URI'] = settings.METRICS_DB_URL
-app.config['SECRET_KEY'] = settings.FLASK_UI_SECRET_KEY
+redata_blueprint = Blueprint('route_blueprint', __name__)
 
 # Initialize flask-login
-def init_login():
+def init_login(app):
     login_manager = login.LoginManager()
     login_manager.init_app(app)
 
@@ -31,14 +26,31 @@ def init_login():
     def load_user(user_id):
         return metrics_session.query(User).get(user_id)
 
-def init_admin():
-    init_login()
+def init_admin(app):
+    init_login(app)
     admin = Admin(app, name='Redata', index_view=RedataAdminView(), template_mode='bootstrap3', base_template='redata_master.html')
+    admin.add_view(AlertView(Alert, metrics_session))
     admin.add_view(MonitoredTableView(MonitoredTable, metrics_session))
     admin.add_view(ChecksTableView(Check, metrics_session))
+    
+
+def create_app():
+
+    app = Flask(__name__)
+
+    # set optional bootswatch theme
+    app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+    app.config['SQLALCHEMY_DATABASE_URI'] = settings.METRICS_DB_URL
+    app.config['SECRET_KEY'] = settings.FLASK_UI_SECRET_KEY
+
+    app.route(admin_redirect, endpoint='/')
+    app.register_blueprint(redata_blueprint)
+
+    init_admin(app)
+    return app
 
 
-@app.route('/')
+@redata_blueprint.route('/')
 def admin_redirect():
     return redirect('/admin')
 
@@ -70,40 +82,45 @@ class RedataAdminView(AdminIndexView):
         return redirect(url_for('.index'))
 
 
-
-class MonitoredTableView(ModelView):
-    can_delete = False
-
-    def is_accessible(self):
-        return login.current_user.is_authenticated
+class BaseRedataView(ModelView):
+    page_size = 1000
 
     def _user_formatter_time(self, context, model, name):
         if model.created_at:
             return model.created_at.strftime("%Y-%m-%d %H:%M:%S")
         else:
-           return ""
-
+            return ""
 
     column_formatters = {
         'created_at' : _user_formatter_time
     }
 
+
+
+class MonitoredTableView(BaseRedataView):
+    can_delete = False
+
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+
     column_editable_list = ['active','time_column']
     column_exclude_list = ['schema']
 
 
-
-class ChecksTableView(ModelView):
-    can_delete = False
-    page_size = 1000
+class AlertView(BaseRedataView):
+    can_delete = True
 
     def is_accessible(self):
         return login.current_user.is_authenticated
 
 
+class ChecksTableView(BaseRedataView):
+    can_delete = False
+    
+    def is_accessible(self):
+        return login.current_user.is_authenticated
 
 
 if __name__ == "__main__":
-    init_admin()
-
-    app.run(host='0.0.0.0', debug=True)
+    app = create_app()
+    app.run(host='0.0.0.0', port=5001, debug=True)

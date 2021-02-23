@@ -79,7 +79,7 @@ services:
     env_file:
       - .env
     ports:
-      - "5000:5000"
+      - "${REDATA_ADMIN_PORT}:${REDATA_ADMIN_PORT}"
     entrypoint: /usr/local/redata/scripts/redata-ui.sh
     volumes:
       - ./redata:/usr/local/redata-dev/redata

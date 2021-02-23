@@ -6,7 +6,13 @@
 
     <div>
         {% if current_user.is_authenticated %}
-        <h2>Hi {{ current_user.login }}!</h2>
+        <h2>Hi, welcome to Redata once again!</h2>
+        <p class='intro-text'>
+          See and manage alerts about your data here.  <br/> <br/>
+          Manage tables you monitor, adjust their settings, and choose what checks to
+          run for them. <br/> <br/>
+          Let us know if you have any questions, problems, or <strong>features requests :) </strong>
+        </p>
         {% else %}
         <div class="wrapper">
           <form method="POST" action="" class="form-signin">
