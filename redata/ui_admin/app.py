@@ -31,14 +31,18 @@ def init_login():
     def load_user(user_id):
         return metrics_session.query(User).get(user_id)
 
+def init_admin():
+    init_login()
+    admin = Admin(app, name='Redata', index_view=RedataAdminView(), template_mode='bootstrap3', base_template='redata_master.html')
+    admin.add_view(MonitoredTableView(MonitoredTable, metrics_session))
+    admin.add_view(ChecksTableView(Check, metrics_session))
+
 
 @app.route('/')
 def admin_redirect():
     return redirect('/admin')
 
 
-
-# Create customized index view class that handles login & registration
 class RedataAdminView(AdminIndexView):
 
     @expose('/')
@@ -97,15 +101,9 @@ class ChecksTableView(ModelView):
         return login.current_user.is_authenticated
 
 
-init_login()
-
-admin = Admin(app, name='Redata', index_view=RedataAdminView(), template_mode='bootstrap3', base_template='redata_master.html')
-
-
-admin.add_view(MonitoredTableView(MonitoredTable, metrics_session))
-admin.add_view(ChecksTableView(Check, metrics_session))
 
 
 if __name__ == "__main__":
+    init_admin()
 
     app.run(host='0.0.0.0', debug=True)

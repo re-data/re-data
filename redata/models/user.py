@@ -39,7 +39,7 @@ class User(Base):
         return self.username
 
     @classmethod
-    def generate_admin_user_if_not_exist(cls):
+    def create_admin_user_if_not_exist(cls):
 
         assert os.environ.get('REDATA_ADMIN_USER'), 'please set env variable for admin user'
         assert os.environ.get('REDATA_ADMIN_PASSWORD'), 'please set env variable for admin password'

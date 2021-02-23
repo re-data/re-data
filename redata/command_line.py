@@ -24,7 +24,7 @@ def main():
     )
 
     parser.add_argument(
-        "--generate-admin-user", action="store_true", help="Generate admin user"
+        "--create-admin-user", action="store_true", help="Generate admin user"
     )
 
     parser.add_argument(
@@ -33,7 +33,7 @@ def main():
 
     args = parser.parse_args()
 
-    if not any((args.grafana, args.metrics, args.backfill_days, args.generate_sample_data, args.generate_sample_data)):
+    if not any((args.grafana, args.metrics, args.backfill_days, args.generate_sample_data, args.create_admin_user)):
         print ("No arugments supplied, write -h to get list of possible commands")
     
 
@@ -70,8 +70,8 @@ def main():
                 
                 past += timedelta(days=1)
 
-    if args.generate_admin_user:
-        User.generate_admin_user_if_not_exist()
+    if args.create_admin_user:
+        User.create_admin_user_if_not_exist()
 
 
 if __name__ == "__main__":
