@@ -6,7 +6,7 @@ class DB(object):
         self.db = db
         self.namespaces = (
             [None] if not schema
-            else schema.split(',')
+            else schema
         )
 
 

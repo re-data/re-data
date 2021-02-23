@@ -8,7 +8,7 @@ from flask import request
 from werkzeug.security import generate_password_hash
 from flask_admin.contrib.sqla import ModelView
 
-from redata.models import MonitoredTable, Check, User, Alert
+from redata.models import MonitoredTable, Check, User, Alert, DataSource
 from redata import settings
 from redata.db_operations import metrics_session
 from redata.ui_admin.forms import LoginForm
@@ -32,6 +32,7 @@ def init_admin(app):
     admin.add_view(AlertView(Alert, metrics_session))
     admin.add_view(MonitoredTableView(MonitoredTable, metrics_session))
     admin.add_view(ChecksTableView(Check, metrics_session))
+    admin.add_view(DataSourceView(DataSource, metrics_session))
     
 
 def create_app():
@@ -56,6 +57,10 @@ def admin_redirect():
 
 
 class RedataAdminView(AdminIndexView):
+
+    def is_visible(self):
+        # This view won't appear in the menu structure
+        return False
 
     @expose('/')
     def index(self):
@@ -103,12 +108,40 @@ class MonitoredTableView(BaseRedataView):
     def is_accessible(self):
         return login.current_user.is_authenticated
 
+    column_searchable_list = ('source_db', 'table_name', 'namespace')
+
     column_editable_list = ['active','time_column']
     column_exclude_list = ['schema']
 
 
 class AlertView(BaseRedataView):
     can_delete = True
+    can_create = False
+    
+    column_searchable_list = ('text', 'alert_type')
+
+
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+
+
+class DataSourceView(BaseRedataView):
+    can_delete = True
+    can_create = True
+    
+    column_searchable_list = ('name',)
+    
+    column_exclude_list = ('password')
+
+    form_widget_args = {
+        'password': {
+            'type': 'password'
+        },
+    }
+
+    def after_model_change(self, form, model, is_created):
+        pass
+
 
     def is_accessible(self):
         return login.current_user.is_authenticated
@@ -116,6 +149,8 @@ class AlertView(BaseRedataView):
 
 class ChecksTableView(BaseRedataView):
     can_delete = False
+
+    column_searchable_list = ('name', 'metrics', 'query')
     
     def is_accessible(self):
         return login.current_user.is_authenticated

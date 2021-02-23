@@ -4,7 +4,7 @@ from airflow.operators.python_operator import PythonOperator
 
 from redata.checks.data_delayed import check_data_delayed
 from redata.checks.data_volume import check_data_volume
-from redata.db_operations import source_dbs
+from redata.models import DataSource
 from redata.checks.data_schema import check_if_schema_changed, check_for_new_tables
 
 from redata.alerts import check_alert
@@ -82,7 +82,7 @@ with DAG('validation_dag', description='Validate data',
           schedule_interval=settings.REDATA_AIRFLOW_SCHEDULE_INTERVAL,
           start_date=datetime(2017, 3, 20), catchup=False) as dag:
 
-    for source_db in source_dbs:
+    for source_db in DataSource.source_dbs():
         run_checks_op = PythonOperator(
             task_id='run_checks_{}'.format(source_db.name),
             python_callable=run_checks,

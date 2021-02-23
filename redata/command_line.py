@@ -2,7 +2,7 @@ from redata.dags.schedule_checks import run_check_for_new_tables, run_checks, ru
 from redata.grafana.grafana_setup import create_dashboards
 from redata.sample_data.generate import create_sample_tables_in_redata
 from redata.models import User
-from redata.db_operations import source_dbs
+from redata.models import DataSource
 import argparse
 from datetime import datetime, timedelta
 from redata.conf import Conf
@@ -42,7 +42,7 @@ def main():
 
     if args.metrics:
 
-        for db in source_dbs:
+        for db in DataSource.source_dbs():
             print ("run_check_for_new_table")
             run_check_for_new_tables(db, Conf(datetime.utcnow()))
 
@@ -59,7 +59,7 @@ def main():
     if args.backfill_days:
         days = args.backfill_days
         
-        for db in source_dbs:
+        for db in DataSource.source_dbs():
             run_check_for_new_tables(db, Conf(datetime.utcnow()))
             past = datetime.utcnow() - timedelta(days=days)
 

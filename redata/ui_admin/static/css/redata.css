@@ -41,13 +41,13 @@ input[type="password"] {
 	padding-inline-start: 0;
 }
 
-.dropdown-toggle {
+#admin-navbar-collapse .dropdown-toggle {
 	color: white;
 	margin: 5px;
 	font-size: 15px;
 }
 
-.dropdown-toggle:hover {
+#admin-navbar-collapse .dropdown-toggle:hover {
 	color: white
 }
 
