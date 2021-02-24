@@ -23,7 +23,6 @@ class MonitoredTable(Base):
 
     table_name = Column(String)
     time_column = Column(String)
-    time_column_type = Column(String)
     schema = Column(JSONB)
     namespace = Column(String)
 
@@ -100,7 +99,6 @@ class MonitoredTable(Base):
                 print (f"Found column to sort by {col_name}")
 
             table.time_column=col_name
-            table.time_column_type=col_type
 
             metrics_session.add(table)
             metrics_session.commit()
