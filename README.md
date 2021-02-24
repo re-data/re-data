@@ -5,7 +5,7 @@
 
 # Redata
 Monitoring system for data teams.
-Computing health checks on data (via Airflow jobs), visualizing them over time, and alerting on them in Grafana.
+Computing health checks on data, visualizing them over time, and alerting on them.
 
 # Key features
 
@@ -55,7 +55,7 @@ Here is a our list :)
 
  * **Automatic and up to date health dashboards** - It's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is hard - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
  
- * **Smart alerts** - Once tables are detected redata automatically tracks their health and looks for anomalies there.
+ * **Smart alerts** - Once tables are detected redata automatically tracks their health and looks for anomalies there. Alerts are designed specifically for data quality checks and separete from Grafana alerts (no limits on what to alert on, etc.)
  
  * **Visualizing new, previously impossible things** - Things like schema changes, cannot be queried from DB, but computing metrics over time makes showing those possible.
  
