@@ -80,7 +80,7 @@ def generate_grafana():
 
 with DAG('validation_dag', description='Validate data',
           schedule_interval=settings.REDATA_AIRFLOW_SCHEDULE_INTERVAL,
-          start_date=datetime(2017, 3, 20), catchup=False) as dag:
+          start_date=datetime(2017, 3, 20), catchup=False, is_paused_upon_creation=False) as dag:
 
     for source_db in DataSource.source_dbs():
         run_checks_op = PythonOperator(

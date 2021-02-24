@@ -27,8 +27,11 @@ class MonitoredTable(Base):
     schema = Column(JSONB)
     namespace = Column(String)
 
+    grafana_url = Column(String)
+
     checks = relationship("Check", backref="table")
     alerts = relationship("Alert", backref="table")
+    
 
     def __str__(self):
         return f"{self.namespace}.{self.table_name}"

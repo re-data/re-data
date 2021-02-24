@@ -13,6 +13,7 @@ from redata import settings
 from redata.db_operations import metrics_session
 from redata.ui_admin.forms import LoginForm
 from flask import Blueprint
+from flask import Markup
 
 redata_blueprint = Blueprint('route_blueprint', __name__)
 
@@ -107,11 +108,24 @@ class MonitoredTableView(BaseRedataView):
 
     def is_accessible(self):
         return login.current_user.is_authenticated
+    
+    def grafan_url_formatter(self, context, model, name):
+        if model.grafana_url:
+            url = f"<a href='http://{settings.GRAFNA_URL}{model.grafana_url}' target='_blank'>dashboard url</a>"
+            return Markup(url)
+        else:
+            return ""
 
     column_searchable_list = ('source_db', 'table_name', 'namespace')
 
     column_editable_list = ['active','time_column']
-    column_exclude_list = ['schema']
+    column_exclude_list = ['schema', 'created_at']
+
+    column_formatters = {
+        'created_at' : BaseRedataView._user_formatter_time,
+        'grafana_url': grafan_url_formatter
+    }
+
 
 
 class AlertView(BaseRedataView):
@@ -137,6 +151,10 @@ class DataSourceView(BaseRedataView):
         'password': {
             'type': 'password'
         },
+    }
+
+    form_choices = {
+        'source_type': DataSource.SUPPORTED_SOURCES
     }
 
     def after_model_change(self, form, model, is_created):

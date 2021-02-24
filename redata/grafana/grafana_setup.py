@@ -14,6 +14,7 @@ from redata.models.table import MonitoredTable
 from grafana_api.grafana_api import GrafanaClientError
 from redata.models import DataSource
 from redata.grafana.channel import get_slack_notification_channel
+from redata.db_operations import metrics_session
 
 def create_source_in_grafana(grafana_api):
     datasource = get_postgres_datasource()
@@ -68,8 +69,10 @@ def create_dashboards():
         monitored_tables = MonitoredTable.get_monitored_tables(db.name)
         for table in monitored_tables:
             dash_data = create_dashboard_for_table(grafana_api, db, table)
+            table.grafana_url = dash_data['dashboard']['url']
             dashboards.append(dash_data)
 
+    metrics_session.commit()
     home_response = create_home_dashboard(grafana_api, dashboards)
     star_home_dashboard(grafana_api, home_response)
 

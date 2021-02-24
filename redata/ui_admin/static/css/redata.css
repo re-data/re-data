@@ -20,6 +20,14 @@
   border: 1px solid rgba(0,0,0,0.1);  
 }
 
+.quick-intro {
+	max-width: 800px;
+	padding: 15px 35px 45px;
+	margin: 0 auto;
+	background-color: #fff;
+	border: 1px solid rgba(0,0,0,0.1);  
+  }
+
 .form-field {
 	margin-bottom: 10px;
 }
@@ -52,7 +60,7 @@ input[type="password"] {
 }
 
 .redata-logo {
-	width: 30%;
+	width: 90px;
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
@@ -61,4 +69,14 @@ input[type="password"] {
 .intro-text {
 	margin-top: 20px;
 	font-size: 16px;
+}
+
+.form-group .form-control {
+	background-color: rgb(0 0 100 / 2%);
+	max-width: 550px;
+}
+
+.form-group input[type="checkbox"] {
+	background-color: rgb(0 0 100 / 2%);
+	max-width: 50px;
 }
