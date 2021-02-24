@@ -28,7 +28,7 @@ Having metrics in one common format, makes it possible to create dashboards auto
 
 Here are some examples of how generated Grafana dashboards look like:
 
-<img src="./docs/static/table_dashboard.png" width="80%"></img>
+<img src="./docs/static/table_dashboard2.png" width="80%"></img>
 
 Redata UI makes it easy to control what's dashboards and metrics are generated and tweak that to your needs
 
