@@ -59,7 +59,7 @@ Here is a our list :)
  
  * **Visualizing new, previously impossible things** - Things like schema changes, cannot be queried from DB, but computing metrics over time makes showing those possible.
  
- * **Big set of predefined and effectively computed metrics** - Redata comes with large set of predefined metrics, computed out of box for your tables. We also optimize quries in ways which are hard to do yourself when doing custom monitoring setup
+ * **Big set of predefined and effectively computed metrics** - Redata comes with large set of predefined metrics, computed out of box for your tables. We also optimize queries computing them, so that it's effective and fast.
 
 # Getting started (local machine setup)
 
