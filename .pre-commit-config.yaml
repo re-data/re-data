@@ -1,0 +1,14 @@
+repos:
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.7.0
+    hooks:
+      - id: isort
+        pass_filenames: false
+        args: ["-c", "redata", "tests"]
+
+  - repo: https://github.com/psf/black
+    rev: 19.10b0 # Replace by any tag/version: https://github.com/psf/black/tags
+    hooks:
+      - id: black
+        args: ["--check", "redata", "tests"]
+        language_version: python3 # Should be a command that runs python3.6+

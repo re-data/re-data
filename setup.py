@@ -22,7 +22,8 @@ setup(
     extras_require={
         'dev': [
             'isort',
-            'black'
+            'black',
+            'pre-commit'
         ]
     },
     entry_points = {
