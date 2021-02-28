@@ -21,8 +21,8 @@ class SqlAlchemy(DB):
         Metric.COUNT_EMPTY: lambda x: func.sum(case([(x == None, 1), (x == '', 1)], else_=0)),
     }
 
-    def __init__(self, name, db, schema=None):
-        super().__init__(name, db, schema)
+    def __init__(self, dbsource, db, schema=None):
+        super().__init__(dbsource, db, schema)
 
     def get_table_obj(self, table):
         if not getattr(self, '_per_namespace', None):

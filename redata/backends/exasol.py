@@ -23,8 +23,8 @@ class ExasolEngine(object):
 
 
 class Exasol(DB):
-    def __init__(self, name, db, schema):
-        super().__init__(name, db, schema)
+    def __init__(self, dbsource, db, schema):
+        super().__init__(dbsource, db, schema)
 
     def table_names(self, namespace):
         return self.db.table_names(namespace)

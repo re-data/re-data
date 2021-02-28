@@ -8,12 +8,17 @@ from flask import request
 from werkzeug.security import generate_password_hash
 from flask_admin.contrib.sqla import ModelView
 
-from redata.models import MonitoredTable, Check, User, Alert, DataSource
+from redata.models import MonitoredTable, Check, User, Alert, DataSource, Run
+from redata.checks.data_schema import check_for_new_tables
 from redata import settings
 from redata.db_operations import metrics_session
 from redata.ui_admin.forms import LoginForm
 from flask import Blueprint
 from flask import Markup
+
+from datetime import datetime
+from redata.conf import Conf
+from redata.grafana.grafana_setup import create_dashboards
 
 redata_blueprint = Blueprint('route_blueprint', __name__)
 
@@ -34,6 +39,7 @@ def init_admin(app):
     admin.add_view(MonitoredTableView(MonitoredTable, metrics_session))
     admin.add_view(ChecksTableView(Check, metrics_session))
     admin.add_view(DataSourceView(DataSource, metrics_session))
+    admin.add_view(RunView(Run, metrics_session))
     
 
 def create_app():
@@ -57,7 +63,7 @@ def get_grafana_url(table):
         url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>{table.table_name}</a>"
         return Markup(url)
     else:
-        return ""
+        return table.table_name
 
 
 @redata_blueprint.route('/')
@@ -169,8 +175,13 @@ class DataSourceView(BaseRedataView):
     }
 
     def after_model_change(self, form, model, is_created):
-        pass
 
+        # Discover tables and added data source
+        conf = Conf(datetime.utcnow())
+        db = model.get_db_object()
+        check_for_new_tables(db, conf)
+        create_dashboards()
+        
 
     def is_accessible(self):
         return login.current_user.is_authenticated
@@ -192,6 +203,11 @@ class ChecksTableView(BaseRedataView):
         'table': table_grafana_url_formatter
     }
 
+class RunView(BaseRedataView):
+    can_delete = False
+
+    def is_accessible(self):
+        return login.current_user.is_authenticated
 
 
 if __name__ == "__main__":

@@ -9,7 +9,4 @@ cd ..
 
 redata --create-admin-user
 
-redata --metrics
-redata --grafana
-
 airflow scheduler

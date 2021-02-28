@@ -16,6 +16,7 @@ from redata.models.checks import Check
 from redata.models.metrics import MetricFromCheck
 from redata.db_operations import metrics_session
 from redata.grafana.grafana_setup import create_dashboards
+from redata.models import Run
 
 import importlib
 
@@ -78,37 +79,58 @@ def generate_grafana():
     create_dashboards()
     print (f"Generating grafana dashboards: [DONE]")
 
+
+def process_run():
+
+    run = Run.get_not_started_run()
+    if run is not None:
+        run.status = 'pending'
+        metrics_session.commit()
+
+        conf = Conf(run.for_date)
+
+        for source_db in DataSource.source_dbs():
+            run_check_for_new_tables(source_db, conf)
+            run_checks(source_db, conf)
+            run_compute_alerts(source_db, conf)
+
+        generate_grafana()
+
+        run.status = 'success'
+        metrics_session.commit()
+
+
 with DAG('validation_dag', description='Validate data',
+          schedule_interval='*/1 * * * *',
+          start_date=datetime(2017, 3, 20),
+          catchup=False,
+          is_paused_upon_creation=False,
+    ) as dag_run:
+
+     PythonOperator(
+            task_id='process_run',
+            python_callable=process_run,
+            dag=dag_run
+    )
+
+
+def add_run():
+    run = Run(
+        for_date=datetime.utcnow(),
+        status='not started',
+        run_type='scheduled'
+    )
+
+    metrics_session.add(run)
+    metrics_session.commit()
+
+with DAG('generate_run', description='Generate runs for automatic checks',
           schedule_interval=settings.REDATA_AIRFLOW_SCHEDULE_INTERVAL,
-          start_date=datetime(2017, 3, 20), catchup=False, is_paused_upon_creation=False) as dag:
+          start_date=datetime(2017, 3, 20), catchup=False, is_paused_upon_creation=False) as dag_generate:
 
-    for source_db in DataSource.source_dbs():
-        run_checks_op = PythonOperator(
-            task_id='run_checks_{}'.format(source_db.name),
-            python_callable=run_checks,
-            op_kwargs={'db': source_db, 'conf': Conf(datetime.utcnow())},
-            dag=dag
-        )
-
-        check_new_tables_op = PythonOperator(
-            task_id='run_check_for_new_tables_{}'.format(source_db.name),
-            python_callable=run_check_for_new_tables,
-            op_kwargs={'db': source_db, 'conf': Conf(datetime.utcnow())},
-            dag=dag
-        )
-
-        compute_alerts_op = PythonOperator(
-            task_id='compute_alerts_{}'.format(source_db.name),
-            python_callable=run_compute_alerts,
-            op_kwargs={'db': source_db, 'conf': Conf(datetime.utcnow())},
-            dag=dag
-        )
-
-        generate_grafana = PythonOperator(
-            task_id='generate_grafana_{}'.format(source_db.name),
-            python_callable=generate_grafana,
-            dag=dag
-        )
-
-        check_new_tables_op >> compute_alerts_op
+    PythonOperator(
+        task_id='add_run',
+        python_callable=add_run,
+        dag=dag_generate
+    )
 

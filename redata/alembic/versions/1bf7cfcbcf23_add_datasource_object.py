@@ -27,7 +27,7 @@ def upgrade():
     sa.Column('user', sa.String(), nullable=True),
     sa.Column('password', sa.String(), nullable=True),
     sa.Column('schemas', sa.ARRAY(sa.String()), nullable=True),
-    sa.Column('active', sa.Boolean(), nullable=True),
+    sa.Column('run_for_all', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )

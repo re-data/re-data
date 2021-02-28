@@ -53,7 +53,8 @@ class MonitoredTable(Base):
             table_name=db_table_name,
             schema={'columns': schema_cols},
             source_db=db.name,
-            namespace=namespace
+            namespace=namespace,
+            active=db.dbsource.run_for_all
         )
 
         # heuristics to find best column to sort by when computing stats about data

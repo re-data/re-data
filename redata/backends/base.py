@@ -1,8 +1,9 @@
 from datetime import date, datetime
 
 class DB(object):
-    def __init__(self, name, db, schema):
-        self.name = name
+    def __init__(self, dbsource, db, schema):
+        self.dbsource = dbsource
+        self.name = dbsource.name
         self.db = db
         self.namespaces = (
             [None] if not schema
