@@ -32,7 +32,7 @@ Here are some examples of how generated Grafana dashboards look like:
 
 Redata UI makes it easy to control what's dashboards and metrics are generated and tweak that to your needs
 
-<img src="./docs/static/table_dashboard.png" width="80%"></img>
+<img src="./docs/static/redata_ui.png" width="80%"></img>
 
 ## Smart alerts
 
