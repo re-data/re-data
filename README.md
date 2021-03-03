@@ -30,7 +30,7 @@ Here are some examples of how generated Grafana dashboards look like:
 
 <img src="./docs/static/table_dashboard2.png" width="80%"></img>
 
-Redata UI makes it easy to control what's dashboards and metrics are generated and tweak that to your needs. You can view all your tables here and adjust monitoring runned for them.
+Redata UI makes it easy to control what dashboards and metrics are generated and tweak that to your needs. You can view all your tables here and adjust monitoring which is run for them.
 
 <img src="./docs/static/redata_ui.png" width="80%"></img>
 
