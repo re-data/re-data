@@ -87,6 +87,7 @@ services:
       - "5001:5001"
     entrypoint: /usr/local/redata/scripts/redata-ui.sh
     volumes:
+      - ${REDATA_BIGQUERY_KEY_FILE:-./redata/deployment/empty.json}:${REDATA_DEFAULT_BIGQUERY_DOCKER_CREDS_FILE_PATH}
       - ./redata:/usr/local/redata-dev/redata
       - ./scripts:/usr/local/redata-dev/scripts
     environment:

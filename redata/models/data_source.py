@@ -37,6 +37,9 @@ class DataSource(Base):
 
     @property
     def db_url(self):
+        if self.source_type == 'bigquery':
+            return f'{self.source_type}://{self.host}'
+        
         return f'{self.source_type}://{self.user}:{self.password}@{self.host}/{self.database}'
     
     def get_db_object(self):
