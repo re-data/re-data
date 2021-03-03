@@ -34,7 +34,7 @@ services:
       - POSTGRES_DB=${_AIRFLOW_CONN_METADATA_DB_NAME}
 
   redata_backend:
-    image: redatateam/redata:0.0.8-alfa
+    image: redatateam/redata:0.0.9-alfa
     restart: always
     depends_on:
       - airflow_postgres
@@ -50,7 +50,7 @@ services:
     entrypoint: /usr/local/redata/scripts/redata-start.sh
 
   webserver_airflow:
-    image: redatateam/redata:0.0.8-alfa
+    image: redatateam/redata:0.0.9-alfa
     hostname: webserver
     restart: always
     depends_on:
@@ -82,7 +82,8 @@ services:
     entrypoint: /usr/local/redata/scripts/redata-ui.sh
     volumes:
       - ${REDATA_BIGQUERY_KEY_FILE:-./redata/deployment/empty.json}:${REDATA_DEFAULT_BIGQUERY_DOCKER_CREDS_FILE_PATH}
-      - ./redata:/usr/local/redata-dev/redata
+    environment:
+      - PYTHONPATH=/usr/local/redata
 
 volumes:
   airflowlogs: {}
