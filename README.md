@@ -70,7 +70,7 @@ cd redata
 docker-compose up
 ```
 
-Now visit http://localhost:5000, add your database and starting monitoring your data :)
+Now visit http://localhost:5000, add your database and starting monitoring your data. Default password/user for Redata/Grafana app is redata :)
 
 
 # Deploying on production
