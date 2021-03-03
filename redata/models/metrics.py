@@ -25,7 +25,7 @@ class MetricFromCheck(Base):
     @classmethod
     def add_metrics(cls, results, check, conf):
 
-        print (results, check.metrics, check.metrics, check.name)
+        print (f"Adding results for check: {check}")
         for row in results:
             
             for col, metrics in check.metrics.items():

@@ -126,6 +126,10 @@ class Exasol(DB):
             fetch_dict=True,
         ).fetchone()
         return SimpleNamespace(**result)
+    
+    def check_column_values(self, table, metrics, time_interval, conf):
+        # Not implemented yet
+        return []
 
     def execute(self, *args, **kwargs):
         return self.db.execute(*args, **kwargs)
