@@ -1,3 +1,4 @@
+from redata.metric import Metric
 
 class HomeLastModifiedTime():
 
@@ -11,14 +12,15 @@ class HomeLastModifiedTime():
     def query(self):
         return f"""
             SELECT
-                delay.created_at AS time,
+                metric.created_at AS time,
                 m.table_name,
-                delay.value
-            FROM metrics_data_delay delay, monitored_table m
+                (metric.result->>'value')::float
+            FROM metric metric, monitored_table m
             WHERE
-                m.id = delay.table_id and
+                m.id = metric.table_id and
                 m.active = true and
-                $__timeFilter(delay.created_at)
+                metric.metric = '{Metric.DELAY}' and
+                $__timeFilter(metric.created_at)
             ORDER BY 1
         """ 
 
@@ -35,18 +37,16 @@ class HomeLastDayTraffic():
     def query(self):
         return f"""
             SELECT
-                volume.created_at AS time,
+                metric.created_at AS time,
                 m.table_name,
-                volume.count
-            FROM
-                metrics_data_volume volume,
-                monitored_table m
+                (metric.result->>'value')::float
+            FROM metric metric, monitored_table m
             WHERE
-                volume.time_interval = '1 day' and
-                m.id = volume.table_id and
+                m.id = metric.table_id and
                 m.active = true and
-                $__timeFilter(volume.created_at)
-            ORDER BY 1
+                metric.metric = '{Metric.COUNT}' and
+                params ->> 'time_interval' = '1 day' and
+                $__timeFilter(metric.created_at)
         """ 
 
 class HomeAlerts():
@@ -90,13 +90,13 @@ class SchemaChange():
     def query(self):
         return f"""
         SELECT
-            created_at AS "time",
-            operation,
-            column_name,
-            column_type
-        FROM metrics_table_schema_changes
+            result -> 'value' ->> 'operation' as operation,
+            result -> 'value' ->> 'column_name' as column_name,
+            result -> 'value' ->> 'columnt_type' as column_type
+        FROM metric
         WHERE
             table_id = {self.table.id} and
+            metric = '{Metric.SCHEMA_CHANGE}' and
             $__timeFilter(created_at)
         ORDER BY 1
         """
@@ -196,37 +196,12 @@ class DelayOnTable():
         return f"""
         SELECT
             created_at AS "time",
-            value as "time_since_last_record_created"
-        FROM metrics_data_delay
+            (result ->> 'value')::float as delay
+        FROM metric
         WHERE
             table_id = {self.table.id} and
+            metric = '{Metric.DELAY}' and
             $__timeFilter(created_at)
-        ORDER BY 1
-        """
-
-
-class GroupByDate():
-
-    def __init__(self, table) -> None:
-        self.table = table
-
-    def format(self):
-        return 'time_series'
-
-    @staticmethod
-    def title():
-        return f'new_records_by_day'
-
-    def query(self):
-        return f"""
-        SELECT
-            date AS "time",
-            sum(count)
-        FROM metrics_data_volume_diff
-        WHERE
-            table_id = {self.table.id} and
-            $__timeFilter(created_at)
-        GROUP BY 1    
         ORDER BY 1
         """
 
@@ -247,11 +222,12 @@ class VolumeGraphs():
         return f"""
         SELECT
             created_at AS "time",
-            time_interval,
-            count
-        FROM metrics_data_volume
+            (result ->> 'value')::float as volume_24h
+        FROM metric
         WHERE
             table_id = {self.table.id} and
+            metric = '{Metric.COUNT}' and
+            params ->> 'time_interval' = '1 day' and
             $__timeFilter(created_at)
         ORDER BY 1
         """
@@ -259,10 +235,10 @@ class VolumeGraphs():
 
 class CheckForColumn():
     
-    def __init__(self, table, column_name, check_name) -> None:
+    def __init__(self, table, column, metric) -> None:
         self.table = table
-        self.column_name = column_name
-        self.check_name = check_name
+        self.column = column
+        self.metric = metric
 
     def format(self):
         return 'time_series'
@@ -272,47 +248,21 @@ class CheckForColumn():
         return f'NOT_EXISTING'
 
     def title_for_obj(self):
-        return 'column:{self.column_name}:{self.check_name}'
+        return 'column:{self.column}:{self.metric}'
 
     def query(self):
         return f"""
         SELECT
-            created_at as time, time_interval, check_value
+            created_at as time,
+            (result ->> 'value')::float as {self.metric} 
         FROM
-            metrics_data_values
+            metric
         WHERE
             table_id = {self.table.id} and
-            column_name = '{self.column_name}' and
-            check_name='{self.check_name}'
+            table_column = '{self.column}' and
+            metric = '{self.metric}'
         ORDER BY
         1
         """
 
-class CheckForColumnByValue():
-        
-    def __init__(self, table, column_name, check_name, time_interval) -> None:
-        self.table = table
-        self.column_name = column_name
-        self.check_name = check_name
-        self.time_interval = time_interval
-
-    def format(self):
-        return 'time_series'
-    
-    def query(self):
-        return f"""
-        SELECT
-            created_at as time, column_value, check_value
-        FROM
-            metrics_data_values
-        WHERE
-            table_id = {self.table.id} and
-            column_name = '{self.column_name}' and
-            check_name='{self.check_name}' and
-            time_interval = '{self.time_interval}' and
-            column_value is not null
-        ORDER BY
-        1
-        """
-
-ALL_PANELS = VolumeGraphs, DelayOnTable, GroupByDate, SchemaChange, CurrentSchema, AlertsTable, AlertsByDay
+ALL_PANELS = VolumeGraphs, DelayOnTable, SchemaChange, CurrentSchema, AlertsTable, AlertsByDay

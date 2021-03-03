@@ -1,0 +1,19 @@
+{% extends 'admin/base.html' %}
+
+{% block head_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/redata.css') }}">
+{% endblock %}
+
+{% block access_control %}
+{% if current_user.is_authenticated %}
+<div class="btn-group pull-right">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="icon-user"></i> Settings <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="{{ url_for('admin.logout_view') }}">Log out</a></li>
+    </ul>
+</div>
+{% endif %}
+{% endblock %}

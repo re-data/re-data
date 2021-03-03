@@ -17,7 +17,11 @@ setup(
         'cryptography',
         'pybigquery',
         'alembic',
-        'scipy'
+        'scipy',
+        'flask',
+        'flask_admin',
+        'Flask-Login',
+        'waitress'
     ],
     extras_require={
         'dev': [

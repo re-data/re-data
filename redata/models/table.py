@@ -8,6 +8,7 @@ from redata import settings
 from redata.models.base import Base
 from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import relationship
 from redata.db_operations import metrics_session
 import json
 
@@ -22,9 +23,17 @@ class MonitoredTable(Base):
 
     table_name = Column(String)
     time_column = Column(String)
-    time_column_type = Column(String)
     schema = Column(JSONB)
     namespace = Column(String)
+
+    grafana_url = Column(String)
+
+    checks = relationship("Check", backref="table")
+    alerts = relationship("Alert", backref="table")
+    
+
+    def __str__(self):
+        return f"{self.namespace}.{self.table_name}"
 
     @property
     def full_table_name(self):
@@ -44,7 +53,8 @@ class MonitoredTable(Base):
             table_name=db_table_name,
             schema={'columns': schema_cols},
             source_db=db.name,
-            namespace=namespace
+            namespace=namespace,
+            active=db.dbsource.run_for_all
         )
 
         # heuristics to find best column to sort by when computing stats about data
@@ -90,7 +100,6 @@ class MonitoredTable(Base):
                 print (f"Found column to sort by {col_name}")
 
             table.time_column=col_name
-            table.time_column_type=col_type
 
             metrics_session.add(table)
             metrics_session.commit()

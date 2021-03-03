@@ -5,7 +5,7 @@
 
 # Redata
 Monitoring system for data teams.
-Computing health checks on data (via Airflow jobs), visualizing them over time, and alerting on them in Grafana.
+Computing health checks on data, visualizing them over time, and alerting on them.
 
 # Key features
 
@@ -16,27 +16,23 @@ Redata computes health metrics for your data, containing information like this:
 * time since last record was added
 * number of records added in last (hour/day/week/month)
 * schema changes that recently happened
-* number of nulls in columns over time
-* other checks specific to columns in data and their types
+* number of missing values in columns over time
+* min/max/avg of values and lenghts of strings in colums
+* other user defined metrics
 
-*If you have DevOps experience, you can think of it as: prometheus, telegraf for data teams*
+*If you have DevOps experience, you can think of Redata as: prometheus, telegraf for data teams*
 
 ## Automatic dashboards
 
 Having metrics in one common format, makes it possible to create dashboards automatically, for all (or chosen) tables
-in your data. Currently there are 2 types of dashboard redata creates:
-* home dashboard, containing most important information about all tables
-* table dashboard, containing information specific to given table and columns in it
 
 Here are some examples of how generated Grafana dashboards look like:
 
-<img src="./docs/static/home_dashboard.png" width="80%"></img>
-<br>
-*Get a glimpse of what's happening in all your tables on one screen. If you see, any suspicious numbers click on the tile for more details on this specific table.* 
+<img src="./docs/static/table_dashboard2.png" width="80%"></img>
 
-<img src="./docs/static/table_dashboard.png" width="80%"></img>
-<br>
-*Get an in-depth view of your table, learn about any schema changes, volume fluctuations, nulls in columns, and other useful metrics.*
+Redata UI makes it easy to control what's dashboards and metrics are generated and tweak that to your needs. You can view all your tables here and adjust monitoring runned for them.
+
+<img src="./docs/static/redata_ui.png" width="80%"></img>
 
 ## Smart alerts
 
@@ -57,45 +53,24 @@ Check out deplying on production section for info how to easily deploy redata on
 Grafana supports PostgreSQL and lot of others DBs, so what are benefits of using redata over setting monitoring yourself with couple of SQL queries?
 Here is a our list :)
 
- * **Visualizing all tables together in one dashbard** - Computing metrics layer make it really easy to do visulizations for many/all tables at once and showing them under one dashboard.
+ * **Automatic and up to date health dashboards** - It's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is hard - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
+ 
+ * **Smart alerts** - Once tables are detected redata automatically tracks their health and looks for anomalies there. Alerts are designed specifically for data quality checks and separete from Grafana alerts (no limits on what to alert on, etc.)
  
  * **Visualizing new, previously impossible things** - Things like schema changes, cannot be queried from DB, but computing metrics over time makes showing those possible.
  
- * **Visualizing how things change over time** - If you are doing any updates to DB, like updating row status etc. it's impossible to visualize how things looked liked in the past and compare it to now (for alerting purposes etc.), adding metrics layer makes it easy.
- 
- * **Automatic and up to date dashboards** - It's normally quite cumbersome to setup proper monitoring for all tables and keeping it up to date is hard - redata can do that for you, detecting new tables and columns and automatically creating dashboards/panels for them.
- 
- * **Smart alerts** - Once tables are detected redata automatically tracks their health and looks for anomalies there. It's hard to do that alerting yourself and scalling it for all tables requires even more effort.
+ * **Big set of predefined and effectively computed metrics** - Redata comes with large set of predefined metrics, computed out of box for your tables. We also optimize queries computing them, so that it's effective and fast.
 
 # Getting started (local machine setup)
 
 ```
 git clone https://github.com/redata-team/redata.git
-cd redata ; cp env_template .env
-
-# create REDATA_SOURCE_DB_URL_YOUR_DB_NAME variables (at the end of .env file)
-# you can add multiple variables for many DBs you want to observe here
-
-# if just want to test redata, without your data yet, just paste
-# REDATA_SOURCE_DB_URL_REDATA=${REDATA_METRICS_DB_URL}
-# as url, you will starting with monitoring redata itself :)
+cd redata
 
 docker-compose up
 ```
 
-## Grafana
-Add this point Grafana should be running on http://localhost:3000 (or you docker IP in case of running docker via virtualbox)
-
-First screen you will see there, is login screen. Default password is admin/mysecretpassword, but if you want can you can change that in .env file (need to be done when staring docker)
-
-From the main dashboard named: `Home (generated)` you can go to any table specific dashboard, just by clicking tile that shows stats for given table
-
-## Airflow
-Airflow should be running and available under: http://localhost:8080/ (or you docker IP, default password is also admin/admin if it wasn't changed in .env)
-
-You should see `validation dag` there, turn in on and it will start running (every 10 minutes or other frequency if specified in `settings.py` file)
-
-You can also manually trigger running dag (by clicking first icon on Link tab)
+Now visit http://localhost:5000, add your database and starting monitoring your data. Default password/user for Redata/Grafana app is redata :)
 
 
 # Deploying on production

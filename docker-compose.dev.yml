@@ -10,7 +10,7 @@ services:
       - .env
     tty: true
   
-  postgres_redata:
+  redata_postgres:
     image: timescale/timescaledb:latest-pg12
     env_file:
       - .env
@@ -22,7 +22,7 @@ services:
       - POSTGRES_PASSWORD=${REDATA_METRICS_DATABASE_PASSWORD}
       - POSTGRES_DB=${REDATA_METRICS_DATABASE_NAME}
 
-  postgres_airflow:
+  airflow_postgres:
     image: postgres:12
     env_file:
       - .env
@@ -33,13 +33,12 @@ services:
       - POSTGRES_PASSWORD=${_AIRFLOW_CONN_METADATA_DB_PASSWORD}
       - POSTGRES_DB=${_AIRFLOW_CONN_METADATA_DB_NAME}
 
-
-  scheduler_airflow:
-    image: redatateam/redata:0.0.8-alfa
+  redata_backend:
+    image: redatateam/redata:0.0.9-alfa
     restart: always
     depends_on:
-      - postgres_airflow
-      - postgres_redata
+      - airflow_postgres
+      - redata_postgres
       - webserver_airflow
     env_file:
       - .env
@@ -56,12 +55,12 @@ services:
       - airflowlogs:${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
 
   webserver_airflow:
-    image: redatateam/redata:0.0.8-alfa
+    image: redatateam/redata:0.0.9-alfa
     hostname: webserver
     restart: always
     depends_on:
-      - postgres_airflow
-      - postgres_redata
+      - airflow_postgres
+      - redata_postgres
     env_file:
       - .env
     ports:
@@ -74,6 +73,25 @@ services:
       interval: 30s
       timeout: 30s
       retries: 3
+
+  redata_ui:
+    image: redatateam/redata:0.0.9-alfa
+    hostname: redataui
+    restart: always
+    depends_on:
+      - redata_postgres
+    env_file:
+      - .env
+    ports:
+      - "${REDATA_ADMIN_PORT}:${REDATA_ADMIN_PORT}"
+      - "5001:5001"
+    entrypoint: /usr/local/redata/scripts/redata-ui.sh
+    volumes:
+      - ${REDATA_BIGQUERY_KEY_FILE:-./redata/deployment/empty.json}:${REDATA_DEFAULT_BIGQUERY_DOCKER_CREDS_FILE_PATH}
+      - ./redata:/usr/local/redata-dev/redata
+      - ./scripts:/usr/local/redata-dev/scripts
+    environment:
+      - PYTHONPATH=/usr/local/redata-dev
 
 volumes:
   airflowlogs: {}

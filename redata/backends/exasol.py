@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 
 import pyexasol
 from redata.backends.base import DB
+from redata.metric import Metric
 
 
 class ExasolEngine(object):
@@ -22,8 +23,8 @@ class ExasolEngine(object):
 
 
 class Exasol(DB):
-    def __init__(self, name, db, schema):
-        super().__init__(name, db, schema)
+    def __init__(self, dbsource, db, schema):
+        super().__init__(dbsource, db, schema)
 
     def table_names(self, namespace):
         return self.db.table_names(namespace)
@@ -118,7 +119,7 @@ class Exasol(DB):
         result = self.db.execute(
             f"""
             SELECT
-                count(*) as "count"
+                count(*) as "{Metric.COUNT}"
             FROM {table.table_name}
             {interval_part}
             """,
@@ -126,20 +127,9 @@ class Exasol(DB):
         ).fetchone()
         return SimpleNamespace(**result)
     
-    def check_data_volume_diff(self, table, from_time, conf):
-        result = self.db.execute(
-            f"""
-            SELECT
-                CAST("{table.time_column}" AS DATE) as "date",
-                count(*) as "count"
-            FROM "{table.table_name}"
-            WHERE [{table.time_column}] >= '{from_time}'
-                  [{table.time_column}] < '{conf.for_time}'
-            GROUP BY 1
-            """,
-            fetch_dict=True,
-        ).fetchall()
-        return [SimpleNamespace(**r) for r in result]
+    def check_column_values(self, table, metrics, time_interval, conf):
+        # Not implemented yet
+        return []
 
     def execute(self, *args, **kwargs):
         return self.db.execute(*args, **kwargs)

@@ -7,7 +7,6 @@ alembic upgrade head
 
 cd ..
 
-redata --metrics
-redata --grafana
+redata --create-admin-user
 
 airflow scheduler

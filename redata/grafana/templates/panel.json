@@ -20,7 +20,7 @@
     },
     
     "fill": 1,
-    "fillGradient": 0,
+    "fillGradient": 5,
     "grid": {},
     "hiddenSeries": false,
     "id": "__TO_REPLACE__",
@@ -98,12 +98,7 @@
         "show": true
       }
     ],
-    "aliasColors": {
-      "1 day": "super-light-blue",
-      "1 hour": "dark-blue",
-      "30 days": "dark-purple",
-      "7 days": "rgb(75, 155, 166)"
-    },
+    "aliasColors": "__REPLACE__",
     "yaxis": {
       "align": false,
       "alignLevel": null
