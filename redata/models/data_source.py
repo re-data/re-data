@@ -1,12 +1,13 @@
-from redata.models.base import Base
-from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON, ARRAY
-from redata.db_operations import metrics_session
-from redata.backends.postgrsql import Postgres
-from redata.backends.mysql import MySQL
+from sqlalchemy import (ARRAY, JSON, TIMESTAMP, Boolean, Column, Integer,
+                        String, create_engine)
+
+from redata import settings
 from redata.backends.bigquery import BigQuery
 from redata.backends.exasol import Exasol, ExasolEngine
-from sqlalchemy import create_engine
-from redata import settings
+from redata.backends.mysql import MySQL
+from redata.backends.postgrsql import Postgres
+from redata.db_operations import metrics_session
+from redata.models.base import Base
 
 
 class DataSource(Base):

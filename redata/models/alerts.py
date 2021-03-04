@@ -1,7 +1,9 @@
-from redata.models.base import Base
-from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON
 from datetime import datetime
-from sqlalchemy import ForeignKey
+
+from sqlalchemy import (JSON, TIMESTAMP, Boolean, Column, ForeignKey, Integer,
+                        String)
+
+from redata.models.base import Base
 
 
 class Alert(Base):

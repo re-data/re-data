@@ -1,8 +1,9 @@
 import datetime
 
-from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON
-from redata.models.base import Base
+from sqlalchemy import JSON, TIMESTAMP, Boolean, Column, Integer, String
+
 from redata.db_operations import metrics_session
+from redata.models.base import Base
 
 
 class Run(Base):

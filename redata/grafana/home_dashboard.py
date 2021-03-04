@@ -1,13 +1,12 @@
 import json
-from redata import settings
-from redata.grafana.utils import load_json_data, update_home_panel_element
-from grafana_api.grafana_face import GrafanaFace
-from redata.grafana.panels.base import (
-    HomeLastDayTraffic,
-    HomeLastModifiedTime,
-    HomeAlerts,
-)
 import math
+
+from grafana_api.grafana_face import GrafanaFace
+
+from redata import settings
+from redata.grafana.panels.base import (HomeAlerts, HomeLastDayTraffic,
+                                        HomeLastModifiedTime)
+from redata.grafana.utils import load_json_data, update_home_panel_element
 
 
 def load_json_data(file_name):

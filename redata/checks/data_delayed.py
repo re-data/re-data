@@ -1,5 +1,6 @@
-from redata.db_operations import metrics_session
 from datetime import datetime
+
+from redata.db_operations import metrics_session
 from redata.metric import Metric
 
 

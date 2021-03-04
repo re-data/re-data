@@ -1,4 +1,5 @@
 from string import Template
+
 from redata.db_operations import get_db_by_name
 
 CREATE_TABLE = Template(

@@ -1,7 +1,8 @@
 import random
 from datetime import datetime, timedelta
-from redata.db_operations import metrics_db
 from string import Template
+
+from redata.db_operations import metrics_db
 
 EVENTS = Template(
     """

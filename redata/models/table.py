@@ -1,16 +1,17 @@
 import datetime
 import itertools
+import json
 import re
 from collections import defaultdict
 
-from sqlalchemy.sql.sqltypes import Date
-from redata import settings
-from redata.models.base import Base
-from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON
+from sqlalchemy import JSON, TIMESTAMP, Boolean, Column, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import Date
+
+from redata import settings
 from redata.db_operations import metrics_session
-import json
+from redata.models.base import Base
 
 
 class MonitoredTable(Base):

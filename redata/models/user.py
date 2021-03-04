@@ -1,9 +1,10 @@
-from redata.models.base import Base
-
-from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON
-from redata.db_operations import metrics_session
-from werkzeug.security import generate_password_hash
 import os
+
+from sqlalchemy import JSON, TIMESTAMP, Boolean, Column, Integer, String
+from werkzeug.security import generate_password_hash
+
+from redata.db_operations import metrics_session
+from redata.models.base import Base
 
 
 class User(Base):

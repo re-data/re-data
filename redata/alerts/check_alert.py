@@ -1,13 +1,13 @@
-import pandas as pd
 import json
-from redata.db_operations import metrics_db, metrics_session
 
-from redata.models.table import MonitoredTable
-from redata.alerts.base import alert_on_z_score, get_last_results
-from redata.models import Alert
-from redata.metric import Metric
+import pandas as pd
 
 from redata import settings
+from redata.alerts.base import alert_on_z_score, get_last_results
+from redata.db_operations import metrics_db, metrics_session
+from redata.metric import Metric
+from redata.models import Alert
+from redata.models.table import MonitoredTable
 
 
 def alert(db, check, conf):

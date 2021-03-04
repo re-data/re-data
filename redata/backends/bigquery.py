@@ -1,10 +1,11 @@
-from redata.backends.sql_alchemy import SqlAlchemy
-from redata.backends.base import DB
-from datetime import timedelta
-from sqlalchemy.sql import text
-from sqlalchemy import create_engine, func
 from datetime import datetime, timedelta
+
+from sqlalchemy import create_engine, func
 from sqlalchemy.schema import MetaData
+from sqlalchemy.sql import text
+
+from redata.backends.base import DB
+from redata.backends.sql_alchemy import SqlAlchemy
 
 
 class BigQuery(SqlAlchemy):

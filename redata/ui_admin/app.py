@@ -1,24 +1,18 @@
-from flask import Flask
-from flask_admin import Admin
-from flask_admin import AdminIndexView
-from flask import redirect, url_for
-import flask_login as login
-from flask_admin import helpers, expose
-from flask import request
-from werkzeug.security import generate_password_hash
-from flask_admin.contrib.sqla import ModelView
-
-from redata.models import MonitoredTable, Check, User, Alert, DataSource, Run
-from redata.checks.data_schema import check_for_new_tables
-from redata import settings
-from redata.db_operations import metrics_session
-from redata.ui_admin.forms import LoginForm
-from flask import Blueprint
-from flask import Markup
-
 from datetime import datetime
+
+import flask_login as login
+from flask import Blueprint, Flask, Markup, redirect, request, url_for
+from flask_admin import Admin, AdminIndexView, expose, helpers
+from flask_admin.contrib.sqla import ModelView
+from werkzeug.security import generate_password_hash
+
+from redata import settings
+from redata.checks.data_schema import check_for_new_tables
 from redata.conf import Conf
+from redata.db_operations import metrics_session
 from redata.grafana.grafana_setup import create_dashboards
+from redata.models import Alert, Check, DataSource, MonitoredTable, Run, User
+from redata.ui_admin.forms import LoginForm
 
 redata_blueprint = Blueprint("route_blueprint", __name__)
 

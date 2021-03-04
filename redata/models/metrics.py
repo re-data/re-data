@@ -1,21 +1,12 @@
-from redata.models.base import Base
-from sqlalchemy import (
-    TIMESTAMP,
-    Boolean,
-    Column,
-    Integer,
-    String,
-    BigInteger,
-    Date,
-    Float,
-    Index,
-)
-from redata.db_operations import metrics_session
-from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime
-from sqlalchemy import Index
-from sqlalchemy import ForeignKey
+
+from sqlalchemy import (TIMESTAMP, BigInteger, Boolean, Column, Date, Float,
+                        ForeignKey, Index, Integer, String)
+from sqlalchemy.dialects.postgresql import JSONB
+
+from redata.db_operations import metrics_session
 from redata.metric import Metric
+from redata.models.base import Base
 
 
 class MetricFromCheck(Base):

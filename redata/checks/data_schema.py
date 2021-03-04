@@ -1,11 +1,13 @@
 import json
-from sqlalchemy.sql import text
-from redata.db_operations import metrics_session
+
 from sqlalchemy import update
-from redata.models.table import MonitoredTable
-from redata.models.metrics import MetricFromCheck
+from sqlalchemy.sql import text
+
 from redata.checks.create import create_for_detected_table
+from redata.db_operations import metrics_session
 from redata.metric import Metric
+from redata.models.metrics import MetricFromCheck
+from redata.models.table import MonitoredTable
 
 
 def schema_changed_record(operation, column_name, column_type, column_count, conf):

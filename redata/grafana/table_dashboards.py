@@ -1,6 +1,7 @@
+from grafana_api.grafana_face import GrafanaFace
+
 from redata import settings
 from redata.db_operations import metrics_db
-from grafana_api.grafana_face import GrafanaFace
 from redata.grafana.panels.base import ALL_PANELS, CheckForColumn
 from redata.grafana.utils import load_json_data, update_panel_element
 from redata.metric import Metric

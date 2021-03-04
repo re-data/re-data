@@ -1,9 +1,11 @@
-from redata.models.checks import Check
+import json
+
+from sqlalchemy import ARRAY
+
+from redata import settings
 from redata.db_operations import metrics_db, metrics_session
 from redata.metric import Metric
-from redata import settings
-import json
-from sqlalchemy import ARRAY
+from redata.models.checks import Check
 
 table_checks = [
     {"metric": Metric.DELAY, "func": "data_delayed.check_data_delayed", "params": {}},

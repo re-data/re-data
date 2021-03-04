@@ -1,11 +1,12 @@
-from redata.backends.base import DB
-from sqlalchemy import select, Interval, func, text, cast, Date, distinct, desc
-from sqlalchemy.schema import MetaData
 from datetime import datetime, timedelta
-from sqlalchemy import func
-from redata.metric import Metric
-from sqlalchemy import case
 from decimal import Decimal
+
+from sqlalchemy import (Date, Interval, case, cast, desc, distinct, func,
+                        select, text)
+from sqlalchemy.schema import MetaData
+
+from redata.backends.base import DB
+from redata.metric import Metric
 
 
 class SqlAlchemy(DB):

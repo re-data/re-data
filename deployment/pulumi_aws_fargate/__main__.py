@@ -2,10 +2,9 @@ import json
 
 import pulumi
 import pulumi_aws as aws
-from pulumi import export, Output, ResourceOptions
-
 import pulumi_redata as redata
 from autotag import register_auto_tags
+from pulumi import Output, ResourceOptions, export
 
 aws_config = pulumi.Config("aws")
 

@@ -1,11 +1,12 @@
-import pandas as pd
-from redata.db_operations import metrics_db
-from scipy import stats
 import math
-from redata import settings
-from redata.db_operations import metrics_session
-from redata.models.alerts import Alert
 from datetime import datetime, timedelta
+
+import pandas as pd
+from scipy import stats
+
+from redata import settings
+from redata.db_operations import metrics_db, metrics_session
+from redata.models.alerts import Alert
 
 
 def alert_on_z_score(df, check, alert_type, checked_txt, conf):

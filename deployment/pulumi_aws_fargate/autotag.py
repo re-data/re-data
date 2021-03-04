@@ -2,6 +2,7 @@
 import pulumi
 from taggable import is_taggable
 
+
 # register_auto_tags registers a global stack transformation that merges a set
 # of tags with whatever was also explicitly added to the resource definition.
 def register_auto_tags(auto_tags):

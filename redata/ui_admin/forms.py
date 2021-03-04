@@ -1,7 +1,8 @@
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager
-from wtforms import form, fields, validators
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash, generate_password_hash
+from wtforms import fields, form, validators
+
 from redata.db_operations import metrics_session
 from redata.models import User
 

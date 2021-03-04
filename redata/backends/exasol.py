@@ -4,6 +4,7 @@ from types import SimpleNamespace
 from urllib.parse import urlparse
 
 import pyexasol
+
 from redata.backends.base import DB
 from redata.metric import Metric
 

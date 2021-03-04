@@ -1,24 +1,22 @@
+import importlib
 from datetime import datetime
+
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 
-from redata.checks.data_delayed import check_data_delayed
-from redata.checks.data_volume import check_data_volume
-from redata.models import DataSource
-from redata.checks.data_schema import check_if_schema_changed, check_for_new_tables
-
-from redata.alerts import check_alert
-from redata.db_operations import metrics_db
-from redata.models.table import MonitoredTable
 from redata import settings
+from redata.alerts import check_alert
+from redata.checks.data_delayed import check_data_delayed
+from redata.checks.data_schema import (check_for_new_tables,
+                                       check_if_schema_changed)
+from redata.checks.data_volume import check_data_volume
 from redata.conf import Conf
+from redata.db_operations import metrics_db, metrics_session
+from redata.grafana.grafana_setup import create_dashboards
+from redata.models import DataSource, Run
 from redata.models.checks import Check
 from redata.models.metrics import MetricFromCheck
-from redata.db_operations import metrics_session
-from redata.grafana.grafana_setup import create_dashboards
-from redata.models import Run
-
-import importlib
+from redata.models.table import MonitoredTable
 
 
 def get_function(func_string):

@@ -1,20 +1,19 @@
-from redata import db_operations
-from grafana_api.grafana_face import GrafanaFace
-import grafana_api
-
-import subprocess
 import json
+import subprocess
 import tempfile
 
-from redata import settings
-from redata.grafana.source import get_postgres_datasource
-from redata.grafana.home_dashboard import create_home_dashboard
-from redata.grafana.table_dashboards import get_dashboard_for_table
-from redata.models.table import MonitoredTable
+import grafana_api
 from grafana_api.grafana_api import GrafanaClientError
-from redata.models import DataSource
-from redata.grafana.channel import get_slack_notification_channel
+from grafana_api.grafana_face import GrafanaFace
+
+from redata import db_operations, settings
 from redata.db_operations import metrics_session
+from redata.grafana.channel import get_slack_notification_channel
+from redata.grafana.home_dashboard import create_home_dashboard
+from redata.grafana.source import get_postgres_datasource
+from redata.grafana.table_dashboards import get_dashboard_for_table
+from redata.models import DataSource
+from redata.models.table import MonitoredTable
 
 
 def create_source_in_grafana(grafana_api):

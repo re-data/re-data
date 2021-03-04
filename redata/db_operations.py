@@ -1,5 +1,4 @@
 from sqlalchemy import create_engine
-from redata import settings
 from sqlalchemy.orm import sessionmaker
 
 from redata import settings
