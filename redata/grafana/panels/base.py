@@ -1,13 +1,13 @@
 from redata.metric import Metric
 
-class HomeLastModifiedTime():
 
+class HomeLastModifiedTime:
     def format(self):
-        return 'time_series'
+        return "time_series"
 
     @staticmethod
     def title():
-        return 'time_since_last_record_created'
+        return "time_since_last_record_created"
 
     def query(self):
         return f"""
@@ -22,17 +22,16 @@ class HomeLastModifiedTime():
                 metric.metric = '{Metric.DELAY}' and
                 $__timeFilter(metric.created_at)
             ORDER BY 1
-        """ 
+        """
 
 
-class HomeLastDayTraffic():
-
+class HomeLastDayTraffic:
     def format(self):
-        return 'time_series'
+        return "time_series"
 
     @staticmethod
     def title():
-        return 'new_records_created (in last 24h)'
+        return "new_records_created (in last 24h)"
 
     def query(self):
         return f"""
@@ -47,17 +46,17 @@ class HomeLastDayTraffic():
                 metric.metric = '{Metric.COUNT}' and
                 params ->> 'time_interval' = '1 day' and
                 $__timeFilter(metric.created_at)
-        """ 
+        """
 
-class HomeAlerts():
 
+class HomeAlerts:
     def format(self):
-        return 'table'
-    
+        return "table"
+
     @staticmethod
     def title():
-        return 'recent_alerts'
-    
+        return "recent_alerts"
+
     def query(self):
         return f"""
             SELECT
@@ -75,17 +74,17 @@ class HomeAlerts():
                 alert.created_at DESC
         """
 
-class SchemaChange():
 
+class SchemaChange:
     def __init__(self, table) -> None:
         self.table = table
 
     def format(self):
-        return 'table'
+        return "table"
 
     @staticmethod
     def title():
-        return 'schema_changes'
+        return "schema_changes"
 
     def query(self):
         return f"""
@@ -102,17 +101,17 @@ class SchemaChange():
         """
 
 
-class AlertsTable():
+class AlertsTable:
     def __init__(self, table):
         self.table = table
 
     def format(self):
-        return 'table'
-    
+        return "table"
+
     @staticmethod
     def title():
-        return 'recent_alerts'
-    
+        return "recent_alerts"
+
     def query(self):
         return f"""
             SELECT
@@ -128,16 +127,17 @@ class AlertsTable():
                 alert.created_at DESC
         """
 
-class AlertsByDay():
+
+class AlertsByDay:
     def __init__(self, table):
         self.table = table
 
     def format(self):
-        return 'time_series'
-    
+        return "time_series"
+
     @staticmethod
     def title():
-        return 'alerts_by_day'
+        return "alerts_by_day"
 
     def query(self):
         return f"""
@@ -157,17 +157,16 @@ class AlertsByDay():
         """
 
 
-
-class CurrentSchema():
+class CurrentSchema:
     def __init__(self, table):
         self.table = table
-    
+
     def format(self):
-        return 'table'
+        return "table"
 
     @staticmethod
     def title():
-        return 'current_table_schema'
+        return "current_table_schema"
 
     def query(self):
         return f"""
@@ -180,17 +179,17 @@ class CurrentSchema():
             id = {self.table.id}
         """
 
-class DelayOnTable():
 
+class DelayOnTable:
     def __init__(self, table) -> None:
         self.table = table
 
     def format(self):
-        return 'time_series'
+        return "time_series"
 
     @staticmethod
     def title():
-        return f'time_since_last_record_created'
+        return f"time_since_last_record_created"
 
     def query(self):
         return f"""
@@ -206,17 +205,16 @@ class DelayOnTable():
         """
 
 
-class VolumeGraphs():
-    
+class VolumeGraphs:
     def __init__(self, table) -> None:
         self.table = table
 
     def format(self):
-        return 'time_series'
+        return "time_series"
 
     @staticmethod
     def title():
-        return f'new_record_created'
+        return f"new_record_created"
 
     def query(self):
         return f"""
@@ -233,22 +231,21 @@ class VolumeGraphs():
         """
 
 
-class CheckForColumn():
-    
+class CheckForColumn:
     def __init__(self, table, column, metric) -> None:
         self.table = table
         self.column = column
         self.metric = metric
 
     def format(self):
-        return 'time_series'
-    
+        return "time_series"
+
     @staticmethod
     def title():
-        return f'NOT_EXISTING'
+        return f"NOT_EXISTING"
 
     def title_for_obj(self):
-        return 'column:{self.column}:{self.metric}'
+        return "column:{self.column}:{self.metric}"
 
     def query(self):
         return f"""
@@ -265,4 +262,12 @@ class CheckForColumn():
         1
         """
 
-ALL_PANELS = VolumeGraphs, DelayOnTable, SchemaChange, CurrentSchema, AlertsTable, AlertsByDay
+
+ALL_PANELS = (
+    VolumeGraphs,
+    DelayOnTable,
+    SchemaChange,
+    CurrentSchema,
+    AlertsTable,
+    AlertsByDay,
+)

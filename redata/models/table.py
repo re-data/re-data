@@ -14,7 +14,7 @@ import json
 
 
 class MonitoredTable(Base):
-    __tablename__ = 'monitored_table'
+    __tablename__ = "monitored_table"
 
     id = Column(Integer, primary_key=True)
     created_at = Column(TIMESTAMP, default=datetime.datetime.utcnow)
@@ -30,7 +30,6 @@ class MonitoredTable(Base):
 
     checks = relationship("Check", backref="table")
     alerts = relationship("Alert", backref="table")
-    
 
     def __str__(self):
         return f"{self.namespace}.{self.table_name}"
@@ -40,21 +39,21 @@ class MonitoredTable(Base):
         if not self.namespace:
             return self.table_name
         else:
-            return f'{self.namespace}.{self.table_name}'
+            return f"{self.namespace}.{self.table_name}"
 
     @classmethod
     def setup_for_source_table(cls, db, db_table_name, namespace):
-        print (f"Running setup for {db_table_name}")
+        print(f"Running setup for {db_table_name}")
 
         valid_types = db.datetime_types()
         schema_cols = db.get_table_schema(db_table_name, namespace)
 
         table = MonitoredTable(
             table_name=db_table_name,
-            schema={'columns': schema_cols},
+            schema={"columns": schema_cols},
             source_db=db.name,
             namespace=namespace,
-            active=db.dbsource.run_for_all
+            active=db.dbsource.run_for_all,
         )
 
         # heuristics to find best column to sort by when computing stats about data
@@ -63,9 +62,10 @@ class MonitoredTable(Base):
         # list all date/timestamp columns, filtering out anything that's blacklisted in configuration
         blacklist_regex = settings.REDATA_TIME_COL_BLACKLIST_REGEX
         matching_cols = [
-            col['name'] for col in schema_cols
-            if col['type'] in valid_types and
-            (not blacklist_regex or re.search(blacklist_regex, col['name']) is None)
+            col["name"]
+            for col in schema_cols
+            if col["type"] in valid_types
+            and (not blacklist_regex or re.search(blacklist_regex, col["name"]) is None)
         ]
 
         # from matches, collect time cols that have max values at or before "now"
@@ -77,29 +77,37 @@ class MonitoredTable(Base):
                 cols_by_ts[max_ts].append(col)
 
         # list of all viable candidates, ordered by latest timestamp first
-        candidates = list(itertools.chain(
-            *[cols for ts, cols in sorted(cols_by_ts.items(), reverse=True)]
-        ))
+        candidates = list(
+            itertools.chain(
+                *[cols for ts, cols in sorted(cols_by_ts.items(), reverse=True)]
+            )
+        )
 
         # list of preferred columns out of the viable ones, by name filtering
-        preferred = [col for col in candidates if col.lower().find('creat') != -1]
+        preferred = [col for col in candidates if col.lower().find("creat") != -1]
 
         if len(candidates) == 0:
             # no columns found? ignore table..
             # TODO: add it, but set to disabled, for screening via web UI when we have one
-            print (f"Not found column to sort by for {db_table_name}, skipping it for now")
+            print(
+                f"Not found column to sort by for {db_table_name}, skipping it for now"
+            )
             return None
         else:
             # if multiple columns found, primarily select from 'preferred' if exists, then set up the table
             col_name = preferred[0] if preferred else candidates[0]
-            col_type = [col['type'] for col in schema_cols if col['name'] == col_name][0]
+            col_type = [col["type"] for col in schema_cols if col["name"] == col_name][
+                0
+            ]
 
             if len(candidates) > 1:
-                print (f"Found multiple columns to sort by {candidates}, choosing {col_name}, please update in DB if needed")
+                print(
+                    f"Found multiple columns to sort by {candidates}, choosing {col_name}, please update in DB if needed"
+                )
             else:
-                print (f"Found column to sort by {col_name}")
+                print(f"Found column to sort by {col_name}")
 
-            table.time_column=col_name
+            table.time_column = col_name
 
             metrics_session.add(table)
             metrics_session.commit()
@@ -128,5 +136,5 @@ class MonitoredTable(Base):
     def update_schema_for_table(cls, table, schema_cols):
         table = metrics_session.query(cls).filter(cls.table_name == table).first()
 
-        table.schema = {'columns': schema_cols}
+        table.schema = {"columns": schema_cols}
         metrics_session.commit()

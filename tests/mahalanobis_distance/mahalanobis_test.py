@@ -1,5 +1,5 @@
 if __name__ == "__main__":
-    
+
     from pandas import read_csv
     from numpy import mean, cov
     from redata.statistics.mahalonobis_distance import MahalanobisDistance

@@ -7,6 +7,7 @@ from redata.metric import Metric
 from sqlalchemy import case
 from decimal import Decimal
 
+
 class SqlAlchemy(DB):
 
     METRIC_TO_FUNC = {
@@ -18,17 +19,19 @@ class SqlAlchemy(DB):
         Metric.MAX_LENGTH: lambda x: func.max(func.length(x)),
         Metric.MIN_LENGTH: lambda x: func.min(func.length(x)),
         Metric.AVG_LENGTH: lambda x: func.avg(func.length(x)),
-        Metric.COUNT_EMPTY: lambda x: func.sum(case([(x == None, 1), (x == '', 1)], else_=0)),
+        Metric.COUNT_EMPTY: lambda x: func.sum(
+            case([(x == None, 1), (x == "", 1)], else_=0)
+        ),
     }
 
     def __init__(self, dbsource, db, schema=None):
         super().__init__(dbsource, db, schema)
 
     def get_table_obj(self, table):
-        if not getattr(self, '_per_namespace', None):
+        if not getattr(self, "_per_namespace", None):
             self._per_namespace = {}
             for namespace in self.namespaces:
-                metadata = MetaData(schema=namespace)	
+                metadata = MetaData(schema=namespace)
                 metadata.reflect(bind=self.db)
                 self._per_namespace[namespace] = metadata
 
@@ -44,8 +47,8 @@ class SqlAlchemy(DB):
         stop = self.get_timestamp(conf.for_time)
 
         stmt = stmt.where(
-            (q_table.c[table.time_column] > start) &
-            (q_table.c[table.time_column] < stop)
+            (q_table.c[table.time_column] > start)
+            & (q_table.c[table.time_column] < stop)
         )
         return stmt
 
@@ -69,28 +72,30 @@ class SqlAlchemy(DB):
         return before
 
     def transform_by_interval(self, time_interval, for_time):
-        parts = time_interval.split(' ')
-        if parts[-1] == 'day':
+        parts = time_interval.split(" ")
+        if parts[-1] == "day":
             to_compare = for_time - timedelta(days=int(parts[0]))
-        if parts[-1] == 'hour':
+        if parts[-1] == "hour":
             to_compare = for_time - timedelta(hours=int(parts[0]))
         return to_compare
-    
+
     def check_data_delayed(self, table, conf):
 
         q_table = self.get_table_obj(table)
 
-        stmt = select([
-            func.max(q_table.c[table.time_column
-        ]).label('max_time')]).select_from(q_table)
+        stmt = select(
+            [func.max(q_table.c[table.time_column]).label("max_time")]
+        ).select_from(q_table)
 
-        stmt = stmt.where(q_table.c[table.time_column] < self.get_timestamp(conf.for_time))
+        stmt = stmt.where(
+            q_table.c[table.time_column] < self.get_timestamp(conf.for_time)
+        )
 
         result = self.db.execute(stmt).first()
 
         if result[0] is None:
             return [None]
-        
+
         result_time = self.to_naive_timestamp(result.max_time)
 
         return [conf.for_time - result_time]
@@ -104,9 +109,9 @@ class SqlAlchemy(DB):
             for check in checks:
                 if check in self.METRIC_TO_FUNC:
                     func = self.METRIC_TO_FUNC[check]
-                    select_item = func(q_table.c[column]).label(column + '_' + check)
+                    select_item = func(q_table.c[column]).label(column + "_" + check)
                     to_select.append(select_item)
-        
+
         stmt = select(to_select).select_from(q_table)
 
         stmt = self.filtered_by_time(stmt, table, time_interval, conf)
@@ -124,9 +129,9 @@ class SqlAlchemy(DB):
 
         column = q_table.c[checked_column]
 
-        stmt = select([
-            func.count(distinct(column)).label('count')
-        ]).select_from(q_table)
+        stmt = select([func.count(distinct(column)).label("count")]).select_from(
+            q_table
+        )
 
         stmt = self.filtered_by_time(stmt, table, time_interval, conf)
 
@@ -134,24 +139,24 @@ class SqlAlchemy(DB):
 
         if result.count > 10:
             return None
-        
-        stmt = select([
-            func.count().label('count'),
-            (column).label('value')
-        ]).select_from(q_table)
+
+        stmt = select(
+            [func.count().label("count"), (column).label("value")]
+        ).select_from(q_table)
 
         stmt = self.filtered_by_time(stmt, table, time_interval, conf)
         stmt = stmt.where((column != None))
-        
-        stmt = stmt.group_by(column).order_by(desc('count')).limit(10)
+
+        stmt = stmt.group_by(column).order_by(desc("count")).limit(10)
 
         result = self.db.execute(stmt).fetchall()
 
         return result
 
     def get_table_schema(self, table_name, namespace):
-        schema_check = f"and table_schema = '{namespace}'" if namespace else ''
-        result = self.db.execute(f"""
+        schema_check = f"and table_schema = '{namespace}'" if namespace else ""
+        result = self.db.execute(
+            f"""
             SELECT 
                 column_name, 
                 data_type 
@@ -160,6 +165,7 @@ class SqlAlchemy(DB):
             WHERE 
                 table_name = '{table_name}'
                 {schema_check}
-        """)
-        
-        return [ {'name': c_name, 'type': c_type} for c_name, c_type in result]
+        """
+        )
+
+        return [{"name": c_name, "type": c_type} for c_name, c_type in result]

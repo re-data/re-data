@@ -7,17 +7,15 @@ def get_slack_notification_channel():
         "id": -1,
         "frequency": "15m",
         "name": "Slack notification",
-        "type":  "slack",
+        "type": "slack",
         "isDefault": True,
         "sendReminder": True,
         "secureFields": {},
-        "secureSettings": {
-            "url": settings.REDATA_SLACK_NOTIFICATION_URL
-        },
+        "secureSettings": {"url": settings.REDATA_SLACK_NOTIFICATION_URL},
         "settings": {
             "autoResolve": True,
             "uploadImage": False,
             "httpMethod": "POST",
-            "severity": "critical"
-        }
+            "severity": "critical",
+        },
     }

@@ -1,21 +1,20 @@
 from datetime import date, datetime
 
+
 class DB(object):
     def __init__(self, dbsource, db, schema):
         self.dbsource = dbsource
         self.name = dbsource.name
         self.db = db
-        self.namespaces = (
-            [None] if not schema
-            else schema
-        )
-
+        self.namespaces = [None] if not schema else schema
 
     def execute(self, *args, **kwargs):
         return self.db.execute(*args, **kwargs)
 
     def get_max_timestamp(self, table, column):
-        result = self.db.execute(f'SELECT max({column}) as value FROM {table.full_table_name}').first()
+        result = self.db.execute(
+            f"SELECT max({column}) as value FROM {table.full_table_name}"
+        ).first()
         if not result.value:
             # No data yet in this column
             return None

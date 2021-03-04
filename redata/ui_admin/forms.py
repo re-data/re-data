@@ -8,17 +8,23 @@ from redata.models import User
 
 # Define login and registration forms (for flask-login)
 class LoginForm(form.Form):
-    login = fields.StringField(validators=[validators.required()], render_kw={"placeholder": "Username", 'class': 'form-element'})
-    password = fields.PasswordField(validators=[validators.required()], render_kw={"placeholder": "Password", 'class': 'form-element'})
+    login = fields.StringField(
+        validators=[validators.required()],
+        render_kw={"placeholder": "Username", "class": "form-element"},
+    )
+    password = fields.PasswordField(
+        validators=[validators.required()],
+        render_kw={"placeholder": "Password", "class": "form-element"},
+    )
 
     def validate_login(self, field):
         user = self.get_user()
 
         if user is None:
-            raise validators.ValidationError('Invalid user')
+            raise validators.ValidationError("Invalid user")
 
         if not check_password_hash(user.password, self.password.data):
-            raise validators.ValidationError('Invalid password')
+            raise validators.ValidationError("Invalid password")
 
     def get_user(self):
         return metrics_session.query(User).filter_by(login=self.login.data).first()
