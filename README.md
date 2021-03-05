@@ -4,8 +4,11 @@
 
 
 # Redata
-Monitoring system for data teams.
-Computing health checks on data, visualizing them over time, and alerting on them.
+
+*Do you know this feeling? -
+Something in your data broke, you patiently added monitoring to detect that in the future... only so, that the next time different not expected thing went wrong :)*
+
+Redata is monitoring system for data teams. Automatically computing health checks on all your tables, visualizing them over time, and alerting on them.
 
 # Key features
 
@@ -19,8 +22,6 @@ Redata computes health metrics for your data, containing information like this:
 * number of missing values in columns over time
 * min/max/avg of values and lenghts of strings in colums
 * other user defined metrics
-
-*If you have DevOps experience, you can think of Redata as: prometheus, telegraf for data teams*
 
 ## UI with alerts & tables
 Redata UI enables you to view all your tables, their health and alerts of unexpected situations.
