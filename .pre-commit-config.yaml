@@ -4,10 +4,10 @@ repos:
     hooks:
       - id: isort
         pass_filenames: false
-        args: ["-c", "redata", "tests"]
+        args: ["--profile", "black", "-c", "redata", "tests"]
 
   - repo: https://github.com/psf/black
-    rev: 19.10b0 # Replace by any tag/version: https://github.com/psf/black/tags
+    rev: 20.8b1 # Replace by any tag/version: https://github.com/psf/black/tags
     hooks:
       - id: black
         args: ["--check", "redata", "tests"]

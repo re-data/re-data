@@ -134,6 +134,15 @@ class MonitoredTable(Base):
         )
 
     @classmethod
+    def get_all_tables_per_namespace(cls, db_name, namespace):
+        return (
+            metrics_session.query(cls)
+            .filter(cls.source_db == db_name)
+            .filter(cls.namespace == namespace)
+            .all()
+        )
+
+    @classmethod
     def update_schema_for_table(cls, table, schema_cols):
         table = metrics_session.query(cls).filter(cls.table_name == table).first()
 

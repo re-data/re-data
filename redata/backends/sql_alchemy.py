@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 from decimal import Decimal
 
-from sqlalchemy import (Date, Interval, case, cast, desc, distinct, func,
-                        select, text)
+from sqlalchemy import Date, Interval, case, cast, desc, distinct, func, select, text
 from sqlalchemy.schema import MetaData
 
 from redata.backends.base import DB

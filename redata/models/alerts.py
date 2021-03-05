@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import (JSON, TIMESTAMP, Boolean, Column, ForeignKey, Integer,
-                        String)
+from sqlalchemy import JSON, TIMESTAMP, Boolean, Column, ForeignKey, Integer, String
 
 from redata.models.base import Base
 

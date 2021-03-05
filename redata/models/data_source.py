@@ -1,5 +1,13 @@
-from sqlalchemy import (ARRAY, JSON, TIMESTAMP, Boolean, Column, Integer,
-                        String, create_engine)
+from sqlalchemy import (
+    ARRAY,
+    JSON,
+    TIMESTAMP,
+    Boolean,
+    Column,
+    Integer,
+    String,
+    create_engine,
+)
 
 from redata import settings
 from redata.backends.bigquery import BigQuery

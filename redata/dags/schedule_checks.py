@@ -7,8 +7,7 @@ from airflow.operators.python_operator import PythonOperator
 from redata import settings
 from redata.alerts import check_alert
 from redata.checks.data_delayed import check_data_delayed
-from redata.checks.data_schema import (check_for_new_tables,
-                                       check_if_schema_changed)
+from redata.checks.data_schema import check_for_new_tables, check_if_schema_changed
 from redata.checks.data_volume import check_data_volume
 from redata.conf import Conf
 from redata.db_operations import metrics_db, metrics_session

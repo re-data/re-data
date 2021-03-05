@@ -2,8 +2,11 @@ import argparse
 from datetime import datetime, timedelta
 
 from redata.conf import Conf
-from redata.dags.schedule_checks import (run_check_for_new_tables, run_checks,
-                                         run_compute_alerts)
+from redata.dags.schedule_checks import (
+    run_check_for_new_tables,
+    run_checks,
+    run_compute_alerts,
+)
 from redata.grafana.grafana_setup import create_dashboards
 from redata.models import DataSource, User
 from redata.sample_data.generate import create_sample_tables_in_redata

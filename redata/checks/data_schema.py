@@ -27,7 +27,7 @@ def check_for_new_tables(db, conf):
     for namespace in db.namespaces:
         tables = db.table_names(namespace)
 
-        monitored_tables = MonitoredTable.get_monitored_tables_per_namespace(
+        monitored_tables = MonitoredTable.get_all_tables_per_namespace(
             db.name, namespace
         )
         monitored_tables_names = set([table.table_name for table in monitored_tables])

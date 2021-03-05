@@ -1,7 +1,17 @@
 from datetime import datetime
 
-from sqlalchemy import (TIMESTAMP, BigInteger, Boolean, Column, Date, Float,
-                        ForeignKey, Index, Integer, String)
+from sqlalchemy import (
+    TIMESTAMP,
+    BigInteger,
+    Boolean,
+    Column,
+    Date,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 
 from redata.db_operations import metrics_session

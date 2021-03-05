@@ -1,7 +1,19 @@
 from datetime import datetime
 
-from sqlalchemy import (ARRAY, JSON, TIMESTAMP, BigInteger, Boolean, Column,
-                        Date, Float, ForeignKey, Index, Integer, String)
+from sqlalchemy import (
+    ARRAY,
+    JSON,
+    TIMESTAMP,
+    BigInteger,
+    Boolean,
+    Column,
+    Date,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 
 from redata.models.base import Base

@@ -4,8 +4,11 @@ import math
 from grafana_api.grafana_face import GrafanaFace
 
 from redata import settings
-from redata.grafana.panels.base import (HomeAlerts, HomeLastDayTraffic,
-                                        HomeLastModifiedTime)
+from redata.grafana.panels.base import (
+    HomeAlerts,
+    HomeLastDayTraffic,
+    HomeLastModifiedTime,
+)
 from redata.grafana.utils import load_json_data, update_home_panel_element
 
 
