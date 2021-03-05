@@ -1,7 +1,8 @@
 if __name__ == "__main__":
-    
+
+    from numpy import cov, mean
     from pandas import read_csv
-    from numpy import mean, cov
+
     from redata.statistics.mahalonobis_distance import MahalanobisDistance
 
     data = read_csv("../../sample_sources/data.csv", sep=",")

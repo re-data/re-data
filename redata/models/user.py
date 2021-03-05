@@ -1,13 +1,14 @@
-from redata.models.base import Base
-
-from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON
-from redata.db_operations import metrics_session
-from werkzeug.security import generate_password_hash
 import os
 
- 
+from sqlalchemy import JSON, TIMESTAMP, Boolean, Column, Integer, String
+from werkzeug.security import generate_password_hash
+
+from redata.db_operations import metrics_session
+from redata.models.base import Base
+
+
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
     first_name = Column(String(100))
@@ -41,13 +42,26 @@ class User(Base):
     @classmethod
     def create_admin_user_if_not_exist(cls):
 
-        assert os.environ.get('REDATA_ADMIN_USER'), 'please set env variable for admin user'
-        assert os.environ.get('REDATA_ADMIN_PASSWORD'), 'please set env variable for admin password'
+        assert os.environ.get(
+            "REDATA_ADMIN_USER"
+        ), "please set env variable for admin user"
+        assert os.environ.get(
+            "REDATA_ADMIN_PASSWORD"
+        ), "please set env variable for admin password"
 
-        is_admin = metrics_session.query(cls).filter(cls.login == os.environ.get('REDATA_ADMIN_USER')).count()
+        is_admin = (
+            metrics_session.query(cls)
+            .filter(cls.login == os.environ.get("REDATA_ADMIN_USER"))
+            .count()
+        )
         if not is_admin:
-            user = cls(login=os.environ.get('REDATA_ADMIN_USER'), password=generate_password_hash(os.environ.get('REDATA_ADMIN_PASSWORD')))
+            user = cls(
+                login=os.environ.get("REDATA_ADMIN_USER"),
+                password=generate_password_hash(
+                    os.environ.get("REDATA_ADMIN_PASSWORD")
+                ),
+            )
             metrics_session.add(user)
             metrics_session.commit()
 
-            print ("Created admin user")
+            print("Created admin user")

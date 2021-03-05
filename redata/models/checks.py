@@ -1,16 +1,32 @@
-from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, JSON, BigInteger, Date, Float, Index, ARRAY 
-from redata.models.base import Base
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy import ForeignKey
 from datetime import datetime
+
+from sqlalchemy import (
+    ARRAY,
+    JSON,
+    TIMESTAMP,
+    BigInteger,
+    Boolean,
+    Column,
+    Date,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+)
+from sqlalchemy.dialects.postgresql import JSONB
+
+from redata.models.base import Base
 
 
 class Check(Base):
-    __tablename__ = 'checks'
+    __tablename__ = "checks"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    table_id = Column(Integer, ForeignKey('monitored_table.id'), index=True, nullable=False)
-    
+    table_id = Column(
+        Integer, ForeignKey("monitored_table.id"), index=True, nullable=False
+    )
+
     name = Column(String, nullable=False)
 
     metrics = Column(JSONB)

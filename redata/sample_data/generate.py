@@ -1,18 +1,21 @@
 import random
 from datetime import datetime, timedelta
-from redata.db_operations import metrics_db
 from string import Template
 
-EVENTS = Template("""
+from redata.db_operations import metrics_db
+
+EVENTS = Template(
+    """
     CREATE TABLE IF NOT EXISTS sample.events_$partner (
         event_type text,
         uid text,
         value float,
         created_at timestamp default now()
     )
-    """)
+    """
+)
 
-SESSION= """
+SESSION = """
     CREATE TABLE IF NOT EXISTS sample.session (
         length integer,
         uid text,
@@ -33,7 +36,7 @@ REPORT = """
 """
 
 insert_to_events = Template(
-"""
+    """
     INSERT INTO sample.events_$partner values (
         '$event_type', '$uid', $value, '$created_at'
     )
@@ -42,28 +45,28 @@ insert_to_events = Template(
 
 
 def create_sample_tables_in_redata():
-    
+
     partners = [
-        'team1',
-        'team2',
-        'team3',
-        'team4',
-        'team5',
-        'team6',
-        'team7',
-        'c1',
-        'c2',
-        'c3',
-        'c4',
-        'c5',
-        'c6',
-        'c7'
+        "team1",
+        "team2",
+        "team3",
+        "team4",
+        "team5",
+        "team6",
+        "team7",
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
     ]
 
     types = [
-        'OPEN',
-        'CLICK',
-        'EXIT',
+        "OPEN",
+        "CLICK",
+        "EXIT",
     ]
 
     metrics_db.execute("CREATE SCHEMA IF NOT EXISTS sample")
@@ -83,12 +86,11 @@ def create_sample_tables_in_redata():
 
     nulls_show_up = [800000, 1000000]
 
-
     for event in range(num_events):
-        print ("Creating event ", event)
+        print("Creating event ", event)
         how_much_back = random.randint(0, secs_in_month)
         rand_value = random.random() * 100
-        random_uid = 'uid_{}'.format(random.randint(0, 1000))
+        random_uid = "uid_{}".format(random.randint(0, 1000))
 
         if failure_range[0] < how_much_back < failure_range[1]:
             how_much_back = random.randint(0, secs_in_month)
@@ -107,6 +109,6 @@ def create_sample_tables_in_redata():
                 event_type=random.choice(types),
                 uid=random_uid,
                 value=rand_value,
-                created_at=created_at
+                created_at=created_at,
             )
         )
