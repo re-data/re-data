@@ -14,6 +14,7 @@ from redata.backends.bigquery import BigQuery
 from redata.backends.exasol import Exasol, ExasolEngine
 from redata.backends.mysql import MySQL
 from redata.backends.postgrsql import Postgres
+from redata.backends.redshift import Redshift
 from redata.db_operations import metrics_session
 from redata.models.base import Base
 
@@ -31,6 +32,7 @@ class DataSource(Base):
             "MySQL",
         ),
         ("exa+pyexasol", "Exasol"),
+        ("redshift+psycopg2", "Redshift"),
     ]
 
     __tablename__ = "data_source"
@@ -43,6 +45,7 @@ class DataSource(Base):
     database = Column(String)
     user = Column(String)
     password = Column(String)
+    port = Column(Integer)
 
     schemas = Column(ARRAY(String))
     run_for_all = Column(Boolean, default=True)
@@ -54,6 +57,9 @@ class DataSource(Base):
     def db_url(self):
         if self.source_type == "bigquery":
             return f"{self.source_type}://{self.host}"
+
+        if self.port:
+            return f"{self.source_type}://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
 
         return f"{self.source_type}://{self.user}:{self.password}@{self.host}/{self.database}"
 
@@ -73,6 +79,9 @@ class DataSource(Base):
 
         if self.source_type == "postgres":
             return Postgres(self, db, schema=self.schemas)
+
+        if self.source_type == "redshift+psycopg2":
+            return Redshift(self, db, schema=self.schemas)
 
         if self.source_type == "mysql":
             return MySQL(self, db, schema=self.schemas)
