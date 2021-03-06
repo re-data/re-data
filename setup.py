@@ -23,6 +23,7 @@ setup(
         "Flask-Login",
         "waitress",
         "sqlalchemy-redshift",
+        "snowflake-sqlalchemy",
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={

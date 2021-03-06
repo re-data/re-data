@@ -15,6 +15,7 @@ from redata.backends.exasol import Exasol, ExasolEngine
 from redata.backends.mysql import MySQL
 from redata.backends.postgrsql import Postgres
 from redata.backends.redshift import Redshift
+from redata.backends.snowflake import Snowflake
 from redata.db_operations import metrics_session
 from redata.models.base import Base
 
@@ -26,13 +27,14 @@ class DataSource(Base):
             "bigquery",
             "BigQuery",
         ),
-        ("postgres", "PostgreSQL"),
+        ("exa+pyexasol", "Exasol"),
         (
             "mysql",
             "MySQL",
         ),
-        ("exa+pyexasol", "Exasol"),
+        ("postgres", "PostgreSQL"),
         ("redshift+psycopg2", "Redshift"),
+        ("snowflake", "Snowflake"),
     ]
 
     __tablename__ = "data_source"
@@ -85,6 +87,9 @@ class DataSource(Base):
 
         if self.source_type == "mysql":
             return MySQL(self, db, schema=self.schemas)
+
+        if self.source_type == "snowflake":
+            return Snowflake(self, db, schema=self.schemas)
 
         raise Exception("Not supported DB")
 
