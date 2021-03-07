@@ -39,7 +39,9 @@ class Snowflake(SqlAlchemy):
         ]
 
     def get_table_schema(self, table_name, namespace):
-        schema_check = f"and lower(table_schema) = '{namespace}'" if namespace else ""
+        schema_check = (
+            f"and lower(table_schema) = '{namespace.lower()}'" if namespace else ""
+        )
         result = self.db.execute(
             f"""
             SELECT 
@@ -48,7 +50,7 @@ class Snowflake(SqlAlchemy):
             FROM 
                 information_schema.columns
             WHERE 
-                lower(table_name) = '{table_name}'
+                lower(table_name) = '{table_name.lower()}'
                 {schema_check}
         """
         )

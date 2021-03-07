@@ -1,5 +1,5 @@
 import importlib
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
@@ -12,7 +12,7 @@ from redata.checks.data_volume import check_data_volume
 from redata.conf import Conf
 from redata.db_operations import metrics_db, metrics_session
 from redata.grafana.grafana_setup import create_dashboards
-from redata.models import DataSource, Run
+from redata.models import DataSource, Scan
 from redata.models.checks import Check
 from redata.models.metrics import MetricFromCheck
 from redata.models.table import MonitoredTable
@@ -81,21 +81,26 @@ def generate_grafana():
 
 def process_run():
 
-    run = Run.get_not_started_run()
-    if run is not None:
-        run.status = "pending"
+    scan = Scan.get_not_started_run()
+    if scan is not None:
+        scan.status = "pending"
         metrics_session.commit()
 
-        conf = Conf(run.for_date)
+        for_time = scan.start_date
+        while for_time < scan.end_date:
 
-        for source_db in DataSource.source_dbs():
-            run_check_for_new_tables(source_db, conf)
-            run_checks(source_db, conf)
-            run_compute_alerts(source_db, conf)
+            conf = Conf(for_time)
+
+            for source_db in DataSource.source_dbs():
+                run_check_for_new_tables(source_db, conf)
+                run_checks(source_db, conf)
+                run_compute_alerts(source_db, conf)
+
+            for_time += timedelta(days=1)
 
         generate_grafana()
 
-        run.status = "success"
+        scan.status = "success"
         metrics_session.commit()
 
 
@@ -112,9 +117,14 @@ with DAG(
 
 
 def add_run():
-    run = Run(for_date=datetime.utcnow(), status="not started", run_type="scheduled")
+    scan = Scan(
+        start_date=datetime.utcnow(),
+        end_date=datetime.utcnow(),
+        status="not started",
+        run_type="scheduled",
+    )
 
-    metrics_session.add(run)
+    metrics_session.add(scan)
     metrics_session.commit()
 
 

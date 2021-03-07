@@ -11,7 +11,7 @@ from redata.checks.data_schema import check_for_new_tables
 from redata.conf import Conf
 from redata.db_operations import metrics_session
 from redata.grafana.grafana_setup import create_dashboards
-from redata.models import Alert, Check, DataSource, MonitoredTable, Run, User
+from redata.models import Alert, Check, DataSource, MonitoredTable, Scan, User
 from redata.ui_admin.forms import LoginForm
 
 redata_blueprint = Blueprint("route_blueprint", __name__)
@@ -40,7 +40,7 @@ def init_admin(app):
     admin.add_view(MonitoredTableView(MonitoredTable, metrics_session))
     admin.add_view(ChecksTableView(Check, metrics_session))
     admin.add_view(DataSourceView(DataSource, metrics_session))
-    admin.add_view(RunView(Run, metrics_session))
+    admin.add_view(ScanView(Scan, metrics_session))
 
 
 def create_app():
@@ -61,10 +61,10 @@ def create_app():
 
 def get_grafana_url(table):
     if table.grafana_url:
-        url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>{table.table_name}</a>"
+        url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>{table.full_table_name}</a>"
         return Markup(url)
     else:
-        return table.table_name
+        return table.full_table_name
 
 
 @redata_blueprint.route("/")
@@ -127,6 +127,7 @@ class MonitoredTableView(BaseRedataView):
 
     column_editable_list = ["active", "time_column"]
     column_exclude_list = ["schema", "created_at", "grafana_url"]
+    column_list = ["source_db", "active", "table_name", "time_column", "alerts_number"]
 
     column_formatters = {
         "created_at": BaseRedataView._user_formatter_time,
@@ -195,7 +196,7 @@ class ChecksTableView(BaseRedataView):
     }
 
 
-class RunView(BaseRedataView):
+class ScanView(BaseRedataView):
     can_delete = False
 
     def is_accessible(self):

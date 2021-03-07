@@ -112,6 +112,9 @@ class SqlAlchemy(DB):
                     select_item = func(q_table.c[column]).label(column + "_" + check)
                     to_select.append(select_item)
 
+        if not to_select:
+            return []
+
         stmt = select(to_select).select_from(q_table)
 
         stmt = self.filtered_by_time(stmt, table, time_interval, conf)

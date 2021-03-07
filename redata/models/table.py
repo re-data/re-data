@@ -42,6 +42,10 @@ class MonitoredTable(Base):
         else:
             return f"{self.namespace}.{self.table_name}"
 
+    @property
+    def alerts_number(self):
+        return len(self.alerts)
+
     @classmethod
     def setup_for_source_table(cls, db, db_table_name, namespace):
         print(f"Running setup for {db_table_name}")
