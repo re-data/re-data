@@ -198,6 +198,7 @@ class ChecksTableView(BaseRedataView):
 
 class ScanView(BaseRedataView):
     can_delete = False
+    form_excluded_columns = ("created_at", "status", "run_type")
 
     def is_accessible(self):
         return login.current_user.is_authenticated
