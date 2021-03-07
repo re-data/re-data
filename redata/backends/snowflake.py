@@ -43,8 +43,8 @@ class Snowflake(SqlAlchemy):
         result = self.db.execute(
             f"""
             SELECT 
-                column_name, 
-                data_type 
+                lower(column_name),
+                data_type
             FROM 
                 information_schema.columns
             WHERE 
