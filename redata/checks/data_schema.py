@@ -7,7 +7,7 @@ from redata.checks.create import create_for_detected_table
 from redata.db_operations import metrics_session
 from redata.metric import Metric
 from redata.models.metrics import MetricFromCheck
-from redata.models.table import MonitoredTable
+from redata.models.table import Table
 
 
 def schema_changed_record(operation, column_name, column_type, column_count, conf):
@@ -27,14 +27,12 @@ def check_for_new_tables(db, conf):
     for namespace in db.namespaces:
         tables = db.table_names(namespace)
 
-        monitored_tables = MonitoredTable.get_all_tables_per_namespace(
-            db.name, namespace
-        )
+        monitored_tables = Table.get_all_tables_per_namespace(db.name, namespace)
         monitored_tables_names = set([table.table_name for table in monitored_tables])
 
         for table_name in tables:
             if table_name not in monitored_tables_names:
-                table = MonitoredTable.setup_for_source_table(db, table_name, namespace)
+                table = Table.setup_for_source_table(db, table_name, namespace)
                 if table:
                     create_for_detected_table(db, table)
                     for check in table.checks:

@@ -11,7 +11,7 @@ from redata.checks.data_schema import check_for_new_tables
 from redata.conf import Conf
 from redata.db_operations import metrics_session
 from redata.grafana.grafana_setup import create_dashboards
-from redata.models import Alert, Check, DataSource, MonitoredTable, Scan, User
+from redata.models import Alert, Check, DataSource, Scan, Table, User
 from redata.ui_admin.forms import LoginForm
 
 redata_blueprint = Blueprint("route_blueprint", __name__)
@@ -37,7 +37,7 @@ def init_admin(app):
         base_template="redata_master.html",
     )
     admin.add_view(AlertView(Alert, metrics_session))
-    admin.add_view(MonitoredTableView(MonitoredTable, metrics_session))
+    admin.add_view(TableView(Table, metrics_session))
     admin.add_view(ChecksTableView(Check, metrics_session))
     admin.add_view(DataSourceView(DataSource, metrics_session))
     admin.add_view(ScanView(Scan, metrics_session))
@@ -114,7 +114,7 @@ class BaseRedataView(ModelView):
     column_formatters = {"created_at": _user_formatter_time}
 
 
-class MonitoredTableView(BaseRedataView):
+class TableView(BaseRedataView):
     can_delete = False
 
     def is_accessible(self):
