@@ -87,7 +87,7 @@ def process_run():
         metrics_session.commit()
 
         for_time = scan.start_date
-        while for_time < scan.end_date:
+        while for_time <= scan.end_date:
 
             conf = Conf(for_time)
 
