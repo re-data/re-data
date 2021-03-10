@@ -21,6 +21,11 @@ def init_login(app):
     login_manager = login.LoginManager()
     login_manager.init_app(app)
 
+    @app.teardown_request
+    def teardown_request(*args, **kwargs):
+        "Expire and remove the session after each request"
+        metrics_session.expire_all()
+
     # Create user loader function
     @login_manager.user_loader
     def load_user(user_id):
