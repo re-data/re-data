@@ -13,7 +13,7 @@ from redata.grafana.home_dashboard import create_home_dashboard
 from redata.grafana.source import get_postgres_datasource
 from redata.grafana.table_dashboards import get_dashboard_for_table
 from redata.models import DataSource
-from redata.models.table import MonitoredTable
+from redata.models.table import Table
 
 
 def create_source_in_grafana(grafana_api):
@@ -61,7 +61,7 @@ def create_dashboards():
     dashboards = []
 
     for db in DataSource.source_dbs():
-        monitored_tables = MonitoredTable.get_monitored_tables(db.name)
+        monitored_tables = Table.get_monitored_tables(db.name)
         for table in monitored_tables:
             dash_data = create_dashboard_for_table(grafana_api, db, table)
             table.grafana_url = dash_data["dashboard"]["url"]

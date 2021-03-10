@@ -7,7 +7,7 @@ from redata.alerts.base import alert_on_z_score, get_last_results
 from redata.db_operations import metrics_db, metrics_session
 from redata.metric import Metric
 from redata.models import Alert
-from redata.models.table import MonitoredTable
+from redata.models.table import Table
 
 
 def alert(db, check, conf):

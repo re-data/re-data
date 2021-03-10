@@ -11,11 +11,11 @@
         <h2 class="form-signin-heading">Welcome! Quick intro :) </h2>
 
         <p class='intro-text '>
-          Start monitoring your database with <a href="{{ url_for('datasource.create_view', url=url_for('monitoredtable.index_view')) }}">adding datasource</a>.<br/> <br/>
+          Start monitoring your database with <a href="{{ url_for('datasource.create_view', url=url_for('table.index_view')) }}">adding datasource</a>.<br/> <br/>
 
-          Redata will look for tables in your datasource and add them to your <a href="{{ url_for('monitoredtable.index_view') }}"> tables </a> you can choose to monitor all or some of them. <br/> <br/>
+          Redata will look for tables in your datasource and add them to your <a href="{{ url_for('table.index_view') }}"> tables </a> you can choose to monitor all or some of them. <br/> <br/>
 
-          From now on redata will run checks, you can see all <a href="{{ url_for('run.index_view') }}"> runs </a>. Runs will run autmatically depending on your schedule (default is once per hour) but you can also create run yourself. <br/> <br/>
+          From now on redata will run checks hourly/daily depending on you schedule <a href="{{ url_for('scan.index_view') }}"> you can see it here </a> You can also backfill data from the past <a href="{{ url_for('scan.create_view') }}"> by adding scan </a> and see if you are safe now (it takes around 1 minute to start a scan) <br/> <br/>
 
           Runs may produce <a href="{{ url_for('alert.index_view') }}"> alerts </a> about your data, in those cases it's recommended to look into Grafana dashboards for details on what is unexpected (you can do that by clicking table names) <br/> <br/>
 
@@ -47,6 +47,11 @@
               </div>
               {% endfor %}
               <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+
+              <p class="track-message">
+                Redata anomously tracks your ussage - this helps us improve experience greatly. We hope that's ok :)
+              </p>
+
           </form>
           {{ link | safe }}
           {% endif %}

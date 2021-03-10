@@ -80,3 +80,12 @@ input[type="password"] {
 	background-color: rgb(0 0 100 / 2%);
 	max-width: 50px;
 }
+
+.track-message {
+	margin-top: 10px;
+	color: grey
+}
+
+.schema-repr {
+	font-family: monospace;
+}

@@ -11,7 +11,7 @@ from redata.checks.data_schema import check_for_new_tables
 from redata.conf import Conf
 from redata.db_operations import metrics_session
 from redata.grafana.grafana_setup import create_dashboards
-from redata.models import Alert, Check, DataSource, MonitoredTable, Run, User
+from redata.models import Alert, Check, DataSource, Scan, Table, User
 from redata.ui_admin.forms import LoginForm
 
 redata_blueprint = Blueprint("route_blueprint", __name__)
@@ -20,6 +20,11 @@ redata_blueprint = Blueprint("route_blueprint", __name__)
 def init_login(app):
     login_manager = login.LoginManager()
     login_manager.init_app(app)
+
+    @app.teardown_request
+    def teardown_request(*args, **kwargs):
+        "Expire and remove the session after each request"
+        metrics_session.expire_all()
 
     # Create user loader function
     @login_manager.user_loader
@@ -37,10 +42,10 @@ def init_admin(app):
         base_template="redata_master.html",
     )
     admin.add_view(AlertView(Alert, metrics_session))
-    admin.add_view(MonitoredTableView(MonitoredTable, metrics_session))
+    admin.add_view(TableView(Table, metrics_session))
     admin.add_view(ChecksTableView(Check, metrics_session))
     admin.add_view(DataSourceView(DataSource, metrics_session))
-    admin.add_view(RunView(Run, metrics_session))
+    admin.add_view(ScanView(Scan, metrics_session))
 
 
 def create_app():
@@ -61,10 +66,10 @@ def create_app():
 
 def get_grafana_url(table):
     if table.grafana_url:
-        url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>{table.table_name}</a>"
+        url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>{table.full_table_name}</a>"
         return Markup(url)
     else:
-        return table.table_name
+        return table.full_table_name
 
 
 @redata_blueprint.route("/")
@@ -114,23 +119,37 @@ class BaseRedataView(ModelView):
     column_formatters = {"created_at": _user_formatter_time}
 
 
-class MonitoredTableView(BaseRedataView):
+class TableView(BaseRedataView):
     can_delete = False
+    can_view_details = True
 
     def is_accessible(self):
         return login.current_user.is_authenticated
 
-    def grafan_url_formatter(self, context, model, name):
+    def grafana_url_formatter(self, context, model, name):
         return get_grafana_url(model)
+
+    def schema_formatter(self, context, model, schema):
+        max_length = max([len(x["name"]) for x in model.schema["columns"]])
+
+        str_repr = "<br/>".join(
+            f"{row['name'].ljust(max_length + 2, '§')} [{row['type']}]"
+            for row in model.schema["columns"]
+        )
+        str_repr = str_repr.replace("§", "&nbsp;")
+        return Markup('<div class="schema-repr">' + str_repr + "</div")
 
     column_searchable_list = ("source_db", "table_name", "namespace")
 
     column_editable_list = ["active", "time_column"]
     column_exclude_list = ["schema", "created_at", "grafana_url"]
+    column_list = ["source_db", "active", "table_name", "time_column", "alerts_number"]
 
     column_formatters = {
         "created_at": BaseRedataView._user_formatter_time,
-        "table_name": grafan_url_formatter,
+        "table_name": grafana_url_formatter,
+        "schema": schema_formatter,
+        "grafana_url": grafana_url_formatter,
     }
 
 
@@ -195,8 +214,9 @@ class ChecksTableView(BaseRedataView):
     }
 
 
-class RunView(BaseRedataView):
+class ScanView(BaseRedataView):
     can_delete = False
+    form_excluded_columns = ("created_at", "status", "run_type")
 
     def is_accessible(self):
         return login.current_user.is_authenticated

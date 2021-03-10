@@ -14,7 +14,7 @@ from redata.db_operations import metrics_session
 from redata.models.base import Base
 
 
-class MonitoredTable(Base):
+class Table(Base):
     __tablename__ = "monitored_table"
 
     id = Column(Integer, primary_key=True)
@@ -42,6 +42,10 @@ class MonitoredTable(Base):
         else:
             return f"{self.namespace}.{self.table_name}"
 
+    @property
+    def alerts_number(self):
+        return len(self.alerts)
+
     @classmethod
     def setup_for_source_table(cls, db, db_table_name, namespace):
         print(f"Running setup for {db_table_name}")
@@ -49,7 +53,7 @@ class MonitoredTable(Base):
         valid_types = db.datetime_types()
         schema_cols = db.get_table_schema(db_table_name, namespace)
 
-        table = MonitoredTable(
+        table = Table(
             table_name=db_table_name,
             schema={"columns": schema_cols},
             source_db=db.name,
