@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redata
+  labels:
+    app: redata
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redata
+  template:
+    metadata:
+      labels:
+        app: redata
+    spec:
+      containers:
+      - name: redata
+        image: redatateam/redata:0.0.10-alfa
