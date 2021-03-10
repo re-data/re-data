@@ -1,0 +1,16 @@
+apiVersion: v2
+description: A chart for redata
+name: redata
+version: 0.0.10-alfa
+dependencies:
+- name: grafana
+  repository: https://grafana.github.io/helm-charts
+  version: 6.2.0
+- name: airflow-stable
+  repository: https://airflow-helm.github.io/charts
+  version: 7.16.0  # Uses version 1.10.12
+- name: airflow-stable
+  repository: https://airflow-helm.github.io/charts
+  version: 7.16.0  # Uses version 1.10.12
+- name: wener/postgres-operator
+  repository: https://charts.wener.tech/
