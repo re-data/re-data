@@ -144,6 +144,7 @@ class TableView(BaseRedataView):
         "created_at": BaseRedataView._user_formatter_time,
         "table_name": grafana_url_formatter,
         "schema": schema_formatter,
+        "grafana_url": grafana_url_formatter,
     }
 
 
