@@ -34,7 +34,7 @@ services:
       - POSTGRES_DB=${_AIRFLOW_CONN_METADATA_DB_NAME}
 
   redata_backend:
-    image: redatateam/redata:0.0.9-alfa
+    image: redatateam/redata:0.0.10-alfa
     restart: always
     depends_on:
       - airflow_postgres
@@ -50,7 +50,7 @@ services:
     entrypoint: /usr/local/redata/scripts/redata-start.sh
 
   webserver_airflow:
-    image: redatateam/redata:0.0.9-alfa
+    image: redatateam/redata:0.0.10-alfa
     hostname: webserver
     restart: always
     depends_on:
@@ -70,7 +70,7 @@ services:
       retries: 3
 
   redata_ui:
-    image: redatateam/redata:0.0.9-alfa
+    image: redatateam/redata:0.0.10-alfa
     hostname: redataui
     restart: always
     depends_on:
