@@ -4,3 +4,7 @@
 .vscode
 .python-version
 venv
+
+Chart.lock
+*.tgz
+helm/charts
