@@ -85,3 +85,7 @@ input[type="password"] {
 	margin-top: 10px;
 	color: grey
 }
+
+.schema-repr {
+	font-family: monospace;
+}

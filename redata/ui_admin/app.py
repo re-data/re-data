@@ -116,12 +116,23 @@ class BaseRedataView(ModelView):
 
 class TableView(BaseRedataView):
     can_delete = False
+    can_view_details = True
 
     def is_accessible(self):
         return login.current_user.is_authenticated
 
-    def grafan_url_formatter(self, context, model, name):
+    def grafana_url_formatter(self, context, model, name):
         return get_grafana_url(model)
+
+    def schema_formatter(self, context, model, schema):
+        max_length = max([len(x["name"]) for x in model.schema["columns"]])
+
+        str_repr = "<br/>".join(
+            f"{row['name'].ljust(max_length + 2, '§')} [{row['type']}]"
+            for row in model.schema["columns"]
+        )
+        str_repr = str_repr.replace("§", "&nbsp;")
+        return Markup('<div class="schema-repr">' + str_repr + "</div")
 
     column_searchable_list = ("source_db", "table_name", "namespace")
 
@@ -131,7 +142,8 @@ class TableView(BaseRedataView):
 
     column_formatters = {
         "created_at": BaseRedataView._user_formatter_time,
-        "table_name": grafan_url_formatter,
+        "table_name": grafana_url_formatter,
+        "schema": schema_formatter,
     }
 
 
