@@ -88,4 +88,15 @@ input[type="password"] {
 
 .schema-repr {
 	font-family: monospace;
+	font-size: 13px;
+}
+
+.alerts-repr {
+	font-family: monospace;
+	font-size: 13px;
+}
+
+.last-record {
+	font-family: monospace;
+	font-size: 13px;
 }

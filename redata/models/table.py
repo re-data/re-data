@@ -4,7 +4,7 @@ import json
 import re
 from collections import defaultdict
 
-from sqlalchemy import JSON, TIMESTAMP, Boolean, Column, Integer, String
+from sqlalchemy import JSON, TIMESTAMP, Boolean, Column, Integer, String, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import Date
@@ -12,6 +12,7 @@ from sqlalchemy.sql.sqltypes import Date
 from redata import settings
 from redata.db_operations import metrics_session
 from redata.models.base import Base
+from redata.models.metrics import MetricFromCheck
 
 
 class Table(Base):
@@ -45,6 +46,29 @@ class Table(Base):
     @property
     def alerts_number(self):
         return len(self.alerts)
+
+    @property
+    def alerts_by_creation(self):
+        return sorted(self.alerts, key=lambda x: x.created_at)
+
+    @property
+    def schema_changes(self):
+        return (
+            metrics_session.query(MetricFromCheck)
+            .filter_by(table_id=self.id, metric="schema_changes")
+            .order_by("created_at")
+            .all()
+        )
+
+    @property
+    def last_records_added(self):
+        return (
+            metrics_session.query(MetricFromCheck)
+            .filter_by(table_id=self.id, metric="delay")
+            .order_by(MetricFromCheck.created_at.desc())
+            .limit(1)
+            .first()
+        )
 
     @classmethod
     def setup_for_source_table(cls, db, db_table_name, namespace):

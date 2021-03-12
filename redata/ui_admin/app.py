@@ -139,17 +139,55 @@ class TableView(BaseRedataView):
         str_repr = str_repr.replace("§", "&nbsp;")
         return Markup('<div class="schema-repr">' + str_repr + "</div")
 
+    def alerts_formatter(self, context, model, schema):
+        table_alerts = []
+        for alert in model.alerts_by_creation:
+            table_alerts.append(f"[{alert.created_at}] {alert.text}")
+
+        str_rep = "<br/>".join(table_alerts)
+        return Markup('<dev class="alerts-repr">' + str_rep + "</div>")
+
+    def alerts_number_formatter(self, context, model, shcema):
+        url_for_details = url_for("table.details_view", id=model.id)
+        return Markup(f'<a href="{url_for_details}">{model.alerts_number}</a>')
+
+    def last_record_added_formatter(self, context, model, schema):
+        metric = model.last_records_added
+        minutes = metric.result["value"] / 60
+        return Markup(
+            f'<dev class="last-record">[{metric.created_at}], last_record_added - {minutes:.2f} minutes ago</div>'
+        )
+
     column_searchable_list = ("source_db", "table_name", "namespace")
 
     column_editable_list = ["active", "time_column"]
-    column_exclude_list = ["schema", "created_at", "grafana_url"]
-    column_list = ["source_db", "active", "table_name", "time_column", "alerts_number"]
+    column_exclude_list = ["schema", "created_at"]
+    column_list = [
+        "source_db",
+        "active",
+        "table_name",
+        "time_column",
+        "alerts_number",
+        "grafana_url",
+    ]
+    column_details_list = [
+        "source_db",
+        "active",
+        "table_name",
+        "schema",
+        "schema_changes",
+        "alerts_by_creation",
+        "last_records_added",
+        "grafana_url",
+    ]
 
     column_formatters = {
         "created_at": BaseRedataView._user_formatter_time,
-        "table_name": grafana_url_formatter,
         "schema": schema_formatter,
         "grafana_url": grafana_url_formatter,
+        "alerts_by_creation": alerts_formatter,
+        "alerts_number": alerts_number_formatter,
+        "last_records_added": last_record_added_formatter,
     }
 
 
