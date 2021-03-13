@@ -55,7 +55,7 @@ class Table(Base):
     def schema_changes(self):
         return (
             metrics_session.query(MetricFromCheck)
-            .filter_by(table_id=self.id, metric="schema_changes")
+            .filter_by(table_id=self.id, metric="schema_change")
             .order_by("created_at")
             .all()
         )

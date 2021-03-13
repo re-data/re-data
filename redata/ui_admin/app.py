@@ -147,12 +147,27 @@ class TableView(BaseRedataView):
         str_rep = "<br/>".join(table_alerts)
         return Markup('<dev class="alerts-repr">' + str_rep + "</div>")
 
+    def schema_change_formatter(self, context, model, schema):
+        table_changes = []
+        for el in model.schema_changes:
+            event = el.result
+            if event["value"]["operation"] == "table detected":
+                continue
+
+            table_changes.append(f'[{el.created_at}] {event["value"]}')
+
+        str_rep = "<br/>".join(table_changes)
+        return Markup('<dev class="schema-changes-repr">' + str_rep + "</div>")
+
     def alerts_number_formatter(self, context, model, shcema):
         url_for_details = url_for("table.details_view", id=model.id)
         return Markup(f'<a href="{url_for_details}">{model.alerts_number}</a>')
 
     def last_record_added_formatter(self, context, model, schema):
         metric = model.last_records_added
+        if not metric:
+            return None
+
         minutes = metric.result["value"] / 60
         return Markup(
             f'<dev class="last-record">[{metric.created_at}], last_record_added - {minutes:.2f} minutes ago</div>'
@@ -188,6 +203,7 @@ class TableView(BaseRedataView):
         "alerts_by_creation": alerts_formatter,
         "alerts_number": alerts_number_formatter,
         "last_records_added": last_record_added_formatter,
+        "schema_changes": schema_change_formatter,
     }
 
 
