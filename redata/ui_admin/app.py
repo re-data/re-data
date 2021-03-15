@@ -5,6 +5,7 @@ from flask import Blueprint, Flask, Markup, redirect, request, url_for
 from flask_admin import Admin, AdminIndexView, expose, helpers
 from flask_admin.contrib.sqla import ModelView
 from werkzeug.security import generate_password_hash
+from wtforms import fields, form
 
 from redata import settings
 from redata.checks.data_schema import check_for_new_tables
@@ -210,8 +211,17 @@ class TableView(BaseRedataView):
 class AlertView(BaseRedataView):
     can_delete = True
     can_create = False
+    can_edit = False
+    can_view_details = True
 
     column_searchable_list = ("text", "alert_type")
+
+    column_list = [
+        "created_at",
+        "text",
+        "alert_type",
+        "table",
+    ]
 
     def table_grafana_url_formatter(self, context, model, name):
         return get_grafana_url(model.table)
