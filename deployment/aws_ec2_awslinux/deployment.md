@@ -38,16 +38,14 @@ docker-compose up -d
 Go back to you local computer and ssh with tunneling to redata
 
 ```
-ssh -i PATH_TO_SSH_KEY -L 3000:localhost:3000 -L 8080:localhost:8080 -N -f ec2-user@PUBLIC_DNS_OF_MACHINE
+ssh -i PATH_TO_SSH_KEY -L 3000:localhost:3000 -L 5000:localhost:5000 -N -f ec2-user@PUBLIC_DNS_OF_MACHINE
 ```
 
-You should be able to go to `localhost:3000` and login to Grafana (with admin/admin password if didn't changed)
-And for Airflow it's running under `localhost:8080`, go there to enable periodic runs by turning on `validation_dag`
+You should be able to go to `localhost:5000` and login to Redata UI
 
 That's all, you have your data under observation by now! :)
 
 ## Troubleshooting
 
-If you have any problems with running above please join our [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-lrp4khvb-kIS6ct4WzJTy~JNVzwB5yw)
-We will be happy to help! :)
+If you have any problems with running above please join our Slack for help.
 
