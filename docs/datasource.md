@@ -1,7 +1,7 @@
 # DataSource
 
-Data Source is object representing .. database :) Currently there are couple supported DBs (a listed on a main page).
-Here we will try to cover what parameters you currently need to add for specific DBs.
+Data Source is object representing .. database :) Currently there are couple supported DBs (as listed on the main page).
+Here we will try to cover what parameters you currently need to add for specific DBs to make them work with Redata.
 
 ### PostgreSQL
 
@@ -36,6 +36,8 @@ You don't need to pass more parameters, but if you are deploying locally you nee
 Currenlty it can be done via editing  `.env` file before starting Redata and uncommenting line `REDATA_BIGQUERY_KEY_FILE=PATH_TO_CREDS_FILE`
 with adding path to your creds file.
 
+If you would prefer another setup for BigQuery (like pasting json auth config directly in Redata UI let us know ;)
+
 ### Redshift
 
 ```
@@ -46,8 +48,9 @@ with adding path to your creds file.
  - port (please setup this even if you have default port 5439 used for redshift)
  - schemas (here you specify which schemas to monitor, you can leave it empty for monitoring public schema)
 ```
-If for normal authentation to redshfit you are using your aws keys and would like to use it also here, let us know.
-It's auth pattern we not support yet, but can add it if there is a need :)
+
+If for authentation to redshfit you are using your aws keys and would like us it also here, let us know.
+It's auth pattern we not supporting yet, but can add it if there is a need :)
 
 
 ### Snowflake
@@ -62,12 +65,12 @@ You don't need to specify port for snowflake.
 
 ## Notes
 
-For all databases, Redata doesn't need write access to DBs, so it's recommended to pass read only credentials where possible.
+For all databases, Redata doesn't need write access to DBs, so it's recommended to pass only read credentials where possible.
 It's possible to have multiple datasource per one DB,
-(this is recommanded to for example one you want to monitor all tables in one schema and only some in other ones)
+(this is recommanded if for example one you want to monitor all tables in one schema and only some in other schemas)
 
 ## What's next
 
-After you add datasource, Redata will look into the tables in given schemas and add info about them to internal database.
+After you add datasource, Redata will look into the tables in given DBs and add info about them to internal database.
 Depending on it, if you checked `Run for all` it may start computing monitoring queries on them in next run or not.
-If you want to choose tables, for which to run monitoring just set `Run for all` option to false and then update tables to monitor.
+If you want to choose tables, for which to run monitoring just set `Run for all` option to false and then mark those to monitor in Table view.
