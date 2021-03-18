@@ -52,7 +52,7 @@ It's auth pattern we not support yet, but can add it if there is a need :)
 
 ### Snowflake
 ```
- - host
+ - host (name before snowflakecomputing.com in your snowflake data warehouse path)
  - database
  - user
  - password
