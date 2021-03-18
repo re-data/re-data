@@ -6,7 +6,7 @@ Couple interesting parameters related to Scan:
 ## start_date & end_date
 
 Each metrics Redata computes are related to some time window.
-Curenlty this time window is last 24 hours. (Possible to change it, but you would need update Redata code.. :)
+Curenlty this time window is last 24 hours. (Possible to change it, but you would need update Redata code, so let us know if you would like to have it as configurable option)
 
 Running scan with `start_date = end_date` which is how by default scans are run will compute metrics only for 
 for `(end_date-24h, end_date)` time period.
