@@ -124,11 +124,11 @@ We recommend starting with data source which explains how to configure you DB.
 Later on table, scan, alert are views you most likely will be checking first when using Redata.
 Checks and editing them enables configuring Redata to your specific needs.
 
- - [Data Source](deployment/docs/datasource.md)
- - [Table](deployment/docs/table.md)
- - [Scan](deployment/docs/scan.md)
- - [Alert](deployment/docs/alert.md)
- - [Check](deployment/docs/check.md)
+ - [Data Source](docs/datasource.md)
+ - [Table](docs/table.md)
+ - [Scan](docs/scan.md)
+ - [Alert](docs/alert.md)
+ - [Check](docs/check.md)
 
 
 # Contributing
