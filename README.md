@@ -1,9 +1,17 @@
-<p align="left">
-<a href="https://join.slack.com/t/redatahq/shared_invite/zt-md9kg05x-Aao1mvx0huTKrDZ1tA8v9w"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"></a>
+# Redata
+
+
+<p align="center">
+<img src="./docs/static/redata_logo.png" width="20%"></img>
 </p>
 
+<p align="center">
+<a href="https://join.slack.com/t/redatahq/shared_invite/zt-md9kg05x-Aao1mvx0huTKrDZ1tA8v9w"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
+<a href="https://hub.docker.com/r/redatateam/redata"><img alt="Docker pulls" src="https://img.shields.io/docker/pulls/redatateam/redata?color=green"> </a>
+<img alt="License" src="https://img.shields.io/github/license/redata-team/redata?color=violet"/>
+<img alt="Last commit" src="https://img.shields.io/github/last-commit/redata-team/redata"/>
+</p>
 
-# Redata
 
 *Do you know this feeling? -
 Something in your data broke, you patiently added monitoring to detect that in the future... only so, that the next time different not expected thing went wrong :)*
