@@ -117,6 +117,19 @@ Here are integrations we support or work on now. Let us know if you'd really lik
 # License
 Redata is licensed under the MIT license. See the [LICENSE](LICENSE) file for licensing information.
 
+# Docs
+
+Want to learn a bit more on how Redata works (work in progress docs are here :)
+We recommend starting with data source which explains how to configure you DB.
+Later on table, scan, alert are views you most likely will be checking first when using Redata.
+Checks and editing them enables configuring Redata to your specific needs.
+
+ - [Data Source](deployment/docs/datasource.md)
+ - [Table](deployment/docs/table.md)
+ - [Scan](deployment/docs/scan.md)
+ - [Alert](deployment/docs/alert.md)
+ - [Check](deployment/docs/check.md)
+
 
 # Contributing
 
@@ -127,3 +140,4 @@ Checkout our list of [good first issues](https://github.com/redata-team/redata/i
 More details on how to tests your changes under: [CONTRIBUTING](https://github.com/redata-team/redata/blob/master/CONTRIBUTING.md)
 
 If you got this far and like what we are building, support us! Star https://github.com/redata-team/redata on Github :)
+
