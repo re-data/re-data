@@ -1,10 +1,3 @@
-# Redata
-
-
-<p align="center">
-<img src="./docs/static/redata_logo.png" width="20%"></img>
-</p>
-
 <p align="center">
 <a href="https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rOwYBv3yLksSxBg#"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
 <a href="https://hub.docker.com/r/redatateam/redata"><img alt="Docker pulls" src="https://img.shields.io/docker/pulls/redatateam/redata?color=green"> </a>
@@ -12,6 +5,12 @@
 <img alt="Last commit" src="https://img.shields.io/github/last-commit/redata-team/redata"/>
 </p>
 
+# Redata
+
+
+<p align="center">
+<img src="./docs/static/redata_logo.png" width="20%"></img>
+</p>
 
 *Do you know this feeling? -
 Something in your data broke, you patiently added monitoring to detect that in the future... only so, that the next time different not expected thing went wrong :)*
