@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-<a href="https://join.slack.com/t/redatahq/shared_invite/zt-md9kg05x-Aao1mvx0huTKrDZ1tA8v9w"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
+<a href="https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rOwYBv3yLksSxBg#"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
 <a href="https://hub.docker.com/r/redatateam/redata"><img alt="Docker pulls" src="https://img.shields.io/docker/pulls/redatateam/redata?color=green"> </a>
 <img alt="License" src="https://img.shields.io/github/license/redata-team/redata?color=violet"/>
 <img alt="Last commit" src="https://img.shields.io/github/last-commit/redata-team/redata"/>
@@ -143,7 +143,7 @@ Checks and editing them enables configuring Redata to your specific needs.
 
 We love all contributions, bigger and smaller.
 
-Checkout our list of [good first issues](https://github.com/redata-team/redata/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and see if you like anything from there. Also feel welcome to join our [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-md9kg05x-Aao1mvx0huTKrDZ1tA8v9w) and suggest ideas, or setup no pressure session with Redata [here](https://calendly.com/mateuszklimek/30min). 
+Checkout our list of [good first issues](https://github.com/redata-team/redata/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and see if you like anything from there. Also feel welcome to join our [Slack](https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rOwYBv3yLksSxBg#) and suggest ideas, or setup no pressure session with Redata [here](https://calendly.com/mateuszklimek/30min). 
 
 More details on how to tests your changes under: [CONTRIBUTING](https://github.com/redata-team/redata/blob/master/CONTRIBUTING.md)
 
