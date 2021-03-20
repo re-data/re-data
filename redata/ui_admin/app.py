@@ -57,6 +57,7 @@ def create_app():
     app.config["FLASK_ADMIN_SWATCH"] = "cerulean"
     app.config["SQLALCHEMY_DATABASE_URI"] = settings.METRICS_DB_URL
     app.config["SECRET_KEY"] = settings.FLASK_UI_SECRET_KEY
+    app.config["SESSION_COOKIE_NAME"] = "redata_seesion_cookie"
 
     app.route(admin_redirect, endpoint="/")
     app.register_blueprint(redata_blueprint)
@@ -65,12 +66,17 @@ def create_app():
     return app
 
 
-def get_grafana_url(table):
+def grafana_url_formatter_fun(table):
     if table.grafana_url:
-        url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>{table.full_table_name}</a>"
+        url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>{table.grafana_url}</a>"
         return Markup(url)
     else:
-        return table.full_table_name
+        return "Not yet created"
+
+
+def table_details_link_formatter(table):
+    url_for_details = url_for("table.details_view", id=table.id)
+    return Markup(f'<a href="{url_for_details}">{table.full_table_name}</a>')
 
 
 @redata_blueprint.route("/")
@@ -123,12 +129,13 @@ class BaseRedataView(ModelView):
 class TableView(BaseRedataView):
     can_delete = False
     can_view_details = True
+    can_create = False
 
     def is_accessible(self):
         return login.current_user.is_authenticated
 
     def grafana_url_formatter(self, context, model, name):
-        return get_grafana_url(model)
+        return grafana_url_formatter_fun(model)
 
     def schema_formatter(self, context, model, schema):
         max_length = max([len(x["name"]) for x in model.schema["columns"]])
@@ -223,15 +230,15 @@ class AlertView(BaseRedataView):
         "table",
     ]
 
-    def table_grafana_url_formatter(self, context, model, name):
-        return get_grafana_url(model.table)
+    def table_details_formatter(self, context, model, name):
+        return table_details_link_formatter(model.table)
 
     def is_accessible(self):
         return login.current_user.is_authenticated
 
     column_formatters = {
         "created_at": BaseRedataView._user_formatter_time,
-        "table": table_grafana_url_formatter,
+        "table": table_details_formatter,
     }
 
 
@@ -266,15 +273,15 @@ class ChecksTableView(BaseRedataView):
 
     column_searchable_list = ("name", "metrics", "query")
 
-    def table_grafana_url_formatter(self, context, model, name):
-        return get_grafana_url(model.table)
+    def table_details_formatter(self, context, model, name):
+        return table_details_link_formatter(model.table)
 
     def is_accessible(self):
         return login.current_user.is_authenticated
 
     column_formatters = {
         "created_at": BaseRedataView._user_formatter_time,
-        "table": table_grafana_url_formatter,
+        "table": table_details_formatter,
     }
 
 

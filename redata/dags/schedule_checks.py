@@ -81,26 +81,33 @@ def generate_grafana():
 
 def process_run():
 
-    scan = Scan.get_not_started_run()
-    if scan is not None:
-        scan.status = "pending"
-        metrics_session.commit()
+    try:
 
-        for_time = scan.start_date
-        while for_time <= scan.end_date:
+        scan = Scan.get_not_started_run()
+        if scan is not None:
+            scan.status = "pending"
+            metrics_session.commit()
 
-            conf = Conf(for_time)
+            for_time = scan.start_date
+            while for_time <= scan.end_date:
 
-            for source_db in DataSource.source_dbs():
-                run_check_for_new_tables(source_db, conf)
-                run_checks(source_db, conf)
-                run_compute_alerts(source_db, conf)
+                conf = Conf(for_time)
 
-            for_time += timedelta(days=1)
+                for source_db in DataSource.source_dbs():
+                    run_check_for_new_tables(source_db, conf)
+                    run_checks(source_db, conf)
+                    run_compute_alerts(source_db, conf)
 
-        generate_grafana()
+                for_time += timedelta(days=1)
 
-        scan.status = "success"
+            generate_grafana()
+
+            scan.status = "success"
+            metrics_session.commit()
+
+    except Exception:
+
+        scan.status = "error"
         metrics_session.commit()
 
 

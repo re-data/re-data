@@ -102,7 +102,7 @@ class Table(Base):
         now_ts = datetime.datetime.now()
         for col in matching_cols:
             max_ts = db.get_max_timestamp(table, col)
-            if not max_ts or max_ts <= now_ts:
+            if max_ts and max_ts <= now_ts:
                 cols_by_ts[max_ts].append(col)
 
         # list of all viable candidates, ordered by latest timestamp first
@@ -113,7 +113,12 @@ class Table(Base):
         )
 
         # list of preferred columns out of the viable ones, by name filtering
-        preferred = [col for col in candidates if col.lower().find("creat") != -1]
+        preferred_regex = settings.REDATA_TIME_COL_PREFERRED_REGEX
+        preferred = [
+            col
+            for col in candidates
+            if (not preferred_regex or re.search(preferred_regex, col))
+        ]
 
         if len(candidates) == 0:
             # no columns found? ignore table..
