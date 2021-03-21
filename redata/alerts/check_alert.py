@@ -21,7 +21,7 @@ def alert(db, check, conf):
                 sql_df = get_last_results(db, check, column, metric, conf)
                 sql_df["result"] = pd.to_numeric(sql_df["result"])
 
-                alert = column + "_" + metric
+                alert = column + ":" + metric
                 checked_txt = alert + " is failing"
 
                 alert_on_z_score(sql_df, check, alert, checked_txt, conf)

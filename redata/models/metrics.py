@@ -35,6 +35,9 @@ class MetricFromCheck(Base):
         TIMESTAMP, default=datetime.utcnow, index=True, primary_key=True
     )
 
+    def __str__(self):
+        return f"{self.metric}.{self.result}"
+
     @classmethod
     def add_metrics(cls, results, check, conf):
 

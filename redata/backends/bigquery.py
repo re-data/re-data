@@ -33,6 +33,8 @@ class BigQuery(SqlAlchemy):
 
     def get_max_timestamp(self, table, column):
         ts_tz = super().get_max_timestamp(table, column)
+        if not ts_tz:
+            return None
         return ts_tz.replace(tzinfo=None)
 
     def get_table_obj(self, table):

@@ -4,7 +4,7 @@ import json
 import re
 from collections import defaultdict
 
-from sqlalchemy import JSON, TIMESTAMP, Boolean, Column, Integer, String
+from sqlalchemy import JSON, TIMESTAMP, Boolean, Column, Integer, String, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import Date
@@ -12,6 +12,7 @@ from sqlalchemy.sql.sqltypes import Date
 from redata import settings
 from redata.db_operations import metrics_session
 from redata.models.base import Base
+from redata.models.metrics import MetricFromCheck
 
 
 class Table(Base):
@@ -46,6 +47,29 @@ class Table(Base):
     def alerts_number(self):
         return len(self.alerts)
 
+    @property
+    def alerts_by_creation(self):
+        return sorted(self.alerts, key=lambda x: x.created_at)
+
+    @property
+    def schema_changes(self):
+        return (
+            metrics_session.query(MetricFromCheck)
+            .filter_by(table_id=self.id, metric="schema_change")
+            .order_by("created_at")
+            .all()
+        )
+
+    @property
+    def last_records_added(self):
+        return (
+            metrics_session.query(MetricFromCheck)
+            .filter_by(table_id=self.id, metric="delay")
+            .order_by(MetricFromCheck.created_at.desc())
+            .limit(1)
+            .first()
+        )
+
     @classmethod
     def setup_for_source_table(cls, db, db_table_name, namespace):
         print(f"Running setup for {db_table_name}")
@@ -78,7 +102,7 @@ class Table(Base):
         now_ts = datetime.datetime.now()
         for col in matching_cols:
             max_ts = db.get_max_timestamp(table, col)
-            if not max_ts or max_ts <= now_ts:
+            if max_ts and max_ts <= now_ts:
                 cols_by_ts[max_ts].append(col)
 
         # list of all viable candidates, ordered by latest timestamp first
@@ -89,7 +113,12 @@ class Table(Base):
         )
 
         # list of preferred columns out of the viable ones, by name filtering
-        preferred = [col for col in candidates if col.lower().find("creat") != -1]
+        preferred_regex = settings.REDATA_TIME_COL_PREFERRED_REGEX
+        preferred = [
+            col
+            for col in candidates
+            if (not preferred_regex or re.search(preferred_regex, col))
+        ]
 
         if len(candidates) == 0:
             # no columns found? ignore table..

@@ -5,6 +5,7 @@ from flask import Blueprint, Flask, Markup, redirect, request, url_for
 from flask_admin import Admin, AdminIndexView, expose, helpers
 from flask_admin.contrib.sqla import ModelView
 from werkzeug.security import generate_password_hash
+from wtforms import fields, form
 
 from redata import settings
 from redata.checks.data_schema import check_for_new_tables
@@ -56,6 +57,7 @@ def create_app():
     app.config["FLASK_ADMIN_SWATCH"] = "cerulean"
     app.config["SQLALCHEMY_DATABASE_URI"] = settings.METRICS_DB_URL
     app.config["SECRET_KEY"] = settings.FLASK_UI_SECRET_KEY
+    app.config["SESSION_COOKIE_NAME"] = "redata_seesion_cookie"
 
     app.route(admin_redirect, endpoint="/")
     app.register_blueprint(redata_blueprint)
@@ -64,12 +66,17 @@ def create_app():
     return app
 
 
-def get_grafana_url(table):
+def grafana_url_formatter_fun(table):
     if table.grafana_url:
-        url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>{table.full_table_name}</a>"
+        url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>{table.grafana_url}</a>"
         return Markup(url)
     else:
-        return table.full_table_name
+        return "Not yet created"
+
+
+def table_details_link_formatter(table):
+    url_for_details = url_for("table.details_view", id=table.id)
+    return Markup(f'<a href="{url_for_details}">{table.full_table_name}</a>')
 
 
 @redata_blueprint.route("/")
@@ -122,12 +129,13 @@ class BaseRedataView(ModelView):
 class TableView(BaseRedataView):
     can_delete = False
     can_view_details = True
+    can_create = False
 
     def is_accessible(self):
         return login.current_user.is_authenticated
 
     def grafana_url_formatter(self, context, model, name):
-        return get_grafana_url(model)
+        return grafana_url_formatter_fun(model)
 
     def schema_formatter(self, context, model, schema):
         max_length = max([len(x["name"]) for x in model.schema["columns"]])
@@ -139,35 +147,98 @@ class TableView(BaseRedataView):
         str_repr = str_repr.replace("§", "&nbsp;")
         return Markup('<div class="schema-repr">' + str_repr + "</div")
 
+    def alerts_formatter(self, context, model, schema):
+        table_alerts = []
+        for alert in model.alerts_by_creation:
+            table_alerts.append(f"[{alert.created_at}] {alert.text}")
+
+        str_rep = "<br/>".join(table_alerts)
+        return Markup('<dev class="alerts-repr">' + str_rep + "</div>")
+
+    def schema_change_formatter(self, context, model, schema):
+        table_changes = []
+        for el in model.schema_changes:
+            event = el.result
+            if event["value"]["operation"] == "table detected":
+                continue
+
+            table_changes.append(f'[{el.created_at}] {event["value"]}')
+
+        str_rep = "<br/>".join(table_changes)
+        return Markup('<dev class="schema-changes-repr">' + str_rep + "</div>")
+
+    def alerts_number_formatter(self, context, model, shcema):
+        url_for_details = url_for("table.details_view", id=model.id)
+        return Markup(f'<a href="{url_for_details}">{model.alerts_number}</a>')
+
+    def last_record_added_formatter(self, context, model, schema):
+        metric = model.last_records_added
+        if not metric:
+            return None
+
+        minutes = metric.result["value"] / 60
+        return Markup(
+            f'<dev class="last-record">[{metric.created_at}], last_record_added - {minutes:.2f} minutes ago</div>'
+        )
+
     column_searchable_list = ("source_db", "table_name", "namespace")
 
     column_editable_list = ["active", "time_column"]
-    column_exclude_list = ["schema", "created_at", "grafana_url"]
-    column_list = ["source_db", "active", "table_name", "time_column", "alerts_number"]
+    column_exclude_list = ["schema", "created_at"]
+    column_list = [
+        "source_db",
+        "active",
+        "table_name",
+        "time_column",
+        "alerts_number",
+        "grafana_url",
+    ]
+    column_details_list = [
+        "source_db",
+        "active",
+        "table_name",
+        "schema",
+        "schema_changes",
+        "alerts_by_creation",
+        "last_records_added",
+        "grafana_url",
+    ]
 
     column_formatters = {
         "created_at": BaseRedataView._user_formatter_time,
-        "table_name": grafana_url_formatter,
         "schema": schema_formatter,
         "grafana_url": grafana_url_formatter,
+        "alerts_by_creation": alerts_formatter,
+        "alerts_number": alerts_number_formatter,
+        "last_records_added": last_record_added_formatter,
+        "schema_changes": schema_change_formatter,
     }
 
 
 class AlertView(BaseRedataView):
     can_delete = True
     can_create = False
+    can_edit = False
+    can_view_details = True
 
     column_searchable_list = ("text", "alert_type")
 
-    def table_grafana_url_formatter(self, context, model, name):
-        return get_grafana_url(model.table)
+    column_list = [
+        "created_at",
+        "text",
+        "alert_type",
+        "table",
+    ]
+
+    def table_details_formatter(self, context, model, name):
+        return table_details_link_formatter(model.table)
 
     def is_accessible(self):
         return login.current_user.is_authenticated
 
     column_formatters = {
         "created_at": BaseRedataView._user_formatter_time,
-        "table": table_grafana_url_formatter,
+        "table": table_details_formatter,
     }
 
 
@@ -202,15 +273,15 @@ class ChecksTableView(BaseRedataView):
 
     column_searchable_list = ("name", "metrics", "query")
 
-    def table_grafana_url_formatter(self, context, model, name):
-        return get_grafana_url(model.table)
+    def table_details_formatter(self, context, model, name):
+        return table_details_link_formatter(model.table)
 
     def is_accessible(self):
         return login.current_user.is_authenticated
 
     column_formatters = {
         "created_at": BaseRedataView._user_formatter_time,
-        "table": table_grafana_url_formatter,
+        "table": table_details_formatter,
     }
 
 

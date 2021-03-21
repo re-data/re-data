@@ -86,6 +86,7 @@ input[type="password"] {
 	color: grey
 }
 
-.schema-repr {
+.schema-repr, .alerts-repr, .last-record, .schema-changes-repr {
 	font-family: monospace;
+	font-size: 13px;
 }
