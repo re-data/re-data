@@ -34,3 +34,12 @@ class DB(object):
             return datetime(d.year, d.month, d.day)
         else:
             raise TypeError("argument must be date or datetime")
+
+    def check_custom_query(self, table, query):
+
+        query = query.replace("{{table_name}}", table.full_table_name)
+
+        result = self.db.execute(query)
+
+        result = result.fetchall()
+        return [dict(row) for row in result]

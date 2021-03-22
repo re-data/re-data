@@ -109,7 +109,7 @@ class SqlAlchemy(DB):
             for check in checks:
                 if check in self.METRIC_TO_FUNC:
                     func = self.METRIC_TO_FUNC[check]
-                    select_item = func(q_table.c[column]).label(column + "_" + check)
+                    select_item = func(q_table.c[column]).label(column + ":" + check)
                     to_select.append(select_item)
 
         if not to_select:

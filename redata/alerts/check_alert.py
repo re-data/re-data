@@ -21,7 +21,11 @@ def alert(db, check, conf):
                 sql_df = get_last_results(db, check, column, metric, conf)
                 sql_df["result"] = pd.to_numeric(sql_df["result"])
 
-                alert = column + ":" + metric
+                if column == Metric.TABLE_METRIC:
+                    alert = metric
+                else:
+                    alert = column + ":" + metric
+
                 checked_txt = alert + " is failing"
 
                 alert_on_z_score(sql_df, check, alert, checked_txt, conf)
@@ -29,7 +33,9 @@ def alert(db, check, conf):
 
 def alert_for_schema_change(db, check, conf):
 
-    df = get_last_results(db, check, Metric.TABLE_METRIC, Metric.DELAY, conf, days=1)
+    df = get_last_results(
+        db, check, Metric.TABLE_METRIC, Metric.SCHEMA_CHANGE, conf, days=1
+    )
     for index, row in df.iterrows():
 
         changes = json.loads(row[0])

@@ -47,13 +47,13 @@ class MetricFromCheck(Base):
             for col, metrics in check.metrics.items():
 
                 for m in metrics:
-                    select_name = col + "_" + m if col != Metric.TABLE_METRIC else m
+                    select_name = col + ":" + m if col != Metric.TABLE_METRIC else m
 
                     m = MetricFromCheck(
                         check_id=check.id,
                         table_id=check.table.id,
-                        table_column=col if col else None,
-                        params=check.query["params"],
+                        table_column=col,
+                        params=check.query.get("params", {}),
                         metric=m,
                         result={"value": row[select_name]},
                         created_at=conf.for_time,

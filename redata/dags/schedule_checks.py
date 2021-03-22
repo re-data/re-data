@@ -45,9 +45,9 @@ def run_checks_for_table(db, table, conf):
             result = func(
                 db=db, table=table, check=check, conf=conf, **check.query["params"]
             )
-        else:
-            # TODO run raw query on DB
-            result = None
+        elif check.query["type"] == "sql":
+            sql_code = check.query["sql"]
+            result = db.check_custom_query(check.table, sql_code)
 
         MetricFromCheck.add_metrics(result, check, conf)
 
@@ -105,10 +105,10 @@ def process_run():
             scan.status = "success"
             metrics_session.commit()
 
-    except Exception:
-
+    except Exception as e:
         scan.status = "error"
         metrics_session.commit()
+        raise e
 
 
 with DAG(
