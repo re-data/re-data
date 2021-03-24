@@ -140,7 +140,7 @@ class DelayOnTable:
 
     @staticmethod
     def title():
-        return f"time_since_last_record_created"
+        return f"TIME SINCE LAST NEW RECORD"
 
     def query(self):
         return f"""
