@@ -61,7 +61,7 @@ def create_home_dashboard(grafana_api, dashboards):
         if panel["title"] == "time_since_last_record_created":
             update_home_panel_element(panel, HomeLastModifiedTime)
 
-        if panel["title"] == "recent_alerts":
+        if panel["title"] == "RECENT ALERTS":
             update_home_panel_element(panel, HomeAlerts)
 
     response = grafana_api.dashboard.update_dashboard(

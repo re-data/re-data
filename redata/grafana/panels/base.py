@@ -55,7 +55,7 @@ class HomeAlerts:
 
     @staticmethod
     def title():
-        return "recent_alerts"
+        return "RECENT ALERTS"
 
     def query(self):
         return f"""
@@ -84,7 +84,7 @@ class AlertsTable:
 
     @staticmethod
     def title():
-        return "recent_alerts"
+        return "RECENT ALERTS"
 
     def query(self):
         return f"""
@@ -111,7 +111,7 @@ class AlertsByDay:
 
     @staticmethod
     def title():
-        return "alerts_by_day"
+        return "ALERTS BY DAY"
 
     def query(self):
         return f"""

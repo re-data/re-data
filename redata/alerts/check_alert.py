@@ -26,7 +26,7 @@ def alert(db, check, conf):
                 else:
                     alert = column + ":" + metric
 
-                checked_txt = alert + " is failing"
+                checked_txt = alert
 
                 alert_on_z_score(sql_df, check, alert, checked_txt, conf)
 

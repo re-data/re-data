@@ -72,7 +72,7 @@
         "targets": "__TO_REPLACE__",
         "timeFrom": null,
         "timeShift": null,
-        "title": "recent_alerts",
+        "title": "RECENT ALERTS",
         "type": "table"
       },
       {
@@ -134,7 +134,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "alerts_by_day",
+        "title": "ALERTS BY DAY",
         "tooltip": {
           "shared": true,
           "sort": 0,

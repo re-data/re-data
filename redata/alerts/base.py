@@ -27,8 +27,8 @@ def alert_on_z_score(df, check, alert_type, checked_txt, conf):
 
         alert = Alert(
             text=f"""
-                {checked_txt},
-                {alert_desc} expected range, value: {last_el}, z_score: {last_el_zscore:.2f}
+                {checked_txt}
+                {alert_desc} expected range, current value: {last_el:.2f}, z_score: {last_el_zscore:.2f}
             """,
             severity=2,
             table_id=check.table_id,
