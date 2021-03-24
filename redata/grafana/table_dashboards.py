@@ -13,7 +13,7 @@ def get_dashboard_for_table(db, table):
     panels = table_data["panels"]
     per_title = dict([(panel.title(), panel) for panel in ALL_PANELS])
 
-    table_data["title"] = f"source: {db.name} table: {table.table_name} (generated)"
+    table_data["title"] = f"{db.name.upper()}:{table.full_table_name.upper()}"
 
     for panel in panels:
         if per_title.get(panel["title"]):
@@ -35,7 +35,7 @@ def get_dashboard_for_table(db, table):
             y_pos += 7
 
         panel = load_json_data(settings.CUSTOM_ROW_LOCATION)
-        panel["title"] = f"{column_name} column"
+        panel["title"] = f"COL:{column_name.upper()}"
         panel["id"] = next_id
         panel["gridPos"]["y"] = y_pos
         panel["gridPos"]["x"] = x_pos
@@ -49,7 +49,7 @@ def get_dashboard_for_table(db, table):
 
         for metric_name in metrics:
             panel = load_json_data(settings.CUSTOM_PANEL_LOCATION)
-            panel["title"] = f"{metric_name}"
+            panel["title"] = f"{metric_name.upper()}"
             panel["id"] = next_id
             panel["gridPos"]["y"] = y_pos
             panel["gridPos"]["x"] = x_pos

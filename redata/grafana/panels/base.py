@@ -75,32 +75,6 @@ class HomeAlerts:
         """
 
 
-class SchemaChange:
-    def __init__(self, table) -> None:
-        self.table = table
-
-    def format(self):
-        return "table"
-
-    @staticmethod
-    def title():
-        return "schema_changes"
-
-    def query(self):
-        return f"""
-        SELECT
-            result -> 'value' ->> 'operation' as operation,
-            result -> 'value' ->> 'column_name' as column_name,
-            result -> 'value' ->> 'columnt_type' as column_type
-        FROM metric
-        WHERE
-            table_id = {self.table.id} and
-            metric = '{Metric.SCHEMA_CHANGE}' and
-            $__timeFilter(created_at)
-        ORDER BY 1
-        """
-
-
 class AlertsTable:
     def __init__(self, table):
         self.table = table
@@ -157,29 +131,6 @@ class AlertsByDay:
         """
 
 
-class CurrentSchema:
-    def __init__(self, table):
-        self.table = table
-
-    def format(self):
-        return "table"
-
-    @staticmethod
-    def title():
-        return "current_table_schema"
-
-    def query(self):
-        return f"""
-        SELECT
-            col.*
-        FROM
-            monitored_table,
-            jsonb_to_recordset(schema->'columns') col(name text, type text)
-        WHERE
-            id = {self.table.id}
-        """
-
-
 class DelayOnTable:
     def __init__(self, table) -> None:
         self.table = table
@@ -214,7 +165,7 @@ class VolumeGraphs:
 
     @staticmethod
     def title():
-        return f"new_record_created"
+        return f"NEW RECORDS"
 
     def query(self):
         return f"""
@@ -266,8 +217,6 @@ class CheckForColumn:
 ALL_PANELS = (
     VolumeGraphs,
     DelayOnTable,
-    SchemaChange,
-    CurrentSchema,
     AlertsTable,
     AlertsByDay,
 )
