@@ -195,9 +195,6 @@ class CheckForColumn:
     def title():
         return f"NOT_EXISTING"
 
-    def title_for_obj(self):
-        return "column:{self.column}:{self.metric}"
-
     def query(self):
         return f"""
         SELECT
@@ -211,6 +208,37 @@ class CheckForColumn:
             metric = '{self.metric}'
         ORDER BY
         1
+        """
+
+
+class CustomMetric:
+    def __init__(self, table, metric, column=None):
+        self.table = table
+        self.metric = metric
+        self.column = column
+
+    def format(self):
+        return "time_series"
+
+    @staticmethod
+    def title():
+        return f"NOT_EXISTING"
+
+    def query(self):
+        table_column = column if column else Metric.TABLE_METRIC
+
+        return f"""
+        SELECT
+            created_at as time,
+            (result ->> 'value')::float as {self.metric} 
+        FROM
+            metric
+        WHERE
+            table_id = {self.table_id} and
+            metric = '{self.metric}' and
+            table_column = '{table_column}'
+
+        ORDER BY 1
         """
 
 
