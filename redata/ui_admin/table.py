@@ -3,6 +3,7 @@ from flask import Blueprint, Flask, Markup, redirect, request, url_for
 
 from redata.ui_admin.utils import (
     BaseRedataView,
+    formatted_time,
     grafana_url_formatter_fun,
     table_details_link_formatter,
 )
@@ -32,7 +33,8 @@ class TableView(BaseRedataView):
     def alerts_formatter(self, context, model, schema):
         table_alerts = []
         for alert in model.alerts_by_creation:
-            table_alerts.append(f"[{alert.created_at}] {alert.text}")
+            created_at = formatted_time(alert.created_at)
+            table_alerts.append(f"[{created_at}] {alert.text}")
 
         str_rep = "<br/>".join(table_alerts)
         return Markup('<dev class="alerts-repr">' + str_rep + "</div>")
@@ -44,7 +46,8 @@ class TableView(BaseRedataView):
             if event["value"]["operation"] == "table detected":
                 continue
 
-            table_changes.append(f'[{el.created_at}] {event["value"]}')
+            created_at = formatted_time(el.created_at)
+            table_changes.append(f'[{created_at}] {event["value"]}')
 
         str_rep = "<br/>".join(table_changes)
         return Markup('<dev class="schema-changes-repr">' + str_rep + "</div>")
@@ -58,15 +61,20 @@ class TableView(BaseRedataView):
         if not metric:
             return None
 
-        minutes = metric.result["value"] / 60
+        minutes = (metric.result["value"] / 60) % 60
+        hours = metric.result["value"] // (60 * 60)
+        hours_part = f"{hours} hours " if hours > 0 else ""
+        minutes_part = f"{minutes:.2f} minutes"
+
+        created_at = formatted_time(metric.created_at)
+
         return Markup(
-            f'<dev class="last-record">[{metric.created_at}], last_record_added - {minutes:.2f} minutes ago</div>'
+            f'<dev class="last-record">[{created_at}] last record added {hours_part}{minutes_part} ago</div>'
         )
 
     column_searchable_list = ("source_db", "table_name", "namespace")
 
     column_editable_list = ["active", "time_column"]
-    column_exclude_list = ["schema", "created_at"]
     column_list = [
         "source_db",
         "active",

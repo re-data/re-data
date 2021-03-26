@@ -13,6 +13,7 @@ class ChecksTableView(BaseRedataView):
     can_delete = False
 
     column_searchable_list = ("name", "metrics", "query")
+    column_list = ["table", "name", "metrics", "query"]
 
     def table_details_formatter(self, context, model, name):
         return table_details_link_formatter(model.table)

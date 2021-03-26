@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from flask import Blueprint, Flask, Markup, url_for
 from flask_admin.contrib.sqla import ModelView
@@ -28,6 +29,17 @@ def json_formatter(view, value):
     return Markup('<pre class="json">{}</pre>'.format(json_value))
 
 
+def time_formatter(view, value):
+    return formatted_time(value)
+
+
+def formatted_time(time):
+    if time:
+        return time.strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        return ""
+
+
 class JSONField(fields.JSONField):
     def _value(self):
         if self.raw_data:
@@ -40,6 +52,7 @@ class JSONField(fields.JSONField):
 
 REDATA_FORMATTERS = typefmt.BASE_FORMATTERS.copy()
 REDATA_FORMATTERS[dict] = json_formatter
+REDATA_FORMATTERS[datetime] = time_formatter
 
 
 class BaseRedataView(ModelView):
@@ -47,9 +60,6 @@ class BaseRedataView(ModelView):
     column_type_formatters = REDATA_FORMATTERS
 
     def _user_formatter_time(self, context, model, name):
-        if model.created_at:
-            return model.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        else:
-            return ""
+        return formatted_time(model.created_at)
 
     column_formatters = {"created_at": _user_formatter_time}
