@@ -47,7 +47,7 @@ def run_checks_for_table(db, table, conf):
             )
         elif check.query["type"] == "sql":
             sql_code = check.query["sql"]
-            result = db.check_custom_query(check.table, sql_code)
+            result = db.check_custom_query(check.table, sql_code, conf=conf)
 
         MetricFromCheck.add_metrics(result, check, conf)
 

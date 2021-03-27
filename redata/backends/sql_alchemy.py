@@ -67,18 +67,6 @@ class SqlAlchemy(DB):
     def to_naive_timestamp(self, from_time):
         return from_time
 
-    def get_time_to_compare(self, time_interval, for_time):
-        before = self.transform_by_interval(time_interval, for_time)
-        return before
-
-    def transform_by_interval(self, time_interval, for_time):
-        parts = time_interval.split(" ")
-        if parts[-1] == "day":
-            to_compare = for_time - timedelta(days=int(parts[0]))
-        if parts[-1] == "hour":
-            to_compare = for_time - timedelta(hours=int(parts[0]))
-        return to_compare
-
     def check_data_delayed(self, table, conf):
 
         q_table = self.get_table_obj(table)
