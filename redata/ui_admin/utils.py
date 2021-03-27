@@ -13,7 +13,7 @@ from redata import settings
 
 def grafana_url_formatter_fun(table):
     if table.grafana_url:
-        url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>{table.grafana_url}</a>"
+        url = f"<a href='http://{settings.GRAFNA_URL}{table.grafana_url}' target='_blank'>dashboard</a>"
         return Markup(url)
     else:
         return "Not yet created"

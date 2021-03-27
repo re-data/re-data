@@ -17,10 +17,12 @@ from redata.ui_admin.utils import (
 class DataSourceView(BaseRedataView):
     can_delete = True
     can_create = True
+    can_view_details = True
 
     column_searchable_list = ("name",)
 
-    column_exclude_list = "password"
+    column_list = ["name", "source_type", "run_for_all"]
+    column_details_exclude_list = ["password"]
 
     form_widget_args = {
         "password": {"type": "password"},
