@@ -15,6 +15,7 @@ class ChecksTableView(BaseRedataView):
 
     column_searchable_list = ("name", "metrics")
     column_list = ["table", "name", "metrics", "created_at"]
+    form_excluded_columns = ["created_at"]
 
     def table_details_formatter(self, context, model, name):
         return table_details_link_formatter(model.table)

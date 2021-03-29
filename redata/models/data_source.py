@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import (
     ARRAY,
     JSON,
@@ -51,6 +53,8 @@ class DataSource(Base):
 
     schemas = Column(ARRAY(String))
     run_for_all = Column(Boolean, default=True)
+
+    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True)
 
     def __str__(self):
         return f"{self.name}"

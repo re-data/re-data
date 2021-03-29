@@ -29,7 +29,7 @@ class Check(Base):
 
     name = Column(String, nullable=False)
 
-    metrics = Column(JSONB)
+    metrics = Column(JSONB, nullable=False)
 
     query = Column(JSONB, nullable=False)
 
