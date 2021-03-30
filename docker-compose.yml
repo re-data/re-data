@@ -22,6 +22,9 @@ services:
       - POSTGRES_PASSWORD=${REDATA_METRICS_DATABASE_PASSWORD}
       - POSTGRES_DB=${REDATA_METRICS_DATABASE_NAME}
 
+    volumes:
+      - db:/var/lib/postgresql/data
+
   airflow_postgres:
     image: postgres:12
     env_file:
@@ -87,3 +90,5 @@ services:
 
 volumes:
   airflowlogs: {}
+  db:
+    name: ${REDATA_DB_DOCKER_MOUNT}

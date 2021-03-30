@@ -21,6 +21,9 @@ services:
       - POSTGRES_USER=${REDATA_METRICS_DATABASE_USER}
       - POSTGRES_PASSWORD=${REDATA_METRICS_DATABASE_PASSWORD}
       - POSTGRES_DB=${REDATA_METRICS_DATABASE_NAME}
+  
+    volumes:
+      - db:/var/lib/postgresql/data
 
   airflow_postgres:
     image: postgres:12
@@ -95,3 +98,5 @@ services:
 
 volumes:
   airflowlogs: {}
+  db:
+    name: redata_db_dev
