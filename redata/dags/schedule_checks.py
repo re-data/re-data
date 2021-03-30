@@ -28,7 +28,7 @@ def get_function(func_string):
 def run_checks(db, conf):
 
     for namespace in db.namespaces:
-        tables = Table.get_monitored_tables_per_namespace(db.name, namespace)
+        tables = Table.get_monitored_tables_per_namespace(db.dbsource, namespace)
 
         for table in tables:
             run_checks_for_table(db, table, conf)
@@ -59,7 +59,7 @@ def run_check_for_new_tables(db, conf):
 def run_compute_alerts(db, conf):
 
     for namespace in db.namespaces:
-        tables = Table.get_monitored_tables_per_namespace(db.name, namespace)
+        tables = Table.get_monitored_tables_per_namespace(db.dbsource, namespace)
 
         for table in tables:
             run_compute_alerts_for_table(db, table, conf)

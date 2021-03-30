@@ -23,8 +23,10 @@ class MetricFromCheck(Base):
     __tablename__ = "metric"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    check_id = Column(Integer, ForeignKey("checks.id"), index=True)
-    table_id = Column(Integer, ForeignKey("monitored_table.id"), index=True)
+    check_id = Column(Integer, ForeignKey("checks.id", ondelete="CASCADE"), index=True)
+    table_id = Column(
+        Integer, ForeignKey("monitored_table.id", ondelete="CASCADE"), index=True
+    )
     table_column = Column(String, index=True)
 
     metric = Column(String, index=True)

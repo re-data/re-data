@@ -11,7 +11,7 @@ services:
     tty: true
   
   redata_postgres:
-    image: timescale/timescaledb:latest-pg12
+    image: timescale/timescaledb:2.1.1-pg12
     env_file:
       - .env
     ports:
@@ -70,7 +70,7 @@ services:
       retries: 3
 
   redata_ui:
-    image: redatateam/redata:0.0.11-alfa
+    image: redatateam/redata:0.0.12-alfa
     hostname: redataui
     restart: always
     depends_on:

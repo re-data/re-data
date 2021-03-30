@@ -23,7 +23,7 @@ class DataSourceView(BaseRedataView):
 
     column_list = ["name", "source_type", "run_for_all"]
     column_details_exclude_list = ["password"]
-    form_excluded_columns = ["created_at"]
+    form_excluded_columns = ["created_at", "tables"]
 
     form_widget_args = {
         "password": {"type": "password"},

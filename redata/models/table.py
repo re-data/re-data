@@ -4,7 +4,16 @@ import json
 import re
 from collections import defaultdict
 
-from sqlalchemy import JSON, TIMESTAMP, Boolean, Column, Integer, String, func
+from sqlalchemy import (
+    JSON,
+    TIMESTAMP,
+    Boolean,
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    func,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import Date
@@ -21,6 +30,13 @@ class Table(Base):
     id = Column(Integer, primary_key=True)
     created_at = Column(TIMESTAMP, default=datetime.datetime.utcnow)
     source_db = Column(String, default=None)
+    data_source_id = Column(
+        Integer,
+        ForeignKey("data_source.id", ondelete="CASCADE"),
+        index=True,
+        nullable=False,
+    )
+
     active = Column(Boolean, default=True)
 
     table_name = Column(String)
@@ -30,8 +46,12 @@ class Table(Base):
 
     grafana_url = Column(String)
 
-    checks = relationship("Check", backref="table")
-    alerts = relationship("Alert", backref="table")
+    checks = relationship(
+        "Check", backref="table", cascade="all, delete-orphan", passive_deletes=True
+    )
+    alerts = relationship(
+        "Alert", backref="table", cascade="all, delete-orphan", passive_deletes=True
+    )
 
     def __str__(self):
         return f"{self.namespace}.{self.table_name}"
@@ -81,6 +101,7 @@ class Table(Base):
             table_name=db_table_name,
             schema={"columns": schema_cols},
             source_db=db.name,
+            data_source_id=db.dbsource.id,
             namespace=namespace,
             active=db.dbsource.run_for_all,
         )
@@ -148,29 +169,29 @@ class Table(Base):
             return table
 
     @classmethod
-    def get_monitored_tables(cls, db_name):
+    def get_monitored_tables(cls, data_source):
         return (
             metrics_session.query(cls)
             .filter(cls.active == True)
-            .filter(cls.source_db == db_name)
+            .filter(cls.data_source == data_source)
             .all()
         )
 
     @classmethod
-    def get_monitored_tables_per_namespace(cls, db_name, namespace):
+    def get_monitored_tables_per_namespace(cls, data_source, namespace):
         return (
             metrics_session.query(cls)
             .filter(cls.active == True)
-            .filter(cls.source_db == db_name)
+            .filter(cls.data_source == data_source)
             .filter(cls.namespace == namespace)
             .all()
         )
 
     @classmethod
-    def get_all_tables_per_namespace(cls, db_name, namespace):
+    def get_all_tables_per_namespace(cls, data_source, namespace):
         return (
             metrics_session.query(cls)
-            .filter(cls.source_db == db_name)
+            .filter(cls.data_source == data_source)
             .filter(cls.namespace == namespace)
             .all()
         )

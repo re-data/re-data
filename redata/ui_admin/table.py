@@ -76,7 +76,7 @@ class TableView(BaseRedataView):
 
     column_editable_list = ["active", "time_column"]
     column_list = [
-        "source_db",
+        "data_source",
         "active",
         "table_name",
         "time_column",
@@ -84,7 +84,7 @@ class TableView(BaseRedataView):
         "grafana_url",
     ]
     column_details_list = [
-        "source_db",
+        "data_source",
         "active",
         "table_name",
         "schema",
