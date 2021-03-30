@@ -54,7 +54,10 @@ class Table(Base):
     )
 
     def __str__(self):
-        return f"{self.namespace}.{self.table_name}"
+        if self.namespace:
+            return f"{self.namespace}.{self.table_name}"
+        else:
+            return f"{self.table_name}"
 
     @property
     def full_table_name(self):
