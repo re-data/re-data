@@ -72,7 +72,7 @@ class TableView(BaseRedataView):
             f'<dev class="last-record">[{created_at}] last record added {hours_part}{minutes_part} ago</div>'
         )
 
-    column_searchable_list = ("source_db", "table_name", "namespace")
+    column_searchable_list = ("table_name", "namespace")
 
     column_editable_list = ["active", "time_column"]
     column_list = [

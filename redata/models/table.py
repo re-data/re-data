@@ -29,7 +29,6 @@ class Table(Base):
 
     id = Column(Integer, primary_key=True)
     created_at = Column(TIMESTAMP, default=datetime.datetime.utcnow)
-    source_db = Column(String, default=None)
     data_source_id = Column(
         Integer,
         ForeignKey("data_source.id", ondelete="CASCADE"),
@@ -103,7 +102,6 @@ class Table(Base):
         table = Table(
             table_name=db_table_name,
             schema={"columns": schema_cols},
-            source_db=db.name,
             data_source_id=db.dbsource.id,
             namespace=namespace,
             active=db.dbsource.run_for_all,
