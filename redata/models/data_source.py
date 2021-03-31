@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import (
     ARRAY,
     JSON,
@@ -8,6 +10,7 @@ from sqlalchemy import (
     String,
     create_engine,
 )
+from sqlalchemy.orm import relationship
 
 from redata import settings
 from redata.backends.bigquery import BigQuery
@@ -51,6 +54,15 @@ class DataSource(Base):
 
     schemas = Column(ARRAY(String))
     run_for_all = Column(Boolean, default=True)
+
+    created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+
+    tables = relationship(
+        "Table",
+        backref="data_source",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
 
     def __str__(self):
         return f"{self.name}"

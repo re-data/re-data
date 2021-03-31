@@ -55,7 +55,7 @@ class HomeAlerts:
 
     @staticmethod
     def title():
-        return "recent_alerts"
+        return "RECENT ALERTS"
 
     def query(self):
         return f"""
@@ -75,32 +75,6 @@ class HomeAlerts:
         """
 
 
-class SchemaChange:
-    def __init__(self, table) -> None:
-        self.table = table
-
-    def format(self):
-        return "table"
-
-    @staticmethod
-    def title():
-        return "schema_changes"
-
-    def query(self):
-        return f"""
-        SELECT
-            result -> 'value' ->> 'operation' as operation,
-            result -> 'value' ->> 'column_name' as column_name,
-            result -> 'value' ->> 'columnt_type' as column_type
-        FROM metric
-        WHERE
-            table_id = {self.table.id} and
-            metric = '{Metric.SCHEMA_CHANGE}' and
-            $__timeFilter(created_at)
-        ORDER BY 1
-        """
-
-
 class AlertsTable:
     def __init__(self, table):
         self.table = table
@@ -110,7 +84,7 @@ class AlertsTable:
 
     @staticmethod
     def title():
-        return "recent_alerts"
+        return "RECENT ALERTS"
 
     def query(self):
         return f"""
@@ -137,7 +111,7 @@ class AlertsByDay:
 
     @staticmethod
     def title():
-        return "alerts_by_day"
+        return "ALERTS BY DAY"
 
     def query(self):
         return f"""
@@ -157,29 +131,6 @@ class AlertsByDay:
         """
 
 
-class CurrentSchema:
-    def __init__(self, table):
-        self.table = table
-
-    def format(self):
-        return "table"
-
-    @staticmethod
-    def title():
-        return "current_table_schema"
-
-    def query(self):
-        return f"""
-        SELECT
-            col.*
-        FROM
-            monitored_table,
-            jsonb_to_recordset(schema->'columns') col(name text, type text)
-        WHERE
-            id = {self.table.id}
-        """
-
-
 class DelayOnTable:
     def __init__(self, table) -> None:
         self.table = table
@@ -189,7 +140,7 @@ class DelayOnTable:
 
     @staticmethod
     def title():
-        return f"time_since_last_record_created"
+        return f"TIME SINCE LAST NEW RECORD"
 
     def query(self):
         return f"""
@@ -214,7 +165,7 @@ class VolumeGraphs:
 
     @staticmethod
     def title():
-        return f"new_record_created"
+        return f"NEW RECORDS"
 
     def query(self):
         return f"""
@@ -244,9 +195,6 @@ class CheckForColumn:
     def title():
         return f"NOT_EXISTING"
 
-    def title_for_obj(self):
-        return "column:{self.column}:{self.metric}"
-
     def query(self):
         return f"""
         SELECT
@@ -263,11 +211,40 @@ class CheckForColumn:
         """
 
 
+class CustomMetric:
+    def __init__(self, table, metric, column=None):
+        self.table = table
+        self.metric = metric
+        self.column = column
+
+    def format(self):
+        return "time_series"
+
+    @staticmethod
+    def title():
+        return f"NOT_EXISTING"
+
+    def query(self):
+        table_column = column if column else Metric.TABLE_METRIC
+
+        return f"""
+        SELECT
+            created_at as time,
+            (result ->> 'value')::float as {self.metric} 
+        FROM
+            metric
+        WHERE
+            table_id = {self.table_id} and
+            metric = '{self.metric}' and
+            table_column = '{table_column}'
+
+        ORDER BY 1
+        """
+
+
 ALL_PANELS = (
     VolumeGraphs,
     DelayOnTable,
-    SchemaChange,
-    CurrentSchema,
     AlertsTable,
     AlertsByDay,
 )

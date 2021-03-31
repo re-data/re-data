@@ -126,16 +126,17 @@ Redata is licensed under the MIT license. See the [LICENSE](LICENSE) file for li
 
 # Docs
 
-Want to learn a bit more on how Redata works (work in progress docs are here :)
+Want to learn a bit more on how Redata works.
 We recommend starting with data source which explains how to configure you DB.
 Later on table, scan, alert are views you most likely will be checking first when using Redata.
-Checks and editing them enables configuring Redata to your specific needs.
+Checks are coputing all metrics in Redata, you can edit them to stop computing some of them, but also add your own SQL based checks.
 
  - [Data Source](docs/datasource.md)
  - [Table](docs/table.md)
  - [Scan](docs/scan.md)
  - [Alert](docs/alert.md)
  - [Check](docs/check.md)
+ - [Adding custom SQL check](docs/create_custom_sql_check.md)
 
 
 # Contributing

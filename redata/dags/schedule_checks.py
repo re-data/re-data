@@ -28,7 +28,7 @@ def get_function(func_string):
 def run_checks(db, conf):
 
     for namespace in db.namespaces:
-        tables = Table.get_monitored_tables_per_namespace(db.name, namespace)
+        tables = Table.get_monitored_tables_per_namespace(db.dbsource, namespace)
 
         for table in tables:
             run_checks_for_table(db, table, conf)
@@ -45,9 +45,9 @@ def run_checks_for_table(db, table, conf):
             result = func(
                 db=db, table=table, check=check, conf=conf, **check.query["params"]
             )
-        else:
-            # TODO run raw query on DB
-            result = None
+        elif check.query["type"] == "sql":
+            sql_code = check.query["sql"]
+            result = db.check_custom_query(check.table, sql_code, conf=conf)
 
         MetricFromCheck.add_metrics(result, check, conf)
 
@@ -59,7 +59,7 @@ def run_check_for_new_tables(db, conf):
 def run_compute_alerts(db, conf):
 
     for namespace in db.namespaces:
-        tables = Table.get_monitored_tables_per_namespace(db.name, namespace)
+        tables = Table.get_monitored_tables_per_namespace(db.dbsource, namespace)
 
         for table in tables:
             run_compute_alerts_for_table(db, table, conf)
@@ -105,10 +105,10 @@ def process_run():
             scan.status = "success"
             metrics_session.commit()
 
-    except Exception:
-
+    except Exception as e:
         scan.status = "error"
         metrics_session.commit()
+        raise e
 
 
 with DAG(

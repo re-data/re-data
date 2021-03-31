@@ -21,10 +21,6 @@ class BigQuery(SqlAlchemy):
     def datetime_types():
         return ["TIMESTAMP", "DATETIME"]
 
-    def get_time_to_compare(self, time_interval, conf):
-        to_compare = self.transform_by_interval(time_interval, conf)
-        return self.get_timestamp(to_compare)
-
     def get_timestamp(self, from_time):
         return func.timestamp(from_time)
 

@@ -11,7 +11,7 @@ services:
     tty: true
   
   redata_postgres:
-    image: timescale/timescaledb:latest-pg12
+    image: timescale/timescaledb:2.1.1-pg12
     env_file:
       - .env
     ports:
@@ -21,6 +21,9 @@ services:
       - POSTGRES_USER=${REDATA_METRICS_DATABASE_USER}
       - POSTGRES_PASSWORD=${REDATA_METRICS_DATABASE_PASSWORD}
       - POSTGRES_DB=${REDATA_METRICS_DATABASE_NAME}
+
+    volumes:
+      - db:/var/lib/postgresql/data
 
   airflow_postgres:
     image: postgres:12
@@ -34,7 +37,7 @@ services:
       - POSTGRES_DB=${_AIRFLOW_CONN_METADATA_DB_NAME}
 
   redata_backend:
-    image: redatateam/redata:0.0.11-alfa
+    image: redatateam/redata:${REDATA_VERSION}
     restart: always
     depends_on:
       - airflow_postgres
@@ -50,7 +53,7 @@ services:
     entrypoint: /usr/local/redata/scripts/redata-start.sh
 
   webserver_airflow:
-    image: redatateam/redata:0.0.11-alfa
+    image: redatateam/redata:${REDATA_VERSION}
     hostname: webserver
     restart: always
     depends_on:
@@ -70,7 +73,7 @@ services:
       retries: 3
 
   redata_ui:
-    image: redatateam/redata:0.0.11-alfa
+    image: redatateam/redata:${REDATA_VERSION}
     hostname: redataui
     restart: always
     depends_on:
@@ -87,3 +90,5 @@ services:
 
 volumes:
   airflowlogs: {}
+  db:
+    name: ${REDATA_DB_DOCKER_MOUNT}

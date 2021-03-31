@@ -61,7 +61,7 @@ def create_dashboards():
     dashboards = []
 
     for db in DataSource.source_dbs():
-        monitored_tables = Table.get_monitored_tables(db.name)
+        monitored_tables = Table.get_monitored_tables(db.dbsource)
         for table in monitored_tables:
             dash_data = create_dashboard_for_table(grafana_api, db, table)
             table.grafana_url = dash_data["dashboard"]["url"]

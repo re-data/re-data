@@ -90,3 +90,7 @@ input[type="password"] {
 	font-family: monospace;
 	font-size: 13px;
 }
+
+.json {
+	background-color: white;
+}

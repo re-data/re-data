@@ -24,12 +24,15 @@ class Check(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     table_id = Column(
-        Integer, ForeignKey("monitored_table.id"), index=True, nullable=False
+        Integer,
+        ForeignKey("monitored_table.id", ondelete="CASCADE"),
+        index=True,
+        nullable=False,
     )
 
     name = Column(String, nullable=False)
 
-    metrics = Column(JSONB)
+    metrics = Column(JSONB, nullable=False)
 
     query = Column(JSONB, nullable=False)
 

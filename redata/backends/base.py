@@ -1,5 +1,7 @@
 from datetime import date, datetime
 
+from redata.utils import time_utils
+
 
 class DB(object):
     def __init__(self, dbsource, db, schema):
@@ -26,6 +28,14 @@ class DB(object):
     def is_character(self, col_type):
         return col_type in self.character_types()
 
+    def get_time_to_compare(self, time_interval, for_time):
+        before = time_utils.transform_by_interval(time_interval, for_time)
+        return self.get_timestamp(before)
+
+    def get_timestamp(self, from_time):
+        # this is overridden by bigquery, return right type in that case
+        return from_time
+
     @staticmethod
     def ensure_datetime(d):
         if isinstance(d, datetime):
@@ -34,3 +44,19 @@ class DB(object):
             return datetime(d.year, d.month, d.day)
         else:
             raise TypeError("argument must be date or datetime")
+
+    def check_custom_query(self, table, query, conf):
+
+        query = query.replace("{{table_name}}", table.full_table_name)
+        period_end = conf.for_time
+
+        period_start = self.get_time_to_compare("1 day", conf.for_time)
+        period_start = f"'{period_start}'"
+        period_end = f"'{period_end}'"
+
+        query = query.replace("{{period_start}}", period_start)
+        query = query.replace("{{period_end}}", period_end)
+
+        result = self.db.execute(query)
+        result = result.fetchall()
+        return [dict(row) for row in result]
