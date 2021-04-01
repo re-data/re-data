@@ -145,7 +145,7 @@ We love all contributions, bigger and smaller.
 
 Checkout out current list of issues [here](https://github.com/redata-team/redata/issues) and see if you like anything from there. Also feel welcome to join our [Slack](https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rOwYBv3yLksSxBg#) and suggest ideas, or setup no pressure session with Redata [here](https://calendly.com/mateuszklimek/30min). 
 
-Generate info about contriuting is [here](https://github.com/redata-team/redata/blob/master/CONTRIBUTING.md)
+General info about contriuting is [here](https://github.com/redata-team/redata/blob/master/CONTRIBUTING.md)
 
 If you would like to add support for your DB more info on that is [here](https://github.com/redata-team/redata/blob/master/CONTRIBUTING_DB.md)
 
