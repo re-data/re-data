@@ -90,7 +90,7 @@ Look at sample setup instructions for specfic cloud providers:
 
 # Community
 
-Join [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-md9kg05x-Aao1mvx0huTKrDZ1tA8v9w) for general questions about using redata, problems, and discussions with people making it :)
+Join [Slack](https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rOwYBv3yLksSxBg#) for general questions about using redata, problems, and discussions with people making it :)
 
 
 # Integrations
