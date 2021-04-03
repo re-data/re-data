@@ -26,9 +26,6 @@ class SQLServer(SqlAlchemy):
             "varchar",
             "binary",
             "varbinary",
-            "String",
-            "ntext",
-            "text",
             "nchar",
             "nvarchar",
         ]
