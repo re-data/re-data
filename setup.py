@@ -24,6 +24,7 @@ setup(
         "waitress",
         "sqlalchemy-redshift",
         "snowflake-sqlalchemy",
+        "pymssql",
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={

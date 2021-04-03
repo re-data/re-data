@@ -19,6 +19,7 @@ from redata.backends.mysql import MySQL
 from redata.backends.postgrsql import Postgres
 from redata.backends.redshift import Redshift
 from redata.backends.snowflake import Snowflake
+from redata.backends.sql_server import SQLServer
 from redata.db_operations import metrics_session
 from redata.models.base import Base
 
@@ -31,6 +32,7 @@ class DataSource(Base):
             "BigQuery",
         ),
         ("exa+pyexasol", "Exasol"),
+        ("mssql+pymssql", "SQL Server"),
         (
             "mysql",
             "MySQL",
@@ -102,6 +104,9 @@ class DataSource(Base):
 
         if self.source_type == "snowflake":
             return Snowflake(self, db, schema=self.schemas)
+
+        if self.source_type == "mssql+pymssql":
+            return SQLServer(self, db, schema=self.schemas)
 
         raise Exception("Not supported DB")
 
