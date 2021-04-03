@@ -50,7 +50,13 @@ def check_for_new_tables(db, conf):
 
 def check_if_schema_changed(db, table, check, conf):
     def schema_to_dict(schema):
-        return dict([(el["name"], el["type"]) for el in schema])
+        dct = {}
+
+        for el in schema:
+            nullable_part = " not null" if (el["nullable"] == False) else ""
+            dct["name"] = el["type"] + nullable_part
+
+        return dct
 
     def sorted_to_compare(schema):
         return sorted(schema, key=lambda x: sorted(x.items()))

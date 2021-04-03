@@ -149,8 +149,9 @@ class SqlAlchemy(DB):
         result = self.db.execute(
             f"""
             SELECT 
-                column_name, 
-                data_type 
+                column_name as name, 
+                data_type as type,
+                is_nullable as nullable
             FROM 
                 information_schema.columns
             WHERE 
@@ -159,4 +160,4 @@ class SqlAlchemy(DB):
         """
         )
 
-        return [{"name": c_name, "type": c_type} for c_name, c_type in result]
+        return result.fetchall()

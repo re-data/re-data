@@ -163,6 +163,7 @@ class Exasol(DB):
             SELECT
               column_name AS "name",
               lower(type_name) AS "type"
+              is_nullable as "nullable"
             FROM sys.exa_all_columns
             LEFT JOIN sys.exa_sql_types ON type_id = column_type_id
             WHERE column_schema = {namespace}

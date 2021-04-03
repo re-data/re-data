@@ -54,10 +54,12 @@ class BigQuery(SqlAlchemy):
             SELECT
                 column_name as name,
                 data_type as type
+                is_nullable as nullable
             FROM
                 {namespace}.INFORMATION_SCHEMA.COLUMNS
             WHERE
                 table_name = '{table_name}'
         """
         )
-        return [{"name": c_name, "type": c_type} for c_name, c_type in result]
+
+        return result.fetchall()
