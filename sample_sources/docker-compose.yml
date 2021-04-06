@@ -5,7 +5,6 @@ services:
     image: postgres:12
     ports:
       - "5455:5432"
-
     environment:
       - POSTGRES_USER=sample
       - POSTGRES_PASSWORD=sample
@@ -19,3 +18,13 @@ services:
       MYSQL_DATABASE: sample
     ports:
       - "3337:3306"
+
+  sample_mssql:
+    image: mcr.microsoft.com/mssql/server:2017-CU18-ubuntu-16.04
+    restart: always
+    environment:
+      - SA_PASSWORD=samplePass!Work
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=developer
+    ports:
+      - "14330:1433"
