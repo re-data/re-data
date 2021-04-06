@@ -11,7 +11,7 @@ from redata.models.table import Table
 
 
 def get_column_str_repr(column_type):
-    nullable_part = " not null" if (column_type.get("nullable") == False) else ""
+    nullable_part = " not null" if (column_type.get("nullable") == "NO") else ""
     column_type_str = column_type["type"] + nullable_part
     return column_type_str
 
@@ -60,7 +60,7 @@ def check_if_schema_changed(db, table, check, conf):
         dct = {}
 
         for el in schema:
-            dct["name"] = {"type": el["type"], "nullable": el.get("nullable")}
+            dct[el["name"]] = {"type": el["type"], "nullable": el.get("nullable")}
 
         return dct
 
@@ -100,7 +100,7 @@ def check_if_schema_changed(db, table, check, conf):
 
                 if curr_type["type"] != prev_type["type"] or (
                     prev_type["nullable"] != None
-                    and curr_type["nullabe"] != prev_type["nullable"]
+                    and curr_type["nullable"] != prev_type["nullable"]
                 ):
                     print(
                         f"Type of column: {el} changed from {prev_type} to {curr_type}"
