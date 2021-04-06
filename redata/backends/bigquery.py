@@ -61,5 +61,4 @@ class BigQuery(SqlAlchemy):
                 table_name = '{table_name}'
         """
         )
-
-        return result.fetchall()
+        return [dict(x) for x in result]

@@ -55,4 +55,4 @@ class Snowflake(SqlAlchemy):
                 {schema_check}
         """
         )
-        return result.fetchall()
+        return [dict(x) for x in result]

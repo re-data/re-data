@@ -159,5 +159,4 @@ class SqlAlchemy(DB):
                 {schema_check}
         """
         )
-
-        return result.fetchall()
+        return [dict(x) for x in result]
