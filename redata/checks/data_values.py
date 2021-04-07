@@ -11,13 +11,17 @@ def name_for(col, metric):
 def count_nulls_pr(column, result):
     nulls = result[name_for(column, Metric.COUNT_NULLS)]
     not_nulls = result[name_for(column, Metric.COUNT_NOT_NULLS)]
+    if nulls + not_nulls == 0:
+        return None
 
     return nulls * 1.0 / (nulls + not_nulls)
 
 
 def count_empty_pr(column, result):
-    empty = result[name_for(column, Metric.COUNT_EMPTY)]
+    empty = (result[name_for(column, Metric.COUNT_EMPTY)],)
     not_empty = result[name_for(column, Metric.COUNT_NOT_EMPTY)]
+    if empty + not_empty == 0:
+        return None
 
     return empty * 1.0 / (empty + not_empty)
 
@@ -43,13 +47,12 @@ def check_column_values(db, table, check, time_interval, conf):
             if metric in DERIVED_METRICS:
                 import pdb
 
-                pdb.set_trace()
                 func = DERIVED_METRICS[metric]["func"]
                 requires = DERIVED_METRICS[metric]["requires"]
 
                 all_requires = [name_for(column, m) in result for m in requires]
 
                 if all(all_requires):
-                    result[name_for(column, metric)] = function(column, result)
+                    result[name_for(column, metric)] = func(column, result)
 
     return [result]
