@@ -8,6 +8,7 @@ from redata.db_operations import metrics_db, metrics_session
 from redata.metric import Metric
 from redata.models import Alert
 from redata.models.table import Table
+from redata.utils import name_for
 
 
 def alert(db, check, conf):
@@ -24,7 +25,7 @@ def alert(db, check, conf):
                 if column == Metric.TABLE_METRIC:
                     alert = metric
                 else:
-                    alert = column + ":" + metric
+                    alert = name_for(column, metric)
 
                 checked_txt = alert
 

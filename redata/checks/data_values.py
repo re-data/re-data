@@ -2,10 +2,7 @@ from redata.checks.data_schema import check_for_new_tables
 from redata.db_operations import metrics_db, metrics_session
 from redata.metric import Metric
 from redata.models.metrics import MetricFromCheck
-
-
-def name_for(col, metric):
-    return col + ":" + metric
+from redata.utils import name_for
 
 
 def count_nulls_pr(column, result):
