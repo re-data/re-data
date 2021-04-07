@@ -53,7 +53,7 @@ class BigQuery(SqlAlchemy):
             f"""
             SELECT
                 column_name as name,
-                data_type as type
+                data_type as type,
                 is_nullable as nullable
             FROM
                 {namespace}.INFORMATION_SCHEMA.COLUMNS
