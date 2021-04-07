@@ -16,11 +16,15 @@ class SqlAlchemy(DB):
         Metric.AVG: func.avg,
         Metric.SUM: func.sum,
         Metric.COUNT_NULLS: lambda x: func.sum(case([(x == None, 1)], else_=0)),
+        Metric.COUNT_NOT_NULLS: lambda x: func.sum(case([(x != None, 1)], else_=0)),
         Metric.MAX_LENGTH: lambda x: func.max(func.length(x)),
         Metric.MIN_LENGTH: lambda x: func.min(func.length(x)),
         Metric.AVG_LENGTH: lambda x: func.avg(func.length(x)),
         Metric.COUNT_EMPTY: lambda x: func.sum(
             case([(x == None, 1), (x == "", 1)], else_=0)
+        ),
+        Metric.COUNT_NOT_EMPTY: lambda x: func.sum(
+            case([(x == None, 0), (x == "", 0)], else_=1)
         ),
     }
 
