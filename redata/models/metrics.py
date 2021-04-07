@@ -50,7 +50,7 @@ class MetricFromCheck(Base):
             for col, metrics in check.metrics.items():
 
                 for m in metrics:
-                    select_name = name_for(col, m) if col != Metric.TABLE_METRIC else m
+                    select_name = name_for(col, m)
 
                     m = MetricFromCheck(
                         check_id=check.id,
