@@ -45,8 +45,9 @@ class Snowflake(SqlAlchemy):
         result = self.db.execute(
             f"""
             SELECT 
-                lower(column_name),
-                data_type
+                lower(column_name) as name,
+                data_type as type,
+                is_nullable as nullable
             FROM 
                 information_schema.columns
             WHERE 
@@ -54,4 +55,4 @@ class Snowflake(SqlAlchemy):
                 {schema_check}
         """
         )
-        return [{"name": c_name, "type": c_type} for c_name, c_type in result]
+        return [dict(x) for x in result]

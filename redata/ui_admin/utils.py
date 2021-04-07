@@ -58,6 +58,7 @@ REDATA_FORMATTERS[datetime] = time_formatter
 class BaseRedataView(ModelView):
     page_size = 1000
     column_type_formatters = REDATA_FORMATTERS
+    column_default_sort = ("created_at", True)
 
     def _user_formatter_time(self, context, model, name):
         return formatted_time(model.created_at)
