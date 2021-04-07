@@ -44,7 +44,7 @@ def alert_for_schema_change(db, check, conf):
 
         alert = Alert(
             text=f"""
-                schema change detected - {changes['operation']}: {changes['column_name']}
+                schema change detected - {changes['operation']}: {changes['column_name']}, type: {changes['column_type']}
             """,
             severity=2,
             table_id=check.table_id,
