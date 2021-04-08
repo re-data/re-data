@@ -28,7 +28,8 @@ metrics_to_add = {
 
 
 def upgrade():
-    checks = op.execute("select id, metrics from checks")
+    conn = op.get_bind()
+    checks = conn.execute("select id, metrics from checks")
     for chk_id, metrics in checks:
         new_metrics = deepcopy(metrics)
 
@@ -43,7 +44,7 @@ def upgrade():
 
         if str(new_metrics) != str(metrics):
             update_txt = text("update checks set metrics = :metrics where id = :chk_id")
-            op.execute(update_txt, metrics=json.dumps(new_metrics), chk_id=chk_id)
+            conn.execute(update_txt, metrics=json.dumps(new_metrics), chk_id=chk_id)
 
 
 def downgrade():
