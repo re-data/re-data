@@ -6,6 +6,7 @@ from sqlalchemy.schema import MetaData
 
 from redata.backends.base import DB
 from redata.metric import Metric
+from redata.utils import name_for
 
 
 class SqlAlchemy(DB):
@@ -15,12 +16,20 @@ class SqlAlchemy(DB):
         Metric.MIN: func.min,
         Metric.AVG: func.avg,
         Metric.SUM: func.sum,
-        Metric.COUNT_NULLS: lambda x: func.sum(case([(x == None, 1)], else_=0)),
+        Metric.COUNT_NULLS: lambda x: func.coalesce(
+            func.sum(case([(x == None, 1)], else_=0)), 0
+        ),
+        Metric.COUNT_NOT_NULLS: lambda x: func.coalesce(
+            func.sum(case([(x != None, 1)], else_=0)), 0
+        ),
         Metric.MAX_LENGTH: lambda x: func.max(func.length(x)),
         Metric.MIN_LENGTH: lambda x: func.min(func.length(x)),
         Metric.AVG_LENGTH: lambda x: func.avg(func.length(x)),
-        Metric.COUNT_EMPTY: lambda x: func.sum(
-            case([(x == None, 1), (x == "", 1)], else_=0)
+        Metric.COUNT_EMPTY: lambda x: func.coalesce(
+            func.sum(case([(x == None, 1), (x == "", 1)], else_=0)), 0
+        ),
+        Metric.COUNT_NOT_EMPTY: lambda x: func.coalesce(
+            func.sum(case([(x == None, 0), (x == "", 0)], else_=1)), 0
         ),
     }
 
@@ -93,11 +102,13 @@ class SqlAlchemy(DB):
         q_table = self.get_table_obj(table)
 
         to_select = []
-        for column, checks in metrics.items():
-            for check in checks:
-                if check in self.METRIC_TO_FUNC:
-                    func = self.METRIC_TO_FUNC[check]
-                    select_item = func(q_table.c[column]).label(column + ":" + check)
+        for column, metrics in metrics.items():
+            for metric in metrics:
+                if metric in self.METRIC_TO_FUNC:
+                    func = self.METRIC_TO_FUNC[metric]
+                    select_item = func(q_table.c[column]).label(
+                        name_for(column, metric)
+                    )
                     to_select.append(select_item)
 
         if not to_select:

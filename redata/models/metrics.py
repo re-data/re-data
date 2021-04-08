@@ -17,6 +17,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from redata.db_operations import metrics_session
 from redata.metric import Metric
 from redata.models.base import Base
+from redata.utils import name_for
 
 
 class MetricFromCheck(Base):
@@ -49,7 +50,7 @@ class MetricFromCheck(Base):
             for col, metrics in check.metrics.items():
 
                 for m in metrics:
-                    select_name = col + ":" + m if col != Metric.TABLE_METRIC else m
+                    select_name = name_for(col, m)
 
                     m = MetricFromCheck(
                         check_id=check.id,
