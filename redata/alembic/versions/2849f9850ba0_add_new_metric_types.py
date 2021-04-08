@@ -15,6 +15,7 @@ branch_labels = None
 depends_on = None
 
 import json
+from copy import deepcopy
 
 from sqlalchemy.sql import text
 
@@ -30,7 +31,7 @@ metrics_to_add = {
 def upgrade():
     checks = metrics_session.execute("select id, metrics from checks")
     for chk_id, metrics in checks:
-        new_metrics = metrics
+        new_metrics = deepcopy(metrics)
 
         for col, col_metrics in metrics.items():
             if col != Metric.TABLE_METRIC:
@@ -41,8 +42,11 @@ def upgrade():
         for col in new_metrics:
             new_metrics[col] = sorted(list(set(new_metrics[col])))
 
-        update_txt = text("update checks set metrics = :metrics where id = :chk_id")
-        metrics_db.execute(update_txt, metrics=json.dumps(metrics), chk_id=chk_id)
+        if str(new_metrics) != str(metrics):
+            update_txt = text("update checks set metrics = :metrics where id = :chk_id")
+            metrics_db.execute(
+                update_txt, metrics=json.dumps(new_metrics), chk_id=chk_id
+            )
 
 
 def downgrade():
