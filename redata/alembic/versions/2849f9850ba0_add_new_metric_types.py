@@ -23,7 +23,7 @@ from redata.metric import Metric
 
 metrics_to_add = {
     Metric.COUNT_NULLS: [Metric.COUNT_NOT_NULLS, Metric.COUNT_NULLS_PR],
-    Metric.COUNT_EMPTY: [Metric.COUNT_NOT_EMPTY, Metric.COUNT_NOT_EMPTY],
+    Metric.COUNT_EMPTY: [Metric.COUNT_NOT_EMPTY, Metric.COUNT_EMPTY_PR],
 }
 
 
