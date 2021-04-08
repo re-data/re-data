@@ -11,7 +11,7 @@ def count_nulls_pr(column, result):
     if nulls + not_nulls == 0:
         return None
 
-    return nulls * 1.0 / (nulls + not_nulls)
+    return nulls * 100.0 / (nulls + not_nulls)
 
 
 def count_empty_pr(column, result):
@@ -20,7 +20,7 @@ def count_empty_pr(column, result):
     if empty + not_empty == 0:
         return None
 
-    return empty * 1.0 / (empty + not_empty)
+    return empty * 100.0 / (empty + not_empty)
 
 
 DERIVED_METRICS = {
@@ -42,7 +42,6 @@ def check_column_values(db, table, check, time_interval, conf):
     for column, metrics in check.metrics.items():
         for metric in metrics:
             if metric in DERIVED_METRICS:
-                import pdb
 
                 func = DERIVED_METRICS[metric]["func"]
                 requires = DERIVED_METRICS[metric]["requires"]
