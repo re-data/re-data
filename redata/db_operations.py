@@ -6,7 +6,7 @@ from redata import settings
 
 def get_metrics_connection():
     db_string = settings.METRICS_DB_URL
-    db = create_engine(db_string, connect_args={'sslmode': 'allow'})
+    db = create_engine(db_string)
     return db
 
 
