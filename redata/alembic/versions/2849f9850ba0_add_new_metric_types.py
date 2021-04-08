@@ -19,7 +19,6 @@ from copy import deepcopy
 
 from sqlalchemy.sql import text
 
-from redata.db_operations import metrics_db
 from redata.metric import Metric
 
 metrics_to_add = {
@@ -29,7 +28,7 @@ metrics_to_add = {
 
 
 def upgrade():
-    checks = metrics_db.execute("select id, metrics from checks")
+    checks = op.execute("select id, metrics from checks")
     for chk_id, metrics in checks:
         new_metrics = deepcopy(metrics)
 
@@ -44,9 +43,7 @@ def upgrade():
 
         if str(new_metrics) != str(metrics):
             update_txt = text("update checks set metrics = :metrics where id = :chk_id")
-            metrics_db.execute(
-                update_txt, metrics=json.dumps(new_metrics), chk_id=chk_id
-            )
+            op.execute(update_txt, metrics=json.dumps(new_metrics), chk_id=chk_id)
 
 
 def downgrade():
