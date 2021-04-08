@@ -91,7 +91,7 @@ class DataSource(Base):
             )
             return BigQuery(self, db, schema=self.schemas)
 
-        db = create_engine(db_url)
+        db = create_engine(db_url, connect_args={'sslmode': 'allow'})
 
         if self.source_type == "postgres":
             return Postgres(self, db, schema=self.schemas)
