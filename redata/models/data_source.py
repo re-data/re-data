@@ -8,7 +8,6 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
-    create_engine,
 )
 from sqlalchemy.orm import relationship
 
@@ -21,7 +20,7 @@ from redata.backends.redshift import Redshift
 from redata.backends.snowflake import Snowflake
 from redata.backends.sql_server import SQLServer
 from redata.db_operations import metrics_session
-from redata.models.base import Base
+from redata.models.base import Base, curry_create_engine
 
 
 class DataSource(Base):
@@ -86,27 +85,25 @@ class DataSource(Base):
             return Exasol(self, ExasolEngine(db_url), schema=self.schemas)
 
         if self.source_type == "bigquery":
-            db = create_engine(
-                db_url, credentials_path=settings.REDATA_BIGQUERY_DOCKER_CREDS_FILE_PATH
-            )
+            db = curry_create_engine()(db_url)(credentials_path=settings.REDATA_BIGQUERY_DOCKER_CREDS_FILE_PATH)
             return BigQuery(self, db, schema=self.schemas)
 
-        db = create_engine(db_url)
+        db = curry_create_engine()(db_url)
 
         if self.source_type == "postgres":
-            return Postgres(self, db, schema=self.schemas)
+            return Postgres(self, db(), schema=self.schemas)
 
         if self.source_type == "redshift+psycopg2":
-            return Redshift(self, db, schema=self.schemas)
+            return Redshift(self, db(connect_args={'sslmode': 'allow'}), schema=self.schemas)
 
         if self.source_type == "mysql":
-            return MySQL(self, db, schema=self.schemas)
+            return MySQL(self, db(), schema=self.schemas)
 
         if self.source_type == "snowflake":
-            return Snowflake(self, db, schema=self.schemas)
+            return Snowflake(self, db(), schema=self.schemas)
 
         if self.source_type == "mssql+pymssql":
-            return SQLServer(self, db, schema=self.schemas)
+            return SQLServer(self, db(), schema=self.schemas)
 
         raise Exception("Not supported DB")
 
