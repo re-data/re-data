@@ -1,14 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import (
-    ARRAY,
-    JSON,
-    TIMESTAMP,
-    Boolean,
-    Column,
-    Integer,
-    String,
-)
+from sqlalchemy import ARRAY, JSON, TIMESTAMP, Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from redata import settings
@@ -85,7 +77,9 @@ class DataSource(Base):
             return Exasol(self, ExasolEngine(db_url), schema=self.schemas)
 
         if self.source_type == "bigquery":
-            db = curry_create_engine()(db_url)(credentials_path=settings.REDATA_BIGQUERY_DOCKER_CREDS_FILE_PATH)
+            db = curry_create_engine()(db_url)(
+                credentials_path=settings.REDATA_BIGQUERY_DOCKER_CREDS_FILE_PATH
+            )
             return BigQuery(self, db, schema=self.schemas)
 
         db = curry_create_engine()(db_url)
@@ -94,7 +88,9 @@ class DataSource(Base):
             return Postgres(self, db(), schema=self.schemas)
 
         if self.source_type == "redshift+psycopg2":
-            return Redshift(self, db(connect_args={'sslmode': 'allow'}), schema=self.schemas)
+            return Redshift(
+                self, db(connect_args={"sslmode": "allow"}), schema=self.schemas
+            )
 
         if self.source_type == "mysql":
             return MySQL(self, db(), schema=self.schemas)
