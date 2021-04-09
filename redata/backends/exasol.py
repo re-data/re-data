@@ -150,7 +150,7 @@ class Exasol(DB):
         result = self.db.execute(
             f"SELECT max([{column}]) FROM [{table.table_name}]"
         ).fetchval()
-        return self.ensure_datetime(result)
+        return self.ensure_datetime(result.value) if result.value else None
 
     def get_age_function(self):
         raise RuntimeError("age function not supported for Exasol")

@@ -15,7 +15,7 @@ setup(
         "pyexasol",
         "pymysql",
         "cryptography",
-        "pybigquery",
+        "pybigquery<0.6.0",
         "alembic",
         "scipy",
         "flask",

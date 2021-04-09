@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 from decimal import Decimal
 
 from sqlalchemy import Date, Interval, case, cast, desc, distinct, func, select, text
@@ -75,6 +74,16 @@ class SqlAlchemy(DB):
 
     def to_naive_timestamp(self, from_time):
         return from_time
+
+    def get_max_timestamp(self, table, column):
+        q_table = self.get_table_obj(table)
+
+        stmt = select([func.max(q_table.c[column]).label("max_time")]).select_from(
+            q_table
+        )
+
+        value = self.db.execute(stmt).first()[0]
+        return self.ensure_datetime(value) if value else None
 
     def check_data_delayed(self, table, conf):
 
