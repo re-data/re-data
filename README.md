@@ -95,7 +95,7 @@ Join [Slack](https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rO
 
 # Integrations
 
-Here are integrations we support or work on now. Let us know if you'd really like to prioritize something, or your DB is not included on the list.
+Here are integrations we support. If your stack is not yet here, feel free to submit issue for it :)
 
 <table>
 	<thead>
@@ -114,9 +114,8 @@ Here are integrations we support or work on now. Let us know if you'd really lik
 		<tr><td><img height="40" src="https://assets.brandfolder.com/pl546j-7le8zk-btwjnu/v/2925183/view@2x.png?v=1610642000" /></td><td style="width: 200px;"><a href="https://slack.com/">Slack</a></td><td>Supported, get alerts on Slack</td></tr>
 		<tr><td><img height="40" src="https://www.sqlalchemy.org/img/sqla_logo.png" /></td><td style="width: 200px;">Other SQL DBs</td><td>Experimental support via using SQLAlchemy</td></tr>
 		<tr><td><img height="40" src="https://www.blazeclan.com/wp-content/uploads/2013/08/Amazon-Redshift-%E2%80%93-11-Key-Points-to-Remember.png" /></td><td style="width: 200px;"><a href="https://aws.amazon.com/redshift/">AWS Redshift</a></td><td>Supported</td></tr>
-		<tr><td><img height="40" src="https://braze-marketing-assets.s3.amazonaws.com/images/partner_logos/amazon-s3.png" />   </td><td style="width: 200px;">AWS S3</td><td>In development</td></tr>
-  		<tr><td><img height="40" src="https://static.wikia.nocookie.net/logopedia/images/7/7f/Microsoft_Office_Excel_%282018%E2%80%93present%29.svg/revision/latest/scale-to-width-down/52?cb=20190927105356" />   </td><td style="width: 200px;">Excel</td><td>Planned</td></tr>
 		<tr><td><img height="40" src="https://www.snowflake.com/wp-content/themes/snowflake/img/snowflake-logo-blue@2x.png" /> </td><td style="width: 200px;"><a href="https://www.snowflake.com/">Snowflake</a></td><td>Supported</td></tr>
+		<tr><td><img height="40" src="https://i2.wp.com/deepinthecode.com/wp-content/uploads/2019/01/sqlserverlogo.png?w=1284&ssl=1" /> </td><td style="width: 200px;"><a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads">SQL Server</a></td><td>Supported</td></tr>
 	</tbody>
 </table>
 

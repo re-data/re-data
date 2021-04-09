@@ -63,6 +63,17 @@ It's auth pattern we not supporting yet, but can add it if there is a need :)
 ```
 You don't need to specify port for snowflake.
 
+### SQL Server
+
+```
+ - host
+ - database
+ - user
+ - password
+ - port
+ - schemas (here you specify which schemas to monitor, you can leave it empty for monitoring public schema)
+```
+
 ## Notes
 
 For all databases, Redata doesn't need write access to DBs, so it's recommended to pass only read credentials where possible.
