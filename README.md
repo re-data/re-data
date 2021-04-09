@@ -117,6 +117,7 @@ Here are integrations we support or work on now. Let us know if you'd really lik
 		<tr><td><img height="40" src="https://braze-marketing-assets.s3.amazonaws.com/images/partner_logos/amazon-s3.png" />   </td><td style="width: 200px;">AWS S3</td><td>In development</td></tr>
   		<tr><td><img height="40" src="https://static.wikia.nocookie.net/logopedia/images/7/7f/Microsoft_Office_Excel_%282018%E2%80%93present%29.svg/revision/latest/scale-to-width-down/52?cb=20190927105356" />   </td><td style="width: 200px;">Excel</td><td>Planned</td></tr>
 		<tr><td><img height="40" src="https://www.snowflake.com/wp-content/themes/snowflake/img/snowflake-logo-blue@2x.png" /> </td><td style="width: 200px;"><a href="https://www.snowflake.com/">Snowflake</a></td><td>Supported</td></tr>
+		<tr><td><img height="40" src="https://i2.wp.com/deepinthecode.com/wp-content/uploads/2019/01/sqlserverlogo.png?w=1284&ssl=1" /> </td><td style="width: 200px;"><a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads">SQL Server</a></td><td>Supported</td></tr>
 	</tbody>
 </table>
 
