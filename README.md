@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rOwYBv3yLksSxBg#"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
+<a href="http://redata.team/slack"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
 <a href="https://hub.docker.com/r/redatateam/redata"><img alt="Docker pulls" src="https://img.shields.io/docker/pulls/redatateam/redata?color=green"> </a>
 <img alt="License" src="https://img.shields.io/github/license/redata-team/redata?color=violet"/>
 <img alt="Last commit" src="https://img.shields.io/github/last-commit/redata-team/redata"/>
@@ -90,7 +90,7 @@ Look at sample setup instructions for specfic cloud providers:
 
 # Community
 
-Join [Slack](https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rOwYBv3yLksSxBg#) for general questions about using redata, problems, and discussions with people making it :)
+Join [Slack](http://redata.team/slack) for general questions about using redata, problems, and discussions with people making it :)
 
 
 # Integrations
@@ -142,7 +142,7 @@ Checks are coputing all metrics in Redata, you can edit them to stop computing s
 
 We love all contributions, bigger and smaller.
 
-Checkout out current list of issues [here](https://github.com/redata-team/redata/issues) and see if you like anything from there. Also feel welcome to join our [Slack](https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rOwYBv3yLksSxBg#) and suggest ideas, or setup no pressure session with Redata [here](https://calendly.com/mateuszklimek/30min). 
+Checkout out current list of issues [here](https://github.com/redata-team/redata/issues) and see if you like anything from there. Also feel welcome to join our [Slack](http://redata.team/slack) and suggest ideas, or setup no pressure session with Redata [here](https://calendly.com/mateuszklimek/30min). 
 
 General info about contriuting is [here](https://github.com/redata-team/redata/blob/master/CONTRIBUTING.md)
 
