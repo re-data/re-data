@@ -25,6 +25,7 @@ setup(
         "sqlalchemy-redshift",
         "snowflake-sqlalchemy",
         "pymssql",
+        "Jinja2==2.11.3",
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={
