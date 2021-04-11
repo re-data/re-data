@@ -1,5 +1,7 @@
 from datetime import date, datetime
 
+from jinja2 import Template
+
 from redata.utils import time_utils
 
 
@@ -47,15 +49,18 @@ class DB(object):
 
     def check_custom_query(self, table, query, conf):
 
-        query = query.replace("{{table_name}}", table.full_table_name)
         period_end = conf.for_time
 
         period_start = self.get_time_to_compare("1 day", conf.for_time)
         period_start = f"'{period_start}'"
         period_end = f"'{period_end}'"
 
-        query = query.replace("{{period_start}}", period_start)
-        query = query.replace("{{period_end}}", period_end)
+        query = Template(query)
+        query = query.render(
+            table_name=table.full_table_name,
+            period_start=period_start,
+            period_end=period_end
+        )
 
         result = self.db.execute(query)
         result = result.fetchall()

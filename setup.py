@@ -24,6 +24,7 @@ setup(
         "waitress",
         "sqlalchemy-redshift",
         "snowflake-sqlalchemy",
+        "Jinja2==2.11.3",
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={
