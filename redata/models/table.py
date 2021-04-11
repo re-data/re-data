@@ -121,11 +121,13 @@ class Table(Base):
 
         # from matches, collect time cols that have max values at or before "now"
         cols_by_ts = defaultdict(list)
-        now_ts = datetime.datetime.now()
         for col in matching_cols:
             max_ts = db.get_max_timestamp(table, col)
-            if max_ts and max_ts <= now_ts:
-                cols_by_ts[max_ts].append(col)
+            if max_ts:
+                timezone_info = max_ts.tzinfo
+                now_ts = datetime.datetime.now(timezone_info)
+                if max_ts <= now_ts:
+                    cols_by_ts[max_ts].append(col)
 
         # list of all viable candidates, ordered by latest timestamp first
         candidates = list(

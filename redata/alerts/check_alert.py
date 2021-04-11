@@ -8,6 +8,7 @@ from redata.db_operations import metrics_db, metrics_session
 from redata.metric import Metric
 from redata.models import Alert
 from redata.models.table import Table
+from redata.utils import name_for
 
 
 def alert(db, check, conf):
@@ -24,7 +25,7 @@ def alert(db, check, conf):
                 if column == Metric.TABLE_METRIC:
                     alert = metric
                 else:
-                    alert = column + ":" + metric
+                    alert = name_for(column, metric)
 
                 checked_txt = alert
 
@@ -44,7 +45,7 @@ def alert_for_schema_change(db, check, conf):
 
         alert = Alert(
             text=f"""
-                schema change detected - {changes['operation']}: {changes['column_name']}
+                schema change detected - {changes['operation']}: {changes['column_name']}, type: {changes['column_type']}
             """,
             severity=2,
             table_id=check.table_id,

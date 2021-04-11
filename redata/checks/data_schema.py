@@ -10,12 +10,19 @@ from redata.models.metrics import MetricFromCheck
 from redata.models.table import Table
 
 
+def get_column_str_repr(column_type):
+    nullable_part = " not null" if (column_type.get("nullable") == "NO") else ""
+    column_type_str = column_type["type"] + nullable_part
+    return column_type_str
+
+
 def schema_changed_record(operation, column_name, column_type, column_count, conf):
+
     return {
         Metric.SCHEMA_CHANGE: {
             "operation": operation,
             "column_name": column_name,
-            "column_type": column_type,
+            "column_type": get_column_str_repr(column_type) if column_type else None,
             "column_count": column_count,
         }
     }
@@ -50,7 +57,12 @@ def check_for_new_tables(db, conf):
 
 def check_if_schema_changed(db, table, check, conf):
     def schema_to_dict(schema):
-        return dict([(el["name"], el["type"]) for el in schema])
+        dct = {}
+
+        for el in schema:
+            dct[el["name"]] = {"type": el["type"], "nullable": el.get("nullable")}
+
+        return dct
 
     def sorted_to_compare(schema):
         return sorted(schema, key=lambda x: sorted(x.items()))
@@ -86,7 +98,10 @@ def check_if_schema_changed(db, table, check, conf):
                 prev_type = last_dict[el]
                 curr_type = current_dict[el]
 
-                if curr_type != prev_type:
+                if curr_type["type"] != prev_type["type"] or (
+                    prev_type["nullable"] != None
+                    and curr_type["nullable"] != prev_type["nullable"]
+                ):
                     print(
                         f"Type of column: {el} changed from {prev_type} to {curr_type}"
                     )

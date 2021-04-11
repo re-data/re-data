@@ -120,7 +120,7 @@ with DAG(
     is_paused_upon_creation=False,
 ) as dag_run:
 
-    PythonOperator(task_id="process_run", python_callable=process_run, dag=dag_run)
+    PythonOperator(task_id="process_run", python_callable=process_run)
 
 
 def add_run():
@@ -144,4 +144,4 @@ with DAG(
     is_paused_upon_creation=False,
 ) as dag_generate:
 
-    PythonOperator(task_id="add_run", python_callable=add_run, dag=dag_generate)
+    PythonOperator(task_id="add_run", python_callable=add_run)

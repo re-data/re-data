@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rOwYBv3yLksSxBg#"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
+<a href="http://redata.team/slack"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
 <a href="https://hub.docker.com/r/redatateam/redata"><img alt="Docker pulls" src="https://img.shields.io/docker/pulls/redatateam/redata?color=green"> </a>
 <img alt="License" src="https://img.shields.io/github/license/redata-team/redata?color=violet"/>
 <img alt="Last commit" src="https://img.shields.io/github/last-commit/redata-team/redata"/>
@@ -90,12 +90,12 @@ Look at sample setup instructions for specfic cloud providers:
 
 # Community
 
-Join [Slack](https://join.slack.com/t/redatahq/shared_invite/zt-md9kg05x-Aao1mvx0huTKrDZ1tA8v9w) for general questions about using redata, problems, and discussions with people making it :)
+Join [Slack](http://redata.team/slack) for general questions about using redata, problems, and discussions with people making it :)
 
 
 # Integrations
 
-Here are integrations we support or work on now. Let us know if you'd really like to prioritize something, or your DB is not included on the list.
+Here are integrations we support. If your stack is not yet here, feel free to submit issue for it :)
 
 <table>
 	<thead>
@@ -114,9 +114,8 @@ Here are integrations we support or work on now. Let us know if you'd really lik
 		<tr><td><img height="40" src="https://assets.brandfolder.com/pl546j-7le8zk-btwjnu/v/2925183/view@2x.png?v=1610642000" /></td><td style="width: 200px;"><a href="https://slack.com/">Slack</a></td><td>Supported, get alerts on Slack</td></tr>
 		<tr><td><img height="40" src="https://www.sqlalchemy.org/img/sqla_logo.png" /></td><td style="width: 200px;">Other SQL DBs</td><td>Experimental support via using SQLAlchemy</td></tr>
 		<tr><td><img height="40" src="https://www.blazeclan.com/wp-content/uploads/2013/08/Amazon-Redshift-%E2%80%93-11-Key-Points-to-Remember.png" /></td><td style="width: 200px;"><a href="https://aws.amazon.com/redshift/">AWS Redshift</a></td><td>Supported</td></tr>
-		<tr><td><img height="40" src="https://braze-marketing-assets.s3.amazonaws.com/images/partner_logos/amazon-s3.png" />   </td><td style="width: 200px;">AWS S3</td><td>In development</td></tr>
-  		<tr><td><img height="40" src="https://static.wikia.nocookie.net/logopedia/images/7/7f/Microsoft_Office_Excel_%282018%E2%80%93present%29.svg/revision/latest/scale-to-width-down/52?cb=20190927105356" />   </td><td style="width: 200px;">Excel</td><td>Planned</td></tr>
 		<tr><td><img height="40" src="https://www.snowflake.com/wp-content/themes/snowflake/img/snowflake-logo-blue@2x.png" /> </td><td style="width: 200px;"><a href="https://www.snowflake.com/">Snowflake</a></td><td>Supported</td></tr>
+		<tr><td><img height="40" src="https://i2.wp.com/deepinthecode.com/wp-content/uploads/2019/01/sqlserverlogo.png?w=1284&ssl=1" /> </td><td style="width: 200px;"><a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads">SQL Server</a></td><td>Supported</td></tr>
 	</tbody>
 </table>
 
@@ -143,9 +142,9 @@ Checks are coputing all metrics in Redata, you can edit them to stop computing s
 
 We love all contributions, bigger and smaller.
 
-Checkout out current list of issues [here](https://github.com/redata-team/redata/issues) and see if you like anything from there. Also feel welcome to join our [Slack](https://redatahq.slack.com/join/shared_invite/zt-o4ghvwdt-rt8NSZ1rOwYBv3yLksSxBg#) and suggest ideas, or setup no pressure session with Redata [here](https://calendly.com/mateuszklimek/30min). 
+Checkout out current list of issues [here](https://github.com/redata-team/redata/issues) and see if you like anything from there. Also feel welcome to join our [Slack](http://redata.team/slack) and suggest ideas, or setup no pressure session with Redata [here](https://calendly.com/mateuszklimek/30min). 
 
-Generate info about contriuting is [here](https://github.com/redata-team/redata/blob/master/CONTRIBUTING.md)
+General info about contriuting is [here](https://github.com/redata-team/redata/blob/master/CONTRIBUTING.md)
 
 If you would like to add support for your DB more info on that is [here](https://github.com/redata-team/redata/blob/master/CONTRIBUTING_DB.md)
 

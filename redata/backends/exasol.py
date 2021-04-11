@@ -150,7 +150,7 @@ class Exasol(DB):
         result = self.db.execute(
             f"SELECT max([{column}]) FROM [{table.table_name}]"
         ).fetchval()
-        return self.ensure_datetime(result)
+        return self.ensure_datetime(result) if result else None
 
     def get_age_function(self):
         raise RuntimeError("age function not supported for Exasol")
@@ -163,6 +163,7 @@ class Exasol(DB):
             SELECT
               column_name AS "name",
               lower(type_name) AS "type"
+              is_nullable as "nullable"
             FROM sys.exa_all_columns
             LEFT JOIN sys.exa_sql_types ON type_id = column_type_id
             WHERE column_schema = {namespace}

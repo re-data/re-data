@@ -12,7 +12,12 @@ class Alert(Base):
 
     text = Column(String)
     severity = Column(Integer)
-    table_id = Column(Integer, ForeignKey("monitored_table.id"))
+    table_id = Column(
+        Integer,
+        ForeignKey("monitored_table.id", ondelete="CASCADE"),
+        index=True,
+        nullable=False,
+    )
     alert_type = Column(String)
 
     created_at = Column(TIMESTAMP, default=datetime.utcnow, index=True)

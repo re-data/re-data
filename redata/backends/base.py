@@ -15,15 +15,6 @@ class DB(object):
     def execute(self, *args, **kwargs):
         return self.db.execute(*args, **kwargs)
 
-    def get_max_timestamp(self, table, column):
-        result = self.db.execute(
-            f"SELECT max({column}) as value FROM {table.full_table_name}"
-        ).first()
-        if not result.value:
-            # No data yet in this column
-            return None
-        return self.ensure_datetime(result.value)
-
     def is_numeric(self, col_type):
         return col_type in self.numeric_types()
 
