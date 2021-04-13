@@ -52,7 +52,7 @@ You can also adjust what metrics and tables are monitored here.
 When something seems off in your tables, it's often usefull to look into how your data looks like.
 Redata automatically creates dashboards with metrics it computed over time for all your tables.
 
-<img src="./docs/static/table_dashboard2.png" width="80%"></img>
+<img src="./docs/static/metrics_in_redata.png" width="80%"></img>
 
 # Getting started (local machine setup)
 
