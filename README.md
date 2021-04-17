@@ -27,7 +27,7 @@ Redata computes health metrics for your data, containing information like this:
 * number of records added in last (hour/day/week/month)
 * schema changes that recently happened
 * number of missing values in columns over time
-* min/max/avg of values and lenghts of strings in colums
+* min/max/avg of values and lenghts of strings in columns
 * other user defined metrics
 
 ## Detecting anomalies
