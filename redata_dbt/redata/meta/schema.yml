@@ -1,0 +1,24 @@
+
+version: 2
+
+models:
+    - name: monitored_tables
+      description: "Model representing tables ;) to be monitored for anomalies"
+      columns:
+        - name: full_table_name
+          description: "Full name schema + table name of a monitored table"
+          tests:
+            - unique
+            - not_null
+
+        - name: actively_monitored
+          description: >
+            Information whether table is actively monitored.
+            You can change it in any moment
+          tests:
+            - accepted_values:
+                values: [true, false]
+
+    - name: monitored_columns
+      description: "Model representing all columns of tables"
+

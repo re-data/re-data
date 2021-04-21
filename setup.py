@@ -1,31 +1,21 @@
 from setuptools import find_packages, setup
 
+# The directory containing this file
+# HERE = pathlib.Path(__file__).parent
+
+# The text of the README file
+# README = (HERE / "README.md").read_text()
+
+
 setup(
     version="0.0.5",
     author="redata-team",
     description="Monitoring system for data teams",
-    name="redata",
+    name="re_data",
     install_requires=[
-        "apache-airflow",
-        "psycopg2-binary",
-        "grafana-api",
-        "cattrs==1.0.0",
-        "marshmallow-sqlalchemy==0.23.1",
-        "marshmallow<3.0.0,>=2.18.0",
-        "pyexasol",
-        "pymysql",
-        "cryptography",
-        "pybigquery<0.6.0",
-        "alembic",
-        "scipy",
-        "flask",
-        "flask_admin",
-        "Flask-Login",
-        "waitress",
-        "sqlalchemy-redshift",
-        "snowflake-sqlalchemy",
-        "pymssql",
-        "Jinja2==2.11.3",
+        "click",
+    	"dbt",
+        "grpcio"
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={
