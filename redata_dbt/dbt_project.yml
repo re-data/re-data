@@ -26,6 +26,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 vars:
     redata:days_back: 0
+
     'dbt_date:time_zone': 'UTC'
 
 
