@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: min_length
+    columns:
+      - name: value
+        tests:
+          - values_between:
+              full_table_name: 'javascript.pages'
+              low: 10
+              high: 100

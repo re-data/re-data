@@ -39,8 +39,11 @@ vars:
 # using the `{{ config(...) }}` macro.
 models:
     redata_dbt:
-        metrics:
+        metrics_queries:
             materialized: incremental
+
+        final_metrics:
+            materialized: view
 
         meta:
             materialized: table
