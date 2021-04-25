@@ -24,6 +24,10 @@ clean-targets:         # directories to be removed by `dbt clean`
     - "target"
     - "dbt_modules"
 
+vars:
+    redata:days_back: 0
+    'dbt_date:time_zone': 'UTC'
+
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
