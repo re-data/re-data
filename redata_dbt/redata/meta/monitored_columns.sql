@@ -10,5 +10,5 @@ select
 from
     information_schema.columns  
 where
-    table_schema = 'javascript'
+    table_schema like '{{ var('redata:schema_regex')}}'
 

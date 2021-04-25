@@ -5,8 +5,8 @@
 
     select
         {{current_timestamp()}},
-        {{current_timestamp()}} - max({{mtable['time_filter']}}) as delay,
-        '{{mtable['full_table_name']}}' as key
+        {{current_timestamp()}} - max({{mtable['time_filter']}}) as freshness,
+        '{{mtable['full_table_name']}}' as table
 
     from
         {{mtable['full_table_name']}}
