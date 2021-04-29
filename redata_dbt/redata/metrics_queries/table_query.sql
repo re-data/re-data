@@ -18,7 +18,7 @@
 
     {%- set result = load_result('metrics')['table'] -%}
     {% set full_table_name = mtable['full_table_name'] %}
-    {% do table_results.append({'table': full_table_name, 'result': result}) %}    
+    {% do table_results.append({'table': full_table_name, 'result': result}) %}
 {% endfor %}
 
 {% for result in table_results %}

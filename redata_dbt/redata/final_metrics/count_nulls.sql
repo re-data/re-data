@@ -1,0 +1,1 @@
+{{ final_metric('count_nulls')}}
