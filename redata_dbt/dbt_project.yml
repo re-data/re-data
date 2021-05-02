@@ -39,6 +39,9 @@ vars:
 # using the `{{ config(...) }}` macro.
 models:
     redata_dbt:
+        anomalies:
+            materialized: incremental
+
         metrics_queries:
             materialized: incremental
 

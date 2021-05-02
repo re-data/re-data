@@ -24,7 +24,6 @@
 {% endmacro %}
 
 
-
 {% macro anamaly_detection_time_window_start() %}
 
     {{ dbt_date.n_days_ago(var('redata:days_back') + 30) }}
