@@ -4,12 +4,13 @@
 {% for mtable in tables %}
 
     select
-        {{current_timestamp()}},
-        {{current_timestamp()}} - max({{mtable['time_filter']}}) as freshness,
-        '{{mtable['full_table_name']}}' as table
-
+        '{{mtable['table_name']}}' as table_name,
+        '' as column_name,
+        'freshness' as metric,
+        {{current_timestamp()}} - max({{mtable['time_filter']}}) as value,
+        {{current_timestamp()}} as computed_on
     from
-        {{mtable['full_table_name']}}
+        {{mtable['table_name']}}
     where
         {{mtable['time_filter']}} < {{ time_window_end() }}
 

@@ -7,9 +7,9 @@
 
     {%- call statement('metrics', fetch_result=True) -%}
     select
-        {{ metrics_table_query(mtable) }}
+        {{ base_metrics_query(mtable) }}
     from
-        {{mtable['full_table_name']}}
+        {{mtable['table_name']}}
 
     where
         {{mtable['time_filter']}} >= {{ time_window_start() }} and
@@ -17,8 +17,8 @@
     {%- endcall -%}
 
     {%- set result = load_result('metrics')['table'] -%}
-    {% set full_table_name = mtable['full_table_name'] %}
-    {% do table_results.append({'table': full_table_name, 'result': result}) %}
+    {% set table_name = mtable['table_name'] %}
+    {% do table_results.append({'table': table_name, 'result': result}) %}
 {% endfor %}
 
 {% for result in table_results %}
@@ -32,12 +32,13 @@
         {% set table_column_name, fun = column_name.split('::') %}
 
         select 
+            '{{table_name}}' as table_name,
+            '{{table_column_name}}' as column_name,
+            '{{fun}}' as metric,
+            {{column_value | replace(None, 'null::integer')}} as value,
             {{ time_window_start() }} as time_window_start,
             {{ time_window_end() }} as time_window_end,
-            '{{table_name}}' as table,
-            '{{table_column_name}}' as column,
-            '{{fun}}' as metric,
-            {{column_value | replace(None, 'null::integer')}} as value
+            {{current_timestamp()}} as computed_on
 
         {% if not loop.last -%} union all {%- endif %}
         {% endfor %}

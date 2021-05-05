@@ -5,7 +5,7 @@ models:
     - name: monitored_tables
       description: "Model representing tables ;) to be monitored for anomalies"
       columns:
-        - name: full_table_name
+        - name: table_name
           description: "Full name schema + table name of a monitored table"
           tests:
             - unique

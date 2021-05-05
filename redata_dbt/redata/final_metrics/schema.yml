@@ -6,6 +6,6 @@ models:
       - name: value
         tests:
           - values_between:
-              full_table_name: 'javascript.pages'
+              table_name: 'javascript.pages'
               low: 10
               high: 100

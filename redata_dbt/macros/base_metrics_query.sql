@@ -1,8 +1,8 @@
-{% macro metrics_table_query(mtable) %}
+{% macro base_metrics_query(mtable) %}
 
     {% set columns_query %}
         select * from {{ ref('monitored_columns') }}
-        where full_table_name = '{{ mtable['full_table_name'] }}'
+        where table_name = '{{ mtable['table_name'] }}'
     {% endset %}
 
     {% set columns = run_query(columns_query) %}
