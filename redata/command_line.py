@@ -1,6 +1,7 @@
 import click
 import subprocess
 import json
+from datetime import date, timedelta
 
 
 @click.group(help=f"Redata CLI")
@@ -14,13 +15,41 @@ def dbt(dbt_args):
     subprocess.run(['dbt'] + [arg for arg in dbt_args])
 
 @main.command()
-@click.argument('days_back_start', type=click.INT)
-@click.argument('days_back_end', type=click.INT)
-def backfill(days_back_start, days_back_end):
+@click.option(
+    '--start-date',
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str(date.today() - timedelta(days=1)),
+    help="Specify starting date to compute monitoring data, by default redata will use yesterday for that value"
+)
+@click.option(
+    '--end-date',
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str(date.today()),
+    help="""
+        Specify end date to compute monitoring data, by default redata will use today for that.
+        And compute stats for last full data for that
+    """
+)
+@click.option(
+    '--full-refresh',
+    is_flag=True,
+    help='If specifed redata runs first dbt run with --full-refresh option cleaning all previously gathered profiling information'
+)
+def run(start_date, end_date, full_refresh):
 
-    for day_back in range(days_back_start, days_back_end - 1, -1):
+    for_date = start_date
+    while for_date < end_date:
+
+        days_back = (date.today() - for_date.date()).days - 1
+
         dbt_vars = {
-            'redata:days_back': day_back
+            'redata:days_back': days_back
         }
 
-        subprocess.run(['dbt'] + ['run'] + ['--vars'] + [json.dumps(dbt_vars)])
+        run_list = ['dbt'] + ['run'] + ['--vars'] + [json.dumps(dbt_vars)]
+        if for_date == start_date and full_refresh:
+            run_list.append('--full-refresh')
+
+        subprocess.run(run_list)
+
+        for_date += timedelta(days=1)

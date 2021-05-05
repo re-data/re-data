@@ -10,5 +10,5 @@ select
 from
     information_schema.columns  
 where
-    table_schema like '{{ var('redata:schema_regex')}}'
+    table_schema similar to '{{ var('redata:schema_regex')}}'
 
