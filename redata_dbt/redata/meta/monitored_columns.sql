@@ -1,7 +1,7 @@
 
 
 select
-    CONCAT (table_schema, '.', table_name) as full_table_name,
+    '"' || table_schema || '"' || '.' || '"' || table_name || '"' as full_table_name,
     column_name,
     data_type,
     is_nullable,

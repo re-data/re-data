@@ -10,6 +10,8 @@
 
     from
         {{mtable['full_table_name']}}
+    where
+        {{mtable['time_filter']}} < {{ time_window_end() }}
 
 {% if not loop.last -%} union all {%- endif %}
 {% endfor %}

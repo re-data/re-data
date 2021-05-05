@@ -13,10 +13,26 @@
 
 
 {% macro get_column_type(column) %}
-
-    {% if column.data_type == 'text' %}
+    
+    {% if column.data_type in [
+        "character varying",
+        "varchar",
+        "character",
+        "char",
+        "text"
+    ] %}
         {{ return('text') }}
-    {% elif column.date_type == 'int' %}
+        
+    {% elif column.data_type in [
+            "smallint",
+            "integer",
+            "bigint",
+            "decimal",
+            "numeric",
+            "real",
+            "double precision",
+            "enum",
+        ] %}
         {{ return('numeric') }}
     {% else %}
         {{ return('unknown') }}

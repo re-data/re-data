@@ -11,7 +11,7 @@ setup(
     version="0.0.5",
     author="redata-team",
     description="Monitoring system for data teams",
-    name="re_data",
+    name="redata",
     install_requires=[
         "click",
     	"dbt",

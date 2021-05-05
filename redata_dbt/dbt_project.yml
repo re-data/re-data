@@ -26,10 +26,10 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 vars:
     redata:days_back : 0
-    redata:schema_regex : javascript
+    redata:schema_regex : sample_data
+    redata:alerting_z_score: 1
 
-    'dbt_date:time_zone': 'UTC'
-
+    dbt_date:time_zone: 'UTC'
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -50,4 +50,7 @@ models:
 
         meta:
             materialized: table
+    
+        last_metrics:
+            materialized: view
     

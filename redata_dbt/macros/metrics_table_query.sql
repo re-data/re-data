@@ -6,7 +6,7 @@
     {% endset %}
 
     {% set columns = run_query(columns_query) %}
-    
+
     {% for col in columns %}
         {{ metrics_for_column(mtable, col) }}
     {% endfor %}

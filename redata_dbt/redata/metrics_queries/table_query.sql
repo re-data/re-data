@@ -37,7 +37,7 @@
             '{{table_name}}' as table,
             '{{table_column_name}}' as column,
             '{{fun}}' as metric,
-            {{column_value |replace(None, 'null')}} as value
+            {{column_value | replace(None, 'null::integer')}} as value
 
         {% if not loop.last -%} union all {%- endif %}
         {% endfor %}
