@@ -3,6 +3,9 @@ select
     stats.column_name,
     stats."metric",
     (last_metric.last_value - stats.last_avg) / (stats.last_stddev + 0.0000000001) as z_score,
+    last_metric.last_value as last_value,
+    stats.last_avg as last_avg,
+    stats.last_avg as last_stddev,
     {{ time_window_end() }} as time_window_end,
     {{current_timestamp()}} as computed_on
 from
