@@ -1,4 +1,5 @@
 -- depends_on: {{ ref('monitored_columns') }}
+-- depends_on: {{ ref('monitored_tables') }}
 
 {% set tables =  run_query(get_tables()) %}
 {% set table_results = [] %}

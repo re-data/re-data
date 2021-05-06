@@ -2,7 +2,7 @@ import click
 import subprocess
 import json
 from datetime import date, timedelta
-
+import shutil
 
 @click.group(help=f"Redata CLI")
 def main():
@@ -10,9 +10,17 @@ def main():
 
 
 @main.command()
-@click.argument('dbt_args', nargs=-1)
-def dbt(dbt_args):
-    subprocess.run(['dbt'] + [arg for arg in dbt_args])
+@click.argument(
+    'project_name'
+)
+def init(project_name):
+    # write to ~/.dbt/profiles.yml
+    # create folder with proper name and temlates files
+    shutil.copytree('dbt_template', project_name)
+    print ("Created redata DBT template project!")
+    print ("Setup variable for schema you would like to monitor in dbt_project.yml")
+    print ("You can run your redata dbt project easily with `redata run`")
+
 
 @main.command()
 @click.option(
