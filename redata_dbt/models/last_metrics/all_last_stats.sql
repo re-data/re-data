@@ -9,7 +9,7 @@ select
 from
     {{ ref('base_metrics') }}
 where
-    time_window_end > {{ anamaly_detection_time_window_start() }} and
-    time_window_end <= {{ time_window_end() }}
+    time_window_end > {{- anamaly_detection_time_window_start() -}} and
+    time_window_end <= {{- time_window_end() -}}
 group by
     table_name, column_name, metric

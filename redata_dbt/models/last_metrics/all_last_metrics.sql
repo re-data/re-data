@@ -7,4 +7,4 @@ select
 from 
     {{ ref('base_metrics')}}
 where
-    time_window_end = {{ time_window_end() }}
+    time_window_end = {{- time_window_end() -}}

@@ -12,20 +12,20 @@
 
 {% macro time_window_start() %}
 
-    {{ dbt_date.n_days_ago(var('redata:days_back') + 1) }}
+    {{- dbt_date.n_days_ago(var('redata:days_back') + 1) -}}
 
 {% endmacro %}
 
 
 {% macro time_window_end() %}
 
-    {{ dbt_date.n_days_ago(var('redata:days_back')) }}
+    {{- dbt_date.n_days_ago(var('redata:days_back')) -}}
 
 {% endmacro %}
 
 
 {% macro anamaly_detection_time_window_start() %}
 
-    {{ dbt_date.n_days_ago(var('redata:days_back') + 30) }}
+    {{- dbt_date.n_days_ago(var('redata:days_back') + 30) -}}
 
 {% endmacro %}
