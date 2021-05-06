@@ -6,7 +6,7 @@
 
 select
     table_name,
-    false as actively_monitored,
+    true as actively_monitored,
     (array_agg(time_filter) FILTER (WHERE time_filter IS NOT NULL))[1] as time_filter,
     {{current_timestamp()}} as detected_time
 from

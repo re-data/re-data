@@ -26,7 +26,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 vars:
     redata:days_back : 0
-    redata:schema_regex : sample_data
+    redata:schema_regex : redata_sample
     redata:alerting_z_score: 1
 
     dbt_date:time_zone: 'UTC'
@@ -37,6 +37,11 @@ vars:
 # In this example config, we tell dbt to build all models in the example/ directory
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
+
+seeds:
+    redata_dbt:
+        schema: sample
+
 models:
     redata_dbt:
         anomalies:
