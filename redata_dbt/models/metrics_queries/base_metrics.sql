@@ -22,14 +22,12 @@
 {% endfor %}
 
 {%- for result in table_results %}
-    {% set table_name = result.table %}
-    {% set m_for_table = result.result %}
-
+    {%- set table_name = result.table %}
+    {%- set m_for_table = result.result %}
     {%- for column in m_for_table.columns %}
-        
-        {% set column_value = column.values()[0] %}
-        {% set column_name = column.name %}
-        {% set table_column_name, fun = column_name.split('::') %}
+        {%- set column_value = column.values()[0] %}
+        {%- set column_name = column.name %}
+        {%- set table_column_name, fun = column_name.split('::') %}
 
         select 
             '{{table_name}}' as table_name,
@@ -38,11 +36,11 @@
             {{column_value | replace(None, 'null::integer')}} as value,
             {{- time_window_start() -}} as time_window_start,
             {{- time_window_end() -}} as time_window_end,
-            {{current_timestamp()}} as computed_on
+            {{- current_timestamp() -}} as computed_on
         {%- if not loop.last %} union all {%- endif %}
         {% endfor %}
 
     {%- if not loop.last %} union all {%- endif %}
-{% endfor %}
+{%- endfor %}
 
 
