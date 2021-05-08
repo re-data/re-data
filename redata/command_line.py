@@ -53,7 +53,8 @@ def run(start_date, end_date, full_refresh):
         days_back = (date.today() - for_date.date()).days - 1
 
         dbt_vars = {
-            'redata:days_back': days_back
+            'redata:time_window_start': str(for_date),
+            'redata:time_window_end': str(for_date + timedelta(days=1))
         }
 
         run_list = ['dbt'] + ['run'] + ['--vars'] + [json.dumps(dbt_vars)]

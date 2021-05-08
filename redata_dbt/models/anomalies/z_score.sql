@@ -1,8 +1,8 @@
 select
     stats.table_name,
     stats.column_name,
-    stats."metric",
-    (last_metric.last_value - stats.last_avg) / (stats.last_stddev + 0.0000000001) as z_score,
+    stats.metric,
+    (last_metric.last_value - stats.last_avg) / (stats.last_stddev + 0.0000000001) as z_score_value,
     last_metric.last_value as last_value,
     stats.last_avg as last_avg,
     stats.last_avg as last_stddev,

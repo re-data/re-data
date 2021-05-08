@@ -27,7 +27,7 @@
     {%- for column in m_for_table.columns %}
         {%- set column_value = column.values()[0] %}
         {%- set column_name = column.name %}
-        {%- set table_column_name, fun = column_name.split('::') %}
+        {%- set table_column_name, fun = column_name.split('___') %}
 
         select 
             '{{table_name}}' as table_name,

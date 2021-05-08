@@ -6,7 +6,8 @@
         '{{mtable['table_name']}}' as table_name,
         '' as column_name,
         'freshness' as metric,
-        {{- current_timestamp() -}} - max({{mtable['time_filter']}}) as value,
+        {{freshness_expression(mtable['time_filter'])}} as value,
+        {{ time_window_end() }} as time_window_end,
         {{- current_timestamp() -}} as computed_on
     from
         {{mtable['table_name']}}

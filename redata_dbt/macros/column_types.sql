@@ -1,8 +1,25 @@
 {% macro is_datetime(column) %}
+    {{ adapter.dispatch('is_datetime')(column) }}
+{% endmacro %}
+
+{% macro default__is_datetime(column) %}
     case when {{column}} in (
             'timestamp without time zone',
             'timestamp with time zone',
             'date'
+    )
+        then true
+    else
+        false
+    end
+
+{% endmacro %}
+
+{% macro bigquery__is_datetime(column) %}
+    case when {{column}} in (
+            'DATE',
+            'DATETIME',
+            'TIMESTAMP'
     )
         then true
     else
@@ -22,7 +39,7 @@
         "text"
     ] %}
         {{ return('text') }}
-        
+
     {% elif column.data_type in [
             "smallint",
             "integer",
