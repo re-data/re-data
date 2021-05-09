@@ -1,1 +1,0 @@
-{{ final_metric('count_missing')}}
