@@ -51,8 +51,10 @@
             "enum",
         ] %}
         {{ return('numeric') }}
+
     {% else %}
         {{ return('unknown') }}
+
     {% endif %}
 
 {% endmacro %}

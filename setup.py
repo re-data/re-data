@@ -8,10 +8,10 @@ from setuptools import find_packages, setup
 
 
 setup(
-    version="0.0.5",
+    version="0.1.0",
     author="redata-team",
     description="Monitoring system for data teams",
-    name="redata",
+    name="re_data",
     install_requires=[
         "click",
     	"dbt",
@@ -19,7 +19,7 @@ setup(
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={
-        "console_scripts": ["redata=redata.command_line:main"],
+        "console_scripts": ["re_data=re_data.command_line:main"],
     },
     packages=find_packages(),
 )

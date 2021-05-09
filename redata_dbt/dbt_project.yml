@@ -32,6 +32,7 @@ vars:
     redata:schemas:
         - new_testing_dataset
         - redata_sample
+        - public
         
 
     redata:alerting_z_score: 1
