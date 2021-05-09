@@ -1,3 +1,0 @@
-name: redata
-description: Deploy Redata using containers in AWS ECS Fargate, using Python infrastructure as code
-runtime: python
