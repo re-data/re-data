@@ -54,7 +54,8 @@ def run(start_date, end_date, full_refresh):
 
         dbt_vars = {
             'redata:time_window_start': str(for_date),
-            'redata:time_window_end': str(for_date + timedelta(days=1))
+            'redata:time_window_end': str(for_date + timedelta(days=1)),
+            'redata:anomaly_detection_window_start': str(for_date - timedelta(days=30))
         }
 
         run_list = ['dbt'] + ['run'] + ['--vars'] + [json.dumps(dbt_vars)]

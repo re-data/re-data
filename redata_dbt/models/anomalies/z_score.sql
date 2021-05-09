@@ -7,7 +7,7 @@ select
     stats.last_avg as last_avg,
     stats.last_avg as last_stddev,
     {{ time_window_end() }} as time_window_end,
-    {{current_timestamp()}} as computed_on
+    {{dbt_utils.current_timestamp_in_utc()}} as computed_on
 from
     {{ ref('all_last_stats') }} as stats,
     {{ ref('all_last_metrics') }} as last_metric

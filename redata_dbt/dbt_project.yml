@@ -7,7 +7,7 @@ version: '1.0.0'
 config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'redata_bigquery'
+profile: 'redata'
 
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
@@ -27,9 +27,11 @@ clean-targets:         # directories to be removed by `dbt clean`
 vars:
     redata:time_window_end: null
     redata:time_window_start: null
+    redata:anomaly_detection_window_start: null
 
     redata:schemas:
         - new_testing_dataset
+        - redata_sample
         
 
     redata:alerting_z_score: 1

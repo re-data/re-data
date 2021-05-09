@@ -8,7 +8,7 @@
         'freshness' as metric,
         {{freshness_expression(mtable['time_filter'])}} as value,
         {{ time_window_end() }} as time_window_end,
-        {{- current_timestamp() -}} as computed_on
+        {{- dbt_utils.current_timestamp_in_utc() -}} as computed_on
     from
         {{mtable['table_name']}}
     where

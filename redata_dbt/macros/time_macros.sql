@@ -12,17 +12,17 @@
 
 
 {% macro time_window_start() %}
-    '{{- var('redata:time_window_start') -}}'
+    cast('{{- var('redata:time_window_start') -}}' as timestamp) 
 {% endmacro %}
 
 
 {% macro time_window_end() %}
-    '{{- var('redata:time_window_end') -}}'
+    cast('{{- var('redata:time_window_end') -}}' as timestamp)
 {% endmacro %}
 
 
 {% macro anamaly_detection_time_window_start() %}
-   '{{- var('redata:time_window_start') -}}'
+   cast('{{- var('redata:anomaly_detection_window_start') -}}' as timestamp)
 {% endmacro %}
 
 

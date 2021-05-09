@@ -36,7 +36,7 @@ select
     true as actively_monitored,
     (array_agg(time_filter)){{first_array_el()}} as time_filter,
     (array_agg(time_filter)) as possible_time_columns,
-    {{current_timestamp()}} as detected_time
+    {{dbt_utils.current_timestamp_in_utc()}} as detected_time
 from
     new_time_columns
 group by table_name

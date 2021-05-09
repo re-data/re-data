@@ -36,7 +36,7 @@
             {{column_value | replace(None, 'null::integer')}} as value,
             {{- time_window_start() -}} as time_window_start,
             {{- time_window_end() -}} as time_window_end,
-            {{- current_timestamp() -}} as computed_on
+            {{- dbt_utils.current_timestamp_in_utc() -}} as computed_on
         {%- if not loop.last %} union all {%- endif %}
         {% endfor %}
 
