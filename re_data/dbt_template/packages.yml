@@ -5,4 +5,6 @@ packages:
     - package: calogica/dbt_date
       version: 0.2.5
 
-    - local: /Users/mateuszklimek/repos/redata/dbt_re_data/
+    - git: git@github.com:redata-team/dbt_re_data.git
+      revision: main
+    

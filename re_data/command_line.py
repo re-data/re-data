@@ -23,6 +23,9 @@ def init(project_name):
     print ("Setup variable for schema you would like to monitor in dbt_project.yml")
     print ("You can run your redata dbt project easily with `redata run`")
 
+    bash_command = f'cd {project_name} && dbt deps'
+    os.system(bash_command)
+
 
 @main.command()
 @click.option(
