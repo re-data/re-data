@@ -24,3 +24,11 @@ clean-targets:         # directories to be removed by `dbt clean`
     - "target"
     - "dbt_modules"
 
+
+vars:
+    redata:alerting_z_score: 1
+
+    redata:schemas: 
+        - example_schema # add your schemas to monitor here
+
+    dbt_date:time_zone: 'UTC'
