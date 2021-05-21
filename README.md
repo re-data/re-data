@@ -41,7 +41,7 @@ Will be detected. All data including anomalies is saved directly into your data 
 
 Ok.. so it's not really here yet. :cry: But we are working on it and will have some updates soon. Also remember your metrics are computed in your data warehouse so, you can visualize them in your favorite business inteligence tool.
 
-We are focusing making UI solve administration part of data quality mainly, if you have your thoughts on what should be included let us know!
+We are focusing on making UI solve administrative part of data quality too, if you have your thoughts on what should be included let us know!
 
 # Getting started
 ## Start your data quality project
@@ -74,7 +74,7 @@ If you would like to compute more metrics or otherwise extend your data quality 
 
 # Community
 
-Join [Slack](http://redata.team/slack) for general questions about using re_data, problems, and discussions with people making it :slightly_smiling_face:
+Join [Slack](http://redata.team/slack) for questions about using re_data and discussion with people making it :slightly_smiling_face:
 
 
 # Integrations
