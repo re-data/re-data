@@ -6,7 +6,7 @@
 
 # re_data
 
-re_data is data quality library build on top of [dbt](https://github.com/fishtown-analytics/dbt).
+re_data is data quality tool build on top of [dbt](https://github.com/fishtown-analytics/dbt).
 
 * create data quality project for your organization to monitor and improve quality of your data,
 * compute data quality metrics for all your tables and add your own code computing those,
@@ -65,7 +65,7 @@ re_data run --start-date 2021-01-18 --end-date 2021-01-19
 
 This will create metrics and alerts for specfied date range and store it in your data warehouse (by default metrics are computed daily)
 
-## Extending you project
+## Extending your project
 
 If you would like to compute more metrics or otherwise extend your data quality project, you have 2 options:
 
