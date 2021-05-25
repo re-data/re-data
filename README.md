@@ -6,11 +6,11 @@
 
 # re_data
 
-re_data is data quality tool build on top of [dbt](https://github.com/fishtown-analytics/dbt).
+re_data is tool for improving data quality in your organization, build on top of [dbt](https://github.com/fishtown-analytics/dbt).
 
 * create data quality project for your organization to monitor and improve quality of your data,
 * compute data quality metrics for all your tables and add your own code computing those,
-* investigate all your metrics & alerts about them
+* look for anomalies in all your metrics and investigate problematic data
 
 # Key features
 
