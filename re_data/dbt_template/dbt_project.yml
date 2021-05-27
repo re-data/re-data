@@ -6,8 +6,8 @@ name: 'my_new_project'
 version: '1.0.0'
 config-version: 2
 
-# This setting configures which "profile" dbt uses for this project.
-profile: 're_data'
+# Setup profile for re_data in your ~/.dbt/profile.yml file
+profile: 'your_dbt_profile_for_re_data'
 
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
@@ -26,9 +26,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 
 vars:
-    redata:alerting_z_score: 1
-
-    redata:schemas: 
+    re_data:alerting_z_score: 3
+    re_data:schemas:
         - example_schema # add your schemas to monitor here
 
     dbt_date:time_zone: 'UTC'
