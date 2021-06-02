@@ -39,7 +39,7 @@ Will be detected. All data including anomalies is saved directly into your data 
 
 ## UI
 
-Ok.. so it's not really here yet. :cry: But we are working on it and will have some updates soon. Also remember your metrics are computed in your data warehouse so, you can visualize them in your favorite business inteligence tool.
+Ok.. so it's not really here yet, but we are working on it and will have some updates soon. Also remember your metrics are computed in your data warehouse so, you can visualize them in your favorite business inteligence tool.
 
 We are focusing on making UI solve administrative part of data quality too, if you have your thoughts on what should be included let us know!
 
