@@ -13,9 +13,9 @@ setup(
     description="Monitoring system for data teams",
     name="re_data",
     install_requires=[
-        "click",
-    	"dbt",
-        "grpcio"
+        "click>=7.1.2,<8.0.0",
+    	"dbt>=0.19.1,<0.20.0",
+        "grpcio==1.37.0"
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={
