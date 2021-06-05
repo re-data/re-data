@@ -1,17 +1,29 @@
+import pathlib
 from setuptools import find_packages, setup
 
 # The directory containing this file
-# HERE = pathlib.Path(__file__).parent
+HERE = pathlib.Path(__file__).parent
 
 # The text of the README file
-# README = (HERE / "README.md").read_text()
+README = (HERE / "README.md").read_text()
 
 
 setup(
+    name="re_data",
     version="0.1.0",
     author="redata-team",
-    description="Monitoring system for data teams",
-    name="re_data",
+    author_email="hello@redata.team",
+    description="Framework for monitoring and improving data quality",
+    license="MIT",
+    long_description=README,
+    long_description_content_type="text/markdown",
+    url="https://github.com/redata-team/redata",
+    include_package_data=True,
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
     install_requires=[
         "click>=7.1.2,<8.0.0",
     	"dbt>=0.19.1,<0.20.0",
