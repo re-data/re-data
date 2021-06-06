@@ -72,6 +72,10 @@ If you would like to compute more metrics or otherwise extend your data quality 
 * If you think, you needs maybe usefull for others let us know! We will be adding more features to re_data and will be happy to talk about your needs,
 * If you think, what you need is specific to your organization, add it yourself. As re_data is dbt project you can add you own models / macros / tests etc. You need to know dbt for that, but we highly recommand learning writing code in it in this case - *it's Jinja templates generating SQL, nothing to be scared of :see_no_evil:*
 
+# Docs
+
+More details on tables created by re_data through dbt package are on project github https://github.com/redata-team/dbt_re_data
+
 # Community
 
 Join [Slack](http://redata.team/slack) for questions about using re_data and discussion with people making it :slightly_smiling_face:
