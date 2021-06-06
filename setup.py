@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="re_data",
-    version="0.1.0",
+    version="0.1.1",
     author="redata-team",
     author_email="hello@redata.team",
     description="Framework for monitoring and improving data quality",
@@ -33,5 +33,5 @@ setup(
     entry_points={
         "console_scripts": ["re_data=re_data.command_line:main"],
     },
-    packages=find_packages(),
+    packages=find_packages(exclude=("tests",))
 )
