@@ -109,7 +109,7 @@ re_data is licensed under the MIT license. See the [LICENSE](LICENSE) file for l
 
 We love all contributions :heart_eyes: bigger and smaller.
 
-Checkout out current list of issues [here](https://github.com/redata-team/redata/issues) and see if you like anything from there. Also feel welcome to join our [Slack](http://redata.team/slack) and suggest ideas or setup a live session [here](https://calendly.com/mateuszklimek/30min). 
+Checkout out current list of issues [here](https://github.com/re-data/re-data/issues) and see if you like anything from there. Also feel welcome to join our [Slack](http://redata.team/slack) and suggest ideas or setup a live session [here](https://calendly.com/mateuszklimek/30min). 
 
-And if you got this far and like what we are building, support us! Star https://github.com/redata-team/redata on Github :star_struck:
+And if you got this far and like what we are building, support us! Star https://github.com/re-data/re-data on Github :star_struck:
 
