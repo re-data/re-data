@@ -1,35 +1,37 @@
+import pathlib
 from setuptools import find_packages, setup
 
+# The directory containing this file
+HERE = pathlib.Path(__file__).parent
+
+# The text of the README file
+README = (HERE / "README.md").read_text()
+
+
 setup(
-    version="0.0.5",
+    name="re_data",
+    version="0.1.1",
     author="redata-team",
-    description="Monitoring system for data teams",
-    name="redata",
+    author_email="hello@redata.team",
+    description="Framework for monitoring and improving data quality",
+    license="MIT",
+    long_description=README,
+    long_description_content_type="text/markdown",
+    url="https://github.com/redata-team/redata",
+    include_package_data=True,
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
     install_requires=[
-        "apache-airflow",
-        "psycopg2-binary",
-        "grafana-api",
-        "cattrs==1.0.0",
-        "marshmallow-sqlalchemy==0.23.1",
-        "marshmallow<3.0.0,>=2.18.0",
-        "pyexasol",
-        "pymysql",
-        "cryptography",
-        "pybigquery<0.6.0",
-        "alembic",
-        "scipy",
-        "flask",
-        "flask_admin",
-        "Flask-Login",
-        "waitress",
-        "sqlalchemy-redshift",
-        "snowflake-sqlalchemy",
-        "pymssql",
-        "Jinja2==2.11.3",
+        "click>=7.1.2,<8.0.0",
+    	"dbt>=0.19.1,<0.20.0",
+        "grpcio==1.37.0"
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={
-        "console_scripts": ["redata=redata.command_line:main"],
+        "console_scripts": ["re_data=re_data.command_line:main"],
     },
-    packages=find_packages(),
+    packages=find_packages(exclude=("tests",))
 )
