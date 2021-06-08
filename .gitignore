@@ -5,3 +5,4 @@
 .python-version
 venv
 .idea/
+build/
