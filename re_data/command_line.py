@@ -21,7 +21,7 @@ def init(project_name):
     shutil.copytree(os.path.join(dir_path, 'dbt_template'), project_name)
     print ("Created redata DBT template project!")
     print ("Setup variable for schema you would like to monitor in dbt_project.yml")
-    print ("You can run your redata dbt project easily with `redata run`")
+    print ("You can run your redata dbt project easily with `re_data run`")
 
     bash_command = f'cd {project_name} && dbt deps'
     os.system(bash_command)
