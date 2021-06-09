@@ -13,7 +13,3 @@ assignees: ''
 
 * What are most common issues for data quality your would like to resolve in this DB
 * Any specific features you want to monitor in this DB
-
-**Describe the current solution for monitoring this DB**
-
-* If are you monitoring this DB currently, if you can let us know how it looks like
