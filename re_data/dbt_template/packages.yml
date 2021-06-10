@@ -3,5 +3,5 @@ packages:
       version: [">0.6.5", "<0.7.0"]
     
     - git: git@github.com:re-data/dbt_re_data.git
-      revision: v0.1.1-alpha
+      revision: 0.1.2
     
