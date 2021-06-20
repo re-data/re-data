@@ -2,6 +2,8 @@ import click
 import subprocess
 import json
 from datetime import date, timedelta
+from dbt.ui import green, red
+from dbt.task.printer import print_fancy_output_line
 import shutil
 import os
 
@@ -15,16 +17,22 @@ def main():
     'project_name'
 )
 def init(project_name):
-    # write to ~/.dbt/profiles.yml
-    # create folder with proper name and temlates files
+    print_fancy_output_line(f"Creating {project_name} template project", "RUN", print, None, None)
+
     dir_path = os.path.dirname(os.path.realpath(__file__))
     shutil.copytree(os.path.join(dir_path, 'dbt_template'), project_name)
-    print ("Created redata DBT template project!")
-    print ("Setup variable for schema you would like to monitor in dbt_project.yml")
-    print ("You can run your redata dbt project easily with `re_data run`")
-
     bash_command = f'cd {project_name} && dbt deps'
-    os.system(bash_command)
+    response = os.system(bash_command)
+
+    if not response:
+        info = green("SUCCESS")
+    else:
+        info = red("FAILURE")
+
+    print_fancy_output_line(f"Creating {project_name} template project", info, print, None, None)
+
+    if not response:
+        print_fancy_output_line(f"Setup profile & re_data:schemas var in dbt_project.yml", "INFO", print, None, None)
 
 
 @main.command()

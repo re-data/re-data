@@ -2,6 +2,6 @@ packages:
     - package: fishtown-analytics/dbt_utils
       version: [">0.6.5", "<0.7.0"]
     
-    - git: git@github.com:re-data/dbt_re_data.git
-      revision: 0.1.2
+    - package: re-data/re_data
+      version: [">0.1.0", "<0.2.0"]
     
