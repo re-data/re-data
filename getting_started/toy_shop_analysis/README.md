@@ -1,14 +1,17 @@
-### Welcome to toy shop! :)
+## Welcome to toy shop! :)
 
 This is example project for re_data tutorial
 
 Toy shop is fictional e-commerce shop (selling toys:) It's example of how re_data project can work and help you improve data in your data warehouse.
+
+## Toy shop data
 
 Toy shop DB has currently just 3 tables:
  - customers
  - orders
  - order_items
 
+```
                         Table "toy_shop.customers"
    Column   |            Type             | Collation | Nullable | Default
 ------------+-----------------------------+-----------+----------+---------
@@ -35,6 +38,8 @@ Toy shop DB has currently just 3 tables:
  name     | text                        |           |          |
  amount   | integer                     |           |          |
  added_at | timestamp without time zone |           |          |
+```
+
 
 You can find toy shop data here. Toy shop started operating on 1 January 2021.
 
@@ -93,14 +98,13 @@ toy_shop_analysis.re_data_columns  toy_shop_analysis.re_data_tables
  "toy_shop"."orders"      | created_at  | f                  | 2021-06-30 15:11:07.697005
 ```
 
-What we want to do is to start monitoring our tables, we simply do update with SQL:
+In our simple DB we want to start monitoring all those tables, we can turn it on with simple SQL:
 
 ```
 update toy_shop_analysis.re_data_tables set actively_monitored = true;
 ```
 
-No as we done it we our re_data run will compute metrics for all those tables.
-Let's run it, for now just for first day of toy shop activity
+Let's run it re_data now, for now just for first day of toy shop activity
 
 ```
 re_data run --start-date 2021-01-01 --end-date 2021-01-02
@@ -147,10 +151,69 @@ select table_name, column_name, metric, value from toy_shop_analysis.re_data_max
  "toy_shop"."orders"      | customer_id | max    |   490
 ```
 
-Ok, but now important now, briefly looking first day data seems reasons.
-But do all of days seems like that, lets compute those metrics for whole last month
+Ok, but now important now, briefly looking first day data seems reasonable.
+
+It maybe really usefull to create for those values beeing sensible, for example we most likely don't want max values to be below or even equal to zero in our data. We can do it easily by adding tests to our models.
+ 
+But for now let's compute metrics for whole last month and see if re_data founds any anomalies in them
 
 ```
 re_data run --start-date 2021-01-02 --end-date 2021-01-30
 ```
+
+Notice we start counting from second of Junuary as we don't want compute new metrics for first.
+
+Assuming this completed successfully lets query anomalies table
+
+```
+select * from toy_shop_analysis.re_data_alerting
+        table_name        | column_name |    metric     |    z_score_value    | last_value |       last_avg       |     last_stddev      |   time_window_end   |        computed_on
+--------------------------+-------------+---------------+---------------------+------------+----------------------+----------------------+---------------------+----------------------------
+ "toy_shop"."customers"   | id          | max           | -3.0571164943755322 |        384 |    489.7142857142857 |    489.7142857142857 | 2021-01-15 00:00:00 | 2021-06-30 15:29:00.660753
+ "toy_shop"."order_items" |             | row_count     | -3.0530445968041606 |          0 |    59.47826086956522 |    59.47826086956522 | 2021-01-24 00:00:00 | 2021-06-30 15:30:54.95368
+ "toy_shop"."orders"      |             | row_count     | -3.2576351652461364 |          0 |   23.608695652173914 |   23.608695652173914 | 2021-01-24 00:00:00 | 2021-06-30 15:30:54.95368
+ "toy_shop"."order_items" |             | freshness     |   4.587317109255619 |     172800 |    90156.52173913043 |    90156.52173913043 | 2021-01-24 00:00:00 | 2021-06-30 15:30:54.95368
+ "toy_shop"."orders"      |             | freshness     |   4.587317109255619 |     172800 |    90156.52173913043 |    90156.52173913043 | 2021-01-24 00:00:00 | 2021-06-30 15:30:54.95368
+ "toy_shop"."orders"      | status      | min_length    |   4.799999999199999 |          7 |                 4.12 |                 4.12 | 2021-01-27 00:00:00 | 2021-06-30 15:31:31.717359
+ "toy_shop"."orders"      | status      | max_length    |       -4.7999999976 |          7 |                 7.96 |                 7.96 | 2021-01-27 00:00:00 | 2021-06-30 15:31:31.717359
+ "toy_shop"."customers"   | first_name  | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 0.037037037037037035 | 2021-01-28 00:00:00 | 2021-06-30 15:31:44.069717
+ "toy_shop"."customers"   | first_name  | count_missing |   5.003702330376757 |          1 | 0.037037037037037035 | 0.037037037037037035 | 2021-01-28 00:00:00 | 2021-06-30 15:31:44.069717
+ "toy_shop"."customers"   | id          | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 0.037037037037037035 | 2021-01-28 00:00:00 | 2021-06-30 15:31:44.069717
+ "toy_shop"."customers"   | age         | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 0.037037037037037035 | 2021-01-28 00:00:00 | 2021-06-30 15:31:44.069717
+ "toy_shop"."customers"   | last_name   | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 0.037037037037037035 | 2021-01-28 00:00:00 | 2021-06-30 15:31:44.069717
+ "toy_shop"."customers"   | last_name   | count_missing |   5.003702330376757 |          1 | 0.037037037037037035 | 0.037037037037037035 | 2021-01-28 00:00:00 | 2021-06-30 15:31:44.069717
+ "toy_shop"."customers"   | first_name  | min_length    |   5.102520382924569 |          4 |   3.0357142857142856 |   3.0357142857142856 | 2021-01-29 00:00:00 | 2021-06-30 15:31:56.423755
+```
+
+We can see couple of alerting things here (some things look like false alerts here, but most seems to be reall alerts for example)
+```
+        table_name        | column_name |  metric   |    z_score_value    | last_value |      last_avg      |   time_window_end
+--------------------------+-------------+-----------+---------------------+------------+--------------------+---------------------
+ "toy_shop"."order_items" |             | row_count | -3.0530445968041606 |          0 |  59.47826086956522 | 2021-01-24 00:00:00
+ "toy_shop"."orders"      |             | row_count | -3.2576351652461364 |          0 | 23.608695652173914 | 2021-01-24 00:00:00
+ ```
+
+ It seems on 2021-01-23 we didn't got any orders, and with average above 23 orders per day that seems really odd.
+
+ We are are also seeing alerting values of nulls in customers `first_name`, `last_name`, `age` at the end of the month:
+
+ ```
+  "toy_shop"."customers"   | first_name  | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
+ "toy_shop"."customers"   | first_name  | count_missing |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
+ "toy_shop"."customers"   | id          | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
+ "toy_shop"."customers"   | age         | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
+ "toy_shop"."customers"   | last_name   | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
+ "toy_shop"."customers"   | last_name   | count_missing |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
+ "toy_shop"."customers"   | first_name  | min_length    |   5.102520382924569 |          4 |   3.0357142857142856 | 2021-01-29 00:00:00
+ ```
+
+For now, that's it :) you can use `re_data_alerting` table as warning generator that something is not right with your data.
+You can also integrate re_data metrics any way you want with you curent BI tools.
+
+# Ending
+
+Hope this tutorial was usefull for you to either follow or run yourself our data quality tool.
+If possible, let us know you thoughts on Slack :)
+
+
 
