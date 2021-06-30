@@ -85,7 +85,7 @@ def run(start_date, end_date, full_refresh):
         for_date += timedelta(days=1)
 
         print_fancy_output_line(
-            f"Running for time period: {for_date}:{for_date + timedelta(days=1)}",
+            f"Running for date: {for_date.date()}",
             green("SUCCESS"),
             print,
             day_num,
