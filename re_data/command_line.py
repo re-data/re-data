@@ -36,6 +36,18 @@ def init(project_name):
 
 
 @main.command()
+def detect():
+
+    print_fancy_output_line(f"Detecting tables", "RUN", print, None, None)
+    
+    run_list = ['dbt', 'run', '--models', 're_data_tables', 're_data_columns']
+    completed_process = subprocess.run(run_list)
+    completed_process.check_returncode()
+
+    print_fancy_output_line(f"Detecting tables", "SUCCESS", print, None, None)
+
+
+@main.command()
 @click.option(
     '--start-date',
     type=click.DateTime(formats=["%Y-%m-%d"]),
