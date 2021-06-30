@@ -1,10 +1,10 @@
-## Welcome to toy shop! :)
+## Getting started tutorial :)
 
 This is example project for re_data tutorial
 
-Toy shop is fictional e-commerce shop (selling toys:) It's example of how re_data project can work and help you improve data in your data warehouse.
+Toy shop is fictional e-commerce shop (selling toys :) It's example of how re_data project can work and help you improve data in your data warehouse.
 
-## Toy shop data
+## Welcome to toy shop
 
 Toy shop DB has currently just 3 tables:
  - customers
@@ -198,7 +198,7 @@ We can see couple of alerting things here (some things look like false alerts he
  We are are also seeing alerting values of nulls in customers `first_name`, `last_name`, `age` at the end of the month:
 
  ```
-  "toy_shop"."customers"   | first_name  | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
+ "toy_shop"."customers"   | first_name  | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
  "toy_shop"."customers"   | first_name  | count_missing |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
  "toy_shop"."customers"   | id          | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
  "toy_shop"."customers"   | age         | count_nulls   |   5.003702330376757 |          1 | 0.037037037037037035 | 2021-01-28 00:00:00
