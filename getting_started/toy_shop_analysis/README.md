@@ -1,8 +1,8 @@
 ## Getting started tutorial :)
 
-Welcome to `re_data` getting started tutorial.
-We will analyse and monitor toy shop data here 🤖
-Toy shop is fictional e-commerce shop - selling toys 🙂
+Welcome to re_data getting started tutorial.
+We will analyse and monitor toy shop data here.
+Toy shop is fictional e-commerce shop 🙂
 It's example of how re_data project can work and help you improve data in your data warehouse.
 
 ### Toy shop
