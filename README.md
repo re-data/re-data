@@ -39,7 +39,7 @@ Will be detected. All data including anomalies is saved directly into your data 
 
 # Getting started
 
-Follow our getting started toy shop tutorial [here](re-data/getting_started/toy_shop_analysis/README.md) 
+Follow our getting started toy shop tutorial! [here 🎈🚙 🦄](getting_started/toy_shop_analysis/README.md)
 
 # Docs
 
