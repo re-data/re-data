@@ -237,7 +237,7 @@ For now, that's it :) you can use `re_data_alerting` table as warning generator 
 You can also integrate re_data metrics any way you want with you curent BI tools.
 And of course re_data can be run from command line by airflow or other scheduling tool.
 
-### Ending
+### What do you think?
 
 Hope this tutorial was usefull for you to run yourself our data quality tool.
-If possible, let us know you thoughts on Slack :)
+Let us know you thoughts on Slack! :)
