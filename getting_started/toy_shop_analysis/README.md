@@ -1,8 +1,8 @@
 ## Getting started tutorial :)
 
 Welcome to `re_data` getting started tutorial.
-We will analyse and monitor toy shop data here :)
-Toy shop is fictional e-commerce shop (selling toys :)
+We will analyse and monitor toy shop data here 🤖
+Toy shop is fictional e-commerce shop - selling toys 🙂
 It's example of how re_data project can work and help you improve data in your data warehouse.
 
 ### Toy shop
@@ -42,7 +42,7 @@ Toy shop DB has currently just 3 tables:
 ```
 
 
-You can find toy shop data here. Toy shop started operating on 1 January 2021.
+You can find toy shop data here: [link](https://github.com/re-data/re-data/tree/feature/version-0.1.3/getting_started/toy_shop/data) Toy shop started operating on 1 January 2021.
 
 Toy shop data is stored in Postgres (re_data also works with BigQuery, Snowflake & Redshift)
 
