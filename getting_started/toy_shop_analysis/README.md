@@ -1,10 +1,11 @@
 ## Getting started tutorial :)
 
-This is example project for re_data tutorial
+Welcome to `re_data` getting started tutorial.
+We will analyse and monitor toy shop data here :)
+Toy shop is fictional e-commerce shop (selling toys :)
+It's example of how re_data project can work and help you improve data in your data warehouse.
 
-Toy shop is fictional e-commerce shop (selling toys :) It's example of how re_data project can work and help you improve data in your data warehouse.
-
-## Welcome to toy shop
+### Toy shop
 
 Toy shop DB has currently just 3 tables:
  - customers
@@ -43,10 +44,11 @@ Toy shop DB has currently just 3 tables:
 
 You can find toy shop data here. Toy shop started operating on 1 January 2021.
 
+Toy shop data is stored in Postgres (re_data also works with BigQuery, Snowflake & Redshift)
+
 ### Create re_data project
 
-Currently it's doing ok, but want to know something more than that from 
-data they are collecting. First we install re_data into our python environment.
+First we install re_data into our python environment.
 
 ```
 pip install re_data
@@ -63,18 +65,43 @@ With `re_data` and `dbt` your analysis can and if possible should be done in git
 
 ### Connecting to data warehouse 
 
-Not it's time to inspect what tables we have in our data warehouse.
+As re_data project is dbt project as well we can connect the same way.
+We for now will use dbt cli so that docs for setup can be find here: https://docs.getdbt.com/reference/profiles.yml
 
-To run inspection, we will need to first point `re_data` to tables in  data warehouse. We go into `dbt_project.yml` file in newly created created directory and
-fill in the line like that
+For postgreSQL we specify this, on our `~/.dbt/profiles.yml` files
+```
+toy_shop_analysis:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: xxx
+      user: xxx
+      password: xxx
+      port: 5432
+      dbname: xxx
+      schema: toy_shop_analysis
+      threads: 4
+```
+
+Once we have that, we need to make sure our project is also using this configuration, so we should have line like this in `dbt_project.yml` file.
+
+```
+profile: 'toy_shop_analysis'
+```
+
+### Running inspection of tables
+
+Now it's time to inspect what tables we have in our data warehouse.
+
+To run inspection, we will need to first point `re_data` to tables in data warehouse. We go into `dbt_project.yml` file in newly created  directory and fill in the line like that
 
 ```
     re_data:schemas:
         - toy_shop
 ```
 
-All data we are intersted in is in `toy_shop` table schema, it would be possible to pass couple schemas here.
-
+All data we are interested in is in `toy_shop` table schema.
 Ok. now we want to run `re_data` for first time, for now just to detect tables we 
 in our data warehouse. We run following command.
 
@@ -98,13 +125,15 @@ toy_shop_analysis.re_data_columns  toy_shop_analysis.re_data_tables
  "toy_shop"."orders"      | created_at  | f                  | 2021-06-30 15:11:07.697005
 ```
 
-In our simple DB we want to start monitoring all those tables, we can turn it on with simple SQL:
+We want to start monitoring all of those tables, we can turn it on with simple SQL:
 
 ```
 update toy_shop_analysis.re_data_tables set actively_monitored = true;
 ```
 
-Let's run it re_data now, for now just for first day of toy shop activity
+### Computing metrics for tables
+
+Let's run re_data now, for now just for first day of toy shop activity
 
 ```
 re_data run --start-date 2021-01-01 --end-date 2021-01-02
@@ -151,11 +180,10 @@ select table_name, column_name, metric, value from toy_shop_analysis.re_data_max
  "toy_shop"."orders"      | customer_id | max    |   490
 ```
 
-Ok, but now important now, briefly looking first day data seems reasonable.
+Briefly looking first day data seems reasonable.
 
-It maybe really usefull to create for those values beeing sensible, for example we most likely don't want max values to be below or even equal to zero in our data. We can do it easily by adding tests to our models.
- 
-But for now let's compute metrics for whole last month and see if re_data founds any anomalies in them
+It maybe really usefull to create tests for those values beeing in certain ranges etc. (We will do in another tutorial)
+But for now let's compute metrics for whole last month and see if re_data founds any anomalies in them.
 
 ```
 re_data run --start-date 2021-01-02 --end-date 2021-01-30
@@ -163,7 +191,7 @@ re_data run --start-date 2021-01-02 --end-date 2021-01-30
 
 Notice we start counting from second of Junuary as we don't want compute new metrics for first.
 
-Assuming this completed successfully lets query anomalies table
+Assuming this completed successfully lets query anomalies table:
 
 ```
 select * from toy_shop_analysis.re_data_alerting
@@ -185,7 +213,7 @@ select * from toy_shop_analysis.re_data_alerting
  "toy_shop"."customers"   | first_name  | min_length    |   5.102520382924569 |          4 |   3.0357142857142856 |   3.0357142857142856 | 2021-01-29 00:00:00 | 2021-06-30 15:31:56.423755
 ```
 
-We can see couple of alerting things here (some things look like false alerts here, but most seems to be reall alerts for example)
+We can see couple of alerting things here (some things look like false alerts, but most seems to be real problems with data)
 ```
         table_name        | column_name |  metric   |    z_score_value    | last_value |      last_avg      |   time_window_end
 --------------------------+-------------+-----------+---------------------+------------+--------------------+---------------------
@@ -209,11 +237,9 @@ We can see couple of alerting things here (some things look like false alerts he
 
 For now, that's it :) you can use `re_data_alerting` table as warning generator that something is not right with your data.
 You can also integrate re_data metrics any way you want with you curent BI tools.
+And of course re_data can be run from command line by airflow or other scheduling tool.
 
-# Ending
+### Ending
 
-Hope this tutorial was usefull for you to either follow or run yourself our data quality tool.
+Hope this tutorial was usefull for you to run yourself our data quality tool.
 If possible, let us know you thoughts on Slack :)
-
-
-
