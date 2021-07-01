@@ -68,7 +68,7 @@ With `re_data` and `dbt` your analysis can and if possible should be done in git
 As re_data project is dbt project as well we can connect the same way.
 We for now will use dbt cli so that docs for setup can be find here: https://docs.getdbt.com/reference/profiles.yml
 
-For postgreSQL we specify this, on our `~/.dbt/profiles.yml` files
+For postgres we specify this, on our `~/.dbt/profiles.yml` files
 ```
 toy_shop_analysis:
   target: dev
@@ -84,7 +84,7 @@ toy_shop_analysis:
       threads: 4
 ```
 
-Once we have that, we need to make sure our project is also using this configuration, so we should have line like this in `dbt_project.yml` file.
+And to use this confguration we add this line to `dbt_project.yml` file in directory created by re_data.
 
 ```
 profile: 'toy_shop_analysis'
@@ -94,16 +94,15 @@ profile: 'toy_shop_analysis'
 
 Now it's time to inspect what tables we have in our data warehouse.
 
-To run inspection, we will need to first point `re_data` to tables in data warehouse. We go into `dbt_project.yml` file in newly created  directory and fill in the line like that
+To run inspection, we will need to first point `re_data` to schema we our tables. We go once again into `dbt_project.yml` file fill in vars configuration:
 
 ```
     re_data:schemas:
         - toy_shop
 ```
 
-All data we are interested in is in `toy_shop` table schema.
-Ok. now we want to run `re_data` for first time, for now just to detect tables we 
-in our data warehouse. We run following command.
+Data we are interested about is in `toy_shop` table schema.
+Now we want to run `re_data` for the first time, for now just to detect tables. We run the following command.
 
 ```
 re_data detect
@@ -111,7 +110,7 @@ re_data detect
 
 Assuming run is successfull we go to our data warehouse and look for schema `toy_shop_analysis` (this is schema we passed to in `~/.dbt/profiles.yml`)
 
-There should be 2 tables created in you data warehouse:
+There should be 2 tables created in your data warehouse:
 ```
 toy_shop_analysis.re_data_columns  toy_shop_analysis.re_data_tables
 ```
@@ -133,7 +132,7 @@ update toy_shop_analysis.re_data_tables set actively_monitored = true;
 
 ### Computing metrics for tables
 
-Let's run re_data now, for now just for first day of toy shop activity
+Let's run re_data, for now just for first day of toy shop activity
 
 ```
 re_data run --start-date 2021-01-01 --end-date 2021-01-02
@@ -180,7 +179,6 @@ select table_name, column_name, metric, value from toy_shop_analysis.re_data_max
  "toy_shop"."orders"      | customer_id | max    |   490
 ```
 
-Briefly looking first day data seems reasonable.
 
 It maybe really usefull to create tests for those values beeing in certain ranges etc. (We will do in another tutorial)
 But for now let's compute metrics for whole last month and see if re_data founds any anomalies in them.
