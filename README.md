@@ -37,6 +37,12 @@ re_data looks at metrics gathered and alerts if those are suspicious comparing t
 
 Will be detected. All data including anomalies is saved directly into your data warehouse so you can easily integrate any existing alerting with it.
 
+## Data testing
+
+re_data supports writing data tests by adding `dbt_expectations` library (and some our test macros) to dbt project created. We recommend using it, to test both:
+ * tables you are monitoring
+ * metrics about your data created by re_data
+
 # Getting started
 
 Follow our getting started toy shop tutorial! [here 🎈🚙 🦄](getting_started/toy_shop_analysis/README.md)
