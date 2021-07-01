@@ -37,40 +37,9 @@ re_data looks at metrics gathered and alerts if those are suspicious comparing t
 
 Will be detected. All data including anomalies is saved directly into your data warehouse so you can easily integrate any existing alerting with it.
 
-## UI
-
-Ok.. so it's not really here yet, but we are working on it and will have some updates soon. Also remember your metrics are computed in your data warehouse so, you can visualize them in your favorite business inteligence tool.
-
-We are focusing on making UI solve administrative part of data quality too, if you have your thoughts on what should be included let us know!
-
 # Getting started
-## Start your data quality project
 
-
-```
-pip install re_data
-re_data init my_dq_project
-```
-
-re_data project is in fact a standard dbt project. But you don't need to use dbt for your workflows or even know dbt at all.
-re_data has build in set of metrics computed which doesn't require you to write any code.
-
-## Running your project
-
-Running your project is very simple, just choose dates and run this (from your project folder):
-
-```
-re_data run --start-date 2021-01-18 --end-date 2021-01-19
-```
-
-This will create metrics and alerts for specfied date range and store it in your data warehouse (by default metrics are computed daily)
-
-## Extending your project
-
-If you would like to compute more metrics or otherwise extend your data quality project, you have 2 options:
-
-* If you think, you needs maybe usefull for others let us know! We will be adding more features to re_data and will be happy to talk about your needs,
-* If you think, what you need is specific to your organization, add it yourself. As re_data is dbt project you can add you own models / macros / tests etc. You need to know dbt for that, but we highly recommand learning writing code in it in this case - *it's Jinja templates generating SQL, nothing to be scared of :see_no_evil:*
+Follow our getting started toy shop tutorial [here](re-data/getting_started/toy_shop_analysis/README.md) 
 
 # Docs
 
