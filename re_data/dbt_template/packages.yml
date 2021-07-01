@@ -4,4 +4,7 @@ packages:
     
     - package: re-data/re_data
       version: [">0.1.0", "<0.2.0"]
+
+    - package: calogica/dbt_expectations
+      version: 0.3.6
     
