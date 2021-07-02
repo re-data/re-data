@@ -90,11 +90,13 @@ And to use this confguration we add this line to `dbt_project.yml` file in direc
 profile: 'toy_shop_analysis'
 ```
 
+Notice we use `toy_shop_analysis` as profile name as well as schema in db connection. All tables created will have this schema.
+
 ### Running inspection of tables
 
 Now it's time to inspect what tables we have in our data warehouse.
 
-To run inspection, we will need to first point `re_data` to schema we our tables. We go once again into `dbt_project.yml` file fill in vars configuration:
+To run inspection, we will need to first point `re_data` to schema were we have our tables. We go once again into `dbt_project.yml` file fill in vars configuration:
 
 ```
     re_data:schemas:
@@ -108,7 +110,7 @@ Now we want to run `re_data` for the first time, for now just to detect tables. 
 re_data detect
 ```
 
-Assuming run is successfull we go to our data warehouse and look for schema `toy_shop_analysis` (this is schema we passed to in `~/.dbt/profiles.yml`)
+Assuming run is successfull we go to our data warehouse and look for schema `toy_shop_analysis` 
 
 There should be 2 tables created in your data warehouse:
 ```
@@ -129,6 +131,8 @@ We want to start monitoring all of those tables, we can turn it on with simple S
 ```
 update toy_shop_analysis.re_data_tables set actively_monitored = true;
 ```
+
+*Notice, re_data guessed time_filter column for all the tables. This column will enable use to filter and collect daily metrics. We could have changed it, if it wasn't guessed properly by updating `toy_shop_analysis.re_data_tables` time_filter column*
 
 ### Computing metrics for tables
 
