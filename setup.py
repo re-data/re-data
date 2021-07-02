@@ -17,7 +17,7 @@ setup(
     license="MIT",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/redata-team/redata",
+    url="https://github.com/re-data/re-data",
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
