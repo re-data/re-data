@@ -117,7 +117,7 @@ There should be 2 tables created in your data warehouse:
 toy_shop_analysis.re_data_columns  toy_shop_analysis.re_data_tables
 ```
 
-`re_data_tables` tables will have output similar to this:
+`re_data_tables` tables will have content similar to this:
 ```
         table_name        | time_filter | actively_monitored |       detected_time
 --------------------------+-------------+--------------------+----------------------------
