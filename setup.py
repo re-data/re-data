@@ -10,14 +10,14 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="re_data",
-    version="0.1.2",
+    version="0.1.4",
     author="redata-team",
     author_email="hello@redata.team",
-    description="Framework for monitoring and improving data quality",
+    description="re_data - data quality framework",
     license="MIT",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/redata-team/redata",
+    url="https://github.com/re-data/re-data",
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -27,6 +27,7 @@ setup(
     install_requires=[
         "click>=7.1.2,<8.0.0",
     	"dbt>=0.19.1,<0.20.0",
+        "colorama>=0.3.9,<0.4.5",
         "grpcio==1.37.0"
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
