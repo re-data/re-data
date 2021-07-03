@@ -245,4 +245,4 @@ Congrats on finishing our tutorial! We hope it was useful for you! 🙂
 
 ### What do you think?
 
-Let us know your thoughts on [Slack!](www.redata.io/slack)
+Let us know your thoughts on [Slack!](https://www.re-data.io/slack)
