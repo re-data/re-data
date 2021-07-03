@@ -13,7 +13,7 @@ setup(
     version="0.1.3",
     author="redata-team",
     author_email="hello@redata.team",
-    description="Framework for improving data quality",
+    description="re_data - data quality framework",
     license="MIT",
     long_description=README,
     long_description_content_type="text/markdown",
