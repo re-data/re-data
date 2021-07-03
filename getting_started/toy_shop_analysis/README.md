@@ -92,9 +92,9 @@ profile: 'toy_shop_analysis'
 
 Notice we use `toy_shop_analysis` as profile name as well as schema in db connection. All tables created will have this schema.
 
-### Running inspection of tables
+### Setup
 
-Now it's time to inspect what tables we have in our data warehouse.
+Now it's time to inspect what tables we have in our data warehouse and decide how we would like to observe them.
 
 To run inspection, we will need to first point `re_data` to schema were we have our tables. We go once again into `dbt_project.yml` file fill in vars configuration:
 
@@ -184,7 +184,7 @@ select table_name, column_name, metric, value from toy_shop_analysis.re_data_max
 ```
 
 
-It maybe really usefull to create tests for those values beeing in certain ranges etc. (We will do in another tutorial)
+It maybe really usefull to create tests for those values being in certain ranges etc. (We will do in another tutorial)
 But for now let's compute metrics for whole last month and see if re_data founds any anomalies in them.
 
 ```
@@ -193,7 +193,7 @@ re_data run --start-date 2021-01-02 --end-date 2021-01-30
 
 Notice we start counting from second of Junuary as we don't want compute new metrics for first.
 
-Assuming this completed successfully lets query anomalies table:
+Assuming this completed successfully lets query alerts table:
 
 ```
 select * from toy_shop_analysis.re_data_alerting
@@ -215,7 +215,9 @@ select * from toy_shop_analysis.re_data_alerting
  "toy_shop"."customers"   | first_name  | min_length    |   5.102520382924569 |          4 |   3.0357142857142856 |   3.0357142857142856 | 2021-01-29 00:00:00 | 2021-06-30 15:31:56.423755
 ```
 
-We can see couple of alerting things here (some things look like false alerts, but most seems to be real problems with data)
+We can see couple of alerting things here (some things look like false alerts, but most seems to be real problems with data).
+For example for this:
+
 ```
         table_name        | column_name |  metric   |    z_score_value    | last_value |      last_avg      |   time_window_end
 --------------------------+-------------+-----------+---------------------+------------+--------------------+---------------------
@@ -223,7 +225,7 @@ We can see couple of alerting things here (some things look like false alerts, b
  "toy_shop"."orders"      |             | row_count | -3.2576351652461364 |          0 | 23.608695652173914 | 2021-01-24 00:00:00
  ```
 
- It seems on 2021-01-23 we didn't got any orders, and with average above 23 orders per day that seems really odd.
+ It seems on 2021-01-23 we didn't got any orders and with average above 23 orders per day that seems really odd.
 
  We are are also seeing alerting values of nulls in customers `first_name`, `last_name`, `age` at the end of the month:
 
