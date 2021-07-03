@@ -183,6 +183,9 @@ select table_name, column_name, metric, value from toy_shop_analysis.re_data_max
 
 
 It may be really useful to create tests for those values being in certain ranges etc. (We will do it in another tutorial)
+
+### Checking for anomalies
+
 But for now, let's compute metrics for the whole of last month and see if re_data will found any anomalies in them.
 
 ```
