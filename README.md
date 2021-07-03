@@ -6,16 +6,16 @@
 
 # re_data
 
-re_data is tool for improving data quality in your organization, build on top of [dbt](https://github.com/fishtown-analytics/dbt).
+re_data is a framework to improve data quality in your company, build on top of [dbt](https://github.com/fishtown-analytics/dbt).
 
-* create data quality project for your organization to monitor and improve quality of your data,
+* create a data quality project for your organization to monitor and improve the quality of your data,
 * compute data quality metrics for all your tables and add your own code computing those,
 * look for anomalies in all your metrics and investigate problematic data
 
 # Key features
 
 ## Data quality metrics
-re_data creates data quality metrics schema in your data warehouse containg metrics for all your tables (or only those you would like to monitor)
+re_data creates data quality metrics schema in your data warehouse containing metrics for all your tables (or only those you would like to monitor)
 Metrics schema contains information about:
 
 * time since last records were added
@@ -24,12 +24,12 @@ Metrics schema contains information about:
 * min/max/avg of values in all your columns
 * string lengths in all your columns
 
-Think about it as a `INFORMATION_SCHEMA` on steroids :muscle:
-And this is just a start and in your project you can compute many other data quality metrics specific to your organization.
+Think about it as an `INFORMATION_SCHEMA` on steroids :muscle:
+And this is just a start and in your project, you can compute many other data quality metrics specific to your organization.
 
 ## Detecting anomalies
 
-re_data looks at metrics gathered and alerts if those are suspicious comparing to data saw in the past. This means situations like those:
+re_data looks at metrics gathered and alerts if those are suspicious, comparing to data saw in the past. This means situations like those:
 * sudden drops or increases in the volume of new records added to your tables
 * longer than expected break between data arrivals
 * increase in NULL values in one of your columns
@@ -39,7 +39,7 @@ Will be detected. All data including anomalies is saved directly into your data 
 
 ## Data testing
 
-re_data supports writing data tests by adding `dbt_expectations` library (and some our test macros) to dbt project created. We recommend using it, to test both:
+re_data supports writing data tests by adding `dbt_expectations` library (and some of our test macros) to dbt project created. We recommend using it, to test both:
  * tables you are monitoring
  * metrics about your data created by re_data
 
@@ -49,7 +49,7 @@ Follow our getting started toy shop tutorial! [here 🎈🚙 🦄](getting_start
 
 # Docs
 
-More details on tables created by re_data through dbt package are on project github https://github.com/re-data/dbt-re-data and docs for this package: [here](https://re-data.github.io/dbt-re-data/#!/overview/re_data)
+More details on tables created by re_data through dbt package are on the project Github https://github.com/re-data/dbt-re-data and docs for this package: [here](https://re-data.github.io/dbt-re-data/#!/overview/re_data)
 
 # Community
 
@@ -58,7 +58,7 @@ Join [Slack](http://re-data.io/slack) for questions about using re_data and disc
 
 # Integrations
 
-We support all main data warehouses supported by dbt. We plan to add support for Spark (now officially supported by dbt). Other DBs *may* work, after installing  dbt extension for them. We currently not test re_data against those, so you you can do it at your own risk.
+We support almost all of the main data warehouses supported by dbt. We plan to add support for Spark (now officially supported by dbt).
 
 <table>
 	<thead>
@@ -84,7 +84,8 @@ re_data is licensed under the MIT license. See the [LICENSE](LICENSE) file for l
 
 We love all contributions :heart_eyes: bigger and smaller.
 
-Checkout out current list of issues [here](https://github.com/re-data/re-data/issues) and see if you like anything from there. Also feel welcome to join our [Slack](http://re-data.io/slack) and suggest ideas or setup a live session [here](https://calendly.com/mateuszklimek/30min). 
+Check out the current list of issues [here](https://github.com/re-data/re-data/issues) and see if you like anything from there. Also, feel welcome to join our [Slack](http://re-data.io/slack) and suggest ideas or set up a live session [here](https://calendly.com/mateuszklimek/30min). 
 
 And if you got this far and like what we are building, support us! Star https://github.com/re-data/re-data on Github :star_struck:
+
 
