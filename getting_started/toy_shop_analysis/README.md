@@ -42,7 +42,7 @@ Toy shop DB has currently just 3 tables:
 ```
 
 
-You can find toy shop data here: [link](https://github.com/re-data/re-data/tree/feature/version-0.1.3/getting_started/toy_shop/data) Toy shop started operating on 1 January 2021.
+You can find toy shop data here: [link](https://github.com/re-data/re-data/tree/feature/version-0.1.3/getting_started/toy_shop/data). Toy shop started operating on 1 January 2021.
 
 Toy shop data is stored in Postgres (re_data also works with BigQuery, Snowflake & Redshift)
 
@@ -112,7 +112,8 @@ re_data detect
 
 Assuming run is successfull we go to our data warehouse and look for schema `toy_shop_analysis` 
 
-There should be 2 tables created in your data warehouse:
+There should be 2 
+in your data warehouse:
 ```
 toy_shop_analysis.re_data_columns  toy_shop_analysis.re_data_tables
 ```
@@ -142,7 +143,7 @@ Let's run re_data, for now just for first day of toy shop activity
 re_data run --start-date 2021-01-01 --end-date 2021-01-02
 ```
 
-Assuming run was succesfull we should see bunch of new tables added to our DB
+Assuming run was succesfull we should see bunch of new tables (and views) added to our DB
 ```
 toy_shop_analysis.re_data_alerting       toy_shop_analysis.re_data_last_metrics
 toy_shop_analysis.re_data_avg            toy_shop_analysis.re_data_last_stats
