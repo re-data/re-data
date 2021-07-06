@@ -1,13 +1,9 @@
-
-# Name your project! Project names should contain only lowercase characters
-# and underscores. A good package name should reflect your organization's
-# name or the intended use of these models
-name: 'my_new_project'
+name: '{{project_name}}'
 version: '1.0.0'
 config-version: 2
 
 # Setup profile for re_data in your ~/.dbt/profile.yml file
-profile: 'your_dbt_profile_for_re_data'
+profile: '{{project_name}}'
 
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
@@ -24,8 +20,13 @@ clean-targets:         # directories to be removed by `dbt clean`
     - "target"
     - "dbt_modules"
 
-
 vars:
     re_data:alerting_z_score: 3
     re_data:schemas:
+        - {{project_name}}_models # by default re_data monitors schema with custom models created
         - example_schema # add your schemas to monitor here
+
+models:
+    {{project_name}}:
+        schema: models
+        # this saves your models under '{{project_name}}_models' schema
