@@ -10,9 +10,9 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="re_data",
-    version="0.1.4",
+    version="0.1.5b",
     author="redata-team",
-    author_email="hello@redata.team",
+    author_email="mateusz@getre.io",
     description="re_data - data quality framework",
     license="MIT",
     long_description=README,
@@ -27,7 +27,6 @@ setup(
     install_requires=[
         "click>=7.1.2,<8.0.0",
     	"dbt>=0.19.1,<0.20.0",
-        "colorama>=0.3.9,<0.4.5",
         "grpcio==1.37.0"
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
