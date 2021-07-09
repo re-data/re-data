@@ -23,7 +23,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 vars:
     re_data:alerting_z_score: 3
     re_data:schemas:
-        - {{project_name}}_models # by default re_data monitors schema with custom models created
+      #  - {{project_name}}_models - uncomment if have custom models 
         - example_schema # add your schemas to monitor here
 
 models:
