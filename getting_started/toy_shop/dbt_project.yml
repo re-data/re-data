@@ -2,12 +2,12 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'toy_shop_analysis'
+name: 'toy_shop'
 version: '1.0.0'
 config-version: 2
 
 # Setup profile for re_data in your ~/.dbt/profile.yml file
-profile: 'toy_shop_analysis'
+profile: 'toy_shop'
 
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
@@ -29,8 +29,3 @@ vars:
     re_data:alerting_z_score: 3
     re_data:schemas:
         - toy_shop # add your schemas to monitor here
-        - toy_shop_analysis_models
-
-models:
-    toy_shop_analysis:
-        +schema: models

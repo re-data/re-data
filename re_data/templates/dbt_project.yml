@@ -17,16 +17,10 @@ snapshot-paths: ["snapshots"]
 
 target-path: "target"  # directory which will store compiled SQL files
 clean-targets:         # directories to be removed by `dbt clean`
-    - "target"
-    - "dbt_modules"
+- "target"
+- "dbt_modules"
 
 vars:
-    re_data:alerting_z_score: 3
-    re_data:schemas:
-      #  - {{project_name}}_models - uncomment if have custom models 
-        - example_schema # add your schemas to monitor here
-
-models:
-    {{project_name}}:
-        schema: models
-        # this saves your models under '{{project_name}}_models' schema
+  re_data:alerting_z_score: 3
+  re_data:schemas:
+    - example_schema # this schemas will be monitored
