@@ -16,8 +16,8 @@ Notice we start counting from the second of January as we don't want to compute 
 
 Assuming this completed successfully lets query alerts table:
 
-```sql title="toy_shop_analysis.re_data_alerting"
-select * from toy_shop_analysis.re_data_alerting
+```sql title="toy_shop_re.re_data_alerting"
+select * from toy_shop_re.re_data_alerting
         table_name        | column_name |    metric     |    z_score_value    | last_value |       last_avg       |     last_stddev      |   time_window_end   |        computed_on
 --------------------------+-------------+---------------+---------------------+------------+----------------------+----------------------+---------------------+----------------------------
  "toy_shop"."customers"   | id          | max           | -3.0571164943755322 |        384 |    489.7142857142857 |    489.7142857142857 | 2021-01-15 00:00:00 | 2021-06-30 15:29:00.660753

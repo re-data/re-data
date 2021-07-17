@@ -9,46 +9,25 @@
 
 # re_data
 
-re_data is a framework to improve data quality in your company, build on top of [dbt](https://github.com/fishtown-analytics/dbt).
+re_data is data quality SDK. It lets you do queries similar to those:
 
-* create a data quality project for your organization to monitor and improve the quality of your data,
-* compute data quality metrics for all your tables and add your own code computing those,
-* look for anomalies in all your metrics and investigate problematic data
+```sql title="Your Data Warehouse"
+select * from anomalies_in_row_counts;
 
-# Key features
+select * from recent_schema_changes;
 
-## Data quality metrics
-re_data creates data quality metrics schema in your data warehouse containing metrics for all your tables (or only those you would like to monitor)
-Metrics schema contains information about:
+select * from all_tables_freshness order by last_update_time;
 
-* time since last records were added
-* number of records added
-* number of missing values in columns over time
-* min/max/avg of values in all your columns
-* string lengths in all your columns
+select * from daily_null_percent where table = 'X' and col = 'Y';
+```
 
-Think about it as an `INFORMATION_SCHEMA` on steroids :muscle:
-And this is just a start and in your project, you can compute many other data quality metrics specific to your organization.
+in your Snowflake, Redshift, BigQuery, Postgres DB.
 
-## Detecting anomalies
+Build as dbt-package & optional python lib. 
 
-re_data looks at metrics gathered and alerts if those are suspicious, comparing to data saw in the past. This means situations like those:
-* sudden drops or increases in the volume of new records added to your tables
-* longer than expected break between data arrivals
-* increase in NULL values in one of your columns
-* different maximal/minimal/avg numbers in any of table columns
+It let's you know what's happening in your data.
 
-Will be detected. All data including anomalies is saved directly into your data warehouse so you can easily integrate any existing alerting with it.
-
-## Data testing
-
-re_data supports writing data tests by adding `dbt_expectations` library (and some of our test macros) to dbt project created. We recommend using it, to test both:
- * tables you are monitoring
- * metrics about your data created by re_data
-
-# Getting started
-
-Follow our getting started toy shop tutorial! [here 🎈🚙 🦄](getting_started/toy_shop_analysis/README.md)
+And you can visualize it, any way you want in your favorite BI tool.
 
 # Docs
 
