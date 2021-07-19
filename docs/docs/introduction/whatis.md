@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # What is re_data?
 
-re_data is data quality SDK. It lets you do queries similar to those:
+re_data is data quality framework. It lets you do queries similar to those:
 
 ```sql title="Your Data Warehouse"
 select * from anomalies_in_row_counts;

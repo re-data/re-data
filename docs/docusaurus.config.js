@@ -4,7 +4,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 're_data docs',
-  tagline: 'data quality SDK',
+  tagline: 'data quality framework',
   url: 'https://re-data.github.io',
   baseUrl: '/re-data/',
   onBrokenLinks: 'throw',
