@@ -29,7 +29,7 @@ It let's you know what's happening in your data.
 
 And you can visualize it, any way you want in your favorite BI tool.
 
-# Getting stated
+# Getting started
 
 Check out [docs :notebook_with_decorative_cover:  :notebook_with_decorative_cover:](https://re-data.github.io/re-data/docs/introduction/whatis)
 
