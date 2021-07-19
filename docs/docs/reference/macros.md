@@ -12,13 +12,15 @@ More enables you to test if metric for specific table_name is between low-high r
 Example usage:
 
 ```yml title=schema.yml
-      - name: re_data_row_count
-        tests:
-          - test_values_between:
-              table_name: "toy_shop"."orders"
-              column_name: amount
-              low: 0
-              high: 10000
+models:
+  - name: row_counts
+    tests:
+      - re_data.values_between:
+          table_name: '"toy_shop"."orders"'
+          column_name: value
+          low: 0
+          high: 10000
+
 ```
 
 This will check if metrics gathred for specific table are inside a range
