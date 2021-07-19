@@ -21,7 +21,7 @@ module.exports = {
       },
       items: [
         {
-          to: '/docs/introduction/whatis',
+          to: '/re-data/docs/introduction/whatis',
           label: 'Docs',
           position: 'left',
           activeBasePath: 'introduction'
