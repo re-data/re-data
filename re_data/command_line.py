@@ -6,6 +6,7 @@ from dbt.ui import green, red
 from dbt.task.printer import print_fancy_output_line
 import shutil
 import os
+from re_data.templating import render
 
 @click.group(help=f"re_data CLI")
 def main():
@@ -18,9 +19,12 @@ def main():
 )
 def init(project_name):
     print_fancy_output_line(f"Creating {project_name} template project", "RUN", print, None, None)
-
     dir_path = os.path.dirname(os.path.realpath(__file__))
     shutil.copytree(os.path.join(dir_path, 'dbt_template'), project_name)
+
+    with open(f"{project_name}/dbt_project.yml", "w") as f:
+        f.write(render.render_dbt_project(project_name))
+
     bash_command = f'cd {project_name} && dbt deps'
     response = os.system(bash_command)
 

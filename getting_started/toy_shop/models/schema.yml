@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: toy_shop
+    tables:
+      - name: orders
+      - name: order_items
+      - name: customers
+
+models:
+  - name: row_counts
+    tests:
+      - re_data.values_between:
+          table_name: '"toy_shop"."orders"'
+          column_name: value
+          low: 0
+          high: 10000
