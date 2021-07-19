@@ -33,6 +33,10 @@ And you can visualize it, any way you want in your favorite BI tool.
 
 Check out [docs :notebook_with_decorative_cover:  :notebook_with_decorative_cover:](https://re-data.github.io/re-data/docs/introduction/whatis)
 
+# Source code
+
+As dbt packages, currenlty need to be a seperate github repos - most of source code of re_data is [here](https://github.com/re-data/dbt-re-data)
+
 # Community
 
 Join [Slack](http://re-data.io/slack) for questions about using re_data and discussion with people making it :slightly_smiling_face:
