@@ -29,9 +29,9 @@ It let's you know what's happening in your data.
 
 And you can visualize it, any way you want in your favorite BI tool.
 
-# Docs
+# Getting stated
 
-More details on tables created by re_data through dbt package are on the project Github https://github.com/re-data/dbt-re-data and docs for this package: [here](https://re-data.github.io/dbt-re-data/#!/overview/re_data)
+Check out [docs :notebook_with_decorative_cover:  :notebook_with_decorative_cover:](https://re-data.github.io/re-data/docs/introduction/whatis)
 
 # Community
 
