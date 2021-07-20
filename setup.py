@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="re_data",
-    version="0.1.6b",
+    version="0.1.6rc1",
     author="redata-team",
     author_email="mateusz@getre.io",
     description="re_data - data quality framework",
