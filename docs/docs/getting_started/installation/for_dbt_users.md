@@ -34,4 +34,4 @@ Optionally you can install re_data python package, which simplifies running some
 pip install re_data
 ```
 
-Will talk more about this in Getting started tutorial
+We will talk more about this in the Getting started tutorial

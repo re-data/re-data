@@ -7,7 +7,7 @@ sidebar_position: 2
 You are not using dbt (yet?) in your company but would like to try to re_data
 
 
-**Excellent choice!** re_data can help you with data quality and is a good way to start using dbt in your organization, even if you are: not yet ready to switch, or happy with current way of tranforming data 
+**Excellent choice!** re_data can help you with data quality and is a good way to start using dbt in your organization, even if you are: not yet ready to switch, or happy with the current way of transforming data. 
 
 ## Install re_data package & init your project
 
@@ -44,7 +44,7 @@ project_name:
       threads: 4
 ```
 
-More details on how to setup profile file for you DB, can be found in [dbt docs](https://docs.getdbt.com/dbt-cli/configure-your-profile)
+More details on how to set up a profile file for your DB can be found in [dbt docs](https://docs.getdbt.com/dbt-cli/configure-your-profile)
 
 ## You are done
 
