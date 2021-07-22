@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Checking for anomalies
 
-Now we will compute metircs for the whole last month and check if they are any anomlies there.
+Now we will compute metrics for the whole last month and check if they are any anomlies there.
 We could definitely do it using just dbt command, also on production you most likely will have airflow job computing it daily.
 Here for simplicity we will use `re_data run` command which is just calling dbt with proper vars:
 
