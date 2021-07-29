@@ -16,7 +16,7 @@ Then we run monitoring, we choose to run it for first day of the 2021:
 
 
 ```bash
-dbt run --vars \
+dbt run --models package:re_data --vars \
    '{
      "re_data:time_window_start": "2021-01-01 00:00:00",
      "re_data:time_window_end": "2021-01-02 00:00:00"

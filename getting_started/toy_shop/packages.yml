@@ -1,7 +1,7 @@
 packages:
-    - package: fishtown-analytics/dbt_utils
-      version: [">0.6.5", "<0.7.0"]
+    - package: dbt-labs/dbt_utils
+      version: [">=0.7.0", "<0.8.0"]
     
     - git: https://github.com/re-data/dbt-re-data
-      revision: feature/0.1.5
+      revision: feature/dbt0.20-support
     
