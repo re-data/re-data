@@ -26,8 +26,7 @@ setup(
     ],
     install_requires=[
         "click>=7.1.2,<8.0.0",
-    	"dbt>=0.20.0,<0.21.0",
-        "grpcio==1.37.0"
+    	"dbt>=0.20.0,<0.21.0"
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={
