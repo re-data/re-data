@@ -12,7 +12,7 @@ Here for simplicity we will use `re_data run` command which is just calling dbt 
 re_data run --start-date 2021-01-02 --end-date 2021-01-30
 ```
 
-Notice we start counting from the second of January as we don't want to compute new metrics for the January 1st twice.
+*Notice we already have Janaury 1st stats, so don't need to recompute them. In case of we want to recompute them, `re_data` will overwrite older ones with new.*
 
 Assuming this completed successfully lets query alerts table:
 

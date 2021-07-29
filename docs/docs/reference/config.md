@@ -15,6 +15,7 @@ vars:
     - another_schema_to_monitor
   re_data:time_window_end: '2021-06-03 00:00:00'
   re_data:time_window_start: '2021-06-02 00:00:00'
+  re_data:anomaly_detection_look_back_days: 30
   re_data:actively_monitored_by_default: false
 ```
   
@@ -38,6 +39,10 @@ Start specifies start of this time range.
 
 End specifies start of this time range. 🙂
 
+
+### `re_data:anomaly_detection_look_back_days`
+
+Period which `re_data` considers when looking for anomalies
 
 ### `re_data:actively_monitored_by_default`
 

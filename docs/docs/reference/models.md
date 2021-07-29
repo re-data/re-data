@@ -56,9 +56,16 @@ Average length of all strings appearing in a given column for specific time rang
 Internal table containing most of described metrics (apart from `re_data_freshness`). To really access
 metrics it's usually better to use view for specific metric.
 
-#### re_data_z_score
+### re_data_z_score
 Computed z_score for metric. `re_data` looks back on what where metrics values in last 30 days and compute z_score for newest value.
 
-#### re_data_alerting
+### re_data_alerting
 View computed on top of `re_data_z_score` table to contain metrics which look alerting. Alerting threshold is controled by var `re_data:alerting_z_score`
 which is equal to 3 by default, but can be changed and adjusted.
+
+### re_data_schema_changes
+
+All schema changes in `actively_monitored` tables in period monitored by `re_data`. 
+
+
+*Notice! `re_data` doesn't find out about past schema changes (those before starting running re_data) This is different to other metrics which take into account `re_data:time_window_end` and `re_data:time_window_start` and can compute metrics for the past data.*
