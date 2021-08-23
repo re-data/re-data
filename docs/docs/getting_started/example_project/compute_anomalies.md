@@ -63,8 +63,4 @@ postgres=> select * from toy_shop_re.re_data_alerting where metric = 'row_count'
 
 It seems on 2021-01-23 we didn't get any orders and with an average above 23 orders per day that seems really odd.
 
-You can use the re_data_alerting table as a warning generator that something is not right with your data. You can also integrate re_data metrics any way you want with your current BI tools. And of course, re_data can be run from a command line by Airflow or another scheduling tool.
-
-Congrats on finishing our tutorial! We hope it was useful for you! 🙂
-
-Let us know your thoughts on [Slack!](https://www.re-data.io/slack)
+You can use the re_data_alerting table as a warning generator that something is not right with your data.

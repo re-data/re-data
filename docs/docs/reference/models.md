@@ -72,7 +72,7 @@ All schema changes in `actively_monitored` tables in period monitored by `re_dat
 re_data compares schemas from most recent snapshots of column types (computed in `re_data_columns_over_time`), and if there are
 any differences, it adds information about them to this table.
 
-:::caution
+:::info
 
 `re_data` doesn't use `re_data:time_window_end` and `re_data:time_window_start` when computing this model.
 
