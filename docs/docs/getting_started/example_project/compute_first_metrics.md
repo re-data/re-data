@@ -27,11 +27,12 @@ dbt run --models package:re_data --vars \
 All of those contain metrics of our 3 tables. Let's just see how many orders/customers we have added in on 01-01-2021.
 
 ```sql
-        table_name        | column_name |  metric   | value |  time_window_start  |   time_window_end   |       computed_on
---------------------------+-------------+-----------+-------+---------------------+---------------------+--------------------------
- "toy_shop"."customers"   |             | row_count |    15 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00 | 2021-07-15 11:36:50.7232
- "toy_shop"."order_items" |             | row_count |    48 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00 | 2021-07-15 11:36:50.7232
- "toy_shop"."orders"      |             | row_count |    20 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00 | 2021-07-15 11:36:50.7232
+postgres=> select * from toy_shop_re.re_data_row_count ;
+               table_name               | column_name |  metric   | value |  time_window_start  |   time_window_end
+----------------------------------------+-------------+-----------+-------+---------------------+---------------------
+ "postgres"."toy_shop"."customers"      |             | row_count |    15 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
+ "postgres"."toy_shop"."order_items"    |             | row_count |    48 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
+ "postgres"."toy_shop"."orders"         |             | row_count |    20 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
 ```
 
 We can of course inspect any of those metrics and it maybe also really usefull to write dbt tests for values we expect in those.
