@@ -22,7 +22,9 @@ We set up a visualization for `Re Data Row Count` items in Metabase. Here is how
 
 ![RowStats](/screenshots/metabase/row_stats.png)
 
-We can see the problems in a chart.
+If we remember the issue in our example, or if we look closely enough on a diagram we can see the potential problems here. Data around 24 January on a chart is missing `order_items` and `orders`, we only have `customers` for this day, which is really suspicious.
+
+When running re_data reguarly we should be able detect this kind of problems when they happen.
 
 If we are happy with visualization it's best to save it so that and later on use it or add it to your dashboard.
 
