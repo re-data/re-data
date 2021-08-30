@@ -39,6 +39,12 @@ module.exports = {
           activeBasePath: 'reference'
         },
         {
+          to: 'docs/bi_integration/introduction',
+          label: 'BI tools',
+          position: 'left',
+          activeBasePath: 'BI tools'
+        },
+        {
           href: 'https://github.com/re-data/re-data',
           label: 'GitHub',
           position: 'right',
