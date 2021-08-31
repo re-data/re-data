@@ -7,7 +7,7 @@ sidebar_position: 1
 
 ## All created tables
 
-Let's look into an example for our tutorial toy_shop data, we can find all starts computed for toy_shop in `toy_shop_re` schema
+Let's look into an example for our tutorial toy_shop data, we can find all stats computed for toy_shop in `toy_shop_re` schema
 
 ![AllTables](/screenshots/metabase/all_tables.png)
 
