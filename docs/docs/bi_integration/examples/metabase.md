@@ -2,23 +2,19 @@
 sidebar_position: 1
 ---
 
-
 # Metabase
 
 ## All created tables
 
-Let's look into an example for our tutorial toy_shop data, we can find all starts computed for toy_shop in `toy_shop_re` schema
+Let's look into an example for our tutorial toy_shop data, we can find all stats computed for toy_shop in `toy_shop_re` schema
 
 ![AllTables](/screenshots/metabase/all_tables.png)
-
 
 ## Let's investigate rows counts
 
 Let's say we want to look into row counts metrics. (From the toy_shop example there were problems with someday missing orders items)
 
-
 We set up a visualization for `Re Data Row Count` items in Metabase. Here is how it looks like:
-
 
 ![RowStats](/screenshots/metabase/row_stats.png)
 
@@ -37,21 +33,20 @@ Now, let's look into alerts for a specific table: `customers`. It looks like we 
 Quick check into our actual data confirms that we have invalid
 data added to our table:
 
-
 ![ActualDataCheck](/screenshots/metabase/null_data_problem.png)
 
 Notice, that with re_data stats it's easy to go back and forth from actual data, when investigating problems & anomalies.
-
 
 ## Composing health dashboard
 
 Let's just compose couple of Questions (in Metabase sense) to create a simple dashboard describing system health.
 
 Those are things we would like to add to our dashboard:
- - Numbers of rows in our tables
- - Freshness of data
- - All recent alerts from our tables
- - All recent schema changes
+
+- Numbers of rows in our tables
+- Freshness of data
+- All recent alerts from our tables
+- All recent schema changes
 
 Here is how it looks like:
 
@@ -66,11 +61,4 @@ For freshness visualization, if it looks strangely linear to you, that is expect
 
 ## Your BI
 
-If you would like to see any other example of BI dashboard (Looker, Tableu, Superset, etc.) or you have your setup which you would like to share with the world, let us know on [Slack!](https://www.getre.io/slack) 😊
-
-
-
-
-
-
-
+If you would like to see any other example of BI dashboard (Looker, Tableau, Superset, etc.) or you have your setup which you would like to share with the world, let us know on [Slack!](https://www.getre.io/slack) 😊
