@@ -9,7 +9,7 @@
 
 # re_data
 
-re_data is a data quality framework. It lets you do queries similar to those:
+re_data is a data quality framework. It lets you run queries similar to these:
 
 ```sql title="Your Data Warehouse"
 select * from anomalies_in_row_counts;
@@ -25,9 +25,9 @@ in your Snowflake, Redshift, BigQuery, Postgres DB.
 
 Build as dbt-package & optional python lib. 
 
-It lets you know what's happening in your data.
+It lets you know what's happening in your data,
 
-And you can visualize it, any way you want in your favorite BI tool.
+so you can visualize it, any way you want, in your favorite BI tool.
 
 # Getting started
 
@@ -35,7 +35,7 @@ Check out [docs :notebook_with_decorative_cover:  :notebook_with_decorative_cove
 
 # Source code
 
-As dbt packages, currently need to be a seperate github repos - most of source code of re_data is [here](https://github.com/re-data/dbt-re-data)
+As dbt packages currently need to be a seperate github repos, most of source code of re_data can be found [here](https://github.com/re-data/dbt-re-data)
 
 # Community
 
@@ -44,7 +44,7 @@ Join [Slack](http://re-data.io/slack) for questions about using re_data and disc
 
 # Integrations
 
-We support almost all of the main data warehouses supported by dbt. We plan to add support for Spark (now officially supported by dbt).
+We support most of the main data warehouses supported by dbt. We plan to add support for Spark (now officially supported by dbt).
 
 <table>
 	<thead>
