@@ -35,7 +35,7 @@ Check out [docs :notebook_with_decorative_cover:  :notebook_with_decorative_cove
 
 # Source code
 
-As dbt packages, currenlty need to be a seperate github repos - most of source code of re_data is [here](https://github.com/re-data/dbt-re-data)
+As dbt packages, currently need to be a seperate github repos - most of source code of re_data is [here](https://github.com/re-data/dbt-re-data)
 
 # Community
 
