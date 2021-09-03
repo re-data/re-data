@@ -2,7 +2,7 @@
 <img alt="Logo" width=18% src="static/logo/redata_logo_cicle.svg"/>
 </p>
 <p align="center">
-<a href="http://re-data.io/slack"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
+<a href="https://www.getre.io/slack"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
 <img alt="License" src="https://img.shields.io/github/license/redata-team/redata?color=violet"/>
 <img alt="Last commit" src="https://img.shields.io/github/last-commit/redata-team/redata"/>
 </p>
@@ -39,7 +39,7 @@ As dbt packages currently need to be a seperate github repos, most of source cod
 
 # Community
 
-Join [Slack](http://re-data.io/slack) for questions about using re_data and discussion with people making it :slightly_smiling_face:
+Join [Slack](https://www.getre.io/slack) for questions about using re_data and discussion with people making it :slightly_smiling_face:
 
 
 # Integrations
@@ -70,7 +70,7 @@ re_data is licensed under the MIT license. See the [LICENSE](LICENSE) file for l
 
 We love all contributions :heart_eyes: bigger and smaller.
 
-Check out the current list of issues [here](https://github.com/re-data/re-data/issues) and see if you like anything from there. Also, feel welcome to join our [Slack](http://re-data.io/slack) and suggest ideas or set up a live session [here](https://calendly.com/mateuszklimek/30min). 
+Check out the current list of issues [here](https://github.com/re-data/re-data/issues) and see if you like anything from there. Also, feel welcome to join our [Slack](https://www.getre.io/slack) and suggest ideas or set up a live session [here](https://calendly.com/mateuszklimek/30min). 
 
 And if you got this far and like what we are building, support us! Star https://github.com/re-data/re-data on Github :star_struck:
 
