@@ -3,24 +3,35 @@ sidebar_position: 1
 ---
 
 # What is re_data?
+re_data lets data teams compute various data quality metrics about their datasets and later on:
+  - test
+  - visualize
+  - find anomalies in those
 
-re_data is a data quality framework. It lets you do queries similar to those:
+re_data is meant to help data teams find, debug data problems and sleep well knowing they you will know if something unexpected happens.
 
-```sql title="Your Data Warehouse"
-select * from anomalies_in_row_counts;
+re_data works strictly inside your data warehouse - by doing transformations on your tables. It let's you improve your data without it needing to leave your data warehouse.
 
-select * from recent_schema_changes;
+## How to use re_data?
 
-select * from all_tables_freshness order by last_update_time;
+re_data is primarily a dbt package, so it's easy to add to the existing dbt projects. Check out **[installation](/docs/getting_started/installation/for_dbt_users)** tutorial.
 
-select * from daily_null_percent where table = 'X' and col = 'Y';
+You can compute a lot of build-in metrics like: `row_count`, `missing_count`, `freshness`, `schema_changes`.
+See all currently available: **[metrics](/docs/reference/metrics)**, and also define your own metrics in your dbt project:
+
+```sql title="macros/my_metrics.sql"    
+{% macro re_data_metric_diff(column_name) %}
+    max({column_name}) - min({column_name})
+{% endmacro %}
 ```
 
-in your Snowflake, Redshift, BigQuery, Postgres DB.
+You can compute simple metrics for all your datasets and add custom metrics for specific tables. (Check out example **[config](/docs/reference/config)**) re_data will track all computed metrics and look for **[anomalies](/docs/reference/anomalies)** in them and you can also test them using our build-in **[tests](/docs/reference/tests)**.
 
-Build as dbt-package & optional python lib. 
+All your metrics are stored as tables (dbt **[models](/docs/reference/models)**) in your data warehouse and because of that available to you in your:
+ - BI tools,
+ - Data Warehouse UIs,
+ - SQL clients
 
-It lets you know what's happening in your data.
+re_data groups the metrics (from multiple tables) together and keeps them in one common format, which makes it easy to create a dashboard for data quality. Check out **[visualizations](/docs/bi_integration/introduction)**. examples.
 
-And you can visualize it, any way you want in your favorite BI tool.
-
+Have more questions? Check out the rest of re_data docs, or ask as on **[Slack! 😊](https://www.re-data.io/slack)** (we are very responsive there)

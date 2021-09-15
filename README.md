@@ -9,25 +9,15 @@
 
 # re_data
 
-re_data is a data quality framework. It lets you run queries similar to these:
+# What is re_data?
+re_data lets data teams compute various data quality metrics about their datasets and later on:
+  - test
+  - visualize
+  - find anomalies in those
 
-```sql title="Your Data Warehouse"
-select * from anomalies_in_row_counts;
+re_data is meant to help data teams find, debug data problems and sleep well knowing they you will know if something unexpected happens.
 
-select * from recent_schema_changes;
-
-select * from all_tables_freshness order by last_update_time;
-
-select * from daily_null_percent where table = 'X' and col = 'Y';
-```
-
-in your Snowflake, Redshift, BigQuery, Postgres DB.
-
-Build as dbt-package & optional python lib. 
-
-It lets you know what's happening in your data,
-
-so you can visualize it, any way you want, in your favorite BI tool.
+re_data works strictly inside your data warehouse - by doing transformations on your tables. It let's you improve your data without it needing to leave your data warehouse.
 
 # Getting started
 
@@ -46,21 +36,13 @@ Join [Slack](https://www.getre.io/slack) for questions about using re_data and d
 
 We support most of the main data warehouses supported by dbt. We plan to add support for Spark (now officially supported by dbt).
 
-<table>
-	<thead>
-		<tr>
-			<th colspan="2">Integration</th>
-			<th>Status</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr><td><img height="40" src="https://miro.medium.com/max/1024/0*eDEy4S8zFfYnRt1X.png" /></td><td style="width: 200px;"><a href="https://cloud.google.com/bigquery">BigQuery</a></td><td>Supported</td></tr>
-		<tr><td><img height="40" src="https://www.pngkey.com/png/full/20-201458_when-ubers-engineering-team-published-a-blog-post.png" /></td><td style="width: 200px;"><a href="https://www.postgresql.org/">PostgreSQL</a></td><td>Supported</td></tr>
-		<tr><td><img height="40" src="https://dbdb.io/media/logos/amazon-redshift.png" /></td><td style="width: 200px;"><a href="https://aws.amazon.com/redshift/">Redshift</a></td><td>Supported</td></tr>
-		<tr><td><img height="40" src="https://www.snowflake.com/wp-content/themes/snowflake/img/snowflake-logo-blue@2x.png" /> </td><td style="width: 200px;"><a href="https://www.snowflake.com/">Snowflake</a></td><td>Supported</td></tr>
-		<tr><td><img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Apache_Spark_logo.svg/1200px-Apache_Spark_logo.svg.png" /> </td><td style="width: 200px;"><a href="https://spark.apache.org/">Apache Spark</a></td><td>Planned</td></tr>
-	</tbody>
-</table>
+|      | Integration | Status     |
+| :---        |    :----:   |          ---: |
+| <img height="40" src="https://miro.medium.com/max/1024/0*eDEy4S8zFfYnRt1X.png" />      | BigQuery       | Supported |
+| <img height="40" src="https://www.pngkey.com/png/full/20-201458_when-ubers-engineering-team-published-a-blog-post.png" />   | PostgreSQL        | Supported      |
+| <img height="40" src="https://dbdb.io/media/logos/amazon-redshift.png" />  | Redshift        | Supported      |
+| <img height="40" src="https://www.snowflake.com/wp-content/themes/snowflake/img/snowflake-logo-blue@2x.png" />  | Snowflake        | Supported      |
+| <img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Apache_Spark_logo.svg/1200px-Apache_Spark_logo.svg.png" />  | Apache Spark        | Planned      |
 
 
 # License
