@@ -3,12 +3,12 @@ sidebar_position: 1
 ---
 
 # What is re_data?
-re_data lets data teams compute various data quality metrics about their datasets and later on:
+re_data lets data teams compute various metrics about their datasets and later on:
   - test
   - visualize
   - find anomalies in those
 
-re_data is meant to help data teams find, debug data problems and sleep well knowing they you will know if something unexpected happens.
+re_data is meant to help data teams find, debug data problems and sleep well knowing they they will know if something unexpected happens.
 
 re_data works strictly inside your data warehouse - by doing transformations on your tables. It let's you improve your data without it needing to leave your data warehouse.
 
