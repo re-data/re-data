@@ -42,7 +42,7 @@ models:
 
 ## Build-in metrics tests
 
-### re_data.metric_expression_is_true
+### metric_expression_is_true
 
 Most flexible test. It accepts:
  - table - which should be a ref to model which metrics we want to test
@@ -51,11 +51,11 @@ Most flexible test. It accepts:
  - condition - filtering condition, when you only want to tests only metrics for a limited time window.
  - expression - any expression, as re_data_metrics stores metric value in `value` column 😊 You would usually write some expression with `value` column used.
 
-### re_data.metric_equal_to
+### metric_equal_to
 
 Simple shortcut which lets you check if the metric has one specific value
 
-### re_data.re_data.metric_in_range
+### metric_in_range
 
 Simple shortcut which lets you check if metric values are in the range
 
@@ -63,7 +63,6 @@ Simple shortcut which lets you check if metric values are in the range
 
 Some of the metrics produced and possible tests for them may overlap with tests
 you are already doing on your models.
-q
 In this case, we advise to:
  - testing things that cannot happen in your models tests
  - testing for warning things that are alerting (but can happen and you don't want to stop processing because of it with re_data metrics)
