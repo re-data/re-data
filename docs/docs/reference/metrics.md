@@ -20,8 +20,11 @@ If metrics you would like to monitor are more complicated than that, we advise c
 
 ## Time based
 
-re_data metrics are time-based. (re_data filters all your table data to a specific time window.) You can choose any time window with proper **[config](/docs/reference/config)** setting.
+re_data metrics are time-based. (re_data filters all your table data to a specific time window.) You can choose any time window with proper **[config](/docs/reference/config)**.
 
+:::info
+Why do we only support time-based metrics? We believe all datasets gain in quality when they have some time-based column (think `creation_time`, `ingestion_time`, etc.) added to them. This way you know when data is coming, or when it was created, etc. Without a time-based mark, it's quite hard to define metrics & anomalies properly. Let us know if you think for your use-case it doesn't make sense.
+:::
 
 ## Build-in metrics
 

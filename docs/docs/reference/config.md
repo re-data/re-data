@@ -12,9 +12,11 @@ vars:
   re_data:time_window_start: '{{ (run_started_at - modules.datetime.timedelta(1)).strftime("%Y-%m-%d 00:00:00") }}'
   re_data:time_window_end: '{{ run_started_at.strftime("%Y-%m-%d 00:00:00") }}'
 
+  # *required
   re_data:schemas:
     - dq_raw
   
+  # *required if you want to configure re_data in code (not in DB)
   re_data:monitored:
 
     - schema: dq_raw
@@ -66,7 +68,7 @@ vars:
   # usually keeping default will be enough
   re_data:alerting_z_score: 3
 
-  # (optional) how much hisory we want to consider when looking for anomalies
+  # (optional) tells how much hisory you want to consider when looking for anomalies
   re_data:anomaly_detection_look_back_days: 30
 ```
 
