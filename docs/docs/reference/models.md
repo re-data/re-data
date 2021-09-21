@@ -1,89 +1,63 @@
 ---
-sidebar_position: 2
+sidebar_position: 4
 ---
 
 # Models
 
-Models created by re_data.
+All data produced by re_data is saved in dbt models. Let's go over the most important of them:
 
-### re_data_tables
-Information about all monitored tables. This is currently only table which is supposed to be edited (you can think of it as a configuration table) 
-2 columns can be changed there:
-- Change `actively_monitored` to `true`/`false` to start/stop monitoring table and computing stats for it, `(default: false)`
-- Change `time_filter` to name of column you would like to use as time filter
-Time filter is important thing in `re_data`, it's used in all filters computing metrics (to filter records added in a given day)
-On the start some educated guess 🙂 is assigned as this field, but quite often it may require to be changed. `(default: first timestamp type column)`
+### re_data_metrics
 
+This models contains (almost all - except schema changes) metrics computed by re_data. Here is how this table looks like:
 
-### re_data_columns
-Information about all monitored columns, this contains information about columns similar to this
-what you can find in `information_schema`. This table is not supposed to be edited and new columns will be added and old removed
-in case of schema changes for your tables.
+```sql title="re_data_metrics" 
+select * from dq_re.re_data_metrics
+                id                |          table_name          | column_name |   metric    | value |  time_window_start  |   time_window_end   | interval_length_sec
+----------------------------------+------------------------------+-------------+-------------+-------+---------------------+---------------------+--------------------
+ 5950d1123559dee165d999c9c85a71ce | "postgres"."dq"."buy_events" | value1      | min         |   107 | 2021-05-01 00:00:00 | 2021-05-02 00:00:00 |               86400
+ 4de8037a73b65339e940065968ab53be | "postgres"."dq"."buy_events" | value1      | max         |   107 | 2021-05-01 00:00:00 | 2021-05-02 00:00:00 |               86400
+ 5824e152ceb289fd4170e28964781296 | "postgres"."dq"."buy_events" | value1      | avg         |   107 | 2021-05-01 00:00:00 | 2021-05-02 00:00:00 |               86400
 
-### re_data_freshness
-Information about time (in seconds) since last data was added to each table. `time_filter` column is used to find about
-time the record was added. If `time_filter` column is updated (with new time), update time will also be taken into account.
+```
+And here is a brief description of what all columns mean:
+- `id` - unique id generated for column, generated from table_name, column_name, metric, time_window_start, time_window_end. In the case of these 5 metrics being the same for newly generated data, data for metric will be overwritten. 
+- `table_name` - full name of the monitored table in your database
+- `column_name` - column name, or empty value in case of table level metrics 
+- `metric` - name of metric, are defined in **[metrics](/docs/reference/metrics)**
+- `value` - value of a metric (curently all re_data metrics are numeric)
+- `time_window_start` - timestamp of time window start
+- `time_window_end` - timestamp of time window end
+- `interval_length_sec` - length of time-window in seconds, used internally to compare same length time intervals when computing anomalies
 
-:::info
-`re_data` uses only `re_data:time_window_end` when computing this model.
-
-You can thing about this as freshness is computed in `re_data:time_window_end` point in time. 
-This enables you to backfill freshness to for the past data (assuming you will can re_data with different `re_data:time_window_end` parameters)
-
-:::
-
-### re_data_row_count
-Numbers of rows added to table in specific time range.
-
-### re_data_count_nulls
-Number of nulls in a given column for specific time range.
-
-### re_data_count_missing
-Number of nulls and empty string values in a given column for specific time range.
-
-### re_data_min
-Minimal value appearing in a given column for specific time range.
-
-### re_data_max
-Maximal value appearing in a given column for specific time range.
-
-### re_data_avg
-Average of all values appearing in a given column for specific time range.
-
-### re_data_min_length
-Minimal length of all strings appearing in a given column for specific time range.
-
-### re_data_max_length
-Maximal length of all strings appearing in a given column for specific time range.
-
-### re_data_avg_length
-Average length of all strings appearing in a given column for specific time range.
-
-### re_data_base_metrics
-Internal table containing most of described metrics (apart from `re_data_freshness`). To really access
-metrics it's usually better to use view for specific metric.
-
-### re_data_columns_over_time
-This contains all columns together with their types (tables schema), computed for all `re_data` runs.
 
 ### re_data_schema_changes
 
-All schema changes in `actively_monitored` tables in period monitored by `re_data.` 
-re_data compares schemas from most recent snapshots of column types (computed in `re_data_columns_over_time`), and if there are
-any differences, it adds information about them to this table.
+Schema changed are computed separately, this model contains all detected schema changes.
 
-:::info
+### re_data_monitored
 
-`re_data` doesn't use `re_data:time_window_end` and `re_data:time_window_start` when computing this model.
+Model containing:
+ - table names
+ - their time filters columns
+ - and additional metrics to be computed for those.
 
-As schema data is only available for current schema. All schema changes found will be from period when re_data is used for monitoring.
+This model refreshes each time re_data runs and describes what re_data computes. It is generated from your `dbt_project.yml` configurations plus the optional `re_data_tables` configuration saved in the data warehouse.
 
-:::
+### re_data_tables 
+This table is an optional way of defining what re_data computes. (apart from dbt_project vars configuration). 
+
+2 columns can be edited in this table:
+- `actively_monitored` to `true`/`false` to start/stop monitoring table and computing stats for it, `(default: false)`
+- `time_filter` to the name of the column you would like to use as a time filter.
+
+ re_data prioritizes code configuration so changes will only affect tables that are not specified in `dbt_project.yml`. 
+
+We strongly advise to not configure the same parameters both in DB and code. DB configuration is meant for people wanting to enable/disable lots of tables on the DB level as opposed to configuring them all in code.
 
 ### re_data_z_score
 Computed z_score for metric. `re_data` looks back on what where metrics values in last 30 days and compute z_score for newest value.
 
 ### re_data_alerting
-View computed on top of `re_data_z_score` table to contain metrics which look alerting. Alerting threshold is controled by var `re_data:alerting_z_score`
+View computed on top of `re_data_z_score` table to contain metrics that look alerting. Alerting threshold is controlled by var `re_data:alerting_z_score`
 which is equal to 3 by default, but can be changed and adjusted.
 
