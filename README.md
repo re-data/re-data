@@ -7,8 +7,6 @@
 <img alt="Last commit" src="https://img.shields.io/github/last-commit/redata-team/redata"/>
 </p>
 
-# re_data
-
 # What is re_data?
 re_data lets data teams compute various metrics about their datasets and later on:
   - test
