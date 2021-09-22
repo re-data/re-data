@@ -54,15 +54,15 @@ vars:
         - avg
         - stddev
         - variance
-        - count_nulls
+        - nulls_count
         - diff # my own custom metric
         
       text:
         - min_length
         - max_length
         - avg_length
-        - count_nulls
-        - count_missing
+        - nulls_count
+        - missing_count
 
   # (optional) global z_score threshold to use for alerting
   # usually keeping default will be enough
