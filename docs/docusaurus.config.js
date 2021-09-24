@@ -45,6 +45,12 @@ module.exports = {
           activeBasePath: 'BI tools'
         },
         {
+          to: 'docs/qa',
+          label: 'Q&A',
+          position: 'left',
+          activeBasePath: 'BI tools'
+        },
+        {
           href: 'https://github.com/re-data/re-data',
           label: 'GitHub',
           position: 'right',
