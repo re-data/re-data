@@ -15,20 +15,17 @@ re_data lets data teams compute various metrics about their datasets and later o
 
 re_data is meant to help data teams find, debug data problems and sleep well knowing that they will know if something unexpected happens.
 
-re_data works strictly inside your data warehouse - by doing transformations on your tables. It let's you improve your data without it needing to leave your data warehouse.
+re_data works strictly inside your data warehouse (it's implemented in large part as dbt package) - and is doing transformations on your tables in your data warehouse.
 
 # Getting started
 
-Check out [docs :notebook_with_decorative_cover:  :notebook_with_decorative_cover:](https://re-data.github.io/re-data/docs/introduction/whatis)
+[Check our docs!](https://re-data.github.io/re-data/docs/introduction/whatis) 📓 📓
+
+[Join re_data community on Slack](https://www.getre.io/slack) (we are very responsive there)
 
 # Source code
 
 As dbt packages currently need to be a seperate github repos, most of source code of re_data can be found [here](https://github.com/re-data/dbt-re-data)
-
-# Community
-
-Join [Slack](https://www.getre.io/slack) for questions about using re_data and discussion with people making it :slightly_smiling_face:
-
 
 # Integrations
 
