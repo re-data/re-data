@@ -103,6 +103,14 @@ The average length of all strings appearing in a given column
 
 A number of nulls and empty string values in a given column for the specific time range.
 
+#### missing_percent
+
+A percentage of nulls and empty string values in a given column for the specific time range.
+
+#### nulls_percent
+
+A percentage of null values in a given column for the specific time range.
+
 
 ## Defining your metric
 
