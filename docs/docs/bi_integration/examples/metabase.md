@@ -61,4 +61,4 @@ For freshness visualization, if it looks strangely linear to you, that is expect
 
 ## Your BI
 
-If you would like to see any other example of BI dashboard (Looker, Tableau, Superset, etc.) or you have your setup which you would like to share with the world, let us know on [Slack!](https://www.getre.io/slack) 😊
+If you would like to see any other example of BI dashboard (Looker, Tableau, Superset, etc.) or you have your setup which you would like to share with the world, let us know on [Slack!](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug) 😊
