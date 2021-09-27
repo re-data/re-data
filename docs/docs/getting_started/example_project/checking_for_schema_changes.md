@@ -47,4 +47,4 @@ When using apache Airflow as you job scheduler, it's recommended to run
 and compute `re_data` after your main dbt project. 
 You can use both `re_data` package or just plain `dbt` for computing re_data models.
 
-If you want to talk more about your setup, features to add or just say hi! We encourage you to join as on [Slack!](https://www.re-data.io/slack) 😊
+If you want to talk more about your setup, features to add or just say hi! We encourage you to join us on [Slack!](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug) 😊
