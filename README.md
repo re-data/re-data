@@ -2,7 +2,7 @@
 <img alt="Logo" width=18% src="static/logo/redata_logo_cicle.svg"/>
 </p>
 <p align="center">
-<a href="https://www.getre.io/slack"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
+<a href="https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
 <img alt="License" src="https://img.shields.io/github/license/redata-team/redata?color=violet"/>
 <img alt="Last commit" src="https://img.shields.io/github/last-commit/redata-team/redata"/>
 </p>
