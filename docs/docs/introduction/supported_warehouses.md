@@ -16,4 +16,4 @@ We support most of the main data warehouses supported by dbt. We plan to add sup
 
 Using other data warehouses and want it being supported? Or need help with data warehouse setup?
 
-Let us know on **[Slack! 😊](https://www.re-data.io/slack)** (we are very responsive there)
+Let us know on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)** (we are very responsive there)
