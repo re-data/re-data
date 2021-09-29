@@ -12,13 +12,12 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 're-data', // Usually your GitHub org/user name.
   projectName: 're-data', // Usually your repo name.
-  plugins: ['@docusaurus/plugin-google-gtag'],
   themeConfig: {
     gtag: {
       // You can also use your "G-" Measurement ID here.
       trackingID: 'G-ETVVXXQ387',
       // Optional fields.
-      anonymizeIP: false, // Should IPs be anonymized?
+      anonymizeIP: true, // Should IPs be anonymized?
     },
     navbar: {
       title: 're_data',
