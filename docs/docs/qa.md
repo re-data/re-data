@@ -35,4 +35,4 @@ As re_data is a dbt package, you can (and we have installations of that) run re_
 
 #### Other questions?
 
-Have more questions? Ask as on **[Slack! 😊](https://www.re-data.io/slack)** (we are very responsive there)
+Have more questions? Ask as on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)** (we are very responsive there)

@@ -147,4 +147,4 @@ Import difference between table and column level metrics is.
  
 ## Your metric ideas
 
-Currently, all build-in metrics are also computed by default, but we intend to add metrics that will be build-in but optional (`distinct_count` being an example of such metric). If you have other suggestions of such metrics let us know on **[Slack! 😊](https://www.re-data.io/slack)**
+Currently, all build-in metrics are also computed by default, but we intend to add metrics that will be build-in but optional (`distinct_count` being an example of such metric). If you have other suggestions of such metrics let us know on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)**
