@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Compute first metrics
 
-Now lets compute first metircs. On the start we want to turn on monitoring for all detected tables:
+Now lets compute first metrics. On the start we want to turn on monitoring for all detected tables:
 
 We do this just be running SQL:
 
