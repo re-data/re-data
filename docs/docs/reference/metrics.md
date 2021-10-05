@@ -111,6 +111,22 @@ A percentage of nulls and empty string values in a given column for the specific
 
 A percentage of null values in a given column for the specific time range.
 
+#### match_regex
+
+Determines the count of values in a given column that matches the specified regex.
+
+#### match_regex_percent
+
+Determines the percentage of values in a given column that matches the specified regex.
+
+#### not_match_regex
+
+Determines the count of values in a given column that does not match the specified regex.
+
+#### not_match_regex_percent
+
+Determines the pecentage of values in a given column that does not match the specified regex.
+
 
 ## Defining your metric
 
