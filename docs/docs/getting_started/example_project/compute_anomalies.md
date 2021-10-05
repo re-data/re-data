@@ -4,17 +4,17 @@ sidebar_position: 5
 
 # Checking for anomalies
 
-Now we will compute metrics for the whole last month and check if they are any anomlies there.
-We could definitely do it using just dbt command, also on production you most likely will have airflow job computing it daily.
-Here for simplicity we will use `re_data run` command which is just calling dbt with proper vars:
+Now we will compute metrics for the whole last month and check if there are any anomalies present.
+We could definitely do it using just a dbt command. As well, in production you most likely will have airflow jobs computing it daily.
+Here, for simplicity, we will use the `re_data run` command, which is just calling dbt with proper vars:
 
 ```
 re_data run --start-date 2021-01-02 --end-date 2021-01-30
 ```
 
-*Notice we already have Janaury 1st stats, so don't need to recompute them. In case of we want to recompute them, `re_data` will overwrite older ones with new.*
+*Notice we already have Janaury 1st stats, so we don't need to recompute them. In case we want to recompute them, `re_data` will overwrite older stats with new.*
 
-Assuming this completed successfully lets query alerts table:
+Assuming this completed successfully, let's query the alerts table:
 
 ```sql title="toy_shop_re.re_data_alerting"
 postgres=> select table_name, column_name, metric, z_score_value, time_window_end from toy_shop_re.re_data_alerting;
@@ -44,6 +44,6 @@ postgres=> select * from toy_shop_re.re_data_alerting where metric = 'row_count'
  "postgres"."toy_shop"."orders"         |             | row_count | -3.2576351652461364 |          0 | 23.608695652173914 |  7.247188360352917 | 2021-01-24 00:00:00
 ```
 
-It seems on 2021-01-23 we didn't get any orders and with an average above 23 orders per day that seems really odd.
+It seems on 2021-01-23 we didn't get any orders. With an average of more than 23 orders per day, that seems really odd.
 
 You can use the re_data_alerting table as a warning generator that something is not right with your data.

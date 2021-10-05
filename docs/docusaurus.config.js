@@ -13,6 +13,12 @@ module.exports = {
   organizationName: 're-data', // Usually your GitHub org/user name.
   projectName: 're-data', // Usually your repo name.
   themeConfig: {
+    gtag: {
+      // You can also use your "G-" Measurement ID here.
+      trackingID: 'G-ETVVXXQ387',
+      // Optional fields.
+      anonymizeIP: true, // Should IPs be anonymized?
+    },
     navbar: {
       title: 're_data',
       logo: {

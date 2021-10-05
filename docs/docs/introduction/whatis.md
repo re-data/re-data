@@ -34,4 +34,4 @@ All your metrics are stored as tables (dbt **[models](/docs/reference/models)**)
 
 re_data groups the metrics (from multiple tables) together and keeps them in one common format, which makes it easy to create a dashboard for data quality. Check out **[visualizations](/docs/bi_integration/introduction)**. examples.
 
-Have more questions? Check out the rest of re_data docs, or ask as on **[Slack! 😊](https://www.re-data.io/slack)** (we are very responsive there)
+Have more questions? Check out the rest of re_data docs, or ask as on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)** (we are very responsive there)
