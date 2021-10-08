@@ -16,7 +16,7 @@ re_data works strictly inside your data warehouse - by doing transformations on 
 
 re_data is primarily a dbt package, so it's easy to add to the existing dbt projects. Check out **[installation](/docs/getting_started/installation/for_dbt_users)** tutorial.
 
-You can compute a lot of build-in metrics like: `row_count`, `missing_count`, `freshness`, `schema_changes`.
+You can compute a lot of built-in metrics like: `row_count`, `missing_count`, `freshness`, `schema_changes`.
 See all currently available: **[metrics](/docs/reference/metrics)**, and also define your own metrics in your dbt project:
 
 ```sql title="macros/my_metrics.sql"    
@@ -25,7 +25,7 @@ See all currently available: **[metrics](/docs/reference/metrics)**, and also de
 {% endmacro %}
 ```
 
-You can compute simple metrics for all your datasets and add custom metrics for specific tables. (Check out example **[config](/docs/reference/config)**) re_data will track all computed metrics and look for **[anomalies](/docs/reference/anomalies)** in them and you can also test them using our build-in **[tests](/docs/reference/tests)**.
+You can compute simple metrics for all your datasets and add custom metrics for specific tables. (Check out example **[config](/docs/reference/config)**) re_data will track all computed metrics and look for **[anomalies](/docs/reference/anomalies)** in them and you can also test them using our built-in **[tests](/docs/reference/tests)**.
 
 All your metrics are stored as tables (dbt **[models](/docs/reference/models)**) in your data warehouse and because of that available to you in your:
  - BI tools,
