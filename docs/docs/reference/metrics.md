@@ -20,7 +20,7 @@ If metrics you would like to monitor are more complicated than that, we advise c
 
 ## Time based
 
-re_data metrics are time-based. (re_data filters all your table data to a specific time window.) You can choose any time window with proper **[config](/docs/reference/config)**.
+re_data metrics are time-based. (re_data filters all your table data to a specific created_at is You can choose any time window with proper **[config](/docs/reference/config)**.
 
 :::info
 Why do we only support time-based metrics? We believe all datasets gain in quality when they have some time-based column (think `creation_time`, `ingestion_time`, etc.) added to them. This way you know when data is coming, or when it was created, etc. Without a time-based mark, it's quite hard to define metrics & anomalies properly. Let us know if you think for your use-case it doesn't make sense.
@@ -66,11 +66,8 @@ Below is a list of currently available metrics and how they are computed interna
 
 Numbers of rows added to the table in a specific time range.
 
-```sql title="row_count"
-select count(1) from your_table
-where time_filter in time_window
-
--- row_count = 10 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- row_count = 10 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### freshness
@@ -97,167 +94,111 @@ in fact, **doesn't** use time_window settings at all.
 
 Minimal value appearing in a given numeric column.
 
-```sql title="min"
-select min(rental_rate) from your_table
-where time_filter in time_window
-
--- min = 0.99 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- min(rental_rate) = 0.99 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### max
 
 Maximal value appearing in a given numeric column.
 
-```sql title="max"
-select max(rental_rate) from your_table
-where time_filter in time_window
-
--- max = 4.99 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- max(rental_rate) = 4.99 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### avg
 
 Average of all values appearing in a given numeric column.
 
-```sql title="avg"
-select avg(rental_rate) from your_table
-where time_filter in time_window
-
--- avg = 3.79 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- avg(rental_rate) = 3.79 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### stddev
 
 The standard deviation of all values appearing in a given numeric column.
 
-```sql title="stddev"
-select stddev(rental_rate) from your_table
-where time_filter in time_window
-
--- stddev = 1.3984117975602022 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- stddev(rental_rate) = 1.3984117975602022 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### variance
 
 The variance of all values appearing in a given numeric column.
 
-```sql title="variance"
-select variance(rental_rate) from your_table
-where time_filter in time_window
-
--- variance = 1.9555555555555557 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- variance(rental_rate) = 1.9555555555555557 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### min_length
 
 Minimal length of all strings appearing in a given column.
 
-```sql title="min_length"
-select min(length(rating)) from your_table
-where time_filter in time_window
-
--- min_length = 1 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- min_length(rating) = 1 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### max_length
 
 Maximal length of all strings appearing in a given column
 
-```sql title="max_length"
-select max(length(rating)) from your_table
-where time_filter in time_window
-
--- max_length = 5 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- max_length(rating) = 5 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### avg_length
 
 The average length of all strings appearing in a given column
 
-```sql title="avg_length"
-select avg(cast (length(rating))) from your_table
-where time_filter in time_window
-
--- avg_length = 2.4 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- avg_length(rating) = 2.4 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### nulls_count
 
 A number of nulls in a given column.
 
-```sql title="nulls_count"
-select coalesce(
-        sum(
-            case when rating is null
-                then 1
-            else 0
-            end
-        ), 0
-    ) from your_table
-where time_filter in time_window
-
--- nulls_count = 0 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- nulls_count(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### missing_count
 
 A number of nulls and empty string values in a given column for the specific time range.
 
-```sql title="missing_count"
-select coalesce(
-        sum(
-            case 
-            when rating is null
-                then 1
-            when rating = ''
-                then 1
-            else 0
-            end
-        ), 0
-    ) from your_table
-where time_filter in time_window
-
--- missing_count = 0 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- missing_count(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### missing_percent
 
 A percentage of nulls and empty string values in a given column for the specific time range.
 
-```sql title="missing_percent"
-select coalesce(
-        sum(
-            case 
-            when rating is null
-                then 1
-            when rating = ''
-                then 1
-            else 0
-            end
-        ), 0
-    ) / count(1) * 100.0 from your_table
-where time_filter in time_window
-
--- missing_percent = 0 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- missing_percent(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
 #### nulls_percent
 
 A percentage of null values in a given column for the specific time range.
 
-```sql title="nulls_percent"
-select coalesce(
-        sum(
-            case when rating is null
-                then 1
-            else 0
-            end
-        ), 0
-    ) / count(1) * 100.0 from your_table
-where time_filter in time_window
-
--- nulls_percent = 0 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- nulls_percent(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
+
+## Optional Metrics
+There are metrics provided by re_data but are not computed by default in monitored tables. It is worth noting some of these metrics may be computationally heavy which is why they aren't computed by default.
+
+### Optional Table Metrics
+
+#### distinct_rows
+This metric computes the distinct number of rows in the given table
+```sql
+-- time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+-- distinct_rows = 10
+```
+
+### Optional Column Metrics
 
 :::info
 `regex_match_expression` is resolved at runtime depending on the database in use.  <br />
@@ -267,76 +208,126 @@ Snoflake: REGEXP_LIKE(column_name, '[regex]')
 :::
 #### match_regex
 
-Determines the count of values in a given column that matches the specified regex.
+Determines the count of values in a given column that matches the specified regex. Suppose we want to check if
+the rating column matches a specific regular expression pattern and we define it in our dbt_project.yml file.
+- `regex` **must** be specified for this metric to work else a compiler exception would be raised.
 
-```sql title="match_regex"
+```yaml title="specifying match_regex config"
+vars:
+  re_data:monitored:
+    - tables:
+        - name: sample_table
+          time_filter: created_at
+
+          metrics:
+            column:
+              rating:
+                - match_regex:
+                    regex: ([0-9]+)
+```
+The matching rows are shown below
+```sql
 select coalesce(
         sum(
-            case when {{ regex_match_expression('rating', '[0-9]+') }}
+            case when {{ regex_match_expression('rating', '([0-9]+)') }}
                 then 1
             else 0
             end
         ), 0
     ) from your_table
-where time_filter in time_window
+where created_at between time_window_start and time_window_end
 
--- match_regex = 4 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+------------------------------------------------------------------------
+1    	Chamber Italian     4.99    	NC-17       2021-09-01T11:00:00
+4    	Bright Encounters	4.99	    PG-13       2021-09-01T09:00:00
+5    	Academy Dinosaur	0.99	    PG-13       2021-09-01T08:00:00
+7    	Adaptation Holes	2.99	    NC-17       2021-09-01T11:00:00
+
+-- match_regex = 4 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
 ```
 
 #### match_regex_percent
 
 Determines the percentage of values in a given column that matches the specified regex.
 
-```sql title="match_regex_percent"
-select coalesce(
-        sum(
-            case when {{ regex_match_expression('rating', '[0-9]+') }}
-                then 1
-            else 0
-            end
-        ), 0
-    ) / count(1) * 100.0 from your_table
-where time_filter in time_window
-
--- match_regex_percent = 40 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- Suppose we use the same configuration for the match_regex metric above, we have
+-- match_regex_percent = 40 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
 ```
 
 #### not_match_regex
 
-Determines the count of values in a given column that does not match the specified regex.
+Determines the count of values in a given column that does **not** match the specified regex.
 
-```sql title="not_match_regex"
-select count(1) - coalesce(
-        sum(
-            case when {{ regex_match_expression('rating', '[0-9]+') }}
-                then 1
-            else 0
-            end
-        ), 0
-    ) from your_table
-where time_filter in time_window
-
--- not_match_regex = 6 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```sql
+-- Suppose we pass in ([0-9]+) as our regex parameter,
+-- not_match_regex = 6 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
 ```
 
-#### not_match_regex_percent
+#### distinct_values
 
-Determines the pecentage of values in a given column that does not match the specified regex.
+Determines the count of values in a given column that are unique.
 
-```sql title="not_match_regex_percent"
-select (
-    count(1) - coalesce(
-        sum(
-            case when {{ regex_match_expression('rating', '[0-9]+') }}
-                then 1
-            else 0
-            end
-        ), 0
-    )
-) / count(1) * 100.0 from your_table
-where time_filter in time_window
+```sql
+rating	count
+-----------------
+PG-13	2
+G	    3
+NC-17	2
+PG	    1
+R	    2
+-- time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+-- distinct_values = 1. (PG)
+```
 
--- not_match_regex_percent = 60 where time window is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+#### duplicate_values
+
+Determines the count of values in a given column that are duplicated.
+
+```sql
+rating	count
+-----------------
+PG-13	2
+G	    3
+NC-17	2
+PG	    1
+R	    2
+
+-- time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+-- duplicate_values = 4. (PG-13, G, NC-17, R)
+```
+
+#### duplicate_count
+
+Determines the count of rows in a given column that have values which are duplicates.
+
+```sql
+rating	count
+-----------------
+PG-13	2
+G	    3
+NC-17	2
+PG	    1
+R	    2
+
+-- time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+-- duplicate_count = 9. (PG-13[2], G[3], NC-17[2], R[2])
+```
+
+#### distinct_count
+Determines the count of rows in a given column that have values which are unique.
+
+```sql
+rating	count
+-----------------
+PG-13	2
+G	    3
+NC-17	2
+PG	    1
+R	    2
+
+-- time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+-- distinct_count = 1 (PG)
 ```
 
 
@@ -349,12 +340,12 @@ Metrics can be defined in any place in your dbt project, as macros with names fo
 
  - Both column and table level metrics take a dictionary called `context`
  - ```python
-    # Below is the structure of a context dictionary
+    # Below is the structure of a context dictionary by default
     {
         "column_name": # contains the name of the column to compute the metric on. null in table metrics
         "table_name": # contains the full table name for reference in metric query definition
         "metric_name": # name of the metric being computed
-        "time_filter": # time window the metric is computed on
+        "time_filter": # time column used to filter the time window
     }
  ```
 
@@ -379,7 +370,7 @@ Here are examples of custom metrics (one table, one column level)
 
 Import difference between table and column level metrics is.
  - Table level metrics reference column names directly.
- - Column level metrics reference it thought `context.column_name` variable. (Which makes them more re-usable)
+ - Column level metrics reference it through `context.column_name` variable. (Which makes them more re-usable)
  
 ## Your metric ideas
 
