@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+dbt_docs_base_url: https://re-data.github.io/dbt-re-data
 ---
 
 # Metrics
@@ -26,9 +27,9 @@ re_data metrics are time-based. (re_data filters all your table data to a specif
 Why do we only support time-based metrics? We believe all datasets gain in quality when they have some time-based column (think `creation_time`, `ingestion_time`, etc.) added to them. This way you know when data is coming, or when it was created, etc. Without a time-based mark, it's quite hard to define metrics & anomalies properly. Let us know if you think for your use-case it doesn't make sense.
 :::
 
-## Built-in metrics
+## Default metrics
 
-Built-in metrics are default computed for all monitored tables. They can be either:
+Default metrics are computed for all monitored tables. They can be either:
   - table-level - metric for the whole table
   - column level - metric for a specific column in the table
 
@@ -60,22 +61,22 @@ __      title               rental_rate	rating      created_at
 
 Below is a list of currently available metrics and how they are computed internally by `re_data`:
 
-### Table level metrics
+### Default Table level metrics
 
-#### row_count
+### row_count
 
 Numbers of rows added to the table in a specific time range.
 
 ```sql
--- row_count = 10 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+row_count = 10 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### freshness
+### freshness
 
 Information about the oldest record which appeared in table.
 `null` in case of no data appearing in monitored time-widow.
 
-#### schema_changes
+### schema_changes
 
 Information about schema changes in the monitored table.
 
@@ -88,125 +89,122 @@ between re_data runs this metric **doesn't** filter changes to time-window speci
 in fact, **doesn't** use time_window settings at all.
 :::
 
-### Column level metrics
+### Default Column level metrics
 
-#### min
+### [min](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_min)
 
 Minimal value appearing in a given numeric column.
 
-```sql
--- min(rental_rate) = 0.99 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+min(rental_rate) = 0.99 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### max
+### [max](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_max)
 
 Maximal value appearing in a given numeric column.
 
-```sql
--- max(rental_rate) = 4.99 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+max(rental_rate) = 4.99 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### avg
+### [avg](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_avg)
 
 Average of all values appearing in a given numeric column.
 
-```sql
--- avg(rental_rate) = 3.79 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+avg(rental_rate) = 3.79 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### stddev
+### [stddev](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_stddev)
 
 The standard deviation of all values appearing in a given numeric column.
 
-```sql
--- stddev(rental_rate) = 1.3984117975602022 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+stddev(rental_rate) = 1.3984117975602022 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### variance
+### [variance](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_variance)
 
 The variance of all values appearing in a given numeric column.
 
-```sql
--- variance(rental_rate) = 1.9555555555555557 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+variance(rental_rate) = 1.9555555555555557 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### min_length
+### [min_length](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_min_length)
 
 Minimal length of all strings appearing in a given column.
 
-```sql
--- min_length(rating) = 1 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+min_length(rating) = 1 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### max_length
+### [max_length](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_max_length)
 
 Maximal length of all strings appearing in a given column
 
-```sql
--- max_length(rating) = 5 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+max_length(rating) = 5 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### avg_length
+### [avg_length](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_avg_length)
 
 The average length of all strings appearing in a given column
 
-```sql
--- avg_length(rating) = 2.4 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+avg_length(rating) = 2.4 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### nulls_count
+### [nulls_count](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_nulls_count)
 
 A number of nulls in a given column.
 
-```sql
--- nulls_count(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+nulls_count(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### missing_count
+### [missing_count](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_missing_count)
 
 A number of nulls and empty string values in a given column for the specific time range.
 
-```sql
--- missing_count(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+missing_count(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### missing_percent
+### [missing_percent](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_missing_percent)
 
 A percentage of nulls and empty string values in a given column for the specific time range.
 
-```sql
--- missing_percent(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+missing_percent(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-#### nulls_percent
+### [nulls_percent](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_nulls_percent)
 
 A percentage of null values in a given column for the specific time range.
 
-```sql
--- nulls_percent(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+```
+nulls_percent(rating) = 0 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-## Optional Metrics
+## Extra Metrics
 There are metrics provided by re_data but are not computed by default in monitored tables. It is worth noting some of these metrics may be computationally heavy which is why they aren't computed by default.
 
-### Optional Table Metrics
+### Extra Table Metrics
 
-#### distinct_rows
+### [distinct_table_rows](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_distinct_table_rows)
 This metric computes the distinct number of rows in the given table
-```sql
--- time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
--- distinct_rows = 10
+```
+time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+distinct_rows = 10
 ```
 
-### Optional Column Metrics
+### Extra Column Metrics
 
 :::info
-`regex_match_expression` is resolved at runtime depending on the database in use.  <br />
-Postgres/Redshift: column_name ~ '[regex]'  <br /> 
-BigQuery: REGEXP_CONTAINS(column_name, '[regex]')  <br />
-Snoflake: REGEXP_LIKE(column_name, '[regex]')
+[`regex_match_expression`](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.regex_match_expression) is resolved at runtime depending on the database in use.
 :::
-#### match_regex
+### [match_regex](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_match_regex)
 
 Determines the count of values in a given column that matches the specified regex. Suppose we want to check if
 the rating column matches a specific regular expression pattern and we define it in our dbt_project.yml file.
@@ -225,7 +223,7 @@ vars:
                 - match_regex:
                     regex: ([0-9]+)
 ```
-The matching rows are shown below
+
 ```sql
 select coalesce(
         sum(
@@ -243,32 +241,32 @@ where created_at between time_window_start and time_window_end
 5    	Academy Dinosaur	0.99	    PG-13       2021-09-01T08:00:00
 7    	Adaptation Holes	2.99	    NC-17       2021-09-01T11:00:00
 
--- match_regex = 4 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+match_regex = 4 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
 ```
 
-#### match_regex_percent
+### [match_regex_percent](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_match_regex_percent)
 
 Determines the percentage of values in a given column that matches the specified regex.
 
-```sql
--- Suppose we use the same configuration for the match_regex metric above, we have
--- match_regex_percent = 40 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```
+Suppose we use the same configuration for the match_regex metric above, we have
+match_regex_percent = 40 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
 ```
 
-#### not_match_regex
+### [not_match_regex](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_not_match_regex)
 
 Determines the count of values in a given column that does **not** match the specified regex.
 
-```sql
--- Suppose we pass in ([0-9]+) as our regex parameter,
--- not_match_regex = 6 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
+```
+Suppose we pass in ([0-9]+) as our regex parameter,
+not_match_regex = 6 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
 ```
 
-#### distinct_values
+### [distinct_values](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_distinct_values)
 
 Determines the count of values in a given column that are unique.
 
-```sql
+```
 rating	count
 -----------------
 PG-13	2
@@ -276,15 +274,15 @@ G	    3
 NC-17	2
 PG	    1
 R	    2
--- time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
--- distinct_values = 1. (PG)
+time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+distinct_values = 5. (PG)
 ```
 
-#### duplicate_values
+### [duplicate_values](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_duplicate_values)
 
 Determines the count of values in a given column that are duplicated.
 
-```sql
+```
 rating	count
 -----------------
 PG-13	2
@@ -293,15 +291,15 @@ NC-17	2
 PG	    1
 R	    2
 
--- time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
--- duplicate_values = 4. (PG-13, G, NC-17, R)
+time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+duplicate_values = 4. (PG-13, G, NC-17, R)
 ```
 
-#### duplicate_count
+### [duplicate_rows](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_duplicate_rows)
 
 Determines the count of rows in a given column that have values which are duplicates.
 
-```sql
+```
 rating	count
 -----------------
 PG-13	2
@@ -310,14 +308,14 @@ NC-17	2
 PG	    1
 R	    2
 
--- time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
--- duplicate_count = 9. (PG-13[2], G[3], NC-17[2], R[2])
+time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+duplicate_count = 9. (PG-13[2], G[3], NC-17[2], R[2])
 ```
 
-#### distinct_count
+### [unique_rows](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_unique_rows)
 Determines the count of rows in a given column that have values which are unique.
 
-```sql
+```
 rating	count
 -----------------
 PG-13	2
@@ -326,8 +324,8 @@ NC-17	2
 PG	    1
 R	    2
 
--- time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
--- distinct_count = 1 (PG)
+time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
+distinct_count = 1 (PG)
 ```
 
 
@@ -338,7 +336,7 @@ You can create both table-level or column-level metrics.
 
 Metrics can be defined in any place in your dbt project, as macros with names following the pattern: `re_data_metric_(your_name)` 
 
- - Both column and table level metrics take a dictionary called `context`
+ - Both column and table level metrics take a dictionary called `context`. Any extra configuration passed to a metric in `re_data:monitored` would be merged with the context dicionary.
  - ```python
     # Below is the structure of a context dictionary by default
     {
