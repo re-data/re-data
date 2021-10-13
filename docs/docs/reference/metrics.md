@@ -63,7 +63,7 @@ Below is a list of currently available metrics and how they are computed interna
 
 ### Default Table level metrics
 
-### row_count
+### [row_count](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_row_count)
 
 Numbers of rows added to the table in a specific time range.
 
@@ -71,10 +71,13 @@ Numbers of rows added to the table in a specific time range.
 row_count = 10 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 ```
 
-### freshness
+### [freshness](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_freshness)
 
-Information about the oldest record which appeared in table.
-`null` in case of no data appearing in monitored time-widow.
+Information about the latest record in a given time frame. Suppose we are calculating the `freshness` metric in the table above for the time window `[2021-09-01T00:00:00, 2021-09-02T00:00:00)`. We observe that the latest record 
+in that time frame appears in row 9 with `created_at=2021-09-01T20:00:00`. `freshness` is the difference between the end of the time window and the latest record in the time frame in seconds. For this example described, freshness would be calculated as 
+```
+2021-09-02T00:00:00 - 2021-09-01T20:00:00 = 14400
+```
 
 ### schema_changes
 
