@@ -331,6 +331,12 @@ time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 distinct_count = 1 (PG)
 ```
 
+### [approx_distinct_values](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_approx_distinct_values)
+Determines the approximate distinct count of values in a given column. This metric is useful in large tables where an approximation is sufficient and query performance is required. <br/>
+**Note:** Postgres does not support for approximate count of distinct values unlike [bigquery](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.bigquery__approx_distinct_values), [snowflake](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.snowflake__approx_distinct_values) and [redshift](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.redshift__approx_distinct_values).
+
+
+
 
 ## Defining your metric
 
