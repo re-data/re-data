@@ -12,6 +12,25 @@ We do this just be running SQL:
 update toy_shop_re.re_data_tables set actively_monitored = true;
 ```
 
+Alternatively, we can specify the tables and columns we want to monitor in `dbt_project.yml`
+```yaml title="monitored tables"
+vars:
+  re_data:monitored:
+    - tables:
+        - name: customers
+          time_filter: joined_at
+          actively_monitored: true
+        - name: order_items
+          time_filter: added_at
+          actively_monitored: true
+        - name: orders
+          time_filter: created_at
+          actively_monitored: true
+        - name: pending_orders
+          time_filter: created_at
+          actively_monitored: true
+```
+
 Then we run monitoring, we choose to run it for first day of the 2021:
 
 
