@@ -16,7 +16,7 @@ re_data lets you compute various metrics about your datasets and later on:
   - visualize
   - find anomalies in those
 
-re_data works strictly inside your data warehouse (it's implemented in large part as dbt package) - and is doing transformations on your tables in your data warehouse.
+re_data works strictly inside your data warehouse (it's implemented in large part as a dbt package) - and is doing transformations on your tables in your data warehouse.
 
 # Getting started
 
