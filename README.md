@@ -8,12 +8,13 @@
 </p>
 
 # What is re_data?
-re_data lets data teams compute various metrics about their datasets and later on:
+
+re_data - is meant to help data teams fix data issues before users & CEOs would discover them 😊
+
+re_data lets you compute various metrics about your datasets and later on:
   - test
   - visualize
   - find anomalies in those
-
-re_data is meant to help data teams find, debug data problems and sleep well knowing that they will know if something unexpected happens.
 
 re_data works strictly inside your data warehouse (it's implemented in large part as dbt package) - and is doing transformations on your tables in your data warehouse.
 
