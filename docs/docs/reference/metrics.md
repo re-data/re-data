@@ -375,10 +375,11 @@ Here are examples of custom metrics (one table, one column level)
 {% endmacro %}
 ```
 
-Import difference between table and column level metrics is.
+Some important difference between table and column level metrics are:
  - Table level metrics reference column names directly.
  - Column level metrics reference it through `context.column_name` variable. (Which makes them more re-usable)
+ - **Tip:** When using sub queries in custom metrics, remember to filter the records to the time frame in context. We can use [`in_time_window({{context.time_fiter}})`](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.in_time_window) macro to achieve this. The macro [distinct_table_rows](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_distinct_table_rows) is a good example.
  
 ## Your metric ideas
 
-Currently, all built-in metrics are also computed by default, but we intend to add metrics that will be built-in but optional (`distinct_count` being an example of such metric). If you have other suggestions of such metrics let us know on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)**
+If you have other suggestions of metrics you would like supported, please let us know on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)**
