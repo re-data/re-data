@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 # Checking for schema changes
@@ -24,7 +24,8 @@ As computing a single model is definitely possible in `re_data`, make sure you a
 
 Here is what our table will look like after this run:
 ```sql
-postgres=> select table_name, operation, column_name, data_type, is_nullable, prev_column_name, prev_data_type, prev_is_nullable  from toy_shop_re.re_data_schema_changes ;
+select table_name, operation, column_name, data_type, is_nullable, prev_column_name, prev_data_type, prev_is_nullable  from toy_shop_re.re_data_schema_changes ;
+
             table_name             |  operation   |  column_name  | data_type | is_nullable | prev_column_name | prev_data_type | prev_is_nullable
 -----------------------------------+--------------+---------------+-----------+-------------+------------------+----------------+------------------
  "postgres"."toy_shop"."customers" | column_added | my_new_column | integer   | t           |                  |                |
@@ -47,4 +48,4 @@ When using apache Airflow as you job scheduler, it's recommended to run
 and compute `re_data` after your main dbt project. 
 You can use both `re_data` package or just plain `dbt` for computing re_data models.
 
-If you want to talk more about your setup, features to add or just say hi! We encourage you to join us on [Slack!](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug) 😊
+If you want to talk more about your setup, features to add or just say hi! We encourage you to join us on **[Slack!](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)** 😊
