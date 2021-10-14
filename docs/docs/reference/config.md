@@ -24,6 +24,12 @@ vars:
       tables:
         - name: sample_table
           time_filter: creation_time
+
+          # (optional) specify columns for which re_data should run
+          columns:
+            - event_type
+            - value1
+            - value2
           
           metrics: # my additional metrics for table
             table:
@@ -110,6 +116,7 @@ Each element of `tables` has:
   - `name` which is the name of the table (dbt model, seed, source)  
   - `time_filter` column you choose for time filter
   - `actively_monitored` information if you with to monitor table
+  - `columns` if you would like to run re_data only for subset of columns specify them here
   - `metrics` what additional metrics you would like to compute for tables. Check out the exact syntax in the config example.
 
 Notice, above table settings, except `name` can be also set for all 

@@ -19,10 +19,11 @@ vars:
           time_filter: added_at
         - name: orders
           time_filter: created_at
-          actively_monitored: false # disable computing metrics for this table
+          # actively_monitored: false we can disable computing metrics for this table
 
       actively_monitored: true # we can set this here to monitor all tables listed, removing the need to specify actively_monitored per table
 ```
+
 
 Then we run monitoring, we choose to run it for first day of the 2021:
 
