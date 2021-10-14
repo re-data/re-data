@@ -21,8 +21,8 @@ You can compute a lot of built-in metrics like: `row_count`, `missing_count`, `f
 See all currently available: **[metrics](/docs/reference/metrics)**, and also define your own metrics in your dbt project:
 
 ```sql title="macros/my_metrics.sql"    
-{% macro re_data_metric_diff(column_name) %}
-    max({column_name}) - min({column_name})
+{% macro re_data_metric_diff(context) %}
+    max({{context.column_name}}) - min({{context.column_name}})
 {% endmacro %}
 ```
 
