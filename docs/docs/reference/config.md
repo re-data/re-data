@@ -33,11 +33,15 @@ vars:
           
           metrics: # my additional metrics for table
             table:
-              - my_custom_table_metric 
+              - my_custom_table_metric
+              - distinct_rows:
+                  key: value # table metrics can take in config unique to it.
 
             column:
               event_type:
                 - distinct_count
+                - match_regex:
+                    regex: ([A-Za-z0-9]+) # passing a key value pair of config to a column metric.
 
         - name: sample_with_anomaly
           time_filter: creation_time

@@ -40,7 +40,7 @@ models:
           condition: time_window_start >= '2021-05-02'
 ```
 
-## Build-in metrics tests
+## Built-in metrics tests
 
 ### metric_expression_is_true
 

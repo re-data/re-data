@@ -40,7 +40,7 @@ module.exports = {
         },
         {
           to: 'docs/reference/config',
-          label: 'Reference',
+          label: 're_data project',
           position: 'left',
           activeBasePath: 'reference'
         },
