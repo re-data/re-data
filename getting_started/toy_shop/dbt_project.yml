@@ -28,13 +28,13 @@ clean-targets:         # directories to be removed by `dbt clean`
 vars:
   re_data:alerting_z_score: 3
   re_data:schemas:
-    - toy_shop # set the schemas we want to monitor
+    - toy_shop
   re_data:monitored:
-      - tables:
+    - tables:
+        - name: customers
+          time_filter: joined_at
+        - name: order_items
+          time_filter: added_at
         - name: orders
           time_filter: created_at
-          actively_monitored: true
-
-          metrics:
-            table:
-              - large_orders
+      actively_monitored: true

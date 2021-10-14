@@ -25,6 +25,9 @@ And now let's just add this configuration to orders table in `dbt_project.yml`
 
 ```yml title="dbt_project.yml vars"
 vars:
+  re_data:alerting_z_score: 3
+  re_data:schemas:
+    - toy_shop
   re_data:monitored:
     - tables:
       - name: orders
@@ -32,7 +35,8 @@ vars:
         actively_monitored: true
         
         metrics:
-          - large_orders
+          table:
+            - large_orders
 ```
 
 And run re_data again..
@@ -55,14 +59,14 @@ select table_name, column_name, metric, value, time_window_start, time_window_en
  "postgres"."toy_shop"."orders" |             | large_orders |     4 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
 ```
 
-Ok, we managed to compute our first custom metric! :data:
+Ok, we managed to compute our first custom metric! :tada:
 
 
 One thing you probably noticed is custom metric is just an expression.
 This makes it possible for re_data to compute many metrics in one query.
 But if you need to do a separate query to compute a metric it's still possible.
 
-If you are interested how they should look, check out `re_data` **[unique_rows metric](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_unique_rows)**. 
+If you are interested how this should look, check out `re_data` **[unique_rows metric](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_unique_rows)**. 
 
 Notice writing custom metrics which are doing subqueries is more advanced feature of re_data, so if you found yourself doing that it maybe good for you to join our  **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)**
 

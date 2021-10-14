@@ -35,7 +35,8 @@ re_data run --start-date 2021-01-01 --end-date 2021-01-30
 Assuming this completed successfully, let's query the alerts table:
 
 ```sql title="toy_shop_re.re_data_alerting"
-postgres=> select table_name, column_name, metric, z_score_value, time_window_end from toy_shop_re.re_data_alerting;
+select table_name, column_name, metric, z_score_value, time_window_end from toy_shop_re.re_data_alerting;
+
              table_name              | column_name |    metric     |    z_score_value    |   time_window_end
 -------------------------------------+-------------+---------------+---------------------+---------------------
  "postgres"."toy_shop"."customers"   | id          | max           | -3.0571164943755322 | 2021-01-15 00:00:00
@@ -55,7 +56,8 @@ postgres=> select table_name, column_name, metric, z_score_value, time_window_en
 We can see a couple of alerting things here (some things look like false alerts, but most seem to be real problems with data). For example for this:
 
 ```sql anomalies example
-postgres=> select * from toy_shop_re.re_data_alerting where metric = 'row_count';
+select * from toy_shop_re.re_data_alerting where metric = 'row_count';
+
                table_name               | column_name |  metric   |    z_score_value    | last_value |      last_avg      |    last_stddev     |   time_window_end
 ----------------------------------------+-------------+-----------+---------------------+------------+--------------------+--------------------+---------------------
  "postgres"."toy_shop"."order_items"    |             | row_count | -3.0530445968041606 |          0 |  59.47826086956522 | 19.481622027899643 | 2021-01-24 00:00:00

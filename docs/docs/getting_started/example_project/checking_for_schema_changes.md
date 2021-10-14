@@ -24,7 +24,8 @@ As computing a single model is definitely possible in `re_data`, make sure you a
 
 Here is what our table will look like after this run:
 ```sql
-postgres=> select table_name, operation, column_name, data_type, is_nullable, prev_column_name, prev_data_type, prev_is_nullable  from toy_shop_re.re_data_schema_changes ;
+select table_name, operation, column_name, data_type, is_nullable, prev_column_name, prev_data_type, prev_is_nullable  from toy_shop_re.re_data_schema_changes ;
+
             table_name             |  operation   |  column_name  | data_type | is_nullable | prev_column_name | prev_data_type | prev_is_nullable
 -----------------------------------+--------------+---------------+-----------+-------------+------------------+----------------+------------------
  "postgres"."toy_shop"."customers" | column_added | my_new_column | integer   | t           |                  |                |
