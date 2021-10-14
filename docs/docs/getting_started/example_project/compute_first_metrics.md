@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Compute first metrics
 
-Now lets compute first metircs. We can specify the tables we want to monitor in `dbt_project.yml` as shown below
+Now, let's compute the first metrics. We can specify the tables we want to monitor in `dbt_project.yml` as shown below
 
 ```yaml title="monitored tables"
 vars:
@@ -19,14 +19,12 @@ vars:
           time_filter: added_at
         - name: orders
           time_filter: created_at
-          # actively_monitored: false we can disable computing metrics for this table
+          # actively_monitored: false we can disable computing metrics for specific table
 
       actively_monitored: true # we can set this here to monitor all tables listed, removing the need to specify actively_monitored per table
 ```
 
-
-Then we run monitoring, we choose to run it for first day of the 2021:
-
+Then we run monitoring, we choose to run it for the first day of 2021:
 
 ```bash
 dbt run --models package:re_data --vars \
@@ -36,8 +34,11 @@ dbt run --models package:re_data --vars \
     }'
 ```
 
+*Note, if we don't pass time window parameters re_data will compute stats from the previous day*
 
-This computes [default](/docs/reference/metrics#default-metrics) metrics for the monitored tables. Let's just see how many orders/customers we have added in on 01-01-2021.
+This computes **[default metrics](/docs/reference/metrics#default-metrics)** for the monitored tables. Let's just see how many customers/order_items/orders we have added in on 01-01-2021.
+
+
 
 ```sql title="Viewing computed metrics"
 select * from toy_shop_re.re_data_metrics where metric = 'row_count';
@@ -51,4 +52,4 @@ select * from toy_shop_re.re_data_metrics where metric = 'row_count';
 
 We can of course inspect any of those metrics and it maybe also really usefull to write dbt tests for values we expect in those.
 
-But now let's focus on finding out if there are any anomalies in our data.
+Now, let's add some extra metrics to customize monitoring for our needs

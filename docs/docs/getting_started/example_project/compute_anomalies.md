@@ -1,18 +1,36 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 ---
 
 # Checking for anomalies
 
 Now we will compute metrics for the whole last month and check if there are any anomalies present.
-We could definitely do it using just a dbt command. As well, in production you most likely will have airflow jobs computing it daily.
+
+But before we do that let's make sure that after playing with custom metrics we do have following setup in `dbt_project.yml`
+
+```yaml title="monitored tables"
+vars:
+  re_data:alerting_z_score: 3
+  re_data:schemas:
+    - toy_shop
+  re_data:monitored:
+    - tables:
+        - name: customers
+          time_filter: joined_at
+        - name: order_items
+          time_filter: added_at
+        - name: orders
+          time_filter: created_at
+      actively_monitored: true
+```
+
+We could compute anomalies using just a dbt command. In production you most likely will have airflow job or dbt cloud job computing it daily.
+
 Here, for simplicity, we will use the `re_data run` command, which is just calling dbt with proper vars:
 
 ```
-re_data run --start-date 2021-01-02 --end-date 2021-01-30
+re_data run --start-date 2021-01-01 --end-date 2021-01-30
 ```
-
-*Notice we already have Janaury 1st stats, so we don't need to recompute them. In case we want to recompute them, `re_data` will overwrite older stats with new.*
 
 Assuming this completed successfully, let's query the alerts table:
 
@@ -47,3 +65,5 @@ postgres=> select * from toy_shop_re.re_data_alerting where metric = 'row_count'
 It seems on 2021-01-23 we didn't get any orders. With an average of more than 23 orders per day, that seems really odd.
 
 You can use the re_data_alerting table as a warning generator that something is not right with your data.
+
+Now let's to move final part of tutorial and let's check how `re_data` can help with detecting changes in current database schema.
