@@ -9,8 +9,6 @@ Now, let's compute the first metrics. We can specify the tables we want to monit
 ```yaml title="monitored tables"
 vars:
   re_data:alerting_z_score: 3
-  re_data:schemas:
-    - toy_shop # set the schemas we want to monitor
   re_data:monitored:
     - tables:
         - name: customers
