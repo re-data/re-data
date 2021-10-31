@@ -46,15 +46,15 @@ module.exports = {
         },
         {
           to: 'docs/bi_integration/introduction',
-          label: 'BI tools',
+          label: 'External tools',
           position: 'left',
-          activeBasePath: 'BI tools'
+          activeBasePath: 'External tools'
         },
         {
           to: 'docs/qa',
           label: 'Q&A',
           position: 'left',
-          activeBasePath: 'BI tools'
+          activeBasePath: 'Q&A'
         },
         {
           href: 'https://github.com/re-data/re-data',
