@@ -154,3 +154,59 @@ For smaller mappings, re_data allows you to pass a dictionary mapping source to 
 
 select state, code, state__normalized from {{ re_data.normalize_values(ref('abbreviated_us_states'), 'state', us_states_mapping)
 ```
+
+Using either of the 3 methods above gives the following as the result
+```csv title="expected_normalized_values"
+state,code,state__normalized
+Ariz.,AZ,Arizona
+Ind.,IN,Indiana
+La.,LA,Louisiana
+W.Va.,WV,West Virginia
+Nebr.,NE,Nebraska
+Pa.,PA,Pennsylvania
+Iowa,IA,Iowa
+N.H.,NH,New Hampshire
+S.C.,SC,South Carolina
+Ore.,OR,Oregon
+Conn.,CT,Connecticut
+R.I.,RI,Rhode Island
+Minn.,MN,Minnesota
+D.C.,DC,District of Columbia
+Wyo.,WY,Wyoming
+Hawaii,HI,Hawaii
+Wash.,WA,Washington
+N.D.,ND,North Dakota
+Mass.,MA,Massachusetts
+N.Y.,NY,New York
+N.M.,NM,New Mexico
+Colo.,CO,Colorado
+Ohio,OH,Ohio
+Idaho,ID,Idaho
+Ala.,AL,Alabama
+Ark.,AR,Arkansas
+S.D.,SD,South Dakota
+Mo.,MO,Missouri
+N.J.,NJ,New Jersey
+Miss.,MS,Mississippi
+Kans.,KS,Kansas
+Vt.,VT,Vermont
+Calif.,CA,California
+Mich.,MI,Michigan
+Alaska,AK,Alaska
+Nev.,NV,Nevada
+Okla.,OK,Oklahoma
+Tenn.,TN,Tennessee
+Ga.,GA,Georgia
+Wis.,WI,Wisconsin
+Ky.,KY,Kentucky
+N.C.,NC,North Carolina
+Mont.,MT,Montana
+Fla.,FL,Florida
+Va.,VA,Virginia
+Tex.,TX,Texas
+Md.,MD,Maryland
+Utah,UT,Utah
+Maine,ME,Maine
+Del.,DE,Delaware
+Ill.,IL,Illinois
+```
