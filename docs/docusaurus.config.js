@@ -39,8 +39,8 @@ module.exports = {
           activeBasePath: 'reference'
         },
         {
-          to: 'docs/reference/config',
-          label: 're_data project',
+          to: 'docs/reference/data_preparation/data_cleaning',
+          label: 'Features',
           position: 'left',
           activeBasePath: 'reference'
         },

@@ -9,7 +9,7 @@
 
 # What is re_data?
 
-re_data is a set of tools (dbt macros & models) that helps you with making sure your data pipelines are clean & reliable
+re_data is a set of tools (dbt macros & models) that helps you with making sure your data pipelines are clean & reliable. 😊
 
 ## Data Preparation
 
