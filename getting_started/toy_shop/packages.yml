@@ -2,6 +2,5 @@ packages:
     - package: dbt-labs/dbt_utils
       version: [">=0.7.0", "<0.8.0"]
     
-    - package: re-data/re_data
-      version: [">=0.3.0", "<0.4.0"]
+    - local: ../../../dbt-re-data
 

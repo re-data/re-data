@@ -24,6 +24,9 @@ clean-targets:         # directories to be removed by `dbt clean`
     - "target"
     - "dbt_modules"
 
+models:
+  re_data:
+    enabled: true
 
 vars:
   re_data:alerting_z_score: 3

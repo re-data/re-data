@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
 dbt_docs_base_url: https://re-data.github.io/dbt-re-data
 ---
 
@@ -19,19 +19,19 @@ where data in time_window
 These simple definitions still make it possible to create a wide variety of metrics.
 If metrics you would like to monitor are more complicated than that, we advise creating dbt models filtering/joining/grouping data and monitoring models created with re_data.
 
-## Time based
+## Time based vs Global metrics
 
-re_data metrics are time-based. (re_data filters all your table data to a specific created_at is You can choose any time window with proper **[config](/docs/reference/config)**.
+We recommend that most of your metrics computed would be time-based (data is then filtered by the `time_filter` column specified in config.
 
-:::info
-Why do we only support time-based metrics? We believe all datasets gain in quality when they have some time-based column (think `creation_time`, `ingestion_time`, etc.) added to them. This way you know when data is coming, or when it was created, etc. Without a time-based mark, it's quite hard to define metrics & anomalies properly. Let us know if you think for your use-case it doesn't make sense.
-:::
+In cases when such a column is not available (or for some reason you don't want to use it),
+re_data can compute global metrics for a table. Global metrics don't filter by time and work on data from the whole table. You can pass `time_filter: null` in the re_data table config to compute global metrics.
+
 
 ## Default metrics
 
 Default metrics are computed for all monitored tables. They can be either:
   - table-level - metric for the whole table
-  - column level - metric for a specific column in the table
+  - column-level - metric for a specific column in the table
 
 Almost all metrics can be found in the `re_data_metrics` model crated by re_data.
 Apart from that re_data also creates models from specific metrics (As views filtering from metrics table)
@@ -59,7 +59,7 @@ __      title               rental_rate	rating      created_at
 19    	Alien Center	    2.99	    NC-17       2021-09-02T17:00:00
 ```
 
-Below is a list of currently available metrics and how they are computed internally by `re_data`:
+Below is a list of currently available metrics and how they are computed internally by re_data:
 
 ### Default Table level metrics
 

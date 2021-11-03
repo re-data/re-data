@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 0
 ---
 
 # Config
@@ -7,15 +7,16 @@ sidebar_position: 1
 To run re_data you would usually need to set up some variables in your `dbt_project.yml` config. Below example configuration followed with an explanation of it.
 
 ```yml dbt_project.yml
+# to enable re_data models
+models:
+  re_data:
+    enabled: true
+
 vars:
   # if not passed, last day stats will be computed
   re_data:time_window_start: '{{ (run_started_at - modules.datetime.timedelta(1)).strftime("%Y-%m-%d 00:00:00") }}'
   re_data:time_window_end: '{{ run_started_at.strftime("%Y-%m-%d 00:00:00") }}'
 
-  # *required
-  re_data:schemas:
-    - dq_raw
-  
   # *required if you want to configure re_data in code (not in DB)
   re_data:monitored:
 
@@ -114,7 +115,7 @@ One of the most important settings. You can define here:
 
 Each element of `tables` has:
   - `name` which is the name of the table (dbt model, seed, source)  
-  - `time_filter` column you choose for time filter
+  - `time_filter` column for time filter (`null` in case you would like to compute global metric)
   - `actively_monitored` information if you with to monitor table
   - `columns` if you would like to run re_data only for subset of columns specify them here
   - `metrics` what additional metrics you would like to compute for tables. Check out the exact syntax in the config example.

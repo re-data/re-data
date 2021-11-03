@@ -9,14 +9,26 @@
 
 # What is re_data?
 
-re_data - is meant to help data teams fix data issues before users & CEOs would discover them 😊
+re_data is a set of tools (dbt macros & models) that helps you with making sure your data pipelines are clean & reliable. 😊
 
-re_data lets you compute various metrics about your datasets and later on:
-  - test
-  - visualize
-  - find anomalies in those
+## Data Preparation
 
-re_data works strictly inside your data warehouse (it's implemented in large part as a dbt package) - and is doing transformations on your tables in your data warehouse.
+re_data data preparation macros help you clean your data faster, with less code & a smaller chance of errors.
+Currently, we support four types of data preparation:
+
+- data cleaning
+- data filtering
+- data normalization
+- data validation
+
+## Data Monitoring
+
+re_data metrics & alerts models contain information about data quality which lets you discover bad data much faster. You can:
+ - use built-in metrics & extend them with your code
+ - test them as normal dbt models
+ - visualize them in your favourite BI tool
+ - trigger external (Slack/Pagerduty/etc.) alerts based on them
+
 
 # Getting started
 

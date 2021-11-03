@@ -5,7 +5,7 @@ sidebar_position: 4
 # Specifying extra metrics
 
 Now that we have computed default metrics for the current monitored tables, we can specify extra metrics 
-to compute at table or column level. See [defining your metric](/docs/reference/metrics#defining-your-metric) to set up custom metrics.
+to compute at table or column level. See [defining your metric](/docs/reference/data_monitoring/metrics#defining-your-metric) to set up custom metrics.
 
 Here is an example showing how to add these metrics to the `customers` table.
 
