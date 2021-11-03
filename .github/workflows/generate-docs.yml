@@ -4,7 +4,7 @@ on: push
 
 jobs:
   generate-docs:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:        
       - name: Check out
         uses: actions/checkout@v2
@@ -25,8 +25,8 @@ jobs:
         uses: rlespinasse/github-slug-action@v3.x
 
       - name: Deploy
-        working-directory: ./docs
         uses: peaceiris/actions-gh-pages@v3
+        working-directory: ./docs
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
