@@ -24,9 +24,9 @@ This macro checks if data meets european date format. (-./) allowed as separator
 
   date_time  | valid_date_eu
 ------------+---------------
- 31-01-2020 |             1
- 01/31/2020 |             0
- 05.05.2020 |             1
+ 31-01-2020 |          true
+ 01/31/2020 |         false
+ 05.05.2020 |          true
 
 ```
 
@@ -43,9 +43,9 @@ This macro checks if data meets us date format.
 
   date_time  | valid_date_us
 ------------+---------------
- 31-01-2020 |             0
- 01/31/2020 |             1
- 05.05.2020 |             1
+ 31-01-2020 |         false
+ 01/31/2020 |          true
+ 05.05.2020 |          true
 
 ```
 
@@ -62,10 +62,10 @@ This macro checks if data is in inversed date format.
 
  date_time  | valid_date_inverse
 ------------+--------------------
- 31-01-2020 |                  0
- 01/31/2020 |                  0
- 05.05.2020 |                  0
- 2020-01-31 |                  1
+ 31-01-2020 |              false
+ 01/31/2020 |              false
+ 05.05.2020 |              false
+ 2020-01-31 |               true
 ```
 
 ### [re_data.valid_date_iso_8601](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_date_iso_8601)
@@ -81,9 +81,9 @@ This macro checks if data is valid is time format.
 
          date_time         | valid_date_iso_8601
 ---------------------------+---------------------
- 31-01-2020                |                   0
- 2020-01-31T12:59:00+02:00 |                   1
- 2020-01-31T12:59:00       |                   1
+ 31-01-2020                |               false
+ 2020-01-31T12:59:00+02:00 |                true
+ 2020-01-31T12:59:00       |                true
 ```
 
 
@@ -100,9 +100,9 @@ This macro checks if data is valid 12h time (HH:MM) format.
 
          date_time         | valid_time_12h
 ---------------------------+----------------
- 23:59                     |              0
- 12:59                     |              1
- 13:59:01                  |              0
+ 23:59                     |          false
+ 12:59                     |           true
+ 13:59:01                  |          false
 ```
 
 ### [re_data.valid_time_24h](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_time_24h)
@@ -118,9 +118,9 @@ This macro checks if data is valid 24h time (HH:MM) format.
 
          date_time         | valid_time_24h
 ---------------------------+----------------
- 23:59                     |              1
- 12:59                     |              1
- 13:59:01                  |              0
+ 23:59                     |           true
+ 12:59                     |           true
+ 13:59:01                  |          false
 ```
 
 
@@ -137,12 +137,12 @@ This macro checks if data is valid time, see examples:
 
          date_time         | valid_time
 ---------------------------+------------
- 2020-01-31                |          0
- 23:59                     |          1
- 12:59                     |          1
- 13:59:01                  |          1
- 12:59:01,55               |          1
- 11:59:00                  |          1
+ 2020-01-31                |      false
+ 23:59                     |       true
+ 12:59                     |       true
+ 13:59:01                  |       true
+ 12:59:01,55               |       true
+ 11:59:00                  |       true
 ```
 
 ##  Numbers
@@ -160,8 +160,8 @@ This macro checks if data is valid integer number.
 
     number    | is_number
 --------------+-----------
- 133          |         1
- 1232.232     |         0
+ 133          |      true
+ 1232.232     |     false
 ```
 
 
@@ -178,8 +178,8 @@ This macro checks if data is valid number with deciaml point.
 
     number    | is_number_decimal_point
 --------------+-------------------------
- 133          |                       0
- 1232.232     |                       1
+ 133          |                   false
+ 1232.232     |                    true
 ```
 
 
@@ -196,9 +196,9 @@ This macro checks if data is valid number with deciaml comma.
 
     number    | is_number_decimal_comma
 --------------+-------------------------
- 133          |                       0
- 1232.232     |                       0
- 2332,123     |                       1
+ 133          |                   false
+ 1232.232     |                   false
+ 2332,123     |                    true
 ```
 
 
@@ -215,10 +215,10 @@ This macro checks if data is in percentage format.
 
     number    | is_percentage
 --------------+---------------
- 1,3%         |             1
- 123%         |             1
- 13  %        |             0
- 76.234%      |             1
+ 1,3%         |          true
+ 123%         |          true
+ 13  %        |         false
+ 76.234%      |          true
 ```
 
 
@@ -235,10 +235,10 @@ This macro checks if data in percentage format (using point for decimals).
 
     number    | is_percentage_decimal_point
 --------------+-----------------------------
- 1,3%         |                           0
- 123%         |                           1
- 13  %        |                           0
- 76.234%      |                           1
+ 1,3%         |                       false
+ 123%         |                        true
+ 13  %        |                       false
+ 76.234%      |                        true
 ```
 
 
@@ -255,10 +255,10 @@ This macro checks if data in percentage format (using comma for decimals).
 
     number    | is_percentage_decimal_comma
 --------------+-----------------------------
- 1,3%         |                           1
- 123%         |                           1
- 13  %        |                           0
- 76.234%      |                           0
+ 1,3%         |                        true
+ 123%         |                        true
+ 13  %        |                       false
+ 76.234%      |                       false
 ```
 
 
@@ -276,11 +276,11 @@ This macro checks if data is valid ip_v4.
 => select ip_address, {{ re_data.valid_ip_v4('ip_address')}} as valid_ip_v4
                ip_address               | valid_ip_v4
 ----------------------------------------+-------------
- 1.2.3.4                                |           1
- 01.102.103.104                         |           1
- 124.171.228.4                          |           1
- 192.168.1.35                           |           1
- 01.1.1                                 |           0
+ 1.2.3.4                                |        true
+ 01.102.103.104                         |        true
+ 124.171.228.4                          |        true
+ 192.168.1.35                           |        true
+ 01.1.1                                 |       false
 ```
 
 
@@ -296,20 +296,20 @@ This macro checks if data is valid ip_v6.
 => select ip_address, {{ re_data.valid_ip_v6('ip_address')}} as valid_ip_v6
                ip_address               | valid_ip_v6
 ----------------------------------------+-------------
- 1.2.3.4                                |           0
- 2001:db8:3333:4444:5555:6666:7777:8888 |           1
- 2001:db8::                             |           1
- ::1234:5678                            |           1
- 2001:db8::1234:5678                    |           1
- ::11.22.33.44                          |           1
- 2001:db8::123.123.123.123              |           1
- 2001:db8::1234:5678:5.6.7.8            |           1
- 2001:db8:3333:4444:5555:6666:1.2.3.4   |           1
- ::11.22.33.44                          |           1
- 2001:db8::123.123.123.123              |           1
- ::1234:5678:91.123.4.56                |           1
- ::1234:5678:1.2.3.4                    |           1
- 2001:db8::1234:5678:5.6.7.8            |           1
+ 1.2.3.4                                |       false
+ 2001:db8:3333:4444:5555:6666:7777:8888 |        true
+ 2001:db8::                             |        true
+ ::1234:5678                            |        true
+ 2001:db8::1234:5678                    |        true
+ ::11.22.33.44                          |        true
+ 2001:db8::123.123.123.123              |        true
+ 2001:db8::1234:5678:5.6.7.8            |        true
+ 2001:db8:3333:4444:5555:6666:1.2.3.4   |        true
+ ::11.22.33.44                          |        true
+ 2001:db8::123.123.123.123              |        true
+ ::1234:5678:91.123.4.56                |        true
+ ::1234:5678:1.2.3.4                    |        true
+ 2001:db8::1234:5678:5.6.7.8            |        true
 ```
 
 
@@ -325,11 +325,11 @@ This macro checks if data is valid ip either ipv4 or ipv6.
 => select ip_address, {{ re_data.valid_ip('ip_address')}} as valid_ip
                ip_address               | valid_ip
 ----------------------------------------+----------
- 1.2.3.4                                |        1
- 232.232.33                             |        0
- 232.3232.232.232+2312                  |        0
- ::::erwerwe                            |        0
- 2001:db8:3333:4444:5555:6666:7777:8888 |        1
+ 1.2.3.4                                |     true
+ 232.232.33                             |    false
+ 232.3232.232.232+2312                  |    false
+ ::::erwerwe                            |    false
+ 2001:db8:3333:4444:5555:6666:7777:8888 |     true
 ```
 
 ## Email
@@ -347,10 +347,10 @@ This macro checks if data is valid email, using plus sign is not allowed (treate
 => select email, {{ re_data.valid_email('email')}} as valid_email
               email              | valid_email
 ---------------------------------+-------------
- test@fakemail.com               |           1
- novalidemail@                   |           0
- novalidemail@com                |           0
- test+alovalidemail@fakemail.com |           0
+ test@fakemail.com               |        true
+ novalidemail@                   |       false
+ novalidemail@com                |       false
+ test+alovalidemail@fakemail.com |       false
 ```
 
 
@@ -369,11 +369,11 @@ This macro checks if data is valid universally unique identifier (UUID).
 => select uuid, {{ re_data.valid_uuid('uuid')}} as valid_uuid
                  uuid                  | valid_uuid
 ---------------------------------------+------------
- ace1245c-3af5-11ec-8d3d-0242ac130003  |          1
- notanuid                              |          0
- d0d61836-3af5-11ec-8d3d-0242ac130003  |          1
- 343422-234324-234234-4234234-23432    |          0
- 343422-234324-234234-4234234-234xxx32 |          0
+ ace1245c-3af5-11ec-8d3d-0242ac130003  |       true
+ notanuid                              |      false
+ d0d61836-3af5-11ec-8d3d-0242ac130003  |       true
+ 343422-234324-234234-4234234-23432    |      false
+ 343422-234324-234234-4234234-234xxx32 |      false
 ```
 
 
