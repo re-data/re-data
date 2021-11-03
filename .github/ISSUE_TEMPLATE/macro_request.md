@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**What dbt macro you would like to have**
+**What type of re_data dbt macro you would like to add**
 
 Currently re_data have 5 types of macros to:
 
