@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
 dbt_docs_base_url: https://re-data.github.io/dbt-re-data
 ---
 

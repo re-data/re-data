@@ -14,7 +14,7 @@ re_data provides the following macros for filtering data. Check out the list of 
 
 ### [filter_remove_duplicates](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.filter_remove_duplicates)
 *Arguments:*
-- *relation: DBT model to perform the filtering on*
+- *relation: dbt model to perform the filtering on*
 - *unique_cols: List of columns that uniquely identify each row*
 - *sort_columns: Order in which we want to sort the partitioned rows. eg (created_at DESC, created_at ASC to choose the latest or earliest row based on the timestamp column*
 
