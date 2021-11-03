@@ -27,8 +27,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 vars:
   re_data:alerting_z_score: 3
-  re_data:schemas:
-    - toy_shop
   re_data:monitored:
     - tables:
         - name: customers
@@ -37,4 +35,6 @@ vars:
           time_filter: added_at
         - name: orders
           time_filter: created_at
+        - name: companies
+          time_filter: null
       actively_monitored: true

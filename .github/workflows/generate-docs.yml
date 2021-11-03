@@ -1,0 +1,37 @@
+name: Generate docusaurus documentation
+
+on: push
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    steps:        
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Install dependencies
+        working-directory: ./docs
+        run: npm install
+
+      - name: Change base url
+        working-directory: ./docs
+        run: |
+          sed -i "s+baseUrl: '/re-data/'+baseUrl: '/re-data/${{env.GITHUB_REF_SLUG}}/'+g" docusaurus.config.js
+
+      - name: Build documentation
+        working-directory: ./docs
+        run: npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/build
+          destination_dir: ./${{env.GITHUB_REF_SLUG}}
