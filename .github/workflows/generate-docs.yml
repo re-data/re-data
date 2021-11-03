@@ -17,6 +17,11 @@ jobs:
         working-directory: ./docs
         run: npm install
 
+      - name: Change base url
+        working-directory: ./docs
+        run: |
+          sed -i "s+baseUrl: '/re-data/'+baseUrl: '/re-data/${{env.GITHUB_REF_SLUG}}/'+g" docusaurus.config.js
+
       - name: Build documentation
         working-directory: ./docs
         run: npm run build
