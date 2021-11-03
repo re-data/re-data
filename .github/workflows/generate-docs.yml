@@ -1,0 +1,33 @@
+name: Generate docusaurus documentation
+
+on: push
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-18.04
+    steps:        
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        working-directory: ./docs
+        run: npm install
+
+      - name: Build documentation
+        working-directory: ./docs
+        run: npm run build
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Deploy
+        working-directory: ./docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          destination_dir: ./${{GITHUB_REF_SLUG}}
