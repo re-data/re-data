@@ -12,8 +12,6 @@ Here is an example showing how to add these metrics to the `customers` table.
 ```yml title="dbt_project.yml vars"
 vars:
   re_data:alerting_z_score: 3
-  re_data:schemas:
-    - toy_shop
   re_data:monitored:
     - tables:
         - name: customers
@@ -52,7 +50,7 @@ select table_name, column_name, metric, value, time_window_start, time_window_en
 where metric in ('distinct_table_rows', 'distinct_values', 'match_regex');
 
                table_name              | column_name  |  metric             | value |  time_window_start  |   time_window_end
----------------------------------------+-------------+---------------------+-------+---------------------+---------------------
+---------------------------------------+--------------+---------------------+-------+---------------------+---------------------
 "postgres"."toy_shop"."customers"      | first_name   | distinct_values     |    12 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
 "postgres"."toy_shop"."customers"      | first_name   | match_regex         |    3  | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
 "postgres"."toy_shop"."customers"      |              | distinct_table_rows |    15 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
