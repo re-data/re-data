@@ -1,23 +1,21 @@
-id,full_name,email,state,created_at
-9994d5be-3d76-11ec-9bbc-0242ac130002,lizzie effertz,torp.trisha@fakemail.com,Arizona,2020-01-31T12:51:00+02:00
-9994d7ee-3d76-11ec-9bbc-0242ac130002,orlando abbott,dayton.hermiston@fakemail.com,IN,2020-01-31T12:51:00+02:01
-9994d7ee-3d76-11ec-9bbc-0242ac130002,orlando abbott,dayton.hermiston@fakemail.com,IN,2020-01-31T12:51:00+02:01
-9994dae6-3d76-11ec-9bbc-0242ac130002,kelley     harann,borer.blake@fakemail.com,WV,2020-01-31T12:51:00+02:02
-9994dbc2-3d76-11ec-9bbc-0242ac130002,ruth   langworth,garett66@fakemail.com,MN,2020-01-31T12:51:00+02:03
-9994dbc2-3d76-11ec-9bbc-0242ac130002,ruth   langworth,garett66@fakemail.com,MN,2020-01-31T12:51:00+02:03
-9994dc8a-3d76-11ec-9bbc-0242ac130002,lane swift,nienow.coralie@fakemail.com,IN,2020-01-31T12:51:00+02:04
-9994dd48-3d76-11ec-9bbc-0242ac130002,bertha corwin,tstroman@fakemail.com,WV,2020-01-31T12:51:00+02:05
-99943d76-11ec-9bbc-0242ac130002,manuela   kling,shawn.langworth@fakemail.com,MN,2020-01-31T12:51:00+02:06
-9994deb0-3d76-11ec-9bbc-0242ac130002,mose balistreri,dorris70@fakemail.com,NY,2020-01-31T12:51:00+02:07
-9994df6e-3d76-11ec-9bbc-0242ac130002,robin    halvorson,murazik.americo@fakemail.com,IN,2020-01-31T12:51:00+02:08
-9994e022-3d76-11ec-9bbc-0242ac130002,osbaldo parker i,friesen.angeline@fakemail.com,WV,2020-01-31T12:51:00+02:09
-9994e298-3d76-11ec-9bbc-0242ac130002,javier runolfsson,benjamin.bailey@fakemail.net,MN,2020-01-31T12:51:00+02:10
-9994e3b0-3d76-11ec-9bbc-0242ac130002,amelia batz,garrison60@fakemail.com,IN,2020-01-31T12:51:00+02:11
-9994e464-3d76-11ec-9bbc-0242ac130002,abby  pouros,dominique.leannon@fakemail.com,WV,2020-01-31T12:51:00+02:12
-9994e522-3d76-11ec-9bbc-0242ac130002,markus homenick,piper73@fakemail.com,NY,2020-01-31T12:51:00+02:13
-9994e5cc-3d76-11ec-9bbc-0242ac130002,braeden turner,kozey.jace@fakemail.com,IN,2020-01-31T12:51:00+02:14
-9994e680-3d76-11ec-9bbc-0242ac130002,horacio   parker,vtillman@fakemail.info,WV,2020-01-31T12:51:00+02:15
-9994e734-3d76-11ec-9bbc-0242ac130002,ms. stacy       padberg,erdman.elaina@fakemail.com,MN,2020-01-31T12:51:00+02:16
-9994e7e8-3d76-11ec-9bbc-0242ac130002,dr.     deshawn stracke,rosendo.beer@fakemail.com,IN,2020-01-31T12:51:00+02:17
-9994e9e6-3d76-11ec-9bbc-0242ac130002,pascale grady,princess60@fakemail.com,WV,2020-01-31T12:51:00+02:18
-9994eaa4-3d76-11ec-9bbc-0242ac130002,lacy     brekke,romaguera.darrell@fakemail.com,AZ,2020-01-31T12:51:00+02:19
+full_name,email,state,created_at
+lizzie effertz,torp.trisha@fakemail.com,Arizona,2020-01-31T12:51:00+02:00
+orlando abbott,dayton.hermiston@fakemail.com,IN,2020-01-31T12:51:00+02:01
+kelley     harann,borer.blake@fakemail.com,WV,2020-01-31T12:51:00+02:02
+ruth   langworth,garett66@fakemail.com,MN,2020-01-31T12:51:00+02:03
+lane swift,nienow.coralie@fakemail.com,IN,2020-01-31T12:51:00+02:04
+bertha corwin,tstroman@fakemail.com,WV,2020-01-31T12:51:00+02:05
+manuela   kling,shawn.langworth@fakemail.com,MN,2020-01-31T12:51:00+02:06
+mose balistreri,dorris70@fakemail.com,NY,2020-01-31T12:51:00+02:07
+robin    halvorson,murazik.americo@fakemail.com,IN,2020-01-31T12:51:00+02:08
+osbaldo parker i,friesen.angeline@fakemail.com,WV,2020-01-31T12:51:00+02:09
+javier runolfsson,benjamin.bailey@fakemail.net,Minnesota,2020-01-31T12:51:00+02:10
+amelia batz,garrison60@fakemail.com,IN,2020-01-31T12:51:00+02:11
+abby  pouros,dominique.leannon@fakemail.com,WV,2020-01-31T12:51:00+02:12
+markus homenick,piper73@fakemail.com,New York,2020-01-31T12:51:00+02:13
+braeden turner,kozey.jace@fakemail.com,IN,2020-01-31T12:51:00+02:14
+horacio   parker,vtillman@fakemail.info,WV,2020-01-31T12:51:00+02:15
+ms. stacy       padberg,erdman.elaina@fakemail.com,MN,2020-01-31T12:51:00+02:16
+dr.     deshawn stracke,rosendo.beer@fakemail.com,IN,2020-01-31T12:51:00+02:17
+pascale grady,princess60@fakemail.com,WV,2020-01-31T12:51:00+02:18
+lacy     brekke,romaguera.darrell@fakemail.com,AZ,2020-01-31T12:51:00+02:19

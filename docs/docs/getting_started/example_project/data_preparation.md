@@ -9,69 +9,82 @@ re_data provides useful macros for performing data preparation tasks like [clean
 ```sql title="user_data preview"
 => select * from toy_shop.user_data;
 
-                  id                  |        full_name        |             email              | state |     created_at      
---------------------------------------+-------------------------+--------------------------------+-------+---------------------
- 9994d5be-3d76-11ec-9bbc-0242ac130002 | lizzie effertz          | torp.trisha@fakemail.com       |Arizona| 2020-01-31 11:51:00
- 9994d7ee-3d76-11ec-9bbc-0242ac130002 | orlando abbott          | dayton.hermiston@fakemail.com  | IN    | 2020-01-31 11:50:00
- 9994d7ee-3d76-11ec-9bbc-0242ac130002 | orlando abbott          | dayton.hermiston@fakemail.com  | IN    | 2020-01-31 11:50:00
- 9994dae6-3d76-11ec-9bbc-0242ac130002 | kelley     harann       | borer.blake@fakemail.com       | WV    | 2020-01-31 11:49:00
- 9994dbc2-3d76-11ec-9bbc-0242ac130002 | ruth   langworth        | garett66@fakemail.com          | MN    | 2020-01-31 11:48:00
- 9994dbc2-3d76-11ec-9bbc-0242ac130002 | ruth   langworth        | garett66@fakemail.com          | MN    | 2020-01-31 11:48:00
- 9994dc8a-3d76-11ec-9bbc-0242ac130002 | lane swift              | nienow.coralie@fakemail.com    | IN    | 2020-01-31 11:47:00
- 9994dd48-3d76-11ec-9bbc-0242ac130002 | bertha corwin           | tstroman@fakemail.com          | WV    | 2020-01-31 11:46:00
- 99943d76-11ec-9bbc-0242ac130002      | manuela   kling         | shawn.langworth@fakemail.com   | MN    | 2020-01-31 11:45:00
+        full_name        |             email              |   state   |     created_at      
+-------------------------+--------------------------------+-----------+---------------------
+ lizzie effertz          | torp.trisha@fakemail.com       | Arizona   | 2020-01-31 11:51:00
+ orlando abbott          | dayton.hermiston@fakemail.com  | IN        | 2020-01-31 11:50:00
+ kelley     harann       | borer.blake@fakemail.com       | WV        | 2020-01-31 11:49:00
+ ruth   langworth        | garett66@fakemail.com          | MN        | 2020-01-31 11:48:00
+ lane swift              | nienow.coralie@fakemail.com    | IN        | 2020-01-31 11:47:00
+ bertha corwin           | tstroman@fakemail.com          | WV        | 2020-01-31 11:46:00
+ manuela   kling         | shawn.langworth@fakemail.com   | MN        | 2020-01-31 11:45:00
+ mose balistreri         | dorris70@fakemail.com          | NY        | 2020-01-31 11:44:00
+ robin    halvorson      | murazik.americo@fakemail.com   | IN        | 2020-01-31 11:43:00
+ osbaldo parker i        | friesen.angeline@fakemail.com  | WV        | 2020-01-31 11:42:00
+ javier runolfsson       | benjamin.bailey@fakemail.net   | Minnesota | 2020-01-31 11:41:00
+ amelia batz             | garrison60@fakemail.com        | IN        | 2020-01-31 11:40:00
+ abby  pouros            | dominique.leannon@fakemail.com | WV        | 2020-01-31 11:39:00
+ markus homenick         | piper73@fakemail.com           | New York  | 2020-01-31 11:38:00
+ braeden turner          | kozey.jace@fakemail.com        | IN        | 2020-01-31 11:37:00
+ horacio   parker        | vtillman@fakemail.info         | WV        | 2020-01-31 11:36:00
+ ms. stacy       padberg | erdman.elaina@fakemail.com     | MN        | 2020-01-31 11:35:00
+ dr.     deshawn stracke | rosendo.beer@fakemail.com      | IN        | 2020-01-31 11:34:00
+ pascale grady           | princess60@fakemail.com        | WV        | 2020-01-31 11:33:00
+ lacy     brekke         | romaguera.darrell@fakemail.com | AZ        | 2020-01-31 11:32:00
 ```
 
-You will notice the `full_name` column above has additional whitespaces between words and the row with mauela has an invalid uuid. We can strip those additional whitespaces, capitalize the words and filter out invalid uuid.
+First we start by filtering out the duplicated based on the `email` column.
+You will notice the `full_name` column above has additional whitespaces between words, we can strip those additional whitespaces and capitalize the words.
 
-For further analysis, we would like to have the full state name as a separate column, re_data allows you to pass dictionary mapping of source and target values or a dbt model/cte (source and target column names must exist).
-```sql title="models/sanitized_user_data.sql"
+For further analysis, we would like to have the full state name as a separate column, re_data allows you to pass dictionary mapping of source and target values.
+```sql title="toy_shop/models/sanitized_user_data.sql"
 {% set states_mapping = {'AZ': 'Arizona', 'IN': 'Indiana', 'WV': 'West Virginia', 'MN': 'Minnesota', 'NY': 'New York'}%}
-select
-    id,
-    {{ re_data.clean_capitalize_words(re_data.clean_additional_whitespaces('full_name')) }} as full_name,
-    email,
-    {{ re_data.clean_blacklist('email', ['^[a-zA-Z0-9_.+-]+'], '*****') }} as redacted_email,
-    state,
-    state__normalized,
-    {{ re_data.valid_email('email') }} is_valid_email,
-    created_at
-from {{ re_data.normalize_values(ref('user_data'), 'state', states_mapping) }} u
-where {{ re_data.valid_uuid('id') }}
 
-=> select * from toy_shop.sanitized_user_data;
+with deduplicated as (
+    select * from {{ re_data.filter_remove_duplicates(ref('user_data'), ['email'], ['created_at DESC']) }} as dedup
+), 
+cleaned as (
+    select
+        *,
+        {{ re_data.clean_capitalize_words(re_data.clean_additional_whitespaces('full_name')) }} as formatted_full_name,
+        {{ re_data.clean_blacklist('email', ['^[a-zA-Z0-9_.+-]+'], '*****') }} as redacted_email,
+        {{ re_data.valid_email('email') }} is_valid_email
+    from deduplicated 
+)
 
-                  id                  |      full_name      |             email              |   redacted_email    | state | state__normalized | is_valid_email |     created_at      
---------------------------------------+---------------------+--------------------------------+---------------------+-------+-------------------+----------------+---------------------
- 9994d5be-3d76-11ec-9bbc-0242ac130002 | Lizzie Effertz      | torp.trisha@fakemail.com       | *****@fakemail.com  | AZ    | Arizona           | t              | 2020-01-31 11:51:00
- 9994d7ee-3d76-11ec-9bbc-0242ac130002 | Orlando Abbott      | dayton.hermiston@fakemail.com  | *****@fakemail.com  | IN    | Indiana           | t              | 2020-01-31 11:50:00
- 9994d7ee-3d76-11ec-9bbc-0242ac130002 | Orlando Abbott      | dayton.hermiston@fakemail.com  | *****@fakemail.com  | IN    | Indiana           | t              | 2020-01-31 11:50:00
- 9994dae6-3d76-11ec-9bbc-0242ac130002 | Kelley Harann       | borer.blake@fakemail.com       | *****@fakemail.com  | WV    | West Virginia     | t              | 2020-01-31 11:49:00
- 9994dbc2-3d76-11ec-9bbc-0242ac130002 | Ruth Langworth      | garett66@fakemail.com          | *****@fakemail.com  | MN    | Minnesota         | t              | 2020-01-31 11:48:00
- 9994dbc2-3d76-11ec-9bbc-0242ac130002 | Ruth Langworth      | garett66@fakemail.com          | *****@fakemail.com  | MN    | Minnesota         | t              | 2020-01-31 11:48:00
- 9994dc8a-3d76-11ec-9bbc-0242ac130002 | Lane Swift          | nienow.coralie@fakemail.com    | *****@fakemail.com  | IN    | Indiana           | t              | 2020-01-31 11:47:00
- 9994dd48-3d76-11ec-9bbc-0242ac130002 | Bertha Corwin       | tstroman@fakemail.com          | *****@fakemail.com  | WV    | West Virginia     | t              | 2020-01-31 11:46:00
-```
-
-Duplicates are very common occurrences, [filter_remove_duplicates](http://localhost:3000/re-data/docs/reference/data_preparation/data_filtering#filter_remove_duplicates) macro helps to filter them out based on the specified condition.
-
-```sql
 select
     *
-from {{ 
-    re_data.normalize_values(
-        re_data.filter_remove_duplicates(ref('user_data'), ['id'], ['created_at DESC']),
-         'state',
-         states_mapping
-        ) }} u
-where {{ re_data.valid_uuid('id') }}
+from {{ re_data.normalize_values('cleaned', 'state', states_mapping) }} u
+```
 
-                  id                  |      full_name      |             email              |   redacted_email    | state | state__normalized | is_valid_email |     created_at      
---------------------------------------+---------------------+--------------------------------+---------------------+-------+-------------------+----------------+---------------------
- 9994d5be-3d76-11ec-9bbc-0242ac130002 | Lizzie Effertz      | torp.trisha@fakemail.com       | *****@fakemail.com  |Arizona| Arizona           | t              | 2020-01-31 11:51:00
- 9994d7ee-3d76-11ec-9bbc-0242ac130002 | Orlando Abbott      | dayton.hermiston@fakemail.com  | *****@fakemail.com  | IN    | Indiana           | t              | 2020-01-31 11:50:00
- 9994dae6-3d76-11ec-9bbc-0242ac130002 | Kelley Harann       | borer.blake@fakemail.com       | *****@fakemail.com  | WV    | West Virginia     | t              | 2020-01-31 11:49:00
- 9994dbc2-3d76-11ec-9bbc-0242ac130002 | Ruth Langworth      | garett66@fakemail.com          | *****@fakemail.com  | MN    | Minnesota         | t              | 2020-01-31 11:48:00
- 9994dc8a-3d76-11ec-9bbc-0242ac130002 | Lane Swift          | nienow.coralie@fakemail.com    | *****@fakemail.com  | IN    | Indiana           | t              | 2020-01-31 11:47:00
- 9994dd48-3d76-11ec-9bbc-0242ac130002 | Bertha Corwin       | tstroman@fakemail.com          | *****@fakemail.com  | WV    | West Virginia     | t              | 2020-01-31 11:46:00
+Let's run the `sanitized_user_data` model and view the results.
+```bash
+dbt run --models sanitized_user_data
+```
+
+```sql
+=> select * from toy_shop.sanitized_user_data;
+
+        full_name        |             email              |   state   |     created_at      | formatted_full_name |   redacted_email    | is_valid_email | state__normalized 
+-------------------------+--------------------------------+-----------+---------------------+---------------------+---------------------+----------------+-------------------
+ lacy     brekke         | romaguera.darrell@fakemail.com | AZ        | 2020-01-31 11:32:00 | Lacy Brekke         | *****@fakemail.com  | t              | Arizona
+ dr.     deshawn stracke | rosendo.beer@fakemail.com      | IN        | 2020-01-31 11:34:00 | Dr. Deshawn Stracke | *****@fakemail.com  | t              | Indiana
+ lane swift              | nienow.coralie@fakemail.com    | IN        | 2020-01-31 11:47:00 | Lane Swift          | *****@fakemail.com  | t              | Indiana
+ robin    halvorson      | murazik.americo@fakemail.com   | IN        | 2020-01-31 11:43:00 | Robin Halvorson     | *****@fakemail.com  | t              | Indiana
+ braeden turner          | kozey.jace@fakemail.com        | IN        | 2020-01-31 11:37:00 | Braeden Turner      | *****@fakemail.com  | t              | Indiana
+ amelia batz             | garrison60@fakemail.com        | IN        | 2020-01-31 11:40:00 | Amelia Batz         | *****@fakemail.com  | t              | Indiana
+ orlando abbott          | dayton.hermiston@fakemail.com  | IN        | 2020-01-31 11:50:00 | Orlando Abbott      | *****@fakemail.com  | t              | Indiana
+ horacio   parker        | vtillman@fakemail.info         | WV        | 2020-01-31 11:36:00 | Horacio Parker      | *****@fakemail.info | t              | West Virginia
+ bertha corwin           | tstroman@fakemail.com          | WV        | 2020-01-31 11:46:00 | Bertha Corwin       | *****@fakemail.com  | t              | West Virginia
+ pascale grady           | princess60@fakemail.com        | WV        | 2020-01-31 11:33:00 | Pascale Grady       | *****@fakemail.com  | t              | West Virginia
+ osbaldo parker i        | friesen.angeline@fakemail.com  | WV        | 2020-01-31 11:42:00 | Osbaldo Parker I    | *****@fakemail.com  | t              | West Virginia
+ abby  pouros            | dominique.leannon@fakemail.com | WV        | 2020-01-31 11:39:00 | Abby Pouros         | *****@fakemail.com  | t              | West Virginia
+ kelley     harann       | borer.blake@fakemail.com       | WV        | 2020-01-31 11:49:00 | Kelley Harann       | *****@fakemail.com  | t              | West Virginia
+ manuela   kling         | shawn.langworth@fakemail.com   | MN        | 2020-01-31 11:45:00 | Manuela Kling       | *****@fakemail.com  | t              | Minnesota
+ ruth   langworth        | garett66@fakemail.com          | MN        | 2020-01-31 11:48:00 | Ruth Langworth      | *****@fakemail.com  | t              | Minnesota
+ ms. stacy       padberg | erdman.elaina@fakemail.com     | MN        | 2020-01-31 11:35:00 | Ms. Stacy Padberg   | *****@fakemail.com  | t              | Minnesota
+ mose balistreri         | dorris70@fakemail.com          | NY        | 2020-01-31 11:44:00 | Mose Balistreri     | *****@fakemail.com  | t              | New York
+ javier runolfsson       | benjamin.bailey@fakemail.net   | Minnesota | 2020-01-31 11:41:00 | Javier Runolfsson   | *****@fakemail.net  | t              | Minnesota
+ markus homenick         | piper73@fakemail.com           | New York  | 2020-01-31 11:38:00 | Markus Homenick     | *****@fakemail.com  | t              | New York
+ lizzie effertz          | torp.trisha@fakemail.com       | Arizona   | 2020-01-31 11:51:00 | Lizzie Effertz      | *****@fakemail.com  | t              | Arizona
 ```
