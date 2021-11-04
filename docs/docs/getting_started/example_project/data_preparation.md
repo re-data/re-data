@@ -36,8 +36,7 @@ select
     state__normalized,
     {{ re_data.valid_email('email') }} is_valid_email,
     created_at
-from {{ re_data.normalize_values(
-    ref('user_data'), 'state', states_mapping) }} u
+from {{ re_data.normalize_values(ref('user_data'), 'state', states_mapping) }} u
 where {{ re_data.valid_uuid('id') }}
 
 => select * from toy_shop.sanitized_user_data;
