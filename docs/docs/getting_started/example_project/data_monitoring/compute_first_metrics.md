@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Compute first metrics
 
-Now, let's compute the first metrics. We can specify the tables we want to monitor in `dbt_project.yml` as shown below
+Now, let's compute the first metrics. We can specify the tables we want to monitor in `dbt_project.yml` and we also need to enable dbt run the models in the re_data package as shown below
 
 ```yaml title="monitored tables"
 vars:
@@ -22,6 +22,13 @@ vars:
           time_filter: null # to compute global metrics for this table. (no time window would be used)
 
       actively_monitored: true # we can set this here to monitor all tables listed, removing the need to specify actively_monitored per table
+      
+models:
+  re_data:
+    +schema: re
+    enabled: true # set enabled to true to allow dbt run the models in the re_data package.
+    internal:
+      +schema: re_internal
 ```
 
 Then we run monitoring, we choose to run it for the first day of 2021:
