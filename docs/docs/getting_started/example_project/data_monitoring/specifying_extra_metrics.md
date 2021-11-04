@@ -12,8 +12,6 @@ Here is an example showing how to add these metrics to the `customers` table.
 ```yml title="dbt_project.yml vars"
 vars:
   re_data:alerting_z_score: 3
-  re_data:schemas:
-    - toy_shop
   re_data:monitored:
     - tables:
         - name: customers

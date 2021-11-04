@@ -11,7 +11,7 @@ re_data provides useful macros for performing data preparation tasks like [clean
 
                   id                  |        full_name        |             email              | state |     created_at      
 --------------------------------------+-------------------------+--------------------------------+-------+---------------------
- 9994d5be-3d76-11ec-9bbc-0242ac130002 | lizzie effertz          | torp.trisha@fakemail.com       | AZ    | 2020-01-31 11:51:00
+ 9994d5be-3d76-11ec-9bbc-0242ac130002 | lizzie effertz          | torp.trisha@fakemail.com       |Arizona| 2020-01-31 11:51:00
  9994d7ee-3d76-11ec-9bbc-0242ac130002 | orlando abbott          | dayton.hermiston@fakemail.com  | IN    | 2020-01-31 11:50:00
  9994d7ee-3d76-11ec-9bbc-0242ac130002 | orlando abbott          | dayton.hermiston@fakemail.com  | IN    | 2020-01-31 11:50:00
  9994dae6-3d76-11ec-9bbc-0242ac130002 | kelley     harann       | borer.blake@fakemail.com       | WV    | 2020-01-31 11:49:00
@@ -58,14 +58,7 @@ Duplicates are very common occurrences, [filter_remove_duplicates](http://localh
 
 ```sql
 select
-    id,
-    {{ re_data.clean_capitalize_words(re_data.clean_additional_whitespaces('full_name')) }} as full_name,
-    email,
-    {{ re_data.clean_blacklist('email', ['^[a-zA-Z0-9_.+-]+'], '*****') }} as redacted_email,
-    state,
-    state__normalized,
-    {{ re_data.valid_email('email') }} is_valid_email,
-    created_at
+    *
 from {{ 
     re_data.normalize_values(
         re_data.filter_remove_duplicates(ref('user_data'), ['id'], ['created_at DESC']),
@@ -76,7 +69,7 @@ where {{ re_data.valid_uuid('id') }}
 
                   id                  |      full_name      |             email              |   redacted_email    | state | state__normalized | is_valid_email |     created_at      
 --------------------------------------+---------------------+--------------------------------+---------------------+-------+-------------------+----------------+---------------------
- 9994d5be-3d76-11ec-9bbc-0242ac130002 | Lizzie Effertz      | torp.trisha@fakemail.com       | *****@fakemail.com  | AZ    | Arizona           | t              | 2020-01-31 11:51:00
+ 9994d5be-3d76-11ec-9bbc-0242ac130002 | Lizzie Effertz      | torp.trisha@fakemail.com       | *****@fakemail.com  |Arizona| Arizona           | t              | 2020-01-31 11:51:00
  9994d7ee-3d76-11ec-9bbc-0242ac130002 | Orlando Abbott      | dayton.hermiston@fakemail.com  | *****@fakemail.com  | IN    | Indiana           | t              | 2020-01-31 11:50:00
  9994dae6-3d76-11ec-9bbc-0242ac130002 | Kelley Harann       | borer.blake@fakemail.com       | *****@fakemail.com  | WV    | West Virginia     | t              | 2020-01-31 11:49:00
  9994dbc2-3d76-11ec-9bbc-0242ac130002 | Ruth Langworth      | garett66@fakemail.com          | *****@fakemail.com  | MN    | Minnesota         | t              | 2020-01-31 11:48:00

@@ -8,7 +8,6 @@ Now, let's compute the first metrics. We can specify the tables we want to monit
 
 ```yaml title="monitored tables"
 vars:
-  re_data:alerting_z_score: 3
   re_data:monitored:
     - tables:
         - name: customers
@@ -25,10 +24,7 @@ vars:
       
 models:
   re_data:
-    +schema: re
     enabled: true # set enabled to true to allow dbt run the models in the re_data package.
-    internal:
-      +schema: re_internal
 ```
 
 Then we run monitoring, we choose to run it for the first day of 2021:
