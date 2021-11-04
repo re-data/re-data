@@ -46,8 +46,8 @@ This computes **[default metrics](/docs/reference/data_monitoring/metrics#defaul
 ```sql title="Viewing computed metrics"
 select * from toy_shop_re.re_data_metrics where metric in( 'row_count', 'global__row_count');
 
-               table_name               | column_name |  metric   | value |  time_window_start  |   time_window_end
-----------------------------------------+-------------+-----------+-------+---------------------+---------------------
+               table_name               | column_name |  metric           | value |  time_window_start  |   time_window_end
+----------------------------------------+-------------+-------------------+-------+---------------------+----------------------
  "postgres"."toy_shop"."customers"      |             | row_count         |    15 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
  "postgres"."toy_shop"."order_items"    |             | row_count         |    48 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
  "postgres"."toy_shop"."orders"         |             | row_count         |    20 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
