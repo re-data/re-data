@@ -8,7 +8,7 @@ Data cleaning refers to fixing incorrect, corrupted, incorrectly formatted data 
 
 re_data provides the fol macros to help reduce the time required to clean up a dataset. Check out the list of data cleaning macros available and let us know if you could use some different ones on **[Slack 😊](https://www.getre.io/slack)** or **[Github](https://github.com/re-data/re-data/issues/new?assignees=&labels=&template=macro_request.md&title=%5BMACRO%5D)**.
 
-### [clean_additional_whitespace](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.clean_additional_whitespaces)
+### [clean_additional_whitespaces](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.clean_additional_whitespaces)
 *Arguments:*
 - *column: The column name or column expression to perform the cleaning operation on.*
 
