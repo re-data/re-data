@@ -66,10 +66,10 @@ This macro allows you to get duplicate rows from a dbt model based on certain co
  2   |  pending     |    13:04:49     |
  3   |  completed   |    13:30:00     |
 
- => SELECT id, status, updated_at,
+ => select id, status, updated_at,
 	   re_data_duplicates_group_rows_count, 
 	   re_data_duplicates_group_row_number
-	FROM {{ re_data.filter_get_duplicates( ref('duplicated') , ['id'], ['updated_at desc']) }}  duplicates
+	from {{ re_data.filter_get_duplicates( ref('duplicated') , ['id'], ['updated_at desc']) }}  duplicates
 
  -- After filtering, the resulting rows are:
 
