@@ -2,14 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {Routes, Route, HashRouter} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import Alerts from "./pages/Alerts";
 import Dashboard from "./pages/Dashboard";
 import GraphView from "./pages/GraphView";
 
 ReactDOM.render(
-    <BrowserRouter>
+    <HashRouter>
         <Routes>
             <Route path="/" element={<App/>}>
                 <Route path="/" element={<Dashboard/>}>
@@ -18,7 +18,7 @@ ReactDOM.render(
                 </Route>
             </Route>
         </Routes>
-    </BrowserRouter>,
+    </HashRouter>,
     document.getElementById('root')
 );
 
