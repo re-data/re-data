@@ -1,0 +1,49 @@
+name: Generate UI for toy_shop project
+
+on: push
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    steps:        
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.7.x"
+
+      - name: Install dependencies and run metrics
+        working-directory: ./getting_started/toy_shop
+        run: |
+          pip install dbt==0.21.0
+          pip install re_data==0.4.0
+          dbt deps
+          re_data run --start-date 2021-01-01 --end-date 2021-01-30
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Copy overview data
+        run: 'cp getting_started/toy_shop/target/re_data_overview.json && re_data_ui/src/re_data_overview.json'
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: ./re_data_ui
+        run: |
+          npm ci
+
+      - name: Build app for production
+        working-directory: ./re_data_ui
+        run: npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./re_data_ui/build
+          destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}
