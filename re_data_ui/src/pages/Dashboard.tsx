@@ -58,7 +58,7 @@ const extractMetrics = (overview: OverviewData) => {
 };
 
 // const overview: Array<RawOverviewData> = require('../overview.json');
-const overview: Array<RawOverviewData> = require('../re_data_overview.json.json');
+const overview: Array<RawOverviewData> = require('../re_data_overview.json');
 
 const prepareOverviewData = (raw: Array<RawOverviewData>) => {
     const data = raw[0];
