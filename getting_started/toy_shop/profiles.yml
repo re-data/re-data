@@ -7,6 +7,6 @@ toy_shop:
       user: postgres
       password: postgres
       port: 5432
-      dbname: postgres
-      schema: dq
+      dbname: toy_shop
+      schema: toy_shop
       threads: 4
