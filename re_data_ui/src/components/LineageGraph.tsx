@@ -20,7 +20,7 @@ const LineageGraph: React.FC<LineageGraphProps> = (props: PropsWithChildren<Line
         console.log(n);
     };
     return (
-        <div className="col-span-4">
+        <div className="col-span-3">
             <VisNetworkReactComponent
                 data={props.data}
                 options={props.networkOptions}

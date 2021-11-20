@@ -37,7 +37,7 @@ jobs:
           pip install re_data==0.4.0
           dbt deps
           dbt seed
-          re_data run --start-date 2021-01-01 --end-date 2021-01-03
+          re_data run --start-date 2021-01-01 --end-date 2021-01-30
 
       - uses: actions/setup-node@v2
         with:
