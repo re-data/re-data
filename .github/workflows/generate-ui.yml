@@ -52,7 +52,7 @@ jobs:
 
       - name: Set homepage in package.json
         working-directory: ./re_data_ui
-        run: jq '.homepage="https://${{github.actor}}.github.io/re-data/ui-${{env.GITHUB_REF_SLUG}}"' package.json > package.json
+        run: contents=$(jq '.homepage="https://${{github.actor}}.github.io/re-data/ui-${{env.GITHUB_REF_SLUG}}"' package.json) && echo "${contents}" > package.json
         shell: bash
 
       - name: Install dependencies
