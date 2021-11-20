@@ -50,6 +50,10 @@ jobs:
         run: 'cp getting_started/toy_shop/target/re_data_overview.json re_data_ui/src/re_data_overview.json'
         shell: bash
 
+      - name: Set homepage in package.json
+        run: jq '.homepage="https://${{GITHUB_ACTOR}}.github.io/re-data/ui-${{env.GITHUB_REF_SLUG}}"' package.json > package.json
+        shell: bash
+
       - name: Install dependencies
         working-directory: ./re_data_ui
         run: |
