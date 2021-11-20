@@ -1,0 +1,72 @@
+name: Generate UI for toy_shop project
+
+on: push
+
+env:
+  DBT_PROFILES_DIR: ${{ github.workspace }}/getting_started/toy_shop
+
+jobs:
+  generate-ui:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.7.x"
+
+      - name: Install dependencies and run metrics
+        working-directory: ./getting_started/toy_shop
+        run: |
+          pip install dbt==0.21.0
+          pip install re_data==0.4.0
+          dbt deps
+          dbt seed
+          re_data run --start-date 2021-01-01 --end-date 2021-01-30
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Copy overview data
+        run: 'cp getting_started/toy_shop/target/re_data_overview.json re_data_ui/src/re_data_overview.json'
+        shell: bash
+
+      - name: Set homepage in package.json
+        working-directory: ./re_data_ui
+        run: contents=$(jq '.homepage="https://${{github.actor}}.github.io/re-data/ui-${{env.GITHUB_REF_SLUG}}"' package.json) && echo "${contents}" > package.json
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: ./re_data_ui
+        run: |
+          npm ci
+
+      - name: Build app for production
+        working-directory: ./re_data_ui
+        run: npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./re_data_ui/build
+          destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}

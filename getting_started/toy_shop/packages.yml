@@ -2,5 +2,7 @@ packages:
     - package: dbt-labs/dbt_utils
       version: [">=0.7.0", "<0.8.0"]
     
-    - local: ../../../dbt-re-data
+    - git: "https://github.com/dejii/dbt-re-data.git"
+      revision: 'feature/redata-ui'
+
 

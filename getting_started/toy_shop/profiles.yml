@@ -1,0 +1,12 @@
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: postgres
+      password: postgres
+      port: 5432
+      dbname: postgres
+      schema: toy_shop
+      threads: 4
