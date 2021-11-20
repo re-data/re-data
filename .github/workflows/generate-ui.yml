@@ -51,7 +51,7 @@ jobs:
         shell: bash
 
       - name: Set homepage in package.json
-        run: jq '.homepage="https://${{GITHUB_ACTOR}}.github.io/re-data/ui-${{env.GITHUB_REF_SLUG}}"' package.json > package.json
+        run: jq '.homepage="https://${{github.actor}}.github.io/re-data/ui-${{env.GITHUB_REF_SLUG}}"' package.json > package.json
         shell: bash
 
       - name: Install dependencies
