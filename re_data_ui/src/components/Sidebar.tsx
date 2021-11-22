@@ -13,7 +13,7 @@ const Sidebar: React.FC = (): ReactElement => {
                  data-dev-hint="optional div for having an extra footer navigation">
                 <a href="/" className="text-white flex items-center space-x-2 px-4" title="Your App is cool">
                     <span className="text-2xl font-extrabold whitespace-nowrap truncate">
-                        <img alt="re_data" className="w-14" src="%PUBLIC_URL%/redata.svg" />
+                        <img alt="re_data" className="w-14" src="redata.svg" />
                     </span>
                 </a>
 
