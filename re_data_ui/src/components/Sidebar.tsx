@@ -33,11 +33,11 @@ const Sidebar: React.FC = (): ReactElement => {
             </div>
 
             <nav data-dev-hint="second-main-navigation or footer navigation">
-                <a href="https://www.getre.io/slack" target="_blank" className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
+                <a href="https://www.getre.io/slack" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
                     <BsSlack size="1.25em" />
                     <div>Slack</div>
                 </a>
-                <a href="https://re-data.github.io/re-data/" target="_blank" className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
+                <a href="https://re-data.github.io/re-data/" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
                     <SiReadthedocs size="1.25em" />
                     <span>Docs</span>
                 </a>
