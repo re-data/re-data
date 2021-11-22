@@ -64,7 +64,7 @@ jobs:
         working-directory: ./re_data_ui
         run: npm run build
         env:
-          PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}/public
+          PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
