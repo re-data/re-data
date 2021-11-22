@@ -6,7 +6,7 @@ const Sidebar: React.FC = (): ReactElement => {
 
     return (
         <aside id="sidebar"
-               className="bg-gray-800 text-gray-100 md:w-40 w-3/4 min-w-min space-y-6 pt-6 px-0 absolute inset-y-0 left-0
+               className="bg-gray-800 text-gray-100 md:w-32 w-3/4 min-w-min space-y-6 pt-6 px-0 absolute inset-y-0 left-0
                 transform md:relative md:translate-x-0 transition duration-200 ease-in-out  md:flex
                  md:flex-col md:justify-between max-h-screen overflow-y-auto" data-dev-hint="sidebar; px-0 for frameless; px-2 for visually inset the navigation">
             <div className="flex flex-col space-y-6"
