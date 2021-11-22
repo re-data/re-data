@@ -16,8 +16,9 @@ const Header: React.FC = (): ReactElement => {
             <header className="bg-gray-600 text-gray-100 flex justify-between md:hidden"
                     data-dev-hint="mobile menu bar">
                 <a href="/" className="block p-4 text-white font-bold whitespace-nowrap truncate">
-                    re data
+                    re_data
                 </a>
+
 
                 <label htmlFor="menu-open" id="mobile-menu-button"
                        className="m-2 p-2 focus:outline-none hover:text-white hover:bg-gray-700 rounded-md">
