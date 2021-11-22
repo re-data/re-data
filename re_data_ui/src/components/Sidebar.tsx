@@ -11,7 +11,7 @@ const Sidebar: React.FC = (): ReactElement => {
                  md:flex-col md:justify-between max-h-screen overflow-y-auto" data-dev-hint="sidebar; px-0 for frameless; px-2 for visually inset the navigation">
             <div className="flex flex-col space-y-6"
                  data-dev-hint="optional div for having an extra footer navigation">
-                <a href="/" className="text-white flex items-center space-x-2 px-4" title="Your App is cool">
+                <a href="/" className="text-white flex items-center space-x-2 px-8" title="Your App is cool">
                     <span className="text-2xl font-extrabold whitespace-nowrap truncate">
                         <img alt="re_data" className="w-14" src="redata.svg" />
                     </span>
@@ -33,11 +33,11 @@ const Sidebar: React.FC = (): ReactElement => {
             </div>
 
             <nav data-dev-hint="second-main-navigation or footer navigation">
-                <a href="https://www.getre.io/slack" className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
+                <a href="https://www.getre.io/slack" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
                     <BsSlack size="1.25em" />
                     <div>Slack</div>
                 </a>
-                <a href="https://re-data.github.io/re-data/" className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
+                <a href="https://re-data.github.io/re-data/" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
                     <SiReadthedocs size="1.25em" />
                     <span>Docs</span>
                 </a>
