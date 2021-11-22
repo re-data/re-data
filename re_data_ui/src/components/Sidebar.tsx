@@ -20,13 +20,13 @@ const Sidebar: React.FC = (): ReactElement => {
                 <nav data-dev-hint="main navigation">
                     <Link to='alerts'
                           className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
-                        <ImNotification/>
+                        <ImNotification size="1.25em" />
                         <span>Alerts</span>
                     </Link>
 
                     <Link to='graph'
                        className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
-                        <BiNetworkChart/>
+                        <BiNetworkChart size="1.25em" />
                         <span>Graph</span>
                     </Link>
                 </nav>
@@ -34,13 +34,17 @@ const Sidebar: React.FC = (): ReactElement => {
 
             <nav data-dev-hint="second-main-navigation or footer navigation">
                 <a href="https://www.getre.io/slack" className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
-                    <BsSlack/>
+                    <BsSlack size="1.25em" />
                     <div>Slack</div>
                 </a>
                 <a href="https://re-data.github.io/re-data/" className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
-                    <SiReadthedocs/>
+                    <SiReadthedocs size="1.25em" />
                     <span>Docs</span>
                 </a>
+
+                <div className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
+                    <span className="italic" >version 0.4.0</span>
+                </div>
             </nav>
         </aside>
     );
