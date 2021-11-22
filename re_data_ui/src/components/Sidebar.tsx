@@ -6,8 +6,9 @@ const Sidebar: React.FC = (): ReactElement => {
 
     return (
         <aside id="sidebar"
-               className="bg-gray-800 text-gray-100 md:w-60 w-3/4 min-w-min space-y-6 pt-6 px-0 absolute inset-y-0 left-0 transform md:relative md:translate-x-0 transition duration-200 ease-in-out  md:flex md:flex-col md:justify-between overflow-y-auto"
-               data-dev-hint="sidebar; px-0 for frameless; px-2 for visually inset the navigation">
+               className="bg-gray-800 text-gray-100 md:w-60 w-3/4 min-w-min space-y-6 pt-6 px-0 absolute inset-y-0 left-0
+                transform md:relative md:translate-x-0 transition duration-200 ease-in-out  md:flex
+                 md:flex-col md:justify-between max-h-screen overflow-y-auto" data-dev-hint="sidebar; px-0 for frameless; px-2 for visually inset the navigation">
             <div className="flex flex-col space-y-6"
                  data-dev-hint="optional div for having an extra footer navigation">
                 <a href="/" className="text-white flex items-center space-x-2 px-4" title="Your App is cool">

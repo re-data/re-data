@@ -53,7 +53,7 @@ const ModelDetails: React.FC = (): ReactElement => {
         data = overview.aggregated_metrics.get(fullTableName);
     }
     return (
-        <div className='col-span-2 h-auto overflow-scroll' style={{height: '700px'}}>
+        <div className='col-span-2 h-auto overflow-scroll'>
             <div className="bg-white rounded shadow border p-3">
                 {!modelExists ? (<span>No metrics</span>) : generateMetricCharts(data)}
             </div>

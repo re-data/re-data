@@ -12,6 +12,13 @@ const makeTableKey = (anomaly: Anomaly) => {
 
 };
 
+const generateAlertMessage = (anomaly: Anomaly) => {
+    const compareText = anomaly.last_value > anomaly.last_avg ? 'greater than' : 'less than';
+    const percentage = ((Math.abs(anomaly.last_value - anomaly.last_avg) / anomaly.last_avg) * 100).toFixed(2);
+    const model = anomaly.column_name ? `column ${anomaly.column_name}` : 'this table';
+    return `${anomaly.metric} for ${model} is ${percentage}% ${compareText} average`;
+};
+
 const Alerts: React.FC = (): ReactElement => {
     const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
     const overview: OverviewData = useContext(RedataOverviewContext);
@@ -57,9 +64,8 @@ const Alerts: React.FC = (): ReactElement => {
                                         </td>
                                         <td className="px-6 text-sm py-4 whitespace-nowrap">
                                             <div
-                                                className="text-gray-900">{anomaly.metric} for {anomaly.column_name} 30%
-                                                less than
-                                                yesterday
+                                                className="text-gray-900">
+                                                {generateAlertMessage(anomaly)}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm whitespace-nowrap">

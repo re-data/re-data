@@ -81,9 +81,9 @@ const Dashboard: React.FC = (): ReactElement => {
                 <Header/>
                 <Sidebar/>
 
-                <main id="content" className="flex-1 p-6 lg:px-8 bg-gray-100">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="px-4 py-6 sm:px-0">
+                <main id="content" className="flex-1 p-6 lg:px-8 bg-gray-100 max-h-screen overflow-y-auto">
+                    <div className="max-w-7xl mx-auto h-full">
+                        <div className="px-4 py-6 sm:px-0 h-full">
                             <Outlet/>
                         </div>
                     </div>
