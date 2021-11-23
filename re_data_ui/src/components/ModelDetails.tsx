@@ -32,9 +32,9 @@ const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
         )));
     return (
         <div>
-            <span className="text-lg text--capitalize font-bold">Table Metrics</span>
+            <span className="text-lg text--capitalize">Table Metrics</span>
             {tableMetricCharts}
-            <span className="text-lg text--capitalize font-bold">Column Metrics</span>
+            <span className="text-lg text--capitalize">Column Metrics</span>
             {columnMetricCharts}
         </div>
     );
@@ -55,6 +55,9 @@ const ModelDetails: React.FC = (): ReactElement => {
     return (
         <div className='col-span-2 h-auto overflow-scroll'>
             <div className="bg-white rounded shadow border p-3">
+                <div className="mb-3">
+                    <span className="text-2xl text--capitalize font-bold">Orders</span>
+                </div>
                 {!modelExists ? (<span>No metrics</span>) : generateMetricCharts(data)}
             </div>
         </div>

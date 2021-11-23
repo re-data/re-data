@@ -3,7 +3,7 @@ import './GraphView.css';
 import LineageGraph from "../components/LineageGraph";
 import ModelDetails from "../components/ModelDetails";
 import {useSearchParams} from "react-router-dom";
-import {OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
+import {DbtNode, DbtSource, OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
 
 interface VisPointer {
     x: number,
@@ -46,6 +46,7 @@ const generateGraph = (overview: OverviewData) => {
         return graph;
     }
     const dbtNodes = overview.graph.nodes;
+    const dbtSources = overview.graph.sources;
     for (const [model, details] of Object.entries(dbtNodes)) {
         const [resource, packageName, modelName] = model.split('.');
         if (resource === 'test' || packageName === 're_data') {
@@ -61,7 +62,7 @@ const generateGraph = (overview: OverviewData) => {
 
         const parentNodes = new Set(details.depends_on.nodes);
         for (const parent of parentNodes) {
-            const parentNode = dbtNodes[parent]
+            const parentNode: DbtNode | DbtSource = dbtNodes[parent] ? dbtNodes[parent] : dbtSources[parent];
             if (parentNode) {
                 // in coming edge only if parent node exists
                 const parentModelId = `${parentNode.database}.${parentNode.schema}.${parentNode.name}`;

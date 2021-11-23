@@ -80,10 +80,41 @@ export interface Metric {
     value: number;
 }
 
+export interface DbtSource {
+    columns: {};
+    config: {};
+    created_at: number;
+    database: string;
+    description: string;
+    external: string | null;
+    fqn: Array<string>;
+    freshness: {};
+    identifier: string;
+    loaded_at_field: null;
+    loader: string;
+    meta: {};
+    name: string;
+    original_file_path: string;
+    package_name: string;
+    patch_path: string | null;
+    path: string;
+    quoting: { database: string | null, schema: string | null, identifier: string | null, column: string | null };
+    relation_name: string;
+    resource_type: string;
+    root_path: string;
+    schema: string;
+    source_description: string;
+    source_meta: {};
+    source_name: string;
+    tags: [];
+    unique_id: string;
+    unrendered_config: {};
+}
+
 interface DbtGraph {
     exposures: object;
     nodes: { [key: string]: DbtNode };
-    sources: object;
+    sources: { [key: string]: DbtSource };
 }
 
 export interface AggregatedMetrics {
