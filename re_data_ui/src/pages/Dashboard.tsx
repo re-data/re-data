@@ -51,7 +51,7 @@ const extractMetrics = (overview: OverviewData) => {
         }
         for (const [key, metrics] of metricMap.columnMetrics) {
             const sortedMetrics = metrics.sort((a: Metric, b: Metric) => moment(a.time_window_end).diff(b.time_window_end));
-            metricMap.tableMetrics.set(key, sortedMetrics);
+            metricMap.columnMetrics.set(key, sortedMetrics);
         }
     }
     return finalOverview;
