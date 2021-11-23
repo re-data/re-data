@@ -2,12 +2,15 @@ import React, {ReactElement, useContext} from "react";
 import {useSearchParams} from "react-router-dom"
 import {AggregatedMetrics, OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
 import {CartesianGrid, XAxis, YAxis, Tooltip, Bar, BarChart} from 'recharts'
+import {extractComponentFromIdentifier} from "../utils/helpers";
 
 const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
     const tableMetricCharts = (
         Array.from(data.tableMetrics).map(([key, metrics]) => (
             <div key={key}>
-                <span className="text-sm text-gray-500">{key}</span>
+                <span className="text-sm text-gray-500">
+                    Metric: {extractComponentFromIdentifier(key, 'metricName')}
+                </span>
                 <BarChart width={400} height={200} data={metrics}>
                     <CartesianGrid strokeDasharray="3 3"/>
                     <Bar dataKey="value" fill="#8884d8"/>
@@ -20,7 +23,10 @@ const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
     const columnMetricCharts = (
         Array.from(data.columnMetrics).map(([key, metrics]) => (
             <div key={key}>
-                <span className="text-sm">{key}</span>
+                <span className="text-sm text-gray-500">
+                    Column: {extractComponentFromIdentifier(key, 'columnName')},
+                    Metric: {extractComponentFromIdentifier(key, 'metricName')}
+                </span>
                 <BarChart width={400} height={200} data={metrics}>
                     <CartesianGrid strokeDasharray="3 3"/>
                     <Bar dataKey="value" fill="#8884d8"/>

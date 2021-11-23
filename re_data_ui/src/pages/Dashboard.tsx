@@ -28,14 +28,15 @@ const extractMetrics = (overview: OverviewData) => {
         }
         const metricMap = (finalOverview.get(tableName)!);
         if (!columnName) { // table metric
-            const key = `${tableName}_${metricName}`;
+            // use _ as placeholder for column name that doesn't exist in table metrics, so we can have a uniform key structure
+            const key = `${tableName}._.${metricName}`;
             if (metricMap.tableMetrics.has(key)) {
                 (metricMap.tableMetrics.get(key)!).push(metric);
             } else {
                 metricMap.tableMetrics.set(key, [metric]);
             }
         } else {
-            const key = `${tableName}_${columnName}_${metricName}`;
+            const key = `${tableName}.${columnName}.${metricName}`;
             if (metricMap.columnMetrics.has(key)) {
                 (metricMap.columnMetrics.get(key)!).push(metric);
             } else {
