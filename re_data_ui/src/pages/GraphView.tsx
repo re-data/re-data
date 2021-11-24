@@ -83,7 +83,6 @@ const GraphView: React.FC = (): ReactElement => {
     const graph = generateGraph(overview)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [searchParams, setURLSearchParams] = useSearchParams();
-    const mode = searchParams.get('mode');
     const data = {
         nodes: graph.nodes,
         edges: graph.edges
