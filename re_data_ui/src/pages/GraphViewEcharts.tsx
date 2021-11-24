@@ -1,7 +1,6 @@
 import React, {ReactElement, useContext} from "react";
 import './GraphView.css';
 import LineageGraph from "../components/LineageGraph";
-import ModelDetails from "../components/ModelDetails";
 import {useSearchParams} from "react-router-dom";
 import {DbtNode, DbtSource, OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
 import ModelDetailsEcharts from "../components/ModelDetailsEcharts";
