@@ -37,6 +37,7 @@ jobs:
           pip install re_data==0.4.0
           dbt deps
           dbt seed
+          dbt run
           re_data run --start-date 2021-01-01 --end-date 2021-01-15
           dbt run-operation schema_change_add_orders_column
           re_data run --start-date 2021-01-15 --end-date 2021-01-16
