@@ -79,12 +79,14 @@ vars:
             - age
 
         - name: user_data
-          time_filter: null
-          columns: []
+          time_filter: created_at
+          columns:
+            - email
 
         - name: sanitized_user_data
-          time_filter: null
-          columns: []
+          time_filter: created_at
+          columns:
+            - email
 
       actively_monitored: true
 
