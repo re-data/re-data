@@ -65,6 +65,19 @@ vars:
             - amount
             - status
 
+        - name: orders_per_age
+          time_filter: created_at
+          columns:
+            - amount
+            - status
+            - age
+        
+        - name: revenue_per_age
+          time_filter: created_at
+          columns:
+            - sum
+            - age
+
       actively_monitored: true
 
   re_data:metrics_base:

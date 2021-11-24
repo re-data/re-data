@@ -9,13 +9,12 @@ Welcome to a re_data getting started tutorial. We will prepare, analyze and moni
 It's an example of how a re_data project can work and help you improve data in your data warehouse
 
 ## Toy shop data
-Toy shop DB has currently just 4 tables:
+Toy shop DB has currently 5 tables:
   - customers
   - orders
   - order_items
   - companies
   - user_data
-  - us_states
 
 ```sql title=toy_shop_schema
                         Table "toy_shop.customers"
@@ -58,11 +57,6 @@ Toy shop DB has currently just 4 tables:
  name       | text                     |           |          |
  email      | text                     |           |          |
  
-                         Table "toy_shop.us_states"
-  Column    |            Type          | Collation | Nullable | Default
-----------+-----------------------------+-----------+----------+---------
- state       | text                     |           |          |
- code        | text                     |           |          |
 ```
 
 Toy shop started operating on 1 January 2021.
