@@ -3,7 +3,7 @@ import {useSearchParams} from "react-router-dom"
 import {AggregatedMetrics, OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
 import {extractComponentFromIdentifier} from "../utils/helpers";
 import * as echarts from 'echarts/core';
-import {BarChart, BarSeriesOption, LineChart, LineSeriesOption} from 'echarts/charts';
+import {LineChart, LineSeriesOption} from 'echarts/charts';
 import {
     GridComponent,
     TooltipComponent,
@@ -14,8 +14,7 @@ import {CanvasRenderer} from 'echarts/renderers';
 import EChartsReactCore from "echarts-for-react/lib/core";
 import {UniversalTransition} from "echarts/features";
 
-type ECOption = echarts.ComposeOption<| BarSeriesOption
-    | LineSeriesOption
+type ECOption = echarts.ComposeOption<| LineSeriesOption
     | TitleComponentOption
     | TooltipComponentOption
     | GridComponentOption>;
@@ -25,7 +24,6 @@ echarts.use(
         TitleComponent,
         TooltipComponent,
         GridComponent,
-        BarChart,
         LineChart,
         CanvasRenderer,
         UniversalTransition
@@ -38,7 +36,6 @@ const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
             const options: ECOption = {
                 title: {
                     text: `${extractComponentFromIdentifier(key, 'metricName')}`,
-                    subtext: 'Type: metric'
                 },
                 grid: {top: '20%', right: '5%', bottom: '12%', left: '12%'},
                 xAxis: {
@@ -52,14 +49,8 @@ const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
                     {
                         name: extractComponentFromIdentifier(key, 'metricName'),
                         data: metrics.map(m => m.value),
-                        type: 'bar',
-                        color: '#8884d8',
-                    },
-                    {
-                        name: extractComponentFromIdentifier(key, 'metricName'),
-                        data: metrics.map(m => m.value),
                         type: 'line',
-                        color: '#392396',
+                        color: '#8884d8',
                         smooth: true,
                     },
                 ],
@@ -69,9 +60,6 @@ const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
             };
             return (
                 <div key={key}>
-                    {/*<span className="text-sm">*/}
-                    {/*    Metric: {extractComponentFromIdentifier(key, 'metricName')}*/}
-                    {/*</span>*/}
                     <EChartsReactCore echarts={echarts} option={options}/>
                 </div>
             )
@@ -80,8 +68,7 @@ const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
         Array.from(data.columnMetrics).map(([key, metrics]) => {
             const options: ECOption = {
                 title: {
-                    text: `${extractComponentFromIdentifier(key, 'metricName')}`,
-                    subtext: 'Type: metric'
+                    text: `${extractComponentFromIdentifier(key, 'metricName')}(${extractComponentFromIdentifier(key, 'columnName')})`
                 },
                 grid: {top: '20%', right: '5%', bottom: '12%', left: '12%'},
                 xAxis: {
@@ -96,14 +83,8 @@ const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
                     {
                         name: extractComponentFromIdentifier(key, 'metricName'),
                         data: metrics.map(m => m.value),
-                        type: 'bar',
-                        color: '#8884d8',
-                    },
-                    {
-                        name: extractComponentFromIdentifier(key, 'metricName'),
-                        data: metrics.map(m => m.value),
                         type: 'line',
-                        color: '#392396',
+                        color: '#8884d8',
                         smooth: true,
                     }
                 ],
@@ -143,7 +124,8 @@ const ModelDetailsEcharts: React.FC = (): ReactElement => {
         <div className='col-span-2 h-auto overflow-scroll'>
             <div className="bg-white rounded shadow border p-3">
                 <div className="mb-3">
-                    <span className="text-2xl text--capitalize font-bold">Model: {extractComponentFromIdentifier(fullTableName, 'tableName')}</span>
+                    <span
+                        className="text-2xl text--capitalize font-bold">Model: {extractComponentFromIdentifier(fullTableName, 'tableName')}</span>
                 </div>
                 {!modelExists ? (<span>No metrics</span>) : generateMetricCharts(data)}
             </div>
