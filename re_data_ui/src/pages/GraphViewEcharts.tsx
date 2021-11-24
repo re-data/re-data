@@ -4,6 +4,7 @@ import LineageGraph from "../components/LineageGraph";
 import ModelDetails from "../components/ModelDetails";
 import {useSearchParams} from "react-router-dom";
 import {DbtNode, DbtSource, OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
+import ModelDetailsEcharts from "../components/ModelDetailsEcharts";
 
 interface VisPointer {
     x: number,
@@ -78,12 +79,11 @@ const generateGraph = (overview: OverviewData) => {
     return graph;
 };
 
-const GraphView: React.FC = (): ReactElement => {
+const GraphViewEcharts: React.FC = (): ReactElement => {
     const overview: OverviewData = useContext(RedataOverviewContext);
     const graph = generateGraph(overview)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [searchParams, setURLSearchParams] = useSearchParams();
-    const mode = searchParams.get('mode');
     const data = {
         nodes: graph.nodes,
         edges: graph.edges
@@ -96,7 +96,7 @@ const GraphView: React.FC = (): ReactElement => {
             }
             const modelIdentifier = params.nodes[0];
             setURLSearchParams({
-                model: modelIdentifier,
+                model: modelIdentifier
             });
         },
         deselectNode: (_: VisNetworkEventParams) => {
@@ -158,9 +158,9 @@ const GraphView: React.FC = (): ReactElement => {
              gap-4 h-80 border-4 border-dashed border-gray-200
               rounded-lg h-full">
             <LineageGraph data={data} events={events} networkOptions={networkOptions}/>
-            <ModelDetails/>
+            <ModelDetailsEcharts/>
         </div>
     )
 };
 
-export default GraphView;
+export default GraphViewEcharts;

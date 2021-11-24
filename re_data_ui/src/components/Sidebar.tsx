@@ -29,6 +29,12 @@ const Sidebar: React.FC = (): ReactElement => {
                         <BiNetworkChart size="1.25em" />
                         <span>Graph</span>
                     </Link>
+
+                    <Link to='graph_echarts'
+                       className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
+                        <BiNetworkChart size="1.25em" />
+                        <span>E charts</span>
+                    </Link>
                 </nav>
             </div>
 

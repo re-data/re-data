@@ -2,7 +2,8 @@ export const stripQuotes = (str: string) => {
     return str.replaceAll('"', '');
 };
 
-export const extractComponentFromIdentifier = (identifier: string, component: string): string | null => {
+export const extractComponentFromIdentifier = (identifier: string | null, component: string): string | undefined => {
+    if (!identifier) return undefined;
     const arr = identifier.split('.');
     const mapping: { [key: string]: number } = {
         database: 0,
@@ -13,7 +14,7 @@ export const extractComponentFromIdentifier = (identifier: string, component: st
     };
     const idx = mapping[component];
     if (!idx || idx >= arr.length) {
-        return null
+        return undefined
     }
     return arr[idx];
 };
