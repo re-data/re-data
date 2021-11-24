@@ -34,10 +34,78 @@ vars:
     - tables:
         - name: customers
           time_filter: joined_at
+          columns:
+            - first_name
+            - last_name
+            - age
+
         - name: order_items
           time_filter: added_at
+          columns:
+            - name
+            - amount
+            - order_id
+
         - name: orders
           time_filter: created_at
+          columns:
+            - amount
+            - status
+
         - name: companies
           time_filter: null
+          columns:
+            - brand_name
+            - show
+            - year
+
+        - name: pending_orders
+          time_filter: created_at
+          columns:
+            - amount
+            - status
+
+        - name: orders_per_age
+          time_filter: created_at
+          columns:
+            - amount
+            - status
+            - age
+        
+        - name: revenue_per_age
+          time_filter: created_at
+          columns:
+            - sum
+            - age
+
+        - name: user_data
+          time_filter: created_at
+          columns:
+            - email
+
+        - name: sanitized_user_data
+          time_filter: created_at
+          columns:
+            - email
+
       actively_monitored: true
+
+  re_data:metrics_base:
+    table:
+      - row_count
+      - freshness
+
+    column:
+      numeric:
+        - min
+        - max
+        - avg
+        - stddev
+        - variance
+        - nulls_percent
+
+      text:
+        - min_length
+        - max_length
+        - avg_length
+        - missing_percent
