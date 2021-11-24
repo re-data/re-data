@@ -78,6 +78,14 @@ vars:
             - sum
             - age
 
+        - name: user_data
+          time_filter: null
+          columns: []
+
+        - name: sanitized_user_data
+          time_filter: null
+          columns: []
+
       actively_monitored: true
 
   re_data:metrics_base:
