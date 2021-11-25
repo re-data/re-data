@@ -8,7 +8,8 @@ import {
     GridComponent,
     TooltipComponent,
     TitleComponent,
-    TitleComponentOption, TooltipComponentOption, GridComponentOption
+    TitleComponentOption, TooltipComponentOption, GridComponentOption,
+    MarkAreaComponent
 } from 'echarts/components';
 import {CanvasRenderer} from 'echarts/renderers';
 import EChartsReactCore from "echarts-for-react/lib/core";
@@ -26,7 +27,8 @@ echarts.use(
         GridComponent,
         LineChart,
         CanvasRenderer,
-        UniversalTransition
+        UniversalTransition,
+        MarkAreaComponent
     ]
 );
 

@@ -1,5 +1,5 @@
 export const stripQuotes = (str: string) => {
-    return str.replaceAll('"', '');
+    return str.replaceAll('"', '').replaceAll('`', '');
 };
 
 export const extractComponentFromIdentifier = (identifier: string | null, component: string): string | undefined => {

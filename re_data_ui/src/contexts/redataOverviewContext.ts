@@ -122,10 +122,23 @@ export interface AggregatedMetrics {
     columnMetrics: Map<string, Array<Metric>>;
 }
 
+export interface SchemaChange {
+    column_name: string;
+    data_type: string;
+    detected_time: string;
+    id: string;
+    is_nullable: boolean;
+    operation: string;
+    prev_column_name: null;
+    prev_data_type: null;
+    prev_is_nullable: null;
+    table_name: string;
+}
+
 export interface OverviewData {
     anomalies: Array<Anomaly>;
     metrics: Array<Metric>;
-    schema_changes: Array<any>;
+    schema_changes: Array<SchemaChange>;
     aggregated_metrics: Map<string, AggregatedMetrics>;
     graph: DbtGraph | null;
     generated_at: string;
