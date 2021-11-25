@@ -7,7 +7,6 @@ import reportWebVitals from './reportWebVitals';
 import Alerts from "./pages/Alerts";
 import Dashboard from "./pages/Dashboard";
 import GraphView from "./pages/GraphView";
-import GraphViewEcharts from "./pages/GraphViewEcharts";
 
 ReactDOM.render(
     <HashRouter>
@@ -16,7 +15,6 @@ ReactDOM.render(
                 <Route path="/" element={<Dashboard/>}>
                     <Route path="alerts" element={<Alerts/>}/>
                     <Route path="graph" element={<GraphView/>}/>
-                    <Route path="graph_echarts" element={<GraphViewEcharts/>}/>
                 </Route>
             </Route>
         </Routes>

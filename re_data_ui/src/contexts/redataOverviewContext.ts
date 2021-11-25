@@ -125,6 +125,7 @@ export interface AggregatedMetrics {
 export interface OverviewData {
     anomalies: Array<Anomaly>;
     metrics: Array<Metric>;
+    schema_changes: Array<any>;
     aggregated_metrics: Map<string, AggregatedMetrics>;
     graph: DbtGraph | null;
     generated_at: string;
@@ -133,6 +134,7 @@ export interface OverviewData {
 export const RedataOverviewContext = React.createContext<OverviewData>({
     anomalies: [],
     metrics: [],
+    schema_changes: [],
     aggregated_metrics: new Map<string, AggregatedMetrics>(),
     graph: null,
     generated_at: '',

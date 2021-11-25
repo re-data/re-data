@@ -9,6 +9,7 @@ import {stripQuotes} from "../utils/helpers";
 interface RawOverviewData {
     anomalies: string | null;
     metrics: string | null;
+    schema_changes: string | null;
     graph: string;
     generated_at: string;
 }
@@ -66,6 +67,7 @@ const prepareOverviewData = (raw: Array<RawOverviewData>) => {
     const overview: OverviewData = {
         anomalies: data.anomalies ? JSON.parse(data.anomalies as string) : [],
         metrics: data.metrics ? JSON.parse(data.metrics as string) : [],
+        schema_changes: data.schema_changes ? JSON.parse(data.schema_changes as string) : [],
         aggregated_metrics: new Map<string, AggregatedMetrics>(),
         graph: JSON.parse(data.graph as string),
         generated_at: data.generated_at,

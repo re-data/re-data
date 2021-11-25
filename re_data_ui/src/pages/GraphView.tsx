@@ -132,8 +132,8 @@ const GraphView: React.FC = (): ReactElement => {
             "hierarchical": {
                 "enabled": true,
                 "levelSeparation": 485,
-                "nodeSpacing": 5,
-                "treeSpacing": 30,
+                "nodeSpacing": 50,
+                "treeSpacing": 35,
                 "blockShifting": false,
                 "edgeMinimization": true,
                 "parentCentralization": false,
