@@ -122,6 +122,11 @@ export interface AggregatedMetrics {
     columnMetrics: Map<string, Array<Metric>>;
 }
 
+export interface AggregatedAlerts {
+    anomalies: Map<string, Array<Anomaly>>;
+    schemaChanges: Map<string, Array<SchemaChange>>;
+}
+
 export interface SchemaChange {
     column_name: string;
     data_type: string;
@@ -140,6 +145,7 @@ export interface OverviewData {
     metrics: Array<Metric>;
     schema_changes: Array<SchemaChange>;
     aggregated_metrics: Map<string, AggregatedMetrics>;
+    aggregated_alerts: Map<string, AggregatedAlerts>;
     graph: DbtGraph | null;
     generated_at: string;
 }
@@ -149,6 +155,7 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
     metrics: [],
     schema_changes: [],
     aggregated_metrics: new Map<string, AggregatedMetrics>(),
+    aggregated_alerts: new Map<string, AggregatedAlerts>(),
     graph: null,
     generated_at: '',
 });

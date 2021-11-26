@@ -15,10 +15,10 @@ const generateSchemaChangeMessage = (change: SchemaChange): string => {
     let message = ''
     switch (change.operation) {
         case 'column_added':
-            message = `column ${change.column_name} was added`;
+            message = `column ${change.column_name} of type ${change.data_type} was added`;
             break;
         case 'column_removed':
-            message = `column ${change.prev_column_name} was removed`;
+            message = `column ${change.prev_column_name} of type ${change.prev_data_type} was removed`;
             break;
         case 'type_change':
             message = `${change.column_name} column data type was changed from ${change.prev_data_type} to 

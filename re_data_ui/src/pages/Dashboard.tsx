@@ -2,7 +2,13 @@ import React, {ReactElement} from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import {Outlet} from 'react-router-dom';
-import {AggregatedMetrics, Metric, OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
+import {
+    AggregatedAlerts,
+    AggregatedMetrics, Anomaly,
+    Metric,
+    OverviewData,
+    RedataOverviewContext, SchemaChange
+} from "../contexts/redataOverviewContext";
 import moment from 'moment';
 import {stripQuotes} from "../utils/helpers";
 
@@ -14,7 +20,7 @@ interface RawOverviewData {
     generated_at: string;
 }
 
-const extractMetrics = (overview: OverviewData) => {
+const extractMetrics = (overview: OverviewData): Map<string, AggregatedMetrics> => {
     const metrics = overview.metrics;
     const finalOverview: Map<string, AggregatedMetrics> = new Map();
     for (const metric of metrics) {
@@ -59,6 +65,49 @@ const extractMetrics = (overview: OverviewData) => {
     return finalOverview;
 };
 
+const prepareAlerts = (overview: OverviewData): Map<string, AggregatedAlerts> => {
+    const anomalies = overview.anomalies;
+    const schemaChanges = overview.schema_changes;
+    const alerts = new Map<string, AggregatedAlerts>();
+    // group anomalies under `table_name`
+    for (const anomaly of anomalies) {
+        const model = stripQuotes(anomaly.table_name);
+        const columnName = anomaly.column_name;
+        if (!alerts.has(model)) {
+            const obj: AggregatedAlerts = {
+                anomalies: new Map<string, Array<Anomaly>>(),
+                schemaChanges: new Map<string, Array<SchemaChange>>()
+            }
+            alerts.set(model, obj)
+        }
+        const anomalyMap = (alerts.get(model)!).anomalies;
+        if (!anomalyMap.has(columnName)) {
+            anomalyMap.set(columnName, [anomaly])
+        } else {
+            (anomalyMap.get(columnName)!).push(anomaly)
+        }
+    }
+    // group schema_changes under `table_name`
+    for (const change of schemaChanges) {
+        const model = stripQuotes(change.table_name);
+        const columnName = change.column_name;
+        if (!alerts.has(model)) {
+            const obj: AggregatedAlerts = {
+                anomalies: new Map<string, Array<Anomaly>>(),
+                schemaChanges: new Map<string, Array<SchemaChange>>()
+            }
+            alerts.set(model, obj)
+        }
+        const schemaChangesMap = (alerts.get(model)!).schemaChanges;
+        if (!schemaChangesMap.has(columnName)) {
+            schemaChangesMap.set(columnName, [change])
+        } else {
+            (schemaChangesMap.get(columnName)!).push(change)
+        }
+    }
+    return alerts;
+};
+
 // const overview: Array<RawOverviewData> = require('../overview.json');
 const overview: Array<RawOverviewData> = require('../re_data_overview.json');
 
@@ -69,10 +118,12 @@ const prepareOverviewData = (raw: Array<RawOverviewData>) => {
         metrics: data.metrics ? JSON.parse(data.metrics as string) : [],
         schema_changes: data.schema_changes ? JSON.parse(data.schema_changes as string) : [],
         aggregated_metrics: new Map<string, AggregatedMetrics>(),
+        aggregated_alerts: new Map<string, AggregatedAlerts>(),
         graph: JSON.parse(data.graph as string),
         generated_at: data.generated_at,
     }
     overview.aggregated_metrics = extractMetrics(overview);
+    overview.aggregated_alerts = prepareAlerts(overview);
     console.log(overview)
     return overview;
 };

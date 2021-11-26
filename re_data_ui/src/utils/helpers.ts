@@ -1,9 +1,11 @@
+export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
+
 export const stripQuotes = (str: string) => {
     return str.replaceAll('"', '').replaceAll('`', '');
 };
 
-export const extractComponentFromIdentifier = (identifier: string | null, component: string): string | undefined => {
-    if (!identifier) return undefined;
+export const extractComponentFromIdentifier = (identifier: string | null, component: string): string => {
+    if (!identifier) return '';
     const arr = identifier.split('.');
     const mapping: { [key: string]: number } = {
         database: 0,
@@ -14,7 +16,7 @@ export const extractComponentFromIdentifier = (identifier: string | null, compon
     };
     const idx = mapping[component];
     if (!idx || idx >= arr.length) {
-        return undefined
+        return ''
     }
     return arr[idx];
 };

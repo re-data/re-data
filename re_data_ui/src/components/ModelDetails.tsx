@@ -1,7 +1,12 @@
 import React, {ReactElement, useContext} from "react";
 import {useSearchParams} from "react-router-dom"
-import {AggregatedMetrics, OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
-import {extractComponentFromIdentifier} from "../utils/helpers";
+import {
+    AggregatedAlerts,
+    AggregatedMetrics, Anomaly, Metric,
+    OverviewData,
+    RedataOverviewContext, SchemaChange
+} from "../contexts/redataOverviewContext";
+import {DATE_TIME_FORMAT, extractComponentFromIdentifier} from "../utils/helpers";
 import * as echarts from 'echarts/core';
 import {LineChart, LineSeriesOption} from 'echarts/charts';
 import {
@@ -14,6 +19,7 @@ import {
 import {CanvasRenderer} from 'echarts/renderers';
 import EChartsReactCore from "echarts-for-react/lib/core";
 import {UniversalTransition} from "echarts/features";
+import moment from "moment/moment";
 
 type ECOption = echarts.ComposeOption<| LineSeriesOption
     | TitleComponentOption
@@ -32,9 +38,26 @@ echarts.use(
     ]
 );
 
-const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
+const generateMarkAreas = (alerts: AggregatedAlerts, columnName: string, metricName: string): any => {
+    const arr = []
+    const anomaliesMap = alerts.anomalies;
+    // '' empty string key contains anomalies for table level metrics.
+    const anomalies = anomaliesMap.has(columnName)
+        ? anomaliesMap.get(columnName)
+        : anomaliesMap.has('') ? anomaliesMap.get('') : [];
+    for (const anomaly of (anomalies!)) {
+        if (anomaly.metric === metricName) {
+            arr.push([{xAxis: moment(anomaly.time_window_end).subtract(anomaly.interval_length_sec, 's').format(DATE_TIME_FORMAT)}, {xAxis: anomaly.time_window_end}])
+        }
+    }
+    return arr
+}
+
+const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts): ReactElement => {
     const tableMetricCharts = (
         Array.from(data.tableMetrics).map(([key, metrics]) => {
+            const metricName = extractComponentFromIdentifier(key, 'metricName');
+            const columnName = extractComponentFromIdentifier(key, 'columnName');
             const options: ECOption = {
                 title: {
                     text: `${extractComponentFromIdentifier(key, 'metricName')}`,
@@ -54,6 +77,12 @@ const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
                         type: 'line',
                         color: '#8884d8',
                         smooth: true,
+                        markArea: {
+                            itemStyle: {
+                                color: 'rgba(255, 173, 177, 0.4)'
+                            },
+                            data: generateMarkAreas(alerts, columnName, metricName)
+                        }
                     },
                 ],
                 tooltip: {
@@ -68,6 +97,8 @@ const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
         }));
     const columnMetricCharts = (
         Array.from(data.columnMetrics).map(([key, metrics]) => {
+            const metricName = extractComponentFromIdentifier(key, 'metricName');
+            const columnName = extractComponentFromIdentifier(key, 'columnName');
             const options: ECOption = {
                 title: {
                     text: `${extractComponentFromIdentifier(key, 'metricName')}(${extractComponentFromIdentifier(key, 'columnName')})`
@@ -80,14 +111,19 @@ const generateMetricCharts = (data: AggregatedMetrics): ReactElement => {
                 yAxis: {
                     type: 'value',
                 },
-                markArea: {},
                 series: [
                     {
-                        name: extractComponentFromIdentifier(key, 'metricName'),
+                        name: metricName,
                         data: metrics.map(m => m.value),
                         type: 'line',
                         color: '#8884d8',
                         smooth: true,
+                        markArea: {
+                            itemStyle: {
+                                color: 'rgba(255, 173, 177, 0.4)'
+                            },
+                            data: generateMarkAreas(alerts, columnName, metricName)
+                        },
                     }
                 ],
                 tooltip: {
@@ -115,12 +151,21 @@ const ModelDetails: React.FC = (): ReactElement => {
     let modelExists = false;
     const fullTableName = searchParams.get('model');
     const overview: OverviewData = useContext(RedataOverviewContext);
-    // @ts-ignore
-    let data: AggregatedMetrics = [];
+
+    let data: AggregatedMetrics = {
+        tableMetrics: new Map<string, Array<Metric>>(),
+        columnMetrics: new Map<string, Array<Metric>>()
+    };
+    let alerts: AggregatedAlerts = {
+        anomalies: new Map<string, Array<Anomaly>>(),
+        schemaChanges: new Map<string, Array<SchemaChange>>()
+    };
     if (typeof fullTableName === "string" && overview.aggregated_metrics.has(fullTableName)) {
         modelExists = true;
-        // @ts-ignore
-        data = overview.aggregated_metrics.get(fullTableName);
+        data = overview.aggregated_metrics.get(fullTableName) as AggregatedMetrics;
+        if (overview.aggregated_alerts.has(fullTableName)) {
+            alerts = overview.aggregated_alerts.get(fullTableName) as AggregatedAlerts;
+        }
     }
     return (
         <div className='col-span-2 h-auto overflow-scroll'>
@@ -129,7 +174,7 @@ const ModelDetails: React.FC = (): ReactElement => {
                     <span
                         className="text-2xl text--capitalize font-bold">Model: {extractComponentFromIdentifier(fullTableName, 'tableName')}</span>
                 </div>
-                {!modelExists ? (<span>No metrics</span>) : generateMetricCharts(data)}
+                {!modelExists ? (<span>No metrics</span>) : generateMetricCharts(data, alerts)}
             </div>
         </div>
 
