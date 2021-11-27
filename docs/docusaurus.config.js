@@ -88,4 +88,12 @@ module.exports = {
       },
     ],
   ],
+  plugins: [
+    [
+      require.resolve('docusaurus-gtm-plugin'),
+      {
+        id: 'GTM-58V4BN7',
+      }
+    ]
+  ],
 };
