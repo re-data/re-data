@@ -27,7 +27,7 @@ export const generateAnomaliesByTimeWindowEnd = (alert: AggregatedAlerts) => {
     const anomalyMap = alert.anomalies;
     // const schemaChangesMap = alert.schemaChanges;
     const alertsByTimeWindowEnd: { [key: string]: number } = {};
-    for (const [_, anomalies] of anomalyMap.entries()) {
+    for (const anomalies of anomalyMap.values()) {
         for (const anomaly of anomalies) {
             if (!alertsByTimeWindowEnd.hasOwnProperty(anomaly.time_window_end)) {
                 alertsByTimeWindowEnd[anomaly.time_window_end] = 1
