@@ -1,3 +1,5 @@
+import {AggregatedAlerts} from "../contexts/redataOverviewContext";
+
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
 export const stripQuotes = (str: string) => {
@@ -19,4 +21,20 @@ export const extractComponentFromIdentifier = (identifier: string | null, compon
         return ''
     }
     return arr[idx];
+};
+
+export const generateAnomaliesByTimeWindowEnd = (alert: AggregatedAlerts) => {
+    const anomalyMap = alert.anomalies;
+    // const schemaChangesMap = alert.schemaChanges;
+    const alertsByTimeWindowEnd: { [key: string]: number } = {};
+    for (const [_, anomalies] of anomalyMap.entries()) {
+        for (const anomaly of anomalies) {
+            if (!alertsByTimeWindowEnd.hasOwnProperty(anomaly.time_window_end)) {
+                alertsByTimeWindowEnd[anomaly.time_window_end] = 1
+            } else {
+                alertsByTimeWindowEnd[anomaly.time_window_end] += 1
+            }
+        }
+    }
+    return alertsByTimeWindowEnd;
 };

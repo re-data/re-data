@@ -6,13 +6,14 @@ import {
     OverviewData,
     RedataOverviewContext, SchemaChange
 } from "../contexts/redataOverviewContext";
-import {DATE_TIME_FORMAT, extractComponentFromIdentifier} from "../utils/helpers";
+import {DATE_TIME_FORMAT, extractComponentFromIdentifier, generateAnomaliesByTimeWindowEnd} from "../utils/helpers";
 import * as echarts from 'echarts/core';
-import {LineChart, LineSeriesOption} from 'echarts/charts';
+import {LineChart, LineSeriesOption, ScatterChart, ScatterSeriesOption} from 'echarts/charts';
 import {
     GridComponent,
     TooltipComponent,
     TitleComponent,
+    SingleAxisComponent,
     TitleComponentOption, TooltipComponentOption, GridComponentOption,
     MarkAreaComponent
 } from 'echarts/components';
@@ -23,6 +24,7 @@ import moment from "moment/moment";
 
 type ECOption = echarts.ComposeOption<| LineSeriesOption
     | TitleComponentOption
+    | ScatterSeriesOption
     | TooltipComponentOption
     | GridComponentOption>;
 
@@ -34,7 +36,9 @@ echarts.use(
         LineChart,
         CanvasRenderer,
         UniversalTransition,
-        MarkAreaComponent
+        MarkAreaComponent,
+        ScatterChart,
+        SingleAxisComponent
     ]
 );
 
@@ -53,7 +57,8 @@ const generateMarkAreas = (alerts: AggregatedAlerts, columnName: string, metricN
     return arr
 }
 
-const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts): ReactElement => {
+const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts): React.ReactElement => {
+    const anomaliesByTimeWindowEnd = generateAnomaliesByTimeWindowEnd(alerts);
     const tableMetricCharts = (
         Array.from(data.tableMetrics).map(([key, metrics]) => {
             const metricName = extractComponentFromIdentifier(key, 'metricName');
@@ -136,8 +141,52 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
                 </div>
             )
         }));
+
+    const arr = [];
+    for (const key in anomaliesByTimeWindowEnd) {
+        arr.push([key, anomaliesByTimeWindowEnd[key]]);
+    }
+
+    const alertScatterPlotOptions = {
+        tooltip: {
+            position: ['40', '15'],
+            formatter: (params: any) => {
+                return `${params.data[1]} anomalies occurred on ${params.data[0]}`
+            }
+        },
+        title: {
+            textBaseline: "middle",
+            top: "5%",
+            text: "Alerts"
+        },
+        singleAxis: {
+            left: '15%',
+            right: '10%',
+            type: "category",
+            boundaryGap: false,
+            data: Object.keys(anomaliesByTimeWindowEnd).sort(),
+            top: "20%",
+            height: "50",
+            axisLabel: {
+                interval: 3
+            }
+        },
+        series: {
+            coordinateSystem: 'singleAxis',
+            type: 'scatter',
+            color: '#b60404',
+            data: arr,
+            symbolSize: (dataItem: any) => {
+                return dataItem[1] * 4;
+            }
+        }
+    }
+    console.log(alertScatterPlotOptions);
     return (
         <div>
+            <div className="h-44">
+                <EChartsReactCore echarts={echarts} option={alertScatterPlotOptions}/>
+            </div>
             <span className="text-lg text--capitalize">Table Metrics</span>
             {tableMetricCharts}
             <span className="text-lg text--capitalize">Column Metrics</span>
@@ -174,7 +223,8 @@ const ModelDetails: React.FC = (): ReactElement => {
                     <span
                         className="text-2xl text--capitalize font-bold">Model: {extractComponentFromIdentifier(fullTableName, 'tableName')}</span>
                 </div>
-                {!modelExists ? (<span>No metrics</span>) : generateMetricCharts(data, alerts)}
+                {!modelExists ? (
+                    <span>No metrics</span>) : generateMetricCharts(data, alerts)}
             </div>
         </div>
 
