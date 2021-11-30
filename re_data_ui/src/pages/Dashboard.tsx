@@ -72,7 +72,7 @@ const prepareAlerts = (overview: OverviewData): Map<string, AggregatedAlerts> =>
     // group anomalies under `table_name`
     for (const anomaly of anomalies) {
         const model = stripQuotes(anomaly.table_name);
-        const columnName = anomaly.column_name;
+        const columnName = anomaly.column_name ? anomaly.column_name : '_';
         if (!alerts.has(model)) {
             const obj: AggregatedAlerts = {
                 anomalies: new Map<string, Array<Anomaly>>(),

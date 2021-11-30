@@ -11,11 +11,17 @@ import * as echarts from 'echarts/core';
 import {LineChart, LineSeriesOption, ScatterChart, ScatterSeriesOption} from 'echarts/charts';
 import {
     GridComponent,
+    GridComponentOption,
     TooltipComponent,
+    TooltipComponentOption,
     TitleComponent,
+    TitleComponentOption,
     SingleAxisComponent,
-    TitleComponentOption, TooltipComponentOption, GridComponentOption,
-    MarkAreaComponent
+    SingleAxisComponentOption,
+    VisualMapComponent,
+    VisualMapComponentOption,
+    MarkAreaComponent,
+    MarkAreaComponentOption
 } from 'echarts/components';
 import {CanvasRenderer} from 'echarts/renderers';
 import EChartsReactCore from "echarts-for-react/lib/core";
@@ -25,20 +31,24 @@ import moment from "moment/moment";
 type ECOption = echarts.ComposeOption<| LineSeriesOption
     | TitleComponentOption
     | ScatterSeriesOption
+    | MarkAreaComponentOption
+    | VisualMapComponentOption
+    | SingleAxisComponentOption
     | TooltipComponentOption
     | GridComponentOption>;
 
 echarts.use(
     [
+        LineChart,
+        ScatterChart,
         TitleComponent,
         TooltipComponent,
         GridComponent,
-        LineChart,
-        CanvasRenderer,
+        SingleAxisComponent,
+        VisualMapComponent,
         UniversalTransition,
         MarkAreaComponent,
-        ScatterChart,
-        SingleAxisComponent
+        CanvasRenderer
     ]
 );
 
@@ -57,12 +67,32 @@ const generateMarkAreas = (alerts: AggregatedAlerts, columnName: string, metricN
     return arr
 }
 
+const generatePiecesForVisualMap = (metrics: Array<Metric>, alerts: AggregatedAlerts, columnName: string) => {
+    const pieces: any = [];
+    const anomalies = alerts.anomalies;
+    const anomaliesTimeWindow = (anomalies.has(columnName) ? anomalies.get(columnName) : []) as Array<Anomaly>;
+    const set = new Set(anomaliesTimeWindow.map(a => `${a.metric}_${a.time_window_end}`))
+    for (let i = 0; i < metrics.length; i++) {
+        const metric = metrics[i];
+        const key = `${metric.metric}_${metric.time_window_end}`
+        if (set.has(key)) {
+            pieces.push({
+                gt: i - 1,
+                lte: i
+            })
+        }
+    }
+    return pieces;
+};
+
 const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts): React.ReactElement => {
     const anomaliesByTimeWindowEnd = generateAnomaliesByTimeWindowEnd(alerts);
+    let timeRange: string[] = [];
     const tableMetricCharts = (
         Array.from(data.tableMetrics).map(([key, metrics]) => {
             const metricName = extractComponentFromIdentifier(key, 'metricName');
             const columnName = extractComponentFromIdentifier(key, 'columnName');
+            const pieces = generatePiecesForVisualMap(metrics, alerts, columnName);
             const options: ECOption = {
                 title: {
                     text: `${extractComponentFromIdentifier(key, 'metricName')}`,
@@ -93,6 +123,17 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
                 tooltip: {
                     trigger: 'axis',
                 },
+                visualMap: {
+                    show: false,
+                    dimension: 0,
+                    pieces: pieces,
+                    inRange: {
+                        color: pieces.length ? '#ee2828' : '#8884d8', // if no anomaly exists, everything is in range hence don't color red
+                    },
+                    outOfRange: {
+                        color: '#8884d8',
+                    }
+                }
             };
             return (
                 <div key={key}>
@@ -104,6 +145,10 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
         Array.from(data.columnMetrics).map(([key, metrics]) => {
             const metricName = extractComponentFromIdentifier(key, 'metricName');
             const columnName = extractComponentFromIdentifier(key, 'columnName');
+            if (!timeRange.length) {
+                timeRange = metrics.map(m => m.time_window_end)
+            }
+            const pieces = generatePiecesForVisualMap(metrics, alerts, columnName);
             const options: ECOption = {
                 title: {
                     text: `${extractComponentFromIdentifier(key, 'metricName')}(${extractComponentFromIdentifier(key, 'columnName')})`
@@ -134,6 +179,17 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
                 tooltip: {
                     trigger: 'axis',
                 },
+                visualMap: {
+                    show: false,
+                    dimension: 0,
+                    pieces: pieces,
+                    inRange: {
+                        color: pieces.length ? '#ee2828' : '#8884d8', // if no anomaly exists, everything is in range hence don't color red
+                    },
+                    outOfRange: {
+                        color: '#8884d8',
+                    }
+                }
             };
             return (
                 <div key={key}>
@@ -164,24 +220,23 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
             right: '10%',
             type: "category",
             boundaryGap: false,
-            data: Object.keys(anomaliesByTimeWindowEnd).sort(),
+            data: timeRange,
             top: "20%",
             height: "50",
             axisLabel: {
-                interval: 3
+                interval: 28
             }
         },
         series: {
             coordinateSystem: 'singleAxis',
             type: 'scatter',
-            color: '#b60404',
+            color: '#ee2828',
             data: arr,
             symbolSize: (dataItem: any) => {
                 return dataItem[1] * 4;
             }
         }
     }
-    console.log(alertScatterPlotOptions);
     return (
         <div>
             <div className="h-44">
