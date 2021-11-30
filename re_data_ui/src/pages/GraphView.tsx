@@ -153,7 +153,7 @@ const GraphView: React.FC = (): ReactElement => {
     return (
         <div
             // className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-6 gap-4 CustomGraphHeight shadow overflow-hidden border-b border-gray-200 sm:rounded-lg h-full">
-            className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-5
+            className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-10
              gap-4 h-80 border-4 border-dashed border-gray-200
               rounded-lg h-full">
             <LineageGraph data={data} events={events} networkOptions={networkOptions}/>

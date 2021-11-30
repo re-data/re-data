@@ -6,7 +6,12 @@ import {
     OverviewData,
     RedataOverviewContext, SchemaChange
 } from "../contexts/redataOverviewContext";
-import {DATE_TIME_FORMAT, extractComponentFromIdentifier, generateAnomaliesByTimeWindowEnd} from "../utils/helpers";
+import {
+    DATE_TIME_FORMAT,
+    extractComponentFromIdentifier,
+    generateAlertMessage,
+    generateAnomaliesByTimeWindowEnd
+} from "../utils/helpers";
 import * as echarts from 'echarts/core';
 import {LineChart, LineSeriesOption, ScatterChart, ScatterSeriesOption} from 'echarts/charts';
 import {
@@ -83,6 +88,16 @@ const generatePiecesForVisualMap = (metrics: Array<Metric>, alerts: AggregatedAl
         }
     }
     return pieces;
+};
+
+const generateAlertTooltip = (anomaliesByTimeWindowEnd: { [p: string]: Array<Anomaly> }, volume: number, timeWindowEnd: string) => {
+    const anomalies = anomaliesByTimeWindowEnd[timeWindowEnd];
+    const messages: string[] = [];
+    for (const anomaly of anomalies) {
+        const msg = generateAlertMessage(anomaly);
+        messages.push(msg);
+    }
+    return messages.join('<br>')
 };
 
 const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts): React.ReactElement => {
@@ -200,14 +215,14 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
 
     const arr = [];
     for (const key in anomaliesByTimeWindowEnd) {
-        arr.push([key, anomaliesByTimeWindowEnd[key]]);
+        arr.push([key, anomaliesByTimeWindowEnd[key].length ? 1 : 0]);
     }
 
     const alertScatterPlotOptions = {
         tooltip: {
             position: ['40', '15'],
             formatter: (params: any) => {
-                return `${params.data[1]} anomalies occurred on ${params.data[0]}`
+                return `${generateAlertTooltip(anomaliesByTimeWindowEnd, params.data[1], params.data[0])}`
             }
         },
         title: {
@@ -222,6 +237,9 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
             boundaryGap: false,
             data: timeRange,
             top: "20%",
+            splitLine: {
+                show: true
+            },
             height: "50",
             axisLabel: {
                 interval: 28
@@ -233,7 +251,7 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
             color: '#ee2828',
             data: arr,
             symbolSize: (dataItem: any) => {
-                return dataItem[1] * 4;
+                return dataItem[1] * 15;
             }
         }
     }
@@ -272,7 +290,7 @@ const ModelDetails: React.FC = (): ReactElement => {
         }
     }
     return (
-        <div className='col-span-2 h-auto overflow-scroll'>
+        <div className='col-span-3 h-auto overflow-scroll'>
             <div className="bg-white rounded shadow border p-3">
                 <div className="mb-3">
                     <span

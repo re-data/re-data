@@ -1,15 +1,8 @@
 import React, {ReactElement, useContext} from "react";
-import {Anomaly, OverviewData, RedataOverviewContext, SchemaChange} from "../contexts/redataOverviewContext";
+import {OverviewData, RedataOverviewContext, SchemaChange} from "../contexts/redataOverviewContext";
 import {Link} from "react-router-dom";
 import Moment from "react-moment";
-import {stripQuotes} from "../utils/helpers";
-
-const generateAlertMessage = (anomaly: Anomaly): string => {
-    const compareText = anomaly.last_value > anomaly.last_avg ? 'greater than' : 'less than';
-    const percentage = ((Math.abs(anomaly.last_value - anomaly.last_avg) / anomaly.last_avg) * 100).toFixed(2);
-    const model = anomaly.column_name ? `column ${anomaly.column_name}` : 'this table';
-    return `${anomaly.metric} for ${model} is ${percentage}% ${compareText} average`;
-};
+import {generateAlertMessage, stripQuotes} from "../utils/helpers";
 
 const generateSchemaChangeMessage = (change: SchemaChange): string => {
     let message = ''
