@@ -7,6 +7,7 @@ import {
     RedataOverviewContext, SchemaChange
 } from "../contexts/redataOverviewContext";
 import {
+    DATE_FORMAT,
     DATE_TIME_FORMAT,
     extractComponentFromIdentifier,
     generateAlertMessage,
@@ -90,18 +91,9 @@ const generatePiecesForVisualMap = (metrics: Array<Metric>, alerts: AggregatedAl
     return pieces;
 };
 
-const generateAlertTooltip = (anomaliesByTimeWindowEnd: { [p: string]: Array<Anomaly> }, volume: number, timeWindowEnd: string) => {
-    const anomalies = anomaliesByTimeWindowEnd[timeWindowEnd];
-    const messages: string[] = [];
-    for (const anomaly of anomalies) {
-        const msg = generateAlertMessage(anomaly);
-        messages.push(msg);
-    }
-    return messages.join('<br>')
-};
-
 const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts): React.ReactElement => {
-    const anomaliesByTimeWindowEnd = generateAnomaliesByTimeWindowEnd(alerts);
+    const anomalies = alerts.anomalies;
+    const alertChartOptions: Array<[string, ECOption]> = []
     let timeRange: string[] = [];
     const tableMetricCharts = (
         Array.from(data.tableMetrics).map(([key, metrics]) => {
@@ -115,7 +107,7 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
                 grid: {top: '20%', right: '5%', bottom: '12%', left: '12%'},
                 xAxis: {
                     type: 'category',
-                    data: metrics.map(m => m.time_window_end),
+                    data: metrics.map(m => moment(m.time_window_end).format(DATE_FORMAT)),
                 },
                 yAxis: {
                     type: 'value',
@@ -150,6 +142,14 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
                     }
                 }
             };
+            if (anomalies.has(columnName)) {
+                const tableAnomalies = anomalies.get(columnName) as Anomaly[];
+                for (const anomaly of tableAnomalies) {
+                    if (anomaly.metric === metricName) {
+                        alertChartOptions.push([key, options]);
+                    }
+                }
+            }
             return (
                 <div key={key}>
                     <EChartsReactCore echarts={echarts} option={options}/>
@@ -171,7 +171,7 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
                 grid: {top: '20%', right: '5%', bottom: '12%', left: '12%'},
                 xAxis: {
                     type: 'category',
-                    data: metrics.map(m => m.time_window_end),
+                    data: metrics.map(m => moment(m.time_window_end).format(DATE_FORMAT)),
                 },
                 yAxis: {
                     type: 'value',
@@ -206,6 +206,14 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
                     }
                 }
             };
+            if (anomalies.has(columnName)) {
+                const columnAnomalies = anomalies.get(columnName) as Anomaly[];
+                for (const anomaly of columnAnomalies) {
+                    if (anomaly.metric === metricName && anomaly.column_name === columnName) {
+                        alertChartOptions.push([key, options]);
+                    }
+                }
+            }
             return (
                 <div key={key}>
                     <EChartsReactCore echarts={echarts} option={options}/>
@@ -213,56 +221,22 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
             )
         }));
 
-    const arr = [];
-    for (const key in anomaliesByTimeWindowEnd) {
-        arr.push([key, anomaliesByTimeWindowEnd[key].length ? 1 : 0]);
-    }
+    const alertMetricCharts = alertChartOptions.map(([key, option]) => {
+        key = `alert_${key}`
+        return (
+            <div key={key}>
+                <EChartsReactCore echarts={echarts} option={option}/>
+            </div>
+        )
+    })
 
-    const alertScatterPlotOptions = {
-        tooltip: {
-            position: ['40', '15'],
-            formatter: (params: any) => {
-                return `${generateAlertTooltip(anomaliesByTimeWindowEnd, params.data[1], params.data[0])}`
-            }
-        },
-        title: {
-            textBaseline: "middle",
-            top: "5%",
-            text: "Alerts"
-        },
-        singleAxis: {
-            left: '15%',
-            right: '10%',
-            type: "category",
-            boundaryGap: false,
-            data: timeRange,
-            top: "20%",
-            splitLine: {
-                show: true
-            },
-            height: "50",
-            axisLabel: {
-                interval: 28
-            }
-        },
-        series: {
-            coordinateSystem: 'singleAxis',
-            type: 'scatter',
-            color: '#ee2828',
-            data: arr,
-            symbolSize: (dataItem: any) => {
-                return dataItem[1] * 15;
-            }
-        }
-    }
     return (
         <div>
-            <div className="h-44">
-                <EChartsReactCore echarts={echarts} option={alertScatterPlotOptions}/>
-            </div>
-            <span className="text-lg text--capitalize">Table Metrics</span>
+            <span className="text-lg text--capitalize underline">Anomalies</span>
+            {alertMetricCharts}
+            <span className="text-lg text--capitalize underline">Table Metrics</span>
             {tableMetricCharts}
-            <span className="text-lg text--capitalize">Column Metrics</span>
+            <span className="text-lg text--capitalize underline">Column Metrics</span>
             {columnMetricCharts}
         </div>
     );

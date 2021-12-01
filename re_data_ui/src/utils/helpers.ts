@@ -1,6 +1,7 @@
 import {AggregatedAlerts, Anomaly} from "../contexts/redataOverviewContext";
 
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
+export const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const stripQuotes = (str: string) => {
     return str.replaceAll('"', '').replaceAll('`', '');
