@@ -9,7 +9,7 @@ import {
 import {
     DATE_FORMAT,
     DATE_TIME_FORMAT,
-    extractComponentFromIdentifier,
+    extractComponentFromIdentifier, generateSchemaChangeMessage,
 } from "../utils/helpers";
 import * as echarts from 'echarts/core';
 import {LineChart, LineSeriesOption, ScatterChart, ScatterSeriesOption} from 'echarts/charts';
@@ -91,6 +91,10 @@ const generatePiecesForVisualMap = (metrics: Array<Metric>, alerts: AggregatedAl
 
 const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts): React.ReactElement => {
     const anomalies = alerts.anomalies;
+    const schemaChanges: SchemaChange[] = [];
+    for (const changes of alerts.schemaChanges.values()) {
+        schemaChanges.push(...changes);
+    }
     const alertChartOptions: Array<[string, ECOption]> = []
     let timeRange: string[] = [];
     const tableMetricCharts = (
@@ -206,9 +210,11 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
             };
             if (anomalies.has(columnName)) {
                 const columnAnomalies = anomalies.get(columnName) as Anomaly[];
+                const seen = new Set()
                 for (const anomaly of columnAnomalies) {
-                    if (anomaly.metric === metricName && anomaly.column_name === columnName) {
+                    if (anomaly.metric === metricName && anomaly.column_name === columnName && !seen.has(key)) {
                         alertChartOptions.push([key, options]);
+                        seen.add(key)
                     }
                 }
             }
@@ -230,7 +236,47 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
 
     return (
         <div>
-            <span className="text-lg text--capitalize underline">Anomalies</span>
+            <div className='mb-3 grid grid-cols-1'>
+                <div className="flex flex-col">
+                    <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                    <tr>
+
+                                        <th scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Schema Changes
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+
+                                    {schemaChanges.map(change => (
+                                        <tr key={change.id + '_' + change.prev_column_name}>
+                                            <td className="px-6 text-sm py-4 whitespace-nowrap">
+                                                <div
+                                                    className="text-gray-900">
+                                                <span
+                                                    className="badge mb-3 bg-yellow-300 rounded-full px-2 py-1
+                                         text-center object-right-top text-white text-sm mr-1">!</span>
+                                                    {generateSchemaChangeMessage(change)} at {moment(change.detected_time).format(DATE_TIME_FORMAT)}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span className="text-lg text--capitalize underline">Alerts</span>
+            <br/>
             {alertMetricCharts}
             <span className="text-lg text--capitalize underline">Table Metrics</span>
             {tableMetricCharts}
@@ -262,7 +308,7 @@ const ModelDetails: React.FC = (): ReactElement => {
         }
     }
     return (
-        <div className='col-span-3 h-auto overflow-scroll'>
+        <div className='col-span-4 h-auto overflow-scroll'>
             <div className="bg-white rounded shadow border p-3">
                 <div className="mb-3">
                     <span

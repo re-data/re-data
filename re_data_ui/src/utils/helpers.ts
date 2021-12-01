@@ -1,4 +1,4 @@
-import {AggregatedAlerts, Anomaly} from "../contexts/redataOverviewContext";
+import {AggregatedAlerts, Anomaly, SchemaChange} from "../contexts/redataOverviewContext";
 
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 export const DATE_FORMAT = 'YYYY-MM-DD';
@@ -45,4 +45,23 @@ export const generateAlertMessage = (anomaly: Anomaly): string => {
     const percentage = ((Math.abs(anomaly.last_value - anomaly.last_avg) / anomaly.last_avg) * 100).toFixed(2);
     // const model = anomaly.column_name ? `column ${anomaly.column_name}` : 'this table';
     return `${anomaly.metric}(${anomaly.column_name}) is ${percentage}% ${compareText} average`;
+};
+
+export const generateSchemaChangeMessage = (change: SchemaChange): string => {
+    let message = ''
+    switch (change.operation) {
+        case 'column_added':
+            message = `column ${change.column_name} of type ${change.data_type} was added`;
+            break;
+        case 'column_removed':
+            message = `column ${change.prev_column_name} of type ${change.prev_data_type} was removed`;
+            break;
+        case 'type_change':
+            message = `${change.column_name} column data type was changed from ${change.prev_data_type} to 
+            ${change.data_type}`;
+            break;
+        default:
+            message = ''
+    }
+    return message;
 };

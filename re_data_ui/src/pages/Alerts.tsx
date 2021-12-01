@@ -1,27 +1,8 @@
 import React, {ReactElement, useContext} from "react";
-import {OverviewData, RedataOverviewContext, SchemaChange} from "../contexts/redataOverviewContext";
+import {OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
 import {Link} from "react-router-dom";
 import Moment from "react-moment";
-import {generateAlertMessage, stripQuotes} from "../utils/helpers";
-
-const generateSchemaChangeMessage = (change: SchemaChange): string => {
-    let message = ''
-    switch (change.operation) {
-        case 'column_added':
-            message = `column ${change.column_name} of type ${change.data_type} was added`;
-            break;
-        case 'column_removed':
-            message = `column ${change.prev_column_name} of type ${change.prev_data_type} was removed`;
-            break;
-        case 'type_change':
-            message = `${change.column_name} column data type was changed from ${change.prev_data_type} to 
-            ${change.data_type}`;
-            break;
-        default:
-            message = ''
-    }
-    return message;
-};
+import {generateAlertMessage, generateSchemaChangeMessage, stripQuotes} from "../utils/helpers";
 
 const Alerts: React.FC = (): ReactElement => {
     const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
@@ -30,6 +11,7 @@ const Alerts: React.FC = (): ReactElement => {
     const schemaChanges = overview.schema_changes;
     return (
         <div className='grid grid-cols-1'>
+            <h1 className='pl-3 mb-3 text-2xl'>Alerts</h1>
             <div className="flex flex-col">
                 <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
