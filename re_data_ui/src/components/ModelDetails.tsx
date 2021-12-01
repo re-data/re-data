@@ -10,8 +10,6 @@ import {
     DATE_FORMAT,
     DATE_TIME_FORMAT,
     extractComponentFromIdentifier,
-    generateAlertMessage,
-    generateAnomaliesByTimeWindowEnd
 } from "../utils/helpers";
 import * as echarts from 'echarts/core';
 import {LineChart, LineSeriesOption, ScatterChart, ScatterSeriesOption} from 'echarts/charts';
