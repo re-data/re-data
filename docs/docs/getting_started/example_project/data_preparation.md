@@ -33,7 +33,7 @@ re_data provides useful macros for performing data preparation tasks like [clean
  lacy     brekke         | romaguera.darrell@fakemail.com | AZ        | 2020-01-31 11:32:00
 ```
 
-First we start by filtering out the duplicated based on the `email` column.
+First we start by filtering out the duplicates based on the `email` column.
 You will notice the `full_name` column above has additional whitespaces between words, we can strip those additional whitespaces and capitalize the words.
 
 For further analysis, we would like to have the full state name as a separate column, re_data allows you to pass dictionary mapping of source and target values.
