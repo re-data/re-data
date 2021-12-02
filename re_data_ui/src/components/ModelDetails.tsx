@@ -65,7 +65,14 @@ const generateMarkAreas = (alerts: AggregatedAlerts, columnName: string, metricN
         : anomaliesMap.has('') ? anomaliesMap.get('') : [];
     for (const anomaly of (anomalies!)) {
         if (anomaly.metric === metricName) {
-            arr.push([{xAxis: moment(anomaly.time_window_end).subtract(anomaly.interval_length_sec, 's').format(DATE_TIME_FORMAT)}, {xAxis: anomaly.time_window_end}])
+            arr.push([
+                {
+                    xAxis: moment(anomaly.time_window_end).subtract(anomaly.interval_length_sec, 's').format(DATE_FORMAT)
+                },
+                {
+                    xAxis: moment(anomaly.time_window_end).format(DATE_FORMAT)
+                }
+            ])
         }
     }
     return arr
@@ -239,12 +246,11 @@ const generateMetricCharts = (data: AggregatedMetrics, alerts: AggregatedAlerts)
             <div className='mb-3 grid grid-cols-1'>
                 <div className="flex flex-col">
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                        <div className="py-2 align-middle inline-block max-w-full sm:px-6 lg:px-8">
                             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                <table className="min-w-full divide-y divide-gray-200">
+                                <table className="max-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50">
                                     <tr>
-
                                         <th scope="col"
                                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Schema Changes
@@ -312,7 +318,7 @@ const ModelDetails: React.FC = (): ReactElement => {
             <div className="bg-white rounded shadow border p-3">
                 <div className="mb-3">
                     <span
-                        className="text-2xl text--capitalize font-bold">Model: {extractComponentFromIdentifier(fullTableName, 'tableName')}</span>
+                        className="text-2xl text--capitalize font-bold">{extractComponentFromIdentifier(fullTableName, 'tableName')}</span>
                 </div>
                 {!modelExists ? (
                     <span>No metrics</span>) : generateMetricCharts(data, alerts)}
