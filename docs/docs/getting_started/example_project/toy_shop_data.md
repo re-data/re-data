@@ -4,12 +4,12 @@ sidebar_position: 1
 
 # Welcome to a toy shop!
 
-Welcome to a re_data getting started tutorial. We will prepare, analyze and monitor toy shop data here. The toy shop is a fictional e-commerce shop 🙂
+Welcome to the re_data "Getting started" tutorial. We will prepare, analyze and monitor toy shop data here. The toy shop is a fictional e-commerce shop 🙂
 
-It's an example of how a re_data project can work and help you improve data in your data warehouse
+It's an example of how a re_data project can work and help you improve data in your data warehouse.
 
 ## Toy shop data
-Toy shop DB has currently just 4 tables:
+Toy shop DB has currently just 6 tables:
   - customers
   - orders
   - order_items
