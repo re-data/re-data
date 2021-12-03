@@ -48,12 +48,15 @@ export const generateAlertMessage = (anomaly: Anomaly): string => {
 };
 
 export const generateAnomalyValue = (anomaly: Anomaly): string => {
-    if (anomaly.metric == 'freshness') {
+    if (anomaly.metric === 'freshness') {
         const minutes = anomaly.last_value / 60 / 60
         return `${minutes.toFixed(2)} hours`;
     }
     else if (anomaly.metric.indexOf('percent') > -1) {
         return `${anomaly.last_value.toFixed(2)}%`;   
+    }
+    else if (anomaly.metric.indexOf('count') > -1) {
+        return `${anomaly.last_value}`;
     }
     else {
         return `${anomaly.last_value.toFixed(2)}`;
