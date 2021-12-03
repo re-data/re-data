@@ -43,8 +43,21 @@ export const generateAnomaliesByTimeWindowEnd = (alert: AggregatedAlerts) => {
 export const generateAlertMessage = (anomaly: Anomaly): string => {
     const compareText = anomaly.last_value > anomaly.last_avg ? 'greater than' : 'less than';
     const percentage = ((Math.abs(anomaly.last_value - anomaly.last_avg) / anomaly.last_avg) * 100).toFixed(2);
-    // const model = anomaly.column_name ? `column ${anomaly.column_name}` : 'this table';
-    return `${anomaly.metric}(${anomaly.column_name}) is ${percentage}% ${compareText} average`;
+    const show_name =  anomaly.column_name ? `${anomaly.metric}(${anomaly.column_name})` : `${anomaly.metric}`;
+    return `${show_name} is ${percentage}% ${compareText} average`;
+};
+
+export const generateAnomalyValue = (anomaly: Anomaly): string => {
+    if (anomaly.metric == 'freshness') {
+        const minutes = anomaly.last_value / 60 / 60
+        return `${minutes.toFixed(2)} hours`;
+    }
+    else if (anomaly.metric.indexOf('percent') > -1) {
+        return `${anomaly.last_value.toFixed(2)}%`;   
+    }
+    else {
+        return `${anomaly.last_value.toFixed(2)}`;
+    }
 };
 
 export const generateSchemaChangeMessage = (change: SchemaChange): string => {

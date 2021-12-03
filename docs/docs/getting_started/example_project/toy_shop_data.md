@@ -9,12 +9,11 @@ Welcome to a re_data getting started tutorial. We will prepare, analyze and moni
 It's an example of how a re_data project can work and help you improve data in your data warehouse
 
 ## Toy shop data
-Toy shop DB has currently 5 tables:
+Toy shop DB has currently 4 tables we will be using:
   - customers
   - orders
   - order_items
   - companies
-  - user_data
 
 ```sql title=toy_shop_schema
                         Table "toy_shop.customers"
@@ -44,21 +43,17 @@ Toy shop DB has currently 5 tables:
  amount   | integer                     |           |          |
  added_at | timestamp without time zone |           |          |
 
-                       Table "toy_shop.companies"
-  Column    |            Type          | Collation | Nullable | Default
-----------+-----------------------------+-----------+----------+---------
- brand_name | text                     |           |          |
- show       | text                     |           |          |
- year       | integer                  |           |          |
+                        Table "toy_shop.companies"
+   Column   |            Type             | Collation | Nullable | Default
+------------+-----------------------------+-----------+----------+---------
+ id         | integer                     |           |          |
+ name       | text                        |           |          |
+ address    | text                        |           |          |
+ created_at | timestamp without time zone |           |          |
 
-                        Table "toy_shop.user_data"
-  Column    |            Type          | Collation | Nullable | Default
-----------+-----------------------------+-----------+----------+---------
- name       | text                     |           |          |
- email      | text                     |           |          |
- 
+
 ```
 
 Toy shop started operating on 1 January 2021.
-Toy shop data is stored in Postgres (re_data also works with BigQuery, Snowflake & Redshift)
+Toy shop data is stored in Postgres but re_data also works with BigQuery, Snowflake & Redshift
 

@@ -44,10 +44,14 @@ vars:
           columns:
             - name
             - amount
-            - order_id
 
         - name: orders
           time_filter: created_at
+
+          metrics:
+            table:
+              - large_orders
+
           columns:
             - amount
             - status
@@ -78,16 +82,6 @@ vars:
             - sum
             - age
 
-        - name: user_data
-          time_filter: created_at
-          columns:
-            - email
-
-        - name: sanitized_user_data
-          time_filter: created_at
-          columns:
-            - email
-
       actively_monitored: true
 
   re_data:metrics_base:
@@ -101,7 +95,6 @@ vars:
         - max
         - avg
         - stddev
-        - variance
         - nulls_percent
 
       text:

@@ -10,9 +10,8 @@ Currently, re_data focuses on observing the dbt project (together with underlayi
 
 # Live demo
 
-![GraphExample](/screenshots/ui/graph.png)
-
 Check out our **[live demo](https://re-data.github.io/re-data/ui-feature-react-app/#/alerts)** of what you can get out of re_data.
+![GraphExample](/screenshots/ui/graph.png)
 
 # Features
 
