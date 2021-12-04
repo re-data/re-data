@@ -1,4 +1,4 @@
-import {AggregatedAlerts, Anomaly, SchemaChange} from "../contexts/redataOverviewContext";
+import {AggregatedAlerts, Anomaly, Metric, SchemaChange} from "../contexts/redataOverviewContext";
 
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 export const DATE_FORMAT = 'YYYY-MM-DD';
@@ -49,11 +49,11 @@ export const generateAlertMessage = (anomaly: Anomaly): string => {
 
 export const generateAnomalyValue = (anomaly: Anomaly): string => {
     if (anomaly.metric === 'freshness') {
-        const minutes = anomaly.last_value / 60 / 60
-        return `${minutes.toFixed(2)} hours`;
+        const hours = anomaly.last_value / 60 / 60
+        return `${hours.toFixed(2)} hours`;
     }
     else if (anomaly.metric.indexOf('percent') > -1) {
-        return `${anomaly.last_value.toFixed(2)}%`;   
+        return `${anomaly.last_value.toFixed(2)}%`;
     }
     else if (anomaly.metric.indexOf('count') > -1) {
         return `${anomaly.last_value}`;
@@ -62,6 +62,25 @@ export const generateAnomalyValue = (anomaly: Anomaly): string => {
         return `${anomaly.last_value.toFixed(2)}`;
     }
 };
+
+export const metricValue = (metric: Metric): number => {
+    if (metric.metric === 'freshness') {
+        return metric.value / 60 / 60;
+    }
+    else {
+        return metric.value
+    }
+}
+
+export const getFormatter = (metricName: string): string => {
+    if (metricName === 'freshness') {
+        return '{value} hours'
+    }
+    else if (metricName.indexOf('percent') > -1) {
+        return `{value}%`;
+    }
+    return '{value}'
+}
 
 export const generateSchemaChangeMessage = (change: SchemaChange): string => {
     let message = ''

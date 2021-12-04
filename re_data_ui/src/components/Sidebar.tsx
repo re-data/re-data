@@ -11,7 +11,7 @@ const Sidebar: React.FC = (): ReactElement => {
                  md:flex-col md:justify-between max-h-screen overflow-y-auto" data-dev-hint="sidebar; px-0 for frameless; px-2 for visually inset the navigation">
             <div className="flex flex-col space-y-6"
                  data-dev-hint="optional div for having an extra footer navigation">
-                <a href="/" className="text-white flex items-center space-x-2 px-8" title="Your App is cool">
+                <a href="#/alerts" className="text-white flex items-center space-x-2 px-8" title="Your App is cool">
                     <span className="text-2xl font-extrabold whitespace-nowrap truncate">
                         <img alt="re_data" className="w-14" src="redata.svg" />
                     </span>
