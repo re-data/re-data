@@ -87,10 +87,7 @@ const ModelDetails: React.FC = (): ReactElement => {
     return (
         <div className='col-span-4 h-auto overflow-scroll'>
             <div className="bg-white rounded shadow border p-3">
-                <div className="mb-3">
-                    <span
-                        className="text-2xl text--capitalize font-bold">{extractComponentFromIdentifier(fullTableName, 'tableName')}</span>
-                </div>
+
                 <div>
                     <ul className="nav">
                         <li className={activeTab === ModelTabs.METRICS ? "active" : ""}
@@ -100,11 +97,15 @@ const ModelDetails: React.FC = (): ReactElement => {
                             onClick={showAnomalies}>Anomalies
                         </li>
                         <li className={activeTab === ModelTabs.SCHEMA_CHANGES ? "active" : ""}
-                            onClick={showSchemaChanges}>Schema Changes
+                            onClick={showSchemaChanges}>Schema
                         </li>
                     </ul>
+                    <div className="mb-2">
+                    <span
+                        className="text-2xl text--capitalize font-bold">{extractComponentFromIdentifier(fullTableName, 'tableName')}</span>
+                    </div>
                     <div className="outlet">
-                        {modelExists ? renderTab(activeTab, data, alerts) : <span>No metrics found</span>}
+                        {modelExists ? renderTab(activeTab, data, alerts) : <span>Click on node to show metrics, anomalies or schem changes</span>}
                     </div>
                 </div>
             </div>
