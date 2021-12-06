@@ -50,7 +50,7 @@ vars:
 
           metrics:
             table:
-              - large_orders
+              - orders_above_100
 
           columns:
             - amount
@@ -65,15 +65,26 @@ vars:
 
         - name: pending_orders
           time_filter: created_at
+
+          metrics:
+            table:
+              - orders_above_100
+              
           columns:
             - amount
             - status
 
         - name: orders_per_age
           time_filter: created_at
+
+          metrics:
+            table:
+              - orders_above_100
+
           columns:
             - amount
             - status
+
             - age
         
         - name: revenue_per_age
