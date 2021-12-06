@@ -1,4 +1,4 @@
-import React, {memo, PropsWithChildren, ReactElement} from "react";
+import React, {PropsWithChildren, ReactElement} from "react";
 import {AggregatedAlerts, AggregatedMetrics, Anomaly, Metric} from "../contexts/redataOverviewContext";
 import {DATE_FORMAT, extractComponentFromIdentifier} from "../utils/helpers";
 import moment from "moment/moment";
