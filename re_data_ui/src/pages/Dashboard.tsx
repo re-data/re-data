@@ -72,6 +72,7 @@ const prepareAlerts = (overview: OverviewData): Map<string, AggregatedAlerts> =>
     // group anomalies under `table_name`
     for (const anomaly of anomalies) {
         const model = stripQuotes(anomaly.table_name);
+        anomaly.last_value = Number(anomaly.last_value);
         const columnName = anomaly.column_name ? anomaly.column_name : '_';
         if (!alerts.has(model)) {
             const obj: AggregatedAlerts = {
@@ -124,7 +125,6 @@ const prepareOverviewData = (raw: Array<RawOverviewData>) => {
     }
     overview.aggregated_metrics = extractMetrics(overview);
     overview.aggregated_alerts = prepareAlerts(overview);
-    console.log(JSON.stringify(overview.metrics))
     console.log(overview)
     return overview;
 };

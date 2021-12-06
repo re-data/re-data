@@ -56,7 +56,7 @@ const Alerts: React.FC = (): ReactElement => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm whitespace-nowrap">
-                                            {Number(anomaly.last_value).toFixed(2)}
+                                            {anomaly.last_value.toFixed(2)}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             <Moment format={dateTimeFormat}>{anomaly.time_window_end}</Moment>
