@@ -1,9 +1,50 @@
-brand_name,show,year
-Acme Corporation,Looney Toones,1930
-Globex Corporation,The Simpsons,1989
-Soylent Corp,Soylent Green,1973
-Initech,Office Space,1999
-Umbrella Corporation,Resident Evil,1996
-Hooli,Silicon Valley,2014
-Vehment Captial Partners,Weeds,2005
-Massive Dynamics,Fringe,2008
+id,name,address,created_at
+1,Company 1,Address 1,2021-01-12 04:15:20
+2,Company 2,Address 2,2021-01-31 00:03:17
+3,Company 3,Address 3,2021-01-25 22:28:53
+4,Company 4,Address 4,2021-01-25 17:08:01
+5,Company 5,Address 5,2021-01-22 23:47:51
+6,Company 6,Address 6,2021-01-08 12:20:05
+7,Company 7,Address 7,2021-01-17 20:44:03
+8,Company 8,Address 8,2021-01-14 16:58:31
+9,Company 9,Address 9,2021-01-25 03:03:18
+10,Company 10,Address 10,2021-01-25 05:51:23
+11,Company 11,Address 11,2021-01-24 10:07:53
+12,Company 12,Address 12,2021-01-02 02:05:57
+13,Company 13,Address 13,2021-01-18 16:57:08
+14,Company 14,Address 14,2021-01-05 12:15:41
+15,Company 15,Address 15,2021-01-11 00:52:24
+16,Company 16,Address 16,2021-01-13 00:45:14
+17,Company 17,Address 17,2021-01-12 01:04:13
+18,Company 18,Address 18,2021-01-22 19:47:48
+19,Company 19,Address 19,2021-01-19 10:59:48
+20,Company 20,Address 20,2021-01-02 02:53:30
+21,Company 21,Address 21,2021-01-21 21:38:00
+22,Company 22,Address 22,2021-01-05 11:11:46
+23,Company 23,Address 23,2021-01-10 12:14:46
+24,Company 24,Address 24,2021-01-09 03:11:03
+25,Company 25,Address 25,2021-01-02 20:18:22
+26,Company 26,Address 26,2021-01-23 01:03:12
+27,Company 27,Address 27,2021-01-14 18:58:03
+28,Company 28,Address 28,2021-01-21 03:51:43
+29,Company 29,Address 29,2021-01-20 08:11:48
+30,Company 30,Address 30,2021-01-23 11:25:22
+31,Company 31,Address 31,2021-01-13 09:27:24
+32,Company 32,Address 32,2021-01-03 01:31:14
+33,Company 33,Address 33,2021-01-01 05:16:41
+34,Company 34,Address 34,2021-01-30 06:52:54
+35,Company 35,Address 35,2021-01-25 22:27:25
+36,Company 36,Address 36,2021-01-05 13:57:15
+37,Company 37,Address 37,2021-01-17 16:32:46
+38,Company 38,Address 38,2021-01-12 12:44:11
+39,Company 39,Address 39,2021-01-29 21:54:41
+40,Company 40,Address 40,2021-01-26 01:56:28
+41,Company 41,Address 41,2021-01-03 09:52:20
+42,Company 42,Address 42,2021-01-14 07:01:50
+43,Company 43,Address 43,2021-01-18 17:31:19
+44,Company 44,Address 44,2021-01-13 06:03:28
+45,Company 45,Address 45,2021-01-02 23:10:35
+46,Company 46,Address 46,2021-01-24 05:41:06
+47,Company 47,Address 47,2021-01-26 22:59:56
+48,Company 48,Address 48,2021-01-23 00:43:41
+49,Company 49,Address 49,2021-01-22 20:59:34

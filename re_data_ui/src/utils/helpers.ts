@@ -1,4 +1,4 @@
-import {AggregatedAlerts, Anomaly, SchemaChange} from "../contexts/redataOverviewContext";
+import {AggregatedAlerts, Anomaly, Metric, SchemaChange} from "../contexts/redataOverviewContext";
 
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 export const DATE_FORMAT = 'YYYY-MM-DD';
@@ -43,9 +43,44 @@ export const generateAnomaliesByTimeWindowEnd = (alert: AggregatedAlerts) => {
 export const generateAlertMessage = (anomaly: Anomaly): string => {
     const compareText = anomaly.last_value > anomaly.last_avg ? 'greater than' : 'less than';
     const percentage = ((Math.abs(anomaly.last_value - anomaly.last_avg) / anomaly.last_avg) * 100).toFixed(2);
-    // const model = anomaly.column_name ? `column ${anomaly.column_name}` : 'this table';
-    return `${anomaly.metric}(${anomaly.column_name}) is ${percentage}% ${compareText} average`;
+    const show_name =  anomaly.column_name ? `${anomaly.metric}(${anomaly.column_name})` : `${anomaly.metric}`;
+    return `${show_name} is ${percentage}% ${compareText} average`;
 };
+
+export const generateAnomalyValue = (anomaly: Anomaly): string => {
+    if (anomaly.metric === 'freshness') {
+        const hours = anomaly.last_value / 60 / 60
+        return `${hours.toFixed(2)} hours`;
+    }
+    else if (anomaly.metric.indexOf('percent') > -1) {
+        return `${anomaly.last_value.toFixed(2)}%`;
+    }
+    else if (anomaly.metric.indexOf('count') > -1) {
+        return `${anomaly.last_value}`;
+    }
+    else {
+        return `${anomaly.last_value.toFixed(2)}`;
+    }
+};
+
+export const metricValue = (metric: Metric): number => {
+    if (metric.metric === 'freshness') {
+        return metric.value / 60 / 60;
+    }
+    else {
+        return metric.value
+    }
+}
+
+export const getFormatter = (metricName: string): string => {
+    if (metricName === 'freshness') {
+        return '{value} hours'
+    }
+    else if (metricName.indexOf('percent') > -1) {
+        return `{value}%`;
+    }
+    return '{value}'
+}
 
 export const generateSchemaChangeMessage = (change: SchemaChange): string => {
     let message = ''

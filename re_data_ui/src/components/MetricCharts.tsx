@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, ReactElement} from "react";
 import {AggregatedAlerts, AggregatedMetrics, Anomaly, Metric} from "../contexts/redataOverviewContext";
-import {DATE_FORMAT, extractComponentFromIdentifier} from "../utils/helpers";
+import {DATE_FORMAT, extractComponentFromIdentifier, getFormatter, metricValue} from "../utils/helpers";
 import moment from "moment/moment";
 import EChartsReactCore from "echarts-for-react/lib/core";
 import * as echarts from "echarts/core";
@@ -88,11 +88,14 @@ const MetricCharts: React.FC<MetricChartsProps> = (props: PropsWithChildren<Metr
                 },
                 yAxis: {
                     type: 'value',
+                    axisLabel: {
+                        formatter: getFormatter(metricName)
+                    }
                 },
                 series: [
                     {
                         name: extractComponentFromIdentifier(key, 'metricName'),
-                        data: metrics.map(m => m.value),
+                        data: metrics.map(metricValue),
                         type: 'line',
                         color: '#8884d8',
                         smooth: true,
@@ -152,11 +155,14 @@ const MetricCharts: React.FC<MetricChartsProps> = (props: PropsWithChildren<Metr
                 },
                 yAxis: {
                     type: 'value',
+                    axisLabel: {
+                        formatter: getFormatter(metricName)
+                    }
                 },
                 series: [
                     {
                         name: metricName,
-                        data: metrics.map(m => m.value),
+                        data: metrics.map(metricValue),
                         type: 'line',
                         color: '#8884d8',
                         smooth: true,

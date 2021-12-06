@@ -2,7 +2,7 @@ import React, {ReactElement, useContext} from "react";
 import {OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
 import {Link} from "react-router-dom";
 import Moment from "react-moment";
-import {generateAlertMessage, generateSchemaChangeMessage, stripQuotes} from "../utils/helpers";
+import {generateAlertMessage, generateAnomalyValue, generateSchemaChangeMessage, stripQuotes} from "../utils/helpers";
 
 const Alerts: React.FC = (): ReactElement => {
     const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
@@ -45,9 +45,9 @@ const Alerts: React.FC = (): ReactElement => {
                                     <tr key={anomaly.id}>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                     <span
-                                        className="badge mb-3 bg-red-600 rounded-full px-2 py-1 text-center object-right-top text-white text-sm mr-1">!</span>
+                                        className="badge mb-3 bg-red-600 rounded-full px-2.5 py-1 text-center object-right-top text-white text-sm mr-3">!</span>
                                             <span
-                                                className='text-xs text-gray-900'>{stripQuotes(anomaly.table_name)}</span>
+                                                className='text-sm text-gray-900'>{stripQuotes(anomaly.table_name)}</span>
                                         </td>
                                         <td className="px-6 text-sm py-4 whitespace-nowrap">
                                             <div
@@ -56,7 +56,7 @@ const Alerts: React.FC = (): ReactElement => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm whitespace-nowrap">
-                                            {anomaly.last_value.toFixed(2)}
+                                            {generateAnomalyValue(anomaly)}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             <Moment format={dateTimeFormat}>{anomaly.time_window_end}</Moment>
@@ -72,10 +72,10 @@ const Alerts: React.FC = (): ReactElement => {
                                     <tr key={change.id + '_' + change.prev_column_name}>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                     <span
-                                        className="badge mb-3 bg-yellow-300 rounded-full px-2 py-1
-                                         text-center object-right-top text-white text-sm mr-1">!</span>
+                                        className="badge mb-3 bg-yellow-300 rounded-full px-2.5 py-1
+                                         text-center object-right-top text-white text-sm mr-3">!</span>
                                             <span
-                                                className='text-xs text-gray-900'>{stripQuotes(change.table_name)}</span>
+                                                className='text-sm text-gray-900'>{stripQuotes(change.table_name)}</span>
                                         </td>
                                         <td className="px-6 text-sm py-4 whitespace-nowrap">
                                             <div
