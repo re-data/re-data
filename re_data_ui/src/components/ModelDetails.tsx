@@ -105,7 +105,7 @@ const ModelDetails: React.FC = (): ReactElement => {
                         className="text-2xl text--capitalize font-bold">{extractComponentFromIdentifier(fullTableName, 'tableName')}</span>
                     </div>
                     <div className="outlet">
-                        {modelExists ? renderTab(activeTab, data, alerts) : <span>Click on node to show metrics, anomalies or schem changes</span>}
+                        {modelExists ? renderTab(activeTab, data, alerts) : <span>Click on node to show metrics, anomalies or schema changes</span>}
                     </div>
                 </div>
             </div>
