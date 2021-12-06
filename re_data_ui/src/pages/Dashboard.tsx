@@ -124,6 +124,7 @@ const prepareOverviewData = (raw: Array<RawOverviewData>) => {
     }
     overview.aggregated_metrics = extractMetrics(overview);
     overview.aggregated_alerts = prepareAlerts(overview);
+    console.log(JSON.stringify(overview.metrics))
     console.log(overview)
     return overview;
 };
