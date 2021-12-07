@@ -52,7 +52,7 @@ jobs:
         uses: rlespinasse/github-slug-action@v3.x
 
       - name: Copy overview data
-        run: 'cp getting_started/toy_shop/target/re_data_overview.json re_data_ui/src/re_data_overview.json'
+        run: 'cp getting_started/toy_shop/target/re_data_overview.json re_data_ui/public/re_data_overview.json'
         shell: bash
 
       - name: Set homepage in package.json
