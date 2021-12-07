@@ -1,7 +1,7 @@
 import React, {PropsWithChildren, ReactElement} from "react";
 import {AggregatedAlerts, AggregatedMetrics, Anomaly, Metric} from "../contexts/redataOverviewContext";
 import {DATE_FORMAT, extractComponentFromIdentifier, getFormatter, metricValue} from "../utils/helpers";
-import moment from "moment/moment";
+import dayjs from "dayjs";
 import EChartsReactCore from "echarts-for-react/lib/core";
 import * as echarts from "echarts/core";
 import {LineSeriesOption, ScatterSeriesOption} from "echarts/charts";
@@ -39,10 +39,10 @@ const generateMarkAreas = (alerts: AggregatedAlerts, columnName: string, metricN
         if (anomaly.metric === metricName) {
             arr.push([
                 {
-                    xAxis: moment(anomaly.time_window_end).subtract(anomaly.interval_length_sec, 's').format(DATE_FORMAT)
+                    xAxis: dayjs(anomaly.time_window_end).subtract(anomaly.interval_length_sec, 's').format(DATE_FORMAT)
                 },
                 {
-                    xAxis: moment(anomaly.time_window_end).format(DATE_FORMAT)
+                    xAxis: dayjs(anomaly.time_window_end).format(DATE_FORMAT)
                 }
             ])
         }
@@ -84,7 +84,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (props: PropsWithChildren<Metr
                 grid: {top: '20%', right: '5%', bottom: '12%', left: '12%'},
                 xAxis: {
                     type: 'category',
-                    data: metrics.map(m => moment(m.time_window_end).format(DATE_FORMAT)),
+                    data: metrics.map(m => dayjs(m.time_window_end).format(DATE_FORMAT)),
                 },
                 yAxis: {
                     type: 'value',
@@ -151,7 +151,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (props: PropsWithChildren<Metr
                 grid: {top: '20%', right: '5%', bottom: '12%', left: '12%'},
                 xAxis: {
                     type: 'category',
-                    data: metrics.map(m => moment(m.time_window_end).format(DATE_FORMAT)),
+                    data: metrics.map(m => dayjs(m.time_window_end).format(DATE_FORMAT)),
                 },
                 yAxis: {
                     type: 'value',

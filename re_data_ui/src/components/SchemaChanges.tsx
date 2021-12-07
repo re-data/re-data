@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, ReactElement} from "react";
 import {DATE_TIME_FORMAT, generateSchemaChangeMessage} from "../utils/helpers";
-import moment from "moment/moment";
+import dayjs from "dayjs";
 import {AggregatedAlerts, SchemaChange} from "../contexts/redataOverviewContext";
 
 interface SchemaChangesProps {
@@ -37,7 +37,7 @@ const SchemaChanges: React.FC<SchemaChangesProps> = (props: PropsWithChildren<Sc
                                                 <span
                                                     className="badge mb-3 bg-yellow-300 rounded-full px-2 py-1
                                          text-center object-right-top text-white text-sm mr-1">!</span>
-                                                {generateSchemaChangeMessage(change)} at {moment(change.detected_time).format(DATE_TIME_FORMAT)}
+                                                {generateSchemaChangeMessage(change)} at {dayjs(change.detected_time).format(DATE_TIME_FORMAT)}
                                             </div>
                                         </td>
                                     </tr>

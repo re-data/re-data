@@ -1,7 +1,7 @@
 import React, {ReactElement, useContext} from "react";
 import {OverviewData, RedataOverviewContext} from "../contexts/redataOverviewContext";
 import {Link} from "react-router-dom";
-import Moment from "react-moment";
+import dayjs from 'dayjs';
 import {generateAlertMessage, generateAnomalyValue, generateSchemaChangeMessage, stripQuotes} from "../utils/helpers";
 
 const Alerts: React.FC = (): ReactElement => {
@@ -59,7 +59,7 @@ const Alerts: React.FC = (): ReactElement => {
                                             {generateAnomalyValue(anomaly)}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <Moment format={dateTimeFormat}>{anomaly.time_window_end}</Moment>
+                                            {dayjs(anomaly.time_window_end).format(dateTimeFormat)}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <Link to={'/graph?model=' + stripQuotes(anomaly.table_name)}
@@ -87,7 +87,7 @@ const Alerts: React.FC = (): ReactElement => {
                                             {/*{change.last_value.toFixed(2)}*/}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <Moment format={dateTimeFormat}>{change.detected_time}</Moment>
+                                            {dayjs(change.detected_time).format(dateTimeFormat)}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <Link to={'/graph?model=' + stripQuotes(change.table_name)}

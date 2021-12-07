@@ -9,7 +9,7 @@ import {
     OverviewData,
     RedataOverviewContext, SchemaChange
 } from "../contexts/redataOverviewContext";
-import moment from 'moment';
+import dayjs from "dayjs";
 import {RE_DATA_OVERVIEW_FILE, stripQuotes} from "../utils/helpers";
 
 interface RawOverviewData {
@@ -54,11 +54,11 @@ const extractMetrics = (overview: OverviewData): Map<string, AggregatedMetrics> 
     // loop through each table/model and sort by ascending order by time_window_end for table and column metrics
     for (const metricMap of finalOverview.values()) {
         for (const [key, metrics] of metricMap.tableMetrics) {
-            const sortedMetrics = metrics.sort((a: Metric, b: Metric) => moment(a.time_window_end).diff(b.time_window_end));
+            const sortedMetrics = metrics.sort((a: Metric, b: Metric) => dayjs(a.time_window_end).diff(b.time_window_end));
             metricMap.tableMetrics.set(key, sortedMetrics);
         }
         for (const [key, metrics] of metricMap.columnMetrics) {
-            const sortedMetrics = metrics.sort((a: Metric, b: Metric) => moment(a.time_window_end).diff(b.time_window_end));
+            const sortedMetrics = metrics.sort((a: Metric, b: Metric) => dayjs(a.time_window_end).diff(b.time_window_end));
             metricMap.columnMetrics.set(key, sortedMetrics);
         }
     }
