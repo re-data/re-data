@@ -23,6 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 
 overview.json
-src/overview_toy_shop.json
-src/re_data_overview.json
-src/overview_integration_test.json
+public/re_data_overview.json

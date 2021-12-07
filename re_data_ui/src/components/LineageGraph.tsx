@@ -6,6 +6,7 @@ interface LineageGraphProps {
     data: any;
     events: any;
     networkOptions: any;
+    overviewDataLoaded: boolean;
 }
 
 const LineageGraph: React.FC<LineageGraphProps> = (props: PropsWithChildren<LineageGraphProps>): ReactElement => {
@@ -21,17 +22,18 @@ const LineageGraph: React.FC<LineageGraphProps> = (props: PropsWithChildren<Line
     };
     return (
         <div className="col-span-8">
-            <VisNetworkReactComponent
+            {props.overviewDataLoaded ? <VisNetworkReactComponent
                 data={props.data}
                 options={props.networkOptions}
                 events={props.events}
                 getNetwork={getNetwork}
-            />
+            /> : <></>}
         </div>
     );
 };
 
-export default memo(LineageGraph, () => {
+export default memo(LineageGraph, (prevState) => {
+    if (!prevState.overviewDataLoaded) return false; // allow re-renders if we've not loaded the graph
     // Return true indicating that the props are always equal to avoid re-rendering of lineage graph since it's static
     return true
 });

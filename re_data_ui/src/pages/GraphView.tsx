@@ -80,6 +80,7 @@ const generateGraph = (overview: OverviewData) => {
 
 const GraphView: React.FC = (): ReactElement => {
     const overview: OverviewData = useContext(RedataOverviewContext);
+    const overviewDataLoaded = !!overview.graph; // if graph is not null, then we have fetched the overview json file
     const graph = generateGraph(overview)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [searchParams, setURLSearchParams] = useSearchParams();
@@ -89,6 +90,7 @@ const GraphView: React.FC = (): ReactElement => {
     }
     const events = {
         selectNode: (params: VisNetworkEventParams) => {
+            console.log('node selected', params)
             if (!params.nodes || params.nodes.length !== 1) {
                 // only select a single node
                 return
@@ -157,7 +159,8 @@ const GraphView: React.FC = (): ReactElement => {
                 className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-12
              gap-4 border-4 border-dashed border-gray-200
               rounded-lg h-full">
-                <LineageGraph data={data} events={events} networkOptions={networkOptions}/>
+                <LineageGraph data={data} events={events} networkOptions={networkOptions}
+                              overviewDataLoaded={overviewDataLoaded}/>
                 <ModelDetails/>
             </div>
         </div>

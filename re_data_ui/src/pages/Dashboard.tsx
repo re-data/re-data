@@ -1,4 +1,4 @@
-import React, {ReactElement} from "react";
+import React, {ReactElement, useEffect, useState} from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import {Outlet} from 'react-router-dom';
@@ -10,7 +10,7 @@ import {
     RedataOverviewContext, SchemaChange
 } from "../contexts/redataOverviewContext";
 import moment from 'moment';
-import {stripQuotes} from "../utils/helpers";
+import {RE_DATA_OVERVIEW_FILE, stripQuotes} from "../utils/helpers";
 
 interface RawOverviewData {
     anomalies: string | null;
@@ -109,29 +109,53 @@ const prepareAlerts = (overview: OverviewData): Map<string, AggregatedAlerts> =>
     return alerts;
 };
 
-// const overview: Array<RawOverviewData> = require('../overview.json');
-const overview: Array<RawOverviewData> = require('../re_data_overview.json');
-
-const prepareOverviewData = (raw: Array<RawOverviewData>) => {
-    const data = raw[0];
-    const overview: OverviewData = {
-        anomalies: data.anomalies ? JSON.parse(data.anomalies as string) : [],
-        metrics: data.metrics ? JSON.parse(data.metrics as string) : [],
-        schema_changes: data.schema_changes ? JSON.parse(data.schema_changes as string) : [],
+const Dashboard: React.FC = (): ReactElement => {
+    const initialOverview: OverviewData = {
+        anomalies: [],
+        metrics: [],
+        schema_changes: [],
         aggregated_metrics: new Map<string, AggregatedMetrics>(),
         aggregated_alerts: new Map<string, AggregatedAlerts>(),
-        graph: JSON.parse(data.graph as string),
-        generated_at: data.generated_at,
-    }
-    overview.aggregated_metrics = extractMetrics(overview);
-    overview.aggregated_alerts = prepareAlerts(overview);
-    console.log(overview)
-    return overview;
-};
+        graph: null,
+        generated_at: '',
+    };
+    const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
+    const prepareOverviewData = async (): Promise<void> => {
+        try {
+            const response = await fetch(RE_DATA_OVERVIEW_FILE, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                }
+            );
+            const rawJson: Array<RawOverviewData> = await response.json();
+            const data = rawJson[0];
 
-const Dashboard: React.FC = (): ReactElement => {
+            const overview: OverviewData = {
+                anomalies: data.anomalies ? JSON.parse(data.anomalies as string) : [],
+                metrics: data.metrics ? JSON.parse(data.metrics as string) : [],
+                schema_changes: data.schema_changes ? JSON.parse(data.schema_changes as string) : [],
+                aggregated_metrics: new Map<string, AggregatedMetrics>(),
+                aggregated_alerts: new Map<string, AggregatedAlerts>(),
+                graph: JSON.parse(data.graph as string),
+                generated_at: data.generated_at,
+            }
+            overview.aggregated_metrics = extractMetrics(overview);
+            overview.aggregated_alerts = prepareAlerts(overview);
+            console.log(overview)
+            setReDataOverview(overview);
+        } catch (e) {
+            console.log('Unable to load overview file');
+            console.log(e);
+        }
+    };
+    useEffect(() => {
+        prepareOverviewData();
+    }, []);
+
     return (
-        <RedataOverviewContext.Provider value={prepareOverviewData(overview)}>
+        <RedataOverviewContext.Provider value={reDataOverview}>
             <div className="relative min-h-screen md:flex" data-dev-hint="container">
                 <Header/>
                 <Sidebar/>
