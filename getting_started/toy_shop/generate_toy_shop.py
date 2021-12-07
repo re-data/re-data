@@ -22,12 +22,6 @@ def write_to_csv(list, header, filename):
 
 def get_proper_date():
     date = random_date(start_date, end_date)
-
-    if (date > datetime.datetime(2021, 1, 15)
-        and date < datetime.datetime(2021, 1, 16)):
-
-        date = random_date(start_date, end_date)
-
     return date
 
 
@@ -39,12 +33,10 @@ def orders():
         id = i
         customer_id = random.randint(1, 100)
         status = random.choice(states)
-        amount = random.randint(0, 200)
+        amount = random.randint(50, 200)
         created_at = get_proper_date()
-
         orders.append([id, customer_id, status, amount, created_at])
 
-    orders.append([id + 1, 100, "not paid", "", datetime.datetime(2021, 1, 15, 5, 14, 0)])
     orders.append([id + 2, 100, "ok", "", datetime.datetime(2021, 1, 20, 10, 19, 0)])
     write_to_csv(orders, ["id","customer_id","status","amount","created_at"], "data/orders.csv")
 
@@ -59,13 +51,18 @@ def customers():
         surname = random.choice(surnames)
         created_at = get_proper_date()
         age = random.randint(18, 65)
+            
+        random_age = random.randint(0, 65)
+        if random_age >= 18:
+            age = random_age
+        else:
+            if created_at < datetime.datetime(2021, 1, 20):
+                age = None
+            else:
+                age = 0
+
         customers.append([id, name, surname, age, created_at])
     
-    customers.append([id + 1, "", "", "", datetime.datetime(2021, 1, 10, 5, 14, 0)])
-    customers.append([id + 2, "", "", random.randint(18, 65), datetime.datetime(2021, 1, 15, 10, 19, 0)])
-    for i in range(1, 10):
-        customers.append([random.randint(510, 1000), random.choice(names), random.choice(surnames), "", random_date(start_date, end_date)])
-
     write_to_csv(customers, ["id","first_name","last_name","age","joined_at"], "data/customers.csv")
 
 
