@@ -157,7 +157,7 @@ const GraphView: React.FC = (): ReactElement => {
             <h1 className='pl-3 mb-3 text-2xl'>Graph View</h1>
             <div
                 className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-12
-             gap-4 border-4 border-dashed border-gray-200
+             gap-4 border-2 border-solid border-gray-200
               rounded-lg h-full">
                 <LineageGraph data={data} events={events} networkOptions={networkOptions}
                               overviewDataLoaded={overviewDataLoaded}/>
