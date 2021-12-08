@@ -33,7 +33,8 @@ jobs:
       - name: Install dependencies and run metrics
         working-directory: ./getting_started/toy_shop
         run: |
-          pip install dbt==0.21.0
+          pip install dbt-core==1.0.0
+          pip install dbt-postgres==1.0.0
           pip install re_data==0.4.0
           dbt deps
           dbt seed
