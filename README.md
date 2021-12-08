@@ -29,7 +29,7 @@ Check out our **[live demo](https://re-data.github.io/re-data/ui-feature-react-a
 
 # Source code
 
-Data transformation in re_data are implemented as dbt packaget our, if interested in source code details check it our [here!](https://github.com/re-data/dbt-re-data)
+Data transformations in re_data are implemented as dbt package, if interested in source code details check it our [here!](https://github.com/re-data/dbt-re-data)
 
 # Integrations
 
