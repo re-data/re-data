@@ -7,6 +7,10 @@ from dbt.task.printer import print_fancy_output_line
 import shutil
 import os
 from re_data.templating import render
+from re_data.include import OVERVIEW_INDEX_FILE_PATH
+from http.server import SimpleHTTPRequestHandler
+import webbrowser
+from socketserver import TCPServer
 
 @click.group(help=f"re_data CLI")
 def main():
@@ -41,9 +45,8 @@ def init(project_name):
 
 @main.command()
 def detect():
-
     print_fancy_output_line(f"Detecting tables", "RUN", print, None, None)
-    
+
     run_list = ['dbt', 'run', '--models', 're_data_tables', 're_data_columns']
     completed_process = subprocess.run(run_list)
     completed_process.check_returncode()
@@ -73,7 +76,6 @@ def detect():
     help='Warning! If specified re_data runs first dbt run with --full-refresh option cleaning all previously gathered profiling information'
 )
 def run(start_date, end_date, full_refresh):
-
     for_date = start_date
     total_days = (end_date - start_date).days
 
@@ -107,3 +109,43 @@ def run(start_date, end_date, full_refresh):
             day_num,
             total_days
         )
+
+
+@click.group(help=f"Generate overview page for your re_data project")
+def overview():
+    pass
+
+
+@overview.command()
+def generate():
+    command_list = ['dbt', 'run-operation', 'generate_overview']
+    completed_process = subprocess.run(command_list)
+    completed_process.check_returncode()
+    # todo: get target_path from dbt_project.yml
+    target_file_path = os.path.join(os.getcwd(), 'target', 're_data', 'index.html')
+    shutil.copyfile(OVERVIEW_INDEX_FILE_PATH, target_file_path)
+
+@overview.command()
+def serve():
+    serve_dir = os.path.join(os.getcwd(), 'target', 're_data')
+    os.chdir(serve_dir)
+
+    port = 8085
+    address = '0.0.0.0'
+    
+    httpd = TCPServer((address, port), SimpleHTTPRequestHandler) 
+
+    if True:
+        try:
+            webbrowser.open_new_tab(f'http://127.0.0.1:{port}')
+        except webbrowser.Error:
+            pass
+
+    try:
+        httpd.serve_forever()  # blocks
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+
+
+main.add_command(overview)

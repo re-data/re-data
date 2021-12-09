@@ -72,6 +72,13 @@ jobs:
         env:
           PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}
 
+      - name: Keep only index.html and overview json file
+        working-directory: ./re_data_ui/build
+        run: |
+          rm -rf static
+          shopt -s extglob
+          rm -- !(index.html|re_data_overview.json)
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
