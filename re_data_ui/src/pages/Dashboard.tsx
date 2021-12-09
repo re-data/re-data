@@ -17,6 +17,7 @@ interface RawOverviewData {
     metrics: string | null;
     schema_changes: string | null;
     graph: string;
+    table_schema: string;
     generated_at: string;
 }
 
@@ -68,6 +69,7 @@ const extractMetrics = (overview: OverviewData): Map<string, AggregatedMetrics> 
 const prepareAlerts = (overview: OverviewData): Map<string, AggregatedAlerts> => {
     const anomalies = overview.anomalies;
     const schemaChanges = overview.schema_changes;
+    // const tableSchema = overview.table_schema;
     const alerts = new Map<string, AggregatedAlerts>();
     // group anomalies under `table_name`
     for (const anomaly of anomalies) {
@@ -77,7 +79,8 @@ const prepareAlerts = (overview: OverviewData): Map<string, AggregatedAlerts> =>
         if (!alerts.has(model)) {
             const obj: AggregatedAlerts = {
                 anomalies: new Map<string, Array<Anomaly>>(),
-                schemaChanges: new Map<string, Array<SchemaChange>>()
+                schemaChanges: new Map<string, Array<SchemaChange>>(),
+                tableSchema: []
             }
             alerts.set(model, obj)
         }
@@ -95,7 +98,8 @@ const prepareAlerts = (overview: OverviewData): Map<string, AggregatedAlerts> =>
         if (!alerts.has(model)) {
             const obj: AggregatedAlerts = {
                 anomalies: new Map<string, Array<Anomaly>>(),
-                schemaChanges: new Map<string, Array<SchemaChange>>()
+                schemaChanges: new Map<string, Array<SchemaChange>>(),
+                tableSchema: []
             }
             alerts.set(model, obj)
         }
@@ -116,6 +120,7 @@ const Dashboard: React.FC = (): ReactElement => {
         schema_changes: [],
         aggregated_metrics: new Map<string, AggregatedMetrics>(),
         aggregated_alerts: new Map<string, AggregatedAlerts>(),
+        table_schema: [],
         graph: null,
         generated_at: '',
     };
@@ -139,10 +144,12 @@ const Dashboard: React.FC = (): ReactElement => {
                 aggregated_metrics: new Map<string, AggregatedMetrics>(),
                 aggregated_alerts: new Map<string, AggregatedAlerts>(),
                 graph: JSON.parse(data.graph as string),
+                table_schema: data.table_schema ? JSON.parse(data.table_schema) : [],
                 generated_at: data.generated_at,
             }
             overview.aggregated_metrics = extractMetrics(overview);
             overview.aggregated_alerts = prepareAlerts(overview);
+            // overview.table_schema = prepareTableSchema(overview);
             console.log(overview)
             setReDataOverview(overview);
         } catch (e) {

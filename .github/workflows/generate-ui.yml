@@ -77,7 +77,7 @@ jobs:
         run: |
           rm -rf static
           shopt -s extglob
-          rm -- !(index.html|re_data_overview.json)
+          rm -- !(index.html|overview.json)
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3

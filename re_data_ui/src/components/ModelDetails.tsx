@@ -74,7 +74,8 @@ const ModelDetails: React.FC = (): ReactElement => {
     };
     let alerts: AggregatedAlerts = {
         anomalies: new Map<string, Array<Anomaly>>(),
-        schemaChanges: new Map<string, Array<SchemaChange>>()
+        schemaChanges: new Map<string, Array<SchemaChange>>(),
+        tableSchema: []
     };
     if (typeof fullTableName === "string" && overview.aggregated_metrics.has(fullTableName)) {
         modelExists = true;

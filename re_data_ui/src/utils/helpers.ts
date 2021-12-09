@@ -75,7 +75,7 @@ export const metricValue = (metric: Metric): number => {
 
 export const getFormatter = (metricName: string): string => {
     if (metricName === 'freshness') {
-        return '{value} hours'
+        return '{value}hrs'
     }
     else if (metricName.indexOf('percent') > -1) {
         return `{value}%`;

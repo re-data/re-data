@@ -23,4 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 
 overview.json
-public/re_data_overview.json
+public/overview.json
