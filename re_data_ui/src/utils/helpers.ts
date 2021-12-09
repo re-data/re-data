@@ -1,6 +1,6 @@
 import {AggregatedAlerts, Anomaly, Metric, SchemaChange} from "../contexts/redataOverviewContext";
 
-export const RE_DATA_OVERVIEW_FILE = 're_data_overview.json';
+export const RE_DATA_OVERVIEW_FILE = 'overview.json';
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 export const DATE_FORMAT = 'YYYY-MM-DD';
 
