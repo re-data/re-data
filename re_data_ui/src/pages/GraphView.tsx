@@ -90,7 +90,6 @@ const GraphView: React.FC = (): ReactElement => {
     }
     const events = {
         selectNode: (params: VisNetworkEventParams) => {
-            console.log('node selected', params)
             if (!params.nodes || params.nodes.length !== 1) {
                 // only select a single node
                 return

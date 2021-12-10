@@ -1,5 +1,5 @@
 import React, {PropsWithChildren, ReactElement} from "react";
-import {AggregatedAlerts, AggregatedMetrics, Anomaly, Metric} from "../contexts/redataOverviewContext";
+import {ReDataModelDetails, Anomaly, Metric} from "../contexts/redataOverviewContext";
 import {DATE_FORMAT, extractComponentFromIdentifier, getFormatter, metricValue} from "../utils/helpers";
 import dayjs from "dayjs";
 import EChartsReactCore from "echarts-for-react/lib/core";
@@ -14,8 +14,7 @@ import {
 } from "echarts/components";
 
 interface MetricChartsProps {
-    alerts: AggregatedAlerts,
-    data: AggregatedMetrics,
+    modelDetails: ReDataModelDetails,
     showAnomalies: boolean,
 }
 
@@ -28,9 +27,9 @@ type ECOption = echarts.ComposeOption<| LineSeriesOption
     | TooltipComponentOption
     | GridComponentOption>;
 
-const generateMarkAreas = (alerts: AggregatedAlerts, columnName: string, metricName: string): any => {
+const generateMarkAreas = (details: ReDataModelDetails, columnName: string, metricName: string): any => {
     const arr = []
-    const anomaliesMap = alerts.anomalies;
+    const anomaliesMap = details.anomalies;
     // '' empty string key contains anomalies for table level metrics.
     const anomalies = anomaliesMap.has(columnName)
         ? anomaliesMap.get(columnName)
@@ -50,9 +49,9 @@ const generateMarkAreas = (alerts: AggregatedAlerts, columnName: string, metricN
     return arr
 }
 
-const generatePiecesForVisualMap = (metrics: Array<Metric>, alerts: AggregatedAlerts, columnName: string) => {
+const generatePiecesForVisualMap = (metrics: Array<Metric>, details: ReDataModelDetails, columnName: string) => {
     const pieces: any = [];
-    const anomalies = alerts.anomalies;
+    const anomalies = details.anomalies;
     const anomaliesTimeWindow = (anomalies.has(columnName) ? anomalies.get(columnName) : []) as Array<Anomaly>;
     const set = new Set(anomaliesTimeWindow.map(a => `${a.metric}_${a.time_window_end}`))
     for (let i = 0; i < metrics.length; i++) {
@@ -68,60 +67,67 @@ const generatePiecesForVisualMap = (metrics: Array<Metric>, alerts: AggregatedAl
     return pieces;
 };
 
+const generateMetricChartOptions = (metrics: Array<Metric>, title: string, metricName: string, details: ReDataModelDetails, columnName: string, pieces: []) => {
+    const options: ECOption = {
+        title: {
+            text: title,
+        },
+        grid: {top: '20%', right: '5%', bottom: '12%', left: '15%'},
+        xAxis: {
+            type: 'category',
+            data: metrics.map(m => dayjs(m.time_window_end).format(DATE_FORMAT)),
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: getFormatter(metricName),
+            }
+        },
+        series: [
+            {
+                name: title,
+                data: metrics.map(metricValue),
+                type: 'line',
+                color: '#8884d8',
+                smooth: true,
+                markArea: {
+                    itemStyle: {
+                        color: 'rgba(255, 173, 177, 0.4)'
+                    },
+                    data: generateMarkAreas(details, columnName, metricName)
+                },
+            },
+        ],
+        tooltip: {
+            trigger: 'axis',
+        },
+        visualMap: {
+            show: false,
+            dimension: 0,
+            pieces: pieces,
+            inRange: {
+                color: pieces.length ? '#ee2828' : '#8884d8', // if no anomaly exists, everything is in range hence don't color red
+            },
+            outOfRange: {
+                color: '#8884d8',
+            }
+        }
+    };
+
+    return options;
+};
+
 const MetricCharts: React.FC<MetricChartsProps> = (props: PropsWithChildren<MetricChartsProps>): ReactElement => {
-    const anomalies = props.alerts.anomalies;
+    const anomalies = props.modelDetails.anomalies;
+    const metrics = props.modelDetails.metrics;
     const alertChartOptions: Array<[string, ECOption]> = []
-    let timeRange: string[] = [];
     const tableMetricCharts = (
-        Array.from(props.data.tableMetrics).map(([key, metrics]) => {
+        Array.from(metrics.tableMetrics).map(([key, metrics]) => {
             const metricName = extractComponentFromIdentifier(key, 'metricName');
             const columnName = extractComponentFromIdentifier(key, 'columnName');
-            const pieces = generatePiecesForVisualMap(metrics, props.alerts, columnName);
-            const options: ECOption = {
-                title: {
-                    text: `${extractComponentFromIdentifier(key, 'metricName')}`,
-                },
-                grid: {top: '20%', right: '5%', bottom: '12%', left: '12%'},
-                xAxis: {
-                    type: 'category',
-                    data: metrics.map(m => dayjs(m.time_window_end).format(DATE_FORMAT)),
-                },
-                yAxis: {
-                    type: 'value',
-                    axisLabel: {
-                        formatter: getFormatter(metricName)
-                    }
-                },
-                series: [
-                    {
-                        name: extractComponentFromIdentifier(key, 'metricName'),
-                        data: metrics.map(metricValue),
-                        type: 'line',
-                        color: '#8884d8',
-                        smooth: true,
-                        markArea: {
-                            itemStyle: {
-                                color: 'rgba(255, 173, 177, 0.4)'
-                            },
-                            data: generateMarkAreas(props.alerts, columnName, metricName)
-                        }
-                    },
-                ],
-                tooltip: {
-                    trigger: 'axis',
-                },
-                visualMap: {
-                    show: false,
-                    dimension: 0,
-                    pieces: pieces,
-                    inRange: {
-                        color: pieces.length ? '#ee2828' : '#8884d8', // if no anomaly exists, everything is in range hence don't color red
-                    },
-                    outOfRange: {
-                        color: '#8884d8',
-                    }
-                }
-            };
+            const pieces = generatePiecesForVisualMap(metrics, props.modelDetails, columnName);
+            const title = `${extractComponentFromIdentifier(key, 'metricName')}`;
+            const options: ECOption = generateMetricChartOptions(metrics, title, metricName, props.modelDetails, columnName, pieces);
             if (anomalies.has(columnName)) {
                 const tableAnomalies = anomalies.get(columnName) as Anomaly[];
                 for (const anomaly of tableAnomalies) {
@@ -137,58 +143,12 @@ const MetricCharts: React.FC<MetricChartsProps> = (props: PropsWithChildren<Metr
             )
         }));
     const columnMetricCharts = (
-        Array.from(props.data.columnMetrics).map(([key, metrics]) => {
+        Array.from(metrics.columnMetrics).map(([key, metrics]) => {
             const metricName = extractComponentFromIdentifier(key, 'metricName');
             const columnName = extractComponentFromIdentifier(key, 'columnName');
-            if (!timeRange.length) {
-                timeRange = metrics.map(m => m.time_window_end)
-            }
-            const pieces = generatePiecesForVisualMap(metrics, props.alerts, columnName);
-            const options: ECOption = {
-                title: {
-                    text: `${extractComponentFromIdentifier(key, 'metricName')}(${extractComponentFromIdentifier(key, 'columnName')})`
-                },
-                grid: {top: '20%', right: '5%', bottom: '12%', left: '12%'},
-                xAxis: {
-                    type: 'category',
-                    data: metrics.map(m => dayjs(m.time_window_end).format(DATE_FORMAT)),
-                },
-                yAxis: {
-                    type: 'value',
-                    axisLabel: {
-                        formatter: getFormatter(metricName)
-                    }
-                },
-                series: [
-                    {
-                        name: metricName,
-                        data: metrics.map(metricValue),
-                        type: 'line',
-                        color: '#8884d8',
-                        smooth: true,
-                        markArea: {
-                            itemStyle: {
-                                color: 'rgba(255, 173, 177, 0.4)'
-                            },
-                            data: generateMarkAreas(props.alerts, columnName, metricName)
-                        },
-                    }
-                ],
-                tooltip: {
-                    trigger: 'axis',
-                },
-                visualMap: {
-                    show: false,
-                    dimension: 0,
-                    pieces: pieces,
-                    inRange: {
-                        color: pieces.length ? '#ee2828' : '#8884d8', // if no anomaly exists, everything is in range hence don't color red
-                    },
-                    outOfRange: {
-                        color: '#8884d8',
-                    }
-                }
-            };
+            const title = `${extractComponentFromIdentifier(key, 'metricName')}(${extractComponentFromIdentifier(key, 'columnName')})`;
+            const pieces = generatePiecesForVisualMap(metrics, props.modelDetails, columnName);
+            const options: ECOption = generateMetricChartOptions(metrics, title, metricName, props.modelDetails, columnName, pieces);
             if (anomalies.has(columnName)) {
                 const columnAnomalies = anomalies.get(columnName) as Anomaly[];
                 const seen = new Set()

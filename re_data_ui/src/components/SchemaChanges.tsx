@@ -1,17 +1,15 @@
 import React, {PropsWithChildren, ReactElement} from "react";
 import {DATE_TIME_FORMAT, generateSchemaChangeMessage} from "../utils/helpers";
 import dayjs from "dayjs";
-import {AggregatedAlerts, SchemaChange} from "../contexts/redataOverviewContext";
+import {ReDataModelDetails, SchemaChange} from "../contexts/redataOverviewContext";
 
 interface SchemaChangesProps {
-    alerts: AggregatedAlerts;
+    modelDetails: ReDataModelDetails;
 }
 
 const SchemaChanges: React.FC<SchemaChangesProps> = (props: PropsWithChildren<SchemaChangesProps>): ReactElement => {
-    const schemaChanges: SchemaChange[] = [];
-    for (const changes of props.alerts.schemaChanges.values()) {
-        schemaChanges.push(...changes);
-    }
+    const schemaChanges: SchemaChange[] = props.modelDetails.schemaChanges;
+
     return (
         <div className='mb-3 grid grid-cols-1'>
             <div className="flex flex-col">

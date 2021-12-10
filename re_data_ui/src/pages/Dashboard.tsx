@@ -3,14 +3,13 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import {Outlet} from 'react-router-dom';
 import {
-    AggregatedAlerts,
-    AggregatedMetrics, Anomaly,
+    ReDataModelDetails, Anomaly,
     Metric,
     OverviewData,
-    RedataOverviewContext, SchemaChange
+    RedataOverviewContext,
 } from "../contexts/redataOverviewContext";
 import dayjs from "dayjs";
-import {RE_DATA_OVERVIEW_FILE, stripQuotes} from "../utils/helpers";
+import {appendToMapKey, generateMetricIdentifier, RE_DATA_OVERVIEW_FILE, stripQuotes} from "../utils/helpers";
 
 interface RawOverviewData {
     anomalies: string | null;
@@ -21,96 +20,87 @@ interface RawOverviewData {
     generated_at: string;
 }
 
-const extractMetrics = (overview: OverviewData): Map<string, AggregatedMetrics> => {
+const groupMetricsByModel = (overview: OverviewData, modelDetails: Map<string, ReDataModelDetails>): void => {
     const metrics = overview.metrics;
-    const finalOverview: Map<string, AggregatedMetrics> = new Map();
+    // const groupedMetrics: Map<string, AggregatedMetrics> = new Map();
     for (const metric of metrics) {
         const tableName = stripQuotes(metric.table_name);
         const columnName = stripQuotes(metric.column_name);
         const metricName = stripQuotes(metric.metric);
-        if (!finalOverview.has(tableName)) {
-            finalOverview.set(tableName, {
-                tableMetrics: new Map<string, Array<Metric>>(),
-                columnMetrics: new Map<string, Array<Metric>>(),
-            });
-        }
-        const metricMap = (finalOverview.get(tableName)!);
+
+        const key = generateMetricIdentifier(tableName, columnName, metricName);
+        const details = modelDetails.get(tableName) as ReDataModelDetails;
+        const metricMap = details.metrics;
         if (!columnName) { // table metric
-            // use _ as placeholder for column name that doesn't exist in table metrics, so we can have a uniform key structure
-            const key = `${tableName}._.${metricName}`;
-            if (metricMap.tableMetrics.has(key)) {
-                (metricMap.tableMetrics.get(key)!).push(metric);
-            } else {
-                metricMap.tableMetrics.set(key, [metric]);
-            }
+            appendToMapKey(metricMap.tableMetrics, key, metric);
         } else {
-            const key = `${tableName}.${columnName}.${metricName}`;
-            if (metricMap.columnMetrics.has(key)) {
-                (metricMap.columnMetrics.get(key)!).push(metric);
-            } else {
-                metricMap.columnMetrics.set(key, [metric]);
-            }
+            appendToMapKey(metricMap.columnMetrics, key, metric);
         }
     }
     // loop through each table/model and sort by ascending order by time_window_end for table and column metrics
-    for (const metricMap of finalOverview.values()) {
-        for (const [key, metrics] of metricMap.tableMetrics) {
+    for (const details of modelDetails.values()) {
+        for (const [key, metrics] of details.metrics.tableMetrics) {
             const sortedMetrics = metrics.sort((a: Metric, b: Metric) => dayjs(a.time_window_end).diff(b.time_window_end));
-            metricMap.tableMetrics.set(key, sortedMetrics);
+            details.metrics.tableMetrics.set(key, sortedMetrics);
         }
-        for (const [key, metrics] of metricMap.columnMetrics) {
+        for (const [key, metrics] of details.metrics.columnMetrics) {
             const sortedMetrics = metrics.sort((a: Metric, b: Metric) => dayjs(a.time_window_end).diff(b.time_window_end));
-            metricMap.columnMetrics.set(key, sortedMetrics);
+            details.metrics.columnMetrics.set(key, sortedMetrics);
         }
     }
-    return finalOverview;
 };
 
-const prepareAlerts = (overview: OverviewData): Map<string, AggregatedAlerts> => {
-    const anomalies = overview.anomalies;
-    const schemaChanges = overview.schema_changes;
-    // const tableSchema = overview.table_schema;
-    const alerts = new Map<string, AggregatedAlerts>();
-    // group anomalies under `table_name`
-    for (const anomaly of anomalies) {
+const groupTableSchemaByModel = (overview: OverviewData, modelDetails: Map<string, ReDataModelDetails>): void => {
+    for (const schema of overview.table_schema) {
+        const model = stripQuotes(schema.table_name);
+        const details = modelDetails.get(model) as ReDataModelDetails;
+        details.tableSchema.push(schema);
+    }
+}
+
+const groupSchemaChangesByModel = (overview: OverviewData, modelDetails: Map<string, ReDataModelDetails>): void => {
+    for (const change of overview.schema_changes) {
+        const model = stripQuotes(change.table_name);
+        const details = modelDetails.get(model) as ReDataModelDetails;
+        details.schemaChanges.push(change);
+    }
+}
+
+const groupAnomaliesByModel = (overview: OverviewData, modelDetails: Map<string, ReDataModelDetails>): void => {
+    for (const anomaly of overview.anomalies) {
         const model = stripQuotes(anomaly.table_name);
         anomaly.last_value = Number(anomaly.last_value);
         const columnName = anomaly.column_name ? anomaly.column_name : '_';
-        if (!alerts.has(model)) {
-            const obj: AggregatedAlerts = {
-                anomalies: new Map<string, Array<Anomaly>>(),
-                schemaChanges: new Map<string, Array<SchemaChange>>(),
-                tableSchema: []
-            }
-            alerts.set(model, obj)
-        }
-        const anomalyMap = (alerts.get(model)!).anomalies;
-        if (!anomalyMap.has(columnName)) {
-            anomalyMap.set(columnName, [anomaly])
-        } else {
-            (anomalyMap.get(columnName)!).push(anomaly)
-        }
+        const details = modelDetails.get(model) as ReDataModelDetails;
+        const anomalyMap = details.anomalies;
+        appendToMapKey(anomalyMap, columnName, anomaly);
     }
-    // group schema_changes under `table_name`
-    for (const change of schemaChanges) {
-        const model = stripQuotes(change.table_name);
-        const columnName = change.column_name;
-        if (!alerts.has(model)) {
-            const obj: AggregatedAlerts = {
+}
+
+const prepareModelDetails = (overview: OverviewData): Map<string, ReDataModelDetails> => {
+    const tableSchema = overview.table_schema;
+    const modelDetails = new Map<string, ReDataModelDetails>();
+    // create object for each model
+    tableSchema.forEach(schema => {
+        const model = stripQuotes(schema.table_name);
+        if (!modelDetails.has(model)) {
+            const obj: ReDataModelDetails = {
                 anomalies: new Map<string, Array<Anomaly>>(),
-                schemaChanges: new Map<string, Array<SchemaChange>>(),
-                tableSchema: []
+                schemaChanges: [],
+                metrics: {
+                    tableMetrics: new Map<string, Array<Metric>>(),
+                    columnMetrics: new Map<string, Array<Metric>>()
+                },
+                tableSchema: [],
             }
-            alerts.set(model, obj)
+            modelDetails.set(model, obj)
         }
-        const schemaChangesMap = (alerts.get(model)!).schemaChanges;
-        if (!schemaChangesMap.has(columnName)) {
-            schemaChangesMap.set(columnName, [change])
-        } else {
-            (schemaChangesMap.get(columnName)!).push(change)
-        }
-    }
-    return alerts;
+    });
+    groupAnomaliesByModel(overview, modelDetails)
+    groupSchemaChangesByModel(overview, modelDetails);
+    groupTableSchemaByModel(overview, modelDetails);
+    groupMetricsByModel(overview, modelDetails);
+    return modelDetails;
 };
 
 const Dashboard: React.FC = (): ReactElement => {
@@ -118,8 +108,7 @@ const Dashboard: React.FC = (): ReactElement => {
         anomalies: [],
         metrics: [],
         schema_changes: [],
-        aggregated_metrics: new Map<string, AggregatedMetrics>(),
-        aggregated_alerts: new Map<string, AggregatedAlerts>(),
+        aggregated_models: new Map<string, ReDataModelDetails>(),
         table_schema: [],
         graph: null,
         generated_at: '',
@@ -141,15 +130,12 @@ const Dashboard: React.FC = (): ReactElement => {
                 anomalies: data.anomalies ? JSON.parse(data.anomalies as string) : [],
                 metrics: data.metrics ? JSON.parse(data.metrics as string) : [],
                 schema_changes: data.schema_changes ? JSON.parse(data.schema_changes as string) : [],
-                aggregated_metrics: new Map<string, AggregatedMetrics>(),
-                aggregated_alerts: new Map<string, AggregatedAlerts>(),
+                aggregated_models: new Map<string, ReDataModelDetails>(),
                 graph: JSON.parse(data.graph as string),
                 table_schema: data.table_schema ? JSON.parse(data.table_schema) : [],
                 generated_at: data.generated_at,
             }
-            overview.aggregated_metrics = extractMetrics(overview);
-            overview.aggregated_alerts = prepareAlerts(overview);
-            // overview.table_schema = prepareTableSchema(overview);
+            overview.aggregated_models = prepareModelDetails(overview);
             console.log(overview)
             setReDataOverview(overview);
         } catch (e) {

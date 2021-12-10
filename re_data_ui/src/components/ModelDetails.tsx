@@ -1,10 +1,9 @@
 import React, {ReactElement, useContext, useState} from "react";
 import {useSearchParams} from "react-router-dom"
 import {
-    AggregatedAlerts,
-    AggregatedMetrics, Anomaly, Metric,
+    ReDataModelDetails, Anomaly, Metric,
     OverviewData,
-    RedataOverviewContext, SchemaChange
+    RedataOverviewContext,
 } from "../contexts/redataOverviewContext";
 import {
     extractComponentFromIdentifier,
@@ -50,39 +49,37 @@ const ModelDetails: React.FC = (): ReactElement => {
     const [searchParams] = useSearchParams();
     const [activeTab, setActiveTab] = useState(ModelTabs.ANOMALIES);
 
-    const renderTab = (activeTab: ModelTabs, data: AggregatedMetrics, alerts: AggregatedAlerts): ReactElement => {
+    const renderTab = (activeTab: ModelTabs, modelDetails: ReDataModelDetails): ReactElement => {
         if (activeTab === ModelTabs.METRICS) {
-            return <MetricCharts data={data} alerts={alerts} showAnomalies={false}/>
+            return <MetricCharts modelDetails={modelDetails} showAnomalies={false}/>
         } else if (activeTab === ModelTabs.ANOMALIES) {
-            return <MetricCharts data={data} alerts={alerts} showAnomalies={true}/>
+            return <MetricCharts modelDetails={modelDetails} showAnomalies={true}/>
         } else {
-            return <SchemaChanges alerts={alerts}/>
+            return <SchemaChanges modelDetails={modelDetails}/>
         }
     }
 
     let modelExists = false;
-    const fullTableName = searchParams.get('model');
+    const fullTableName = searchParams.get('model') as string;
     const overview: OverviewData = useContext(RedataOverviewContext);
 
     const showAnomalies = (): void => setActiveTab(ModelTabs.ANOMALIES);
     const showSchemaChanges = (): void => setActiveTab(ModelTabs.SCHEMA_CHANGES);
     const showMetrics = (): void => setActiveTab(ModelTabs.METRICS);
 
-    let data: AggregatedMetrics = {
-        tableMetrics: new Map<string, Array<Metric>>(),
-        columnMetrics: new Map<string, Array<Metric>>()
-    };
-    let alerts: AggregatedAlerts = {
+    let modelDetails: ReDataModelDetails = {
         anomalies: new Map<string, Array<Anomaly>>(),
-        schemaChanges: new Map<string, Array<SchemaChange>>(),
+        metrics: {
+            tableMetrics: new Map<string, Array<Metric>>(),
+            columnMetrics: new Map<string, Array<Metric>>()
+        },
+        schemaChanges: [],
         tableSchema: []
     };
-    if (typeof fullTableName === "string" && overview.aggregated_metrics.has(fullTableName)) {
+
+    if (overview.aggregated_models.has(fullTableName)) {
         modelExists = true;
-        data = overview.aggregated_metrics.get(fullTableName) as AggregatedMetrics;
-        if (overview.aggregated_alerts.has(fullTableName)) {
-            alerts = overview.aggregated_alerts.get(fullTableName) as AggregatedAlerts;
-        }
+        modelDetails = overview.aggregated_models.get(fullTableName) as ReDataModelDetails;
     }
 
     return (
@@ -106,7 +103,7 @@ const ModelDetails: React.FC = (): ReactElement => {
                         className="text-2xl text--capitalize font-bold">{extractComponentFromIdentifier(fullTableName, 'tableName')}</span>
                     </div>
                     <div className="outlet">
-                        {modelExists ? renderTab(activeTab, data, alerts) : <span>Click on node to show metrics, anomalies or schema changes</span>}
+                        {modelExists ? renderTab(activeTab, modelDetails) : <span>Click on node to show metrics, anomalies or schema changes</span>}
                     </div>
                 </div>
             </div>
