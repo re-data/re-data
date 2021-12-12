@@ -97,7 +97,10 @@ export const generateSchemaChangeMessage = (change: SchemaChange): string => {
     return message;
 };
 
-export const generateMetricIdentifier = (tableName: string, columnName: string, metricName: string) => {
+export const generateMetricIdentifier = (item: Metric | Anomaly) => {
+    const tableName = stripQuotes(item.table_name);
+    const columnName = stripQuotes(item.column_name);
+    const metricName = stripQuotes(item.metric);
     // use _ as placeholder for column name that doesn't exist in table metrics, so we can have a uniform key structure
     return columnName ? `${tableName}.${columnName}.${metricName}` : `${tableName}._.${metricName}`;
 };

@@ -25,13 +25,10 @@ const groupMetricsByModel = (overview: OverviewData, modelDetails: Map<string, R
     // const groupedMetrics: Map<string, AggregatedMetrics> = new Map();
     for (const metric of metrics) {
         const tableName = stripQuotes(metric.table_name);
-        const columnName = stripQuotes(metric.column_name);
-        const metricName = stripQuotes(metric.metric);
-
-        const key = generateMetricIdentifier(tableName, columnName, metricName);
+        const key = generateMetricIdentifier(metric);
         const details = modelDetails.get(tableName) as ReDataModelDetails;
         const metricMap = details.metrics;
-        if (!columnName) { // table metric
+        if (!metric.column_name) { // table metric
             appendToMapKey(metricMap.tableMetrics, key, metric);
         } else {
             appendToMapKey(metricMap.columnMetrics, key, metric);
