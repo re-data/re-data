@@ -1,203 +1,223 @@
-import React, {PropsWithChildren, ReactElement} from "react";
-import {Anomaly, Metric, ReDataModelDetails} from "../contexts/redataOverviewContext";
+import React, { PropsWithChildren, ReactElement } from 'react';
+import dayjs from 'dayjs';
+import EChartsReactCore from 'echarts-for-react/lib/core';
+import * as echarts from 'echarts/core';
+import { LineSeriesOption, ScatterSeriesOption } from 'echarts/charts';
 import {
-    DATE_FORMAT,
-    extractComponentFromIdentifier,
-    generateMetricIdentifier,
-    getFormatter,
-    metricValue,
-} from "../utils/helpers";
-import dayjs from "dayjs";
-import EChartsReactCore from "echarts-for-react/lib/core";
-import * as echarts from "echarts/core";
-import {LineSeriesOption, ScatterSeriesOption} from "echarts/charts";
+  GridComponentOption,
+  MarkAreaComponentOption,
+  SingleAxisComponentOption,
+  TitleComponentOption,
+  TooltipComponentOption,
+  VisualMapComponentOption,
+} from 'echarts/components';
+import { VisualOptionPiecewise } from 'echarts/types/src/util/types';
+import { MarkArea1DDataItemOption, MarkArea2DDataItemOption } from 'echarts/types/src/component/marker/MarkAreaModel';
 import {
-    GridComponentOption,
-    MarkAreaComponentOption,
-    SingleAxisComponentOption,
-    TitleComponentOption,
-    TooltipComponentOption,
-    VisualMapComponentOption
-} from "echarts/components";
-import {VisualOptionPiecewise} from "echarts/types/src/util/types";
-import {MarkArea1DDataItemOption, MarkArea2DDataItemOption} from "echarts/types/src/component/marker/MarkAreaModel";
+  DATE_FORMAT,
+  extractComponentFromIdentifier,
+  generateMetricIdentifier,
+  getFormatter,
+  metricValue,
+} from '../utils/helpers';
+import { Anomaly, Metric, ReDataModelDetails } from '../contexts/redataOverviewContext';
 
 interface MetricChartsProps {
-    modelDetails: ReDataModelDetails,
-    showAnomalies: boolean,
+  modelDetails: ReDataModelDetails,
+  showAnomalies: boolean,
 }
 
 interface VisualPiece extends VisualOptionPiecewise {
-    min?: number;
-    max?: number;
-    lt?: number;
-    gt?: number;
-    lte?: number;
-    gte?: number;
-    value?: number;
-    label?: string;
+  min?: number;
+  max?: number;
+  lt?: number;
+  gt?: number;
+  lte?: number;
+  gte?: number;
+  value?: number;
+  label?: string;
 }
 
 type ECOption = echarts.ComposeOption<| LineSeriesOption
-    | TitleComponentOption
-    | ScatterSeriesOption
-    | MarkAreaComponentOption
-    | VisualMapComponentOption
-    | SingleAxisComponentOption
-    | TooltipComponentOption
-    | GridComponentOption>;
+  | TitleComponentOption
+  | ScatterSeriesOption
+  | MarkAreaComponentOption
+  | VisualMapComponentOption
+  | SingleAxisComponentOption
+  | TooltipComponentOption
+  | GridComponentOption>;
 
-const generateMarkAreas = (anomaliesMap: Map<string, Anomaly[]>, columnName: string, metricName: string): (MarkArea1DDataItemOption | MarkArea2DDataItemOption)[] => {
-    const arr: (MarkArea1DDataItemOption | MarkArea2DDataItemOption)[] = []
-    // '' empty string key contains anomalies for table level metrics.
-    const anomalies = (anomaliesMap.has(columnName)
-        ? anomaliesMap.get(columnName)
-        : anomaliesMap.has('') ? anomaliesMap.get('') : []) as Array<Anomaly>;
+const generateMarkAreas = (
+  anomaliesMap: Map<string, Anomaly[]>,
+  columnName: string,
+  metricName: string): (MarkArea1DDataItemOption | MarkArea2DDataItemOption
+)[] => {
+  const arr: (MarkArea1DDataItemOption | MarkArea2DDataItemOption)[] = [];
+  // '' empty string key contains anomalies for table level metrics.
+  let anomalies: Array<Anomaly>;
+  if (anomaliesMap.has(columnName)) {
+    anomalies = anomaliesMap.get(columnName) as Array<Anomaly>;
+  } else {
+    anomalies = (anomaliesMap.has('') ? anomaliesMap.get('') : []) as Array<Anomaly>;
+  }
+  for (const anomaly of anomalies) {
+    if (anomaly.metric === metricName) {
+      arr.push([
+        {
+          xAxis: dayjs(anomaly.time_window_end)
+            .subtract(anomaly.interval_length_sec, 's').format(DATE_FORMAT),
+        },
+        {
+          xAxis: dayjs(anomaly.time_window_end).format(DATE_FORMAT),
+        },
+      ]);
+    }
+  }
+  return arr;
+};
+
+const generatePiecesForVisualMap = (
+  metrics: Array<Metric>, anomalies: Map<string, Anomaly[]>, columnName: string,
+): VisualPiece[] => {
+  const pieces: VisualPiece[] = [];
+  const anomaliesTimeWindow = (anomalies.has(columnName)
+    ? anomalies.get(columnName)
+    : []) as Array<Anomaly>;
+  const set = new Set(anomaliesTimeWindow.map((a) => `${a.metric}_${a.time_window_end}`));
+  for (let i = 0; i < metrics.length; i++) {
+    const metric = metrics[i];
+    const key = `${metric.metric}_${metric.time_window_end}`;
+    if (set.has(key)) {
+      pieces.push({
+        gt: i - 1,
+        lte: i,
+      });
+    }
+  }
+  return pieces;
+};
+
+const generateMetricChartOption = (
+  key: string, metrics: Metric[], anomaliesMap: Map<string, Anomaly[]>, isTableMetric: boolean,
+): ECOption => {
+  const metricName = extractComponentFromIdentifier(key, 'metricName');
+  const columnName = extractComponentFromIdentifier(key, 'columnName');
+  const title = isTableMetric
+    ? `${extractComponentFromIdentifier(key, 'metricName')}`
+    : `${extractComponentFromIdentifier(key, 'metricName')}(${extractComponentFromIdentifier(key, 'columnName')})`;
+  const pieces = generatePiecesForVisualMap(metrics, anomaliesMap, columnName);
+  return {
+    title: {
+      text: title,
+    },
+    grid: {
+      top: '20%', right: '5%', bottom: '12%', left: '15%',
+    },
+    xAxis: {
+      type: 'category',
+      data: metrics.map((m) => dayjs(m.time_window_end).format(DATE_FORMAT)),
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: {
+        formatter: getFormatter(metricName),
+      },
+    },
+    series: [
+      {
+        name: title,
+        data: metrics.map(metricValue),
+        type: 'line',
+        color: '#8884d8',
+        smooth: true,
+        markArea: {
+          itemStyle: {
+            color: 'rgba(255, 173, 177, 0.4)',
+          },
+          data: generateMarkAreas(anomaliesMap, columnName, metricName),
+        },
+      },
+    ],
+    tooltip: {
+      trigger: 'axis',
+    },
+    visualMap: {
+      show: false,
+      dimension: 0,
+      pieces,
+      inRange: {
+        color: pieces.length ? '#ee2828' : '#8884d8', // if no anomaly exists, everything is in range hence don't color red
+      },
+      outOfRange: {
+        color: '#8884d8',
+      },
+    },
+  };
+};
+
+const MetricCharts: React.FC<MetricChartsProps> = (
+  props: PropsWithChildren<MetricChartsProps>,
+): ReactElement => {
+  const { modelDetails, showAnomalies } = props;
+  const anomaliesMap = modelDetails.anomalies;
+  const metricsObj = modelDetails.metrics;
+  const anomaliesChartOptions: Array<[string, ECOption]> = [];
+  const tableMetricChartsMap: Map<string, ECOption> = new Map<string, ECOption>();
+  const columnMetricChartsMap: Map<string, ECOption> = new Map<string, ECOption>();
+  metricsObj.tableMetrics.forEach((metrics, key) => {
+    const option = generateMetricChartOption(key, metrics, anomaliesMap, true);
+    tableMetricChartsMap.set(key, option);
+  });
+  metricsObj.columnMetrics.forEach((metrics, key) => {
+    const option = generateMetricChartOption(key, metrics, anomaliesMap, false);
+    columnMetricChartsMap.set(key, option);
+  });
+  anomaliesMap.forEach((anomalies) => {
     for (const anomaly of anomalies) {
-        if (anomaly.metric === metricName) {
-            arr.push([
-                {
-                    xAxis: dayjs(anomaly.time_window_end).subtract(anomaly.interval_length_sec, 's').format(DATE_FORMAT)
-                },
-                {
-                    xAxis: dayjs(anomaly.time_window_end).format(DATE_FORMAT)
-                }
-            ])
-        }
+      const key = generateMetricIdentifier(anomaly);
+      if (tableMetricChartsMap.has(key)) {
+        const val = tableMetricChartsMap.get(key) as ECOption;
+        anomaliesChartOptions.push([key, val]);
+      }
+      if (columnMetricChartsMap.has(key)) {
+        const val = columnMetricChartsMap.get(key) as ECOption;
+        anomaliesChartOptions.push([key, val]);
+      }
     }
-    return arr;
-}
+  });
+  const tableMetricCharts = Array.from(tableMetricChartsMap).map(([key, option]) => (
+    <EChartsReactCore key={key} echarts={echarts} option={option} />
+  ));
+  const columnMetricCharts = Array.from(columnMetricChartsMap).map(([key, option]) => (
+    <EChartsReactCore key={key} echarts={echarts} option={option} />
+  ));
 
-const generatePiecesForVisualMap = (metrics: Array<Metric>, anomalies: Map<string, Anomaly[]>, columnName: string): VisualPiece[] => {
-    const pieces: VisualPiece[] = [];
-    const anomaliesTimeWindow = (anomalies.has(columnName) ? anomalies.get(columnName) : []) as Array<Anomaly>;
-    const set = new Set(anomaliesTimeWindow.map(a => `${a.metric}_${a.time_window_end}`))
-    for (let i = 0; i < metrics.length; i++) {
-        const metric = metrics[i];
-        const key = `${metric.metric}_${metric.time_window_end}`
-        if (set.has(key)) {
-            pieces.push({
-                gt: i - 1,
-                lte: i
-            })
-        }
-    }
-    return pieces;
+  const alertMetricCharts = anomaliesChartOptions.map(([key, option]) => (
+    <EChartsReactCore key={`alert_${key}`} echarts={echarts} option={option} />
+  ));
+
+  return (
+    <>
+      {showAnomalies
+        ? (
+          <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
+            {alertMetricCharts}
+          </div>
+        )
+        : (
+          <div>
+            <span className="text-lg text--capitalize">Table Metrics</span>
+            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
+              {tableMetricCharts}
+            </div>
+            <span className="text-lg text--capitalize">Column Metrics</span>
+            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
+              {columnMetricCharts}
+            </div>
+          </div>
+        )}
+    </>
+  );
 };
-
-const generateMetricChartOption = (key: string, metrics: Metric[], anomaliesMap: Map<string, Anomaly[]>, isTableMetric: boolean): ECOption => {
-    const metricName = extractComponentFromIdentifier(key, 'metricName');
-    const columnName = extractComponentFromIdentifier(key, 'columnName');
-    const title =
-        isTableMetric
-            ? `${extractComponentFromIdentifier(key, 'metricName')}`
-            : `${extractComponentFromIdentifier(key, 'metricName')}(${extractComponentFromIdentifier(key, 'columnName')})`;
-    const pieces = generatePiecesForVisualMap(metrics, anomaliesMap, columnName);
-    return {
-        title: {
-            text: title,
-        },
-        grid: {top: '20%', right: '5%', bottom: '12%', left: '15%'},
-        xAxis: {
-            type: 'category',
-            data: metrics.map(m => dayjs(m.time_window_end).format(DATE_FORMAT)),
-        },
-        yAxis: {
-            type: 'value',
-            axisLabel: {
-                formatter: getFormatter(metricName),
-            }
-        },
-        series: [
-            {
-                name: title,
-                data: metrics.map(metricValue),
-                type: 'line',
-                color: '#8884d8',
-                smooth: true,
-                markArea: {
-                    itemStyle: {
-                        color: 'rgba(255, 173, 177, 0.4)'
-                    },
-                    data: generateMarkAreas(anomaliesMap, columnName, metricName)
-                },
-            },
-        ],
-        tooltip: {
-            trigger: 'axis',
-        },
-        visualMap: {
-            show: false,
-            dimension: 0,
-            pieces: pieces,
-            inRange: {
-                color: pieces.length ? '#ee2828' : '#8884d8', // if no anomaly exists, everything is in range hence don't color red
-            },
-            outOfRange: {
-                color: '#8884d8',
-            }
-        }
-    };
-};
-
-const MetricCharts: React.FC<MetricChartsProps> = (props: PropsWithChildren<MetricChartsProps>): ReactElement => {
-    const anomaliesMap = props.modelDetails.anomalies;
-    const metricsObj = props.modelDetails.metrics;
-    const anomaliesChartOptions: Array<[string, ECOption]> = [];
-    const tableMetricChartsMap: Map<string, ECOption> = new Map<string, ECOption>();
-    const columnMetricChartsMap: Map<string, ECOption> = new Map<string, ECOption>();
-    metricsObj.tableMetrics.forEach((metrics, key) => {
-        const option = generateMetricChartOption(key, metrics, anomaliesMap, true);
-        tableMetricChartsMap.set(key, option);
-    });
-    metricsObj.columnMetrics.forEach((metrics, key) => {
-        const option = generateMetricChartOption(key, metrics, anomaliesMap, false);
-        columnMetricChartsMap.set(key, option);
-    });
-    anomaliesMap.forEach((anomalies) => {
-        for (const anomaly of anomalies) {
-            const key = generateMetricIdentifier(anomaly);
-            if (tableMetricChartsMap.has(key)) {
-                const val = tableMetricChartsMap.get(key) as ECOption;
-                anomaliesChartOptions.push([key, val])
-            }
-            if (columnMetricChartsMap.has(key)) {
-                const val = columnMetricChartsMap.get(key) as ECOption;
-                anomaliesChartOptions.push([key, val])
-            }
-        }
-    });
-    const tableMetricCharts = Array.from(tableMetricChartsMap).map(([key, option]) => (
-        <EChartsReactCore key={key} echarts={echarts} option={option}/>
-    ));
-    const columnMetricCharts = Array.from(columnMetricChartsMap).map(([key, option]) => (
-        <EChartsReactCore key={key} echarts={echarts} option={option}/>
-    ));
-
-    const alertMetricCharts = anomaliesChartOptions.map(([key, option]) => (
-        <EChartsReactCore key={`alert_${key}`} echarts={echarts} option={option}/>
-    ));
-
-    return (
-        <React.Fragment>
-            {props.showAnomalies ?
-                <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
-                    {alertMetricCharts}
-                </div> :
-                <div>
-                    <span className="text-lg text--capitalize">Table Metrics</span>
-                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
-                        {tableMetricCharts}
-                    </div>
-                    <span className="text-lg text--capitalize">Column Metrics</span>
-                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
-                        {columnMetricCharts}
-                    </div>
-                </div>
-            }
-        </React.Fragment>
-    );
-
-}
 
 export default MetricCharts;

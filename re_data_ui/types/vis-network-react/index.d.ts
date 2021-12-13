@@ -1,2 +1,1 @@
-declare module 'vis-network-react'
-
+declare module 'vis-network-react';

@@ -1,13 +1,9 @@
-import React, {ReactElement} from 'react';
+import React, { ReactElement } from 'react';
 import './App.css';
-import {Outlet} from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
-const App: React.FC = (): ReactElement => {
-    return (
-        <React.Fragment>
-            <Outlet/>
-        </React.Fragment>
-    );
-};
+const App: React.FC = (): ReactElement => (
+  <Outlet />
+);
 
 export default App;
