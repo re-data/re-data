@@ -1,4 +1,4 @@
-name: Lint
+name: ES Lint
 
 on: push
 
@@ -26,3 +26,4 @@ jobs:
         with:
           eslint: true
           eslint_dir: re_data_ui/
+          eslint_extensions: js,jsx,ts,tsx
