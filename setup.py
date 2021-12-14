@@ -25,7 +25,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        "click>=7.1.2,<8.0.0",
+        "click>=8,<9",
         "dbt-core>=0.20.0,<1.1.0",
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
