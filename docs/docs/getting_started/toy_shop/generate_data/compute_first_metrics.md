@@ -54,6 +54,4 @@ select * from toy_shop_re.re_data_metrics where metric in( 'row_count', 'global_
  "postgres"."toy_shop"."companies"      |             | global__row_count |    8  | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
 ```
 
-We can of course inspect any of those metrics and it maybe also really usefull to write dbt tests for values we expect in those.
-
 Now, let's add some extra metrics to customize monitoring for our needs

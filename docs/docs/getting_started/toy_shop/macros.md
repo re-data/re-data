@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Data Preparation 
+# Macros
 
 re_data provides useful macros for performing data preparation tasks like [cleaning](/docs/reference/data_preparation/data_cleaning), [normalizing](/docs/reference/data_preparation/data_normalization), [filtering](/docs/reference/data_preparation/data_filtering) and [validating](/docs/reference/data_preparation/data_validation). In the example shown below, common data preparation tasks are shown.
 
