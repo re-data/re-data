@@ -9,7 +9,7 @@ Welcome to a re_data getting started tutorial. We will prepare, analyze and moni
 It's an example of how a re_data project can work and help you improve data in your data warehouse
 
 ## Toy shop data
-Toy shop DB has currently 4 tables we will be using:
+Toy shop DB has 4 tables which we would like to observe:
   - customers
   - orders
   - order_items

@@ -34,10 +34,12 @@ jobs:
         working-directory: .
         run: |
           pip install .
+          pip install dbt-postgres==1.0.0
 
       - name: Initialize data and compute metrics
         working-directory: ./getting_started/toy_shop
         run: |
+          dbt --version
           dbt deps
           dbt seed
           dbt run --exclude package:re_data

@@ -4,16 +4,14 @@ sidebar_position: 2
 
 # Loading data
 
-If you would like to load toy_shop data to some of your testing DBs, clone our repo: https://github.com/re-data/re-data
-And copy our template of dbt project for this tutorial:
+If you would like to load toy_shop data to some of your testing DBs, clone our repo: https://github.com/re-data/re-data and `cd` to toy shop project.
 
 ```bash
 git clone https://github.com/re-data/re-data
-cd re-data
-cp -r getting_started/toy_shop/ my_toy_shop_tutorial
+cd re-data/getting_started/toy_shop/
 ```
 
-And specify connection to db you would like to use, example postgres connection here:
+For toy_shop to work you will need dbt connection with name `toy_shop` to some your test DB.
 
 ```yml title=~/.dbt/profiles.yml
 toy_shop:
