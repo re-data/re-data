@@ -28,9 +28,6 @@ We could compute anomalies using just a dbt command. In production you most like
 
 Here, for simplicity, we will use the `re_data run` command, which is just calling dbt with proper vars:
 
-```
-re_data run --start-date 2021-01-01 --end-date 2021-01-30
-```
 
 Assuming this completed successfully, let's query the alerts table:
 

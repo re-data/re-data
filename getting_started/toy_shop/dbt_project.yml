@@ -37,6 +37,10 @@ vars:
             table:
               - orders_above_100
 
+            column:
+              status:
+                - distinct_values
+
           columns:
             - amount
             - status

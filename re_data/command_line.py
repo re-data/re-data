@@ -149,6 +149,11 @@ def generate(start_date, end_date, interval):
     target_file_path = os.path.join(os.getcwd(), 'target', 're_data', 'index.html')
     shutil.copyfile(OVERVIEW_INDEX_FILE_PATH, target_file_path)
 
+    print(
+            f"Generating overview page", chalk.green("SUCCESS")
+    )
+
+
 @overview.command()
 def serve():
     serve_dir = os.path.join(os.getcwd(), 'target', 're_data')
