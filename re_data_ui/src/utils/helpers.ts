@@ -110,7 +110,7 @@ export const generateAnomalyIdentifier = (model: string, anomaly: Anomaly): stri
   const metricName = anomaly.metric;
   return columnName
     ? `${model}.${columnName}.${metricName}`
-    : `${model}.$.${metricName}`;
+    : `${model}..${metricName}`;
 };
 
 export const generateMetricIdentifier = (
@@ -121,7 +121,7 @@ export const generateMetricIdentifier = (
   // so we can have a uniform key structure
   return columnName
     ? `${model}.${columnName}.${metricName}`
-    : `${model}.$.${metricName}`;
+    : `${model}..${metricName}`;
 };
 
 export const appendToMapKey = (
