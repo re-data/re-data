@@ -48,6 +48,7 @@ const SchemaChanges: React.FC<SchemaChangesProps> = (
                           {generateSchemaChangeMessage(change)}
                           {' '}
                           at
+                          {' '}
                           {dayjs(change.detected_time).format(DATE_TIME_FORMAT)}
                         </div>
                       </td>

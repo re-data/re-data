@@ -44,37 +44,43 @@ export const generateAnomaliesByTimeWindowEnd = (alert: ReDataModelDetails):
   return alertsByTimeWindowEnd;
 };
 
-export const generateAlertMessage = (anomaly: Anomaly): string => {
-  const compareText = anomaly.last_value > anomaly.last_avg ? 'greater than' : 'less than';
-  const percentage = ((Math.abs(anomaly.last_value - anomaly.last_avg)
-      / anomaly.last_avg) * 100).toFixed(2);
+export const generateAnomalyMessage = (anomaly: Anomaly): string => {
+  const lastValue = Number(anomaly.last_value);
+  const lastAvg = Number(anomaly.last_avg);
+  const compareText = lastValue > lastAvg ? 'greater than' : 'less than';
+  const percentage = ((Math.abs(lastValue - lastAvg) / lastAvg) * 100).toFixed(2);
   const showName = anomaly.column_name ? `${anomaly.metric}(${anomaly.column_name})` : `${anomaly.metric}`;
   return `${showName} is ${percentage}% ${compareText} average`;
 };
 
 export const generateAnomalyValue = (anomaly: Anomaly): string => {
+  const value = Number(anomaly.last_value);
   if (anomaly.metric === 'freshness') {
-    const hours = anomaly.last_value / 60 / 60;
+    const hours = value / 60 / 60;
     return `${hours.toFixed(2)} hours`;
-  } if (anomaly.metric.indexOf('percent') > -1) {
-    return `${anomaly.last_value.toFixed(2)}%`;
-  } if (anomaly.metric.indexOf('count') > -1) {
-    return `${anomaly.last_value}`;
   }
-  return `${anomaly.last_value.toFixed(2)}`;
+  if (anomaly.metric.indexOf('percent') > -1) {
+    return `${value.toFixed(2)}%`;
+  }
+  if (anomaly.metric.indexOf('count') > -1) {
+    return `${value}`;
+  }
+  return `${value.toFixed(2)}`;
 };
 
 export const metricValue = (metric: Metric): number => {
+  const value = Number(metric.value);
   if (metric.metric === 'freshness') {
-    return metric.value / 60 / 60;
+    return value / 60 / 60;
   }
-  return metric.value;
+  return value;
 };
 
 export const getFormatter = (metricName: string): string => {
   if (metricName === 'freshness') {
     return '{value}hrs';
-  } if (metricName.indexOf('percent') > -1) {
+  }
+  if (metricName.indexOf('percent') > -1) {
     return '{value}%';
   }
   return '{value}';
@@ -99,13 +105,23 @@ export const generateSchemaChangeMessage = (change: SchemaChange): string => {
   return message;
 };
 
-export const generateMetricIdentifier = (item: Metric | Anomaly): string => {
-  const tableName = stripQuotes(item.table_name);
-  const columnName = stripQuotes(item.column_name);
-  const metricName = stripQuotes(item.metric);
-  // use _ as placeholder for column name that doesn't exist in table metrics,
+export const generateAnomalyIdentifier = (model: string, anomaly: Anomaly): string => {
+  const { column_name: columnName } = anomaly;
+  const metricName = anomaly.metric;
+  return columnName
+    ? `${model}.${columnName}.${metricName}`
+    : `${model}.$.${metricName}`;
+};
+
+export const generateMetricIdentifier = (
+  model: string, columnName: string, metric: Metric,
+): string => {
+  const metricName = stripQuotes(metric.metric);
+  // use $ as placeholder for column name that doesn't exist in table metrics,
   // so we can have a uniform key structure
-  return columnName ? `${tableName}.${columnName}.${metricName}` : `${tableName}._.${metricName}`;
+  return columnName
+    ? `${model}.${columnName}.${metricName}`
+    : `${model}.$.${metricName}`;
 };
 
 export const appendToMapKey = (

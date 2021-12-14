@@ -13,10 +13,10 @@ import {
 } from 'echarts/components';
 import { VisualOptionPiecewise } from 'echarts/types/src/util/types';
 import { MarkArea1DDataItemOption, MarkArea2DDataItemOption } from 'echarts/types/src/component/marker/MarkAreaModel';
+import { useSearchParams } from 'react-router-dom';
 import {
   DATE_FORMAT,
-  extractComponentFromIdentifier,
-  generateMetricIdentifier,
+  extractComponentFromIdentifier, generateAnomalyIdentifier,
   getFormatter,
   metricValue,
 } from '../utils/helpers';
@@ -65,7 +65,7 @@ const generateMarkAreas = (
       arr.push([
         {
           xAxis: dayjs(anomaly.time_window_end)
-            .subtract(anomaly.interval_length_sec, 's').format(DATE_FORMAT),
+            .subtract(Number(anomaly.interval_length_sec), 's').format(DATE_FORMAT),
         },
         {
           xAxis: dayjs(anomaly.time_window_end).format(DATE_FORMAT),
@@ -159,6 +159,8 @@ const MetricCharts: React.FC<MetricChartsProps> = (
   props: PropsWithChildren<MetricChartsProps>,
 ): ReactElement => {
   const { modelDetails, showAnomalies } = props;
+  const [searchParams] = useSearchParams();
+  const model = searchParams.get('model') as string;
   const anomaliesMap = modelDetails.anomalies;
   const metricsObj = modelDetails.metrics;
   const anomaliesChartOptions: Array<[string, ECOption]> = [];
@@ -174,7 +176,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
   });
   anomaliesMap.forEach((anomalies) => {
     for (const anomaly of anomalies) {
-      const key = generateMetricIdentifier(anomaly);
+      const key = generateAnomalyIdentifier(model, anomaly);
       if (tableMetricChartsMap.has(key)) {
         const val = tableMetricChartsMap.get(key) as ECOption;
         anomaliesChartOptions.push([key, val]);

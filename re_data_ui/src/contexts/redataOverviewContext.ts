@@ -57,28 +57,22 @@ export interface DbtNode {
 
 export interface Anomaly {
   column_name: string;
-  computed_on: string;
   id: string;
-  interval_length_sec: number;
-  last_avg: number;
-  last_stddev: number;
-  last_value: number;
+  interval_length_sec: string;
+  last_avg: string;
+  last_stddev: string;
+  last_value: string;
   metric: string;
-  table_name: string;
   time_window_end: string;
-  z_score_value: number;
+  z_score_value: string;
 }
 
 export interface Metric {
+  interval_length_sec: string;
   column_name: string;
-  computed_on: string;
-  id: string;
-  interval_length_sec: number;
   metric: string;
-  table_name: string;
   time_window_end: string;
-  time_window_start: string;
-  value: number;
+  value: string;
 }
 
 export interface DbtSource {
@@ -101,7 +95,8 @@ export interface DbtSource {
   path: string;
   quoting: {
     database: string | null, schema: string | null,
-    identifier: string | null, column: string | null };
+    identifier: string | null, column: string | null
+  };
   relation_name: string;
   resource_type: string;
   root_path: string;
@@ -114,7 +109,7 @@ export interface DbtSource {
   unrendered_config: Record<string, unknown>;
 }
 
-interface DbtGraph {
+export interface DbtGraph {
   exposures: Record<string, unknown>;
   nodes: { [key: string]: DbtNode };
   sources: { [key: string]: DbtSource };
@@ -134,43 +129,46 @@ export interface ReDataModelDetails {
 
 export interface SchemaChange {
   column_name: string;
-  data_type: string;
+  data_type: string | null;
   detected_time: string;
   id: string;
-  is_nullable: boolean;
+  is_nullable: string | null;
   operation: string;
-  prev_column_name: null;
-  prev_data_type: null;
-  prev_is_nullable: null;
-  table_name: string;
+  prev_column_name: string | null;
+  prev_data_type: string | null;
+  prev_is_nullable: string | null;
 }
 
 export interface TableSchema {
-  id: string;
-  table_name: string;
-  column_name: string;
   data_type: string;
-  is_nullable: string;
   is_datetime: string;
-  time_filter: string;
+  is_nullable: string;
+}
+
+export interface Alert {
+  type: 'anomaly' | 'schema_change';
+  model: string;
+  value: Anomaly | SchemaChange;
 }
 
 export interface OverviewData {
-  anomalies: Array<Anomaly>;
-  metrics: Array<Metric>;
-  schema_changes: Array<SchemaChange>;
+  alerts: Array<Alert>;
   aggregated_models: Map<string, ReDataModelDetails>;
   graph: DbtGraph | null;
-  table_schema: Array<TableSchema>;
   generated_at: string;
 }
 
+export interface NewOverviewData {
+  type: 'alert' | 'metric' | 'dbt_graph' | 'schema_change' | 'schema';
+  table_name: string;
+  column_name: string;
+  computed_on: string;
+  data: string;
+}
+
 export const RedataOverviewContext = React.createContext<OverviewData>({
-  anomalies: [],
-  metrics: [],
-  schema_changes: [],
+  alerts: [],
   aggregated_models: new Map<string, ReDataModelDetails>(),
   graph: null,
-  table_schema: [],
   generated_at: '',
 });

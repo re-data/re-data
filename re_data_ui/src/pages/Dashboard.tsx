@@ -7,98 +7,36 @@ import {
   ReDataModelDetails, Anomaly,
   Metric,
   OverviewData,
-  RedataOverviewContext,
+  RedataOverviewContext, DbtGraph, SchemaChange, TableSchema, Alert,
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey, generateMetricIdentifier, RE_DATA_OVERVIEW_FILE, stripQuotes,
 } from '../utils/helpers';
 
 interface RawOverviewData {
-  anomalies: string | null;
-  metrics: string | null;
+  type: 'alert' | 'metric' | 'dbt_graph' | 'schema_change' | 'schema';
   // eslint-disable-next-line camelcase
-  schema_changes: string | null;
-  graph: string;
+  table_name: string;
   // eslint-disable-next-line camelcase
-  table_schema: string;
+  column_name: string;
   // eslint-disable-next-line camelcase
-  generated_at: string;
+  computed_on: string;
+  data: string;
 }
 
-const groupMetricsByModel = (
-  overview: OverviewData, modelDetails: Map<string, ReDataModelDetails>,
-): void => {
-  const { metrics } = overview;
-  for (const metric of metrics) {
-    const tableName = stripQuotes(metric.table_name);
-    const key = generateMetricIdentifier(metric);
-    const details = modelDetails.get(tableName) as ReDataModelDetails;
-    const metricMap = details.metrics;
-    if (!metric.column_name) { // table metric
-      appendToMapKey(metricMap.tableMetrics, key, metric);
-    } else {
-      appendToMapKey(metricMap.columnMetrics, key, metric);
+const formatOverviewData = (
+  data: Array<RawOverviewData>,
+): [DbtGraph | null, Map<string, ReDataModelDetails>, Alert[]] => {
+  const result = new Map<string, ReDataModelDetails>();
+  const alertsAndSchemaChanges: Alert[] = [];
+  let dbtGraph: DbtGraph | null = null;
+  data.forEach((item: RawOverviewData) => {
+    if (item.type === 'dbt_graph') {
+      dbtGraph = JSON.parse(item.data) as DbtGraph;
+      return;
     }
-  }
-  // loop through each table/model and sort by ascending order by
-  // time_window_end for table and column metrics
-  for (const details of modelDetails.values()) {
-    for (const [key, m] of details.metrics.tableMetrics) {
-      const sortedMetrics = m.sort(
-        (a: Metric, b: Metric) => dayjs(a.time_window_end).diff(b.time_window_end),
-      );
-      details.metrics.tableMetrics.set(key, sortedMetrics);
-    }
-    for (const [key, m] of details.metrics.columnMetrics) {
-      const sortedMetrics = m.sort(
-        (a: Metric, b: Metric) => dayjs(a.time_window_end).diff(b.time_window_end),
-      );
-      details.metrics.columnMetrics.set(key, sortedMetrics);
-    }
-  }
-};
-
-const groupTableSchemaByModel = (
-  overview: OverviewData, modelDetails: Map<string, ReDataModelDetails>,
-): void => {
-  for (const schema of overview.table_schema) {
-    const model = stripQuotes(schema.table_name);
-    const details = modelDetails.get(model) as ReDataModelDetails;
-    details.tableSchema.push(schema);
-  }
-};
-
-const groupSchemaChangesByModel = (
-  overview: OverviewData, modelDetails: Map<string, ReDataModelDetails>,
-): void => {
-  for (const change of overview.schema_changes) {
-    const model = stripQuotes(change.table_name);
-    const details = modelDetails.get(model) as ReDataModelDetails;
-    details.schemaChanges.push(change);
-  }
-};
-
-const groupAnomaliesByModel = (
-  overview: OverviewData, modelDetails: Map<string, ReDataModelDetails>,
-): void => {
-  overview.anomalies.forEach((anomaly) => {
-    const model = stripQuotes(anomaly.table_name);
-    // eslint-disable-next-line no-param-reassign
-    anomaly.last_value = Number(anomaly.last_value);
-    const columnName = anomaly.column_name ? anomaly.column_name : '_';
-    const details = modelDetails.get(model) as ReDataModelDetails;
-    const anomalyMap = details.anomalies;
-    appendToMapKey(anomalyMap, columnName, anomaly);
-  });
-};
-
-const prepareModelDetails = (overview: OverviewData): Map<string, ReDataModelDetails> => {
-  const tableSchema = overview.table_schema;
-  const modelDetails = new Map<string, ReDataModelDetails>();
-  // create object for each model
-  tableSchema.forEach((schema) => {
-    const model = stripQuotes(schema.table_name);
-    if (!modelDetails.has(model)) {
+    const model = stripQuotes(item.table_name);
+    if (!result.has(model)) {
       const obj: ReDataModelDetails = {
         anomalies: new Map<string, Array<Anomaly>>(),
         schemaChanges: [],
@@ -108,23 +46,62 @@ const prepareModelDetails = (overview: OverviewData): Map<string, ReDataModelDet
         },
         tableSchema: [],
       };
-      modelDetails.set(model, obj);
+      result.set(model, obj);
+    }
+    const columnName = item.column_name ? item.column_name : '';
+    const details = result.get(model) as ReDataModelDetails;
+    if (item.type === 'alert') {
+      const anomaly = JSON.parse(item.data) as Anomaly;
+      anomaly.column_name = columnName;
+      appendToMapKey(details.anomalies, columnName, anomaly);
+      alertsAndSchemaChanges.push({ type: 'anomaly', model, value: anomaly });
+    } else if (item.type === 'metric') {
+      const metric = JSON.parse(item.data) as Metric;
+      metric.column_name = columnName;
+      const key = generateMetricIdentifier(model, columnName, metric);
+      if (columnName === '') { // table metric
+        appendToMapKey(details.metrics.tableMetrics, key, metric);
+      } else {
+        appendToMapKey(details.metrics.columnMetrics, key, metric);
+      }
+    } else if (item.type === 'schema_change') {
+      const schemaChange = JSON.parse(item.data) as SchemaChange;
+      schemaChange.column_name = columnName;
+      details.schemaChanges.push(schemaChange);
+      alertsAndSchemaChanges.push({ type: 'schema_change', model, value: schemaChange });
+    } else if (item.type === 'schema') {
+      const schema = JSON.parse(item.data) as TableSchema;
+      details.tableSchema.push(schema);
     }
   });
-  groupAnomaliesByModel(overview, modelDetails);
-  groupSchemaChangesByModel(overview, modelDetails);
-  groupTableSchemaByModel(overview, modelDetails);
-  groupMetricsByModel(overview, modelDetails);
-  return modelDetails;
+  // loop through each table/model and sort by ascending order by
+  // time_window_end for table and column metrics
+  for (const metricMap of result.values()) {
+    for (const [key, metrics] of metricMap.metrics.tableMetrics) {
+      const sortedMetrics = metrics.sort(
+        (a: Metric, b: Metric) => dayjs(a.time_window_end).diff(b.time_window_end),
+      );
+      metricMap.metrics.tableMetrics.set(key, sortedMetrics);
+    }
+    for (const [key, metrics] of metricMap.metrics.columnMetrics) {
+      const sortedMetrics = metrics.sort(
+        (a: Metric, b: Metric) => dayjs(a.time_window_end).diff(b.time_window_end),
+      );
+      metricMap.metrics.columnMetrics.set(key, sortedMetrics);
+    }
+  }
+  alertsAndSchemaChanges.sort((a, b) => {
+    const x = a.type === 'anomaly' ? (a.value as Anomaly).time_window_end : (a.value as SchemaChange).detected_time;
+    const y = b.type === 'anomaly' ? (b.value as Anomaly).time_window_end : (b.value as SchemaChange).detected_time;
+    return dayjs(y).diff(x);
+  });
+  return [dbtGraph, result, alertsAndSchemaChanges];
 };
 
 const Dashboard: React.FC = (): ReactElement => {
   const initialOverview: OverviewData = {
-    anomalies: [],
-    metrics: [],
-    schema_changes: [],
+    alerts: [],
     aggregated_models: new Map<string, ReDataModelDetails>(),
-    table_schema: [],
     graph: null,
     generated_at: '',
   };
@@ -138,18 +115,18 @@ const Dashboard: React.FC = (): ReactElement => {
         },
       });
       const rawJson: Array<RawOverviewData> = await response.json();
-      const data = rawJson[0];
+      const overviewData = rawJson as unknown as Array<RawOverviewData>;
 
       const overview: OverviewData = {
-        anomalies: data.anomalies ? JSON.parse(data.anomalies as string) : [],
-        metrics: data.metrics ? JSON.parse(data.metrics as string) : [],
-        schema_changes: data.schema_changes ? JSON.parse(data.schema_changes as string) : [],
+        alerts: [],
         aggregated_models: new Map<string, ReDataModelDetails>(),
-        graph: JSON.parse(data.graph as string),
-        table_schema: data.table_schema ? JSON.parse(data.table_schema) : [],
-        generated_at: data.generated_at,
+        graph: null,
+        generated_at: '',
       };
-      overview.aggregated_models = prepareModelDetails(overview);
+      const [graph, aggregatedModels, alerts] = formatOverviewData(overviewData);
+      overview.aggregated_models = aggregatedModels;
+      overview.alerts = alerts;
+      overview.graph = graph;
       console.log(overview);
       setReDataOverview(overview);
     } catch (e) {

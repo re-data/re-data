@@ -1,16 +1,72 @@
 import React, { ReactElement, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { OverviewData, RedataOverviewContext } from '../contexts/redataOverviewContext';
 import {
-  generateAlertMessage, generateAnomalyValue, generateSchemaChangeMessage, stripQuotes,
+  Alert, Anomaly, OverviewData, RedataOverviewContext, SchemaChange,
+} from '../contexts/redataOverviewContext';
+import {
+  generateAnomalyMessage, generateAnomalyValue, generateSchemaChangeMessage,
 } from '../utils/helpers';
+import AlertBadge from '../components/AlertBadge';
+
+const generateAlertRow = (alert: Alert): ReactElement => {
+  const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+  let key: string;
+  let message: string;
+  let timeWindow: string;
+  const value = alert.type === 'anomaly' ? generateAnomalyValue(alert.value as Anomaly) : undefined;
+  if (alert.type === 'schema_change') {
+    const schemaChange = alert.value as SchemaChange;
+    key = `${schemaChange.id}_schemaChange`;
+    message = generateSchemaChangeMessage(schemaChange);
+    timeWindow = schemaChange.detected_time;
+  } else {
+    const anomaly = alert.value as Anomaly;
+    key = `${anomaly.id}_anomaly`;
+    message = generateAnomalyMessage(anomaly);
+    timeWindow = anomaly.time_window_end;
+  }
+  return (
+    <tr key={key}>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <AlertBadge
+          error={alert.type === 'anomaly'}
+        />
+        <span
+          className="text-sm text-gray-900"
+        >
+          {alert.model}
+        </span>
+      </td>
+      <td className="px-6 text-sm py-4 whitespace-nowrap">
+        <div
+          className="text-gray-900"
+        >
+          {message}
+        </div>
+      </td>
+      <td className="px-6 py-4 text-sm whitespace-nowrap">
+        {value}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        {dayjs(timeWindow).format(dateTimeFormat)}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <Link
+          to={`/graph?model=${alert.model}`}
+          className="text-indigo-600 hover:text-indigo-900"
+        >
+          Details
+        </Link>
+      </td>
+    </tr>
+  );
+};
 
 const Alerts: React.FC = (): ReactElement => {
-  const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { anomalies } = overview;
-  const schemaChanges = overview.schema_changes;
+  const { alerts } = overview;
+
   return (
     <div className="grid grid-cols-1">
       <h1 className="pl-3 mb-3 text-2xl">Alerts</h1>
@@ -51,83 +107,7 @@ const Alerts: React.FC = (): ReactElement => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {anomalies.map((anomaly) => (
-                    <tr key={anomaly.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className="badge mb-3 bg-red-600 rounded-full px-2.5 py-1 text-center object-right-top text-white text-sm mr-3"
-                        >
-                          !
-                        </span>
-                        <span
-                          className="text-sm text-gray-900"
-                        >
-                          {stripQuotes(anomaly.table_name)}
-                        </span>
-                      </td>
-                      <td className="px-6 text-sm py-4 whitespace-nowrap">
-                        <div
-                          className="text-gray-900"
-                        >
-                          {generateAlertMessage(anomaly)}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm whitespace-nowrap">
-                        {generateAnomalyValue(anomaly)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {dayjs(anomaly.time_window_end).format(dateTimeFormat)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <Link
-                          to={`/graph?model=${stripQuotes(anomaly.table_name)}`}
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          Details
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-
-                  {schemaChanges.map((change) => (
-                    <tr key={`${change.id}_${change.prev_column_name}`}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className="badge mb-3 bg-yellow-300 rounded-full px-2.5 py-1
-                                         text-center object-right-top text-white text-sm mr-3"
-                        >
-                          !
-                        </span>
-                        <span
-                          className="text-sm text-gray-900"
-                        >
-                          {stripQuotes(change.table_name)}
-                        </span>
-                      </td>
-                      <td className="px-6 text-sm py-4 whitespace-nowrap">
-                        <div
-                          className="text-gray-900"
-                        >
-                          {generateSchemaChangeMessage(change)}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm whitespace-nowrap">
-                        {/* {change.last_value.toFixed(2)} */}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {dayjs(change.detected_time).format(dateTimeFormat)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <Link
-                          to={`/graph?model=${stripQuotes(change.table_name)}`}
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          Details
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-
+                  {alerts.map(generateAlertRow)}
                 </tbody>
               </table>
             </div>
