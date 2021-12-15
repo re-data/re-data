@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {
   ReDataModelDetails, Anomaly, Metric, SchemaChange,
 } from '../contexts/redataOverviewContext';
@@ -49,8 +50,8 @@ export const generateAnomalyMessage = (anomaly: Anomaly): string => {
   const lastAvg = Number(anomaly.last_avg);
   const compareText = lastValue > lastAvg ? 'greater than' : 'less than';
   const percentage = ((Math.abs(lastValue - lastAvg) / lastAvg) * 100).toFixed(2);
-  const showName = anomaly.column_name ? `${anomaly.metric}(${anomaly.column_name})` : `${anomaly.metric}`;
-  return `${showName} is ${percentage}% ${compareText} average`;
+  const displayText = anomaly.column_name ? `${anomaly.metric}(${anomaly.column_name})` : `${anomaly.metric}`;
+  return `${displayText} is ${percentage}% ${compareText} average`;
 };
 
 export const generateAnomalyValue = (anomaly: Anomaly): string => {
@@ -88,16 +89,17 @@ export const getFormatter = (metricName: string): string => {
 
 export const generateSchemaChangeMessage = (change: SchemaChange): string => {
   let message = '';
+  const detectedTime = dayjs(change.detected_time).format(DATE_TIME_FORMAT);
   switch (change.operation) {
     case 'column_added':
-      message = `column ${change.column_name} of type ${change.data_type} was added`;
+      message = `column ${change.column_name} of type ${change.data_type} was added at ${detectedTime}`;
       break;
     case 'column_removed':
-      message = `column ${change.prev_column_name} of type ${change.prev_data_type} was removed`;
+      message = `column ${change.prev_column_name} of type ${change.prev_data_type} was removed at ${detectedTime}`;
       break;
     case 'type_change':
       message = `${change.column_name} column data type was changed from ${change.prev_data_type} to 
-            ${change.data_type}`;
+            ${change.data_type} at ${detectedTime}`;
       break;
     default:
       message = '';

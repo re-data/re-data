@@ -7,7 +7,7 @@ import {
   ReDataModelDetails, Anomaly,
   Metric,
   OverviewData,
-  RedataOverviewContext, DbtGraph, SchemaChange, TableSchema, Alert,
+  RedataOverviewContext, DbtGraph, SchemaChange, ITableSchema, Alert,
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey, generateMetricIdentifier, RE_DATA_OVERVIEW_FILE, stripQuotes,
@@ -70,7 +70,8 @@ const formatOverviewData = (
       details.schemaChanges.push(schemaChange);
       alertsAndSchemaChanges.push({ type: 'schema_change', model, value: schemaChange });
     } else if (item.type === 'schema') {
-      const schema = JSON.parse(item.data) as TableSchema;
+      const schema = JSON.parse(item.data) as ITableSchema;
+      schema.column_name = columnName;
       details.tableSchema.push(schema);
     }
   });

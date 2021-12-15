@@ -14,6 +14,7 @@ import {
 import { VisualOptionPiecewise } from 'echarts/types/src/util/types';
 import { MarkArea1DDataItemOption, MarkArea2DDataItemOption } from 'echarts/types/src/component/marker/MarkAreaModel';
 import { useSearchParams } from 'react-router-dom';
+import { BiHappyAlt } from 'react-icons/all';
 import {
   DATE_FORMAT,
   extractComponentFromIdentifier, generateAnomalyIdentifier,
@@ -21,6 +22,7 @@ import {
   metricValue,
 } from '../utils/helpers';
 import { Anomaly, Metric, ReDataModelDetails } from '../contexts/redataOverviewContext';
+import EmptyContent from './EmptyContent';
 
 interface MetricChartsProps {
   modelDetails: ReDataModelDetails,
@@ -203,18 +205,30 @@ const MetricCharts: React.FC<MetricChartsProps> = (
       {showAnomalies
         ? (
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
-            {alertMetricCharts}
+            {alertMetricCharts.length ? alertMetricCharts : (
+              <EmptyContent text="No Anomalies!">
+                <BiHappyAlt size={50} color="#392396" />
+              </EmptyContent>
+            )}
           </div>
         )
         : (
           <div>
             <span className="text-lg text--capitalize">Table Metrics</span>
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
-              {tableMetricCharts}
+              {tableMetricCharts.length ? tableMetricCharts : (
+                <EmptyContent text="No table metrics!">
+                  <BiHappyAlt size={50} color="#392396" />
+                </EmptyContent>
+              )}
             </div>
             <span className="text-lg text--capitalize">Column Metrics</span>
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
-              {columnMetricCharts}
+              {columnMetricCharts.length ? columnMetricCharts : (
+                <EmptyContent text="No column metrics!">
+                  <BiHappyAlt size={50} color="#392396" />
+                </EmptyContent>
+              )}
             </div>
           </div>
         )}

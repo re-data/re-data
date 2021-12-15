@@ -124,7 +124,7 @@ export interface ReDataModelDetails {
   anomalies: Map<string, Array<Anomaly>>;
   schemaChanges: Array<SchemaChange>;
   metrics: AggregatedMetrics;
-  tableSchema: Array<TableSchema>
+  tableSchema: Array<ITableSchema>
 }
 
 export interface SchemaChange {
@@ -139,7 +139,8 @@ export interface SchemaChange {
   prev_is_nullable: string | null;
 }
 
-export interface TableSchema {
+export interface ITableSchema {
+  column_name: string;
   data_type: string;
   is_datetime: string;
   is_nullable: string;

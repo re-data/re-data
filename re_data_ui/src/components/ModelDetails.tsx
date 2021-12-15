@@ -23,6 +23,7 @@ import {
 import './ModelDetails.css';
 import SchemaChanges from './SchemaChanges';
 import MetricCharts from './MetricCharts';
+import TableSchema from './TableSchema';
 
 echarts.use(
   [
@@ -55,7 +56,12 @@ const ModelDetails: React.FC = (): ReactElement => {
     } if (tab === ModelTabs.ANOMALIES) {
       return <MetricCharts modelDetails={modelDetails} showAnomalies />;
     }
-    return <SchemaChanges modelDetails={modelDetails} />;
+    return (
+      <>
+        <TableSchema tableSchemas={modelDetails.tableSchema} />
+        <SchemaChanges modelDetails={modelDetails} />
+      </>
+    );
   };
 
   let modelExists = false;
@@ -63,7 +69,7 @@ const ModelDetails: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
 
   const showAnomalies = (): void => setActiveTab(ModelTabs.ANOMALIES);
-  const showSchemaChanges = (): void => setActiveTab(ModelTabs.SCHEMA_CHANGES);
+  const showSchema = (): void => setActiveTab(ModelTabs.SCHEMA_CHANGES);
   const showMetrics = (): void => setActiveTab(ModelTabs.METRICS);
 
   let modelDetails: ReDataModelDetails = {
@@ -82,7 +88,7 @@ const ModelDetails: React.FC = (): ReactElement => {
   }
 
   return (
-    <div className="col-span-4 h-auto overflow-scroll">
+    <div className="col-span-4 h-auto overflow-y-auto">
       <div className="bg-white rounded shadow border p-3">
 
         <div>
@@ -104,7 +110,7 @@ const ModelDetails: React.FC = (): ReactElement => {
             <li
               className={activeTab === ModelTabs.SCHEMA_CHANGES ? 'active' : ''}
               role="presentation"
-              onClick={showSchemaChanges}
+              onClick={showSchema}
             >
               Schema
             </li>
