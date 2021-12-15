@@ -166,7 +166,7 @@ def serve():
 
     if True:
         try:
-            webbrowser.open_new_tab(f'http://127.0.0.1:{port}')
+            webbrowser.open_new_tab(f'http://127.0.0.1:{port}/#/alerts')
         except webbrowser.Error:
             pass
 
