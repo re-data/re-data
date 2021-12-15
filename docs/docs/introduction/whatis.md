@@ -17,18 +17,18 @@ Check out our **[live demo](https://re-data.github.io/re-data/ui-feature-react-a
 
 # Features
 
+## Alerts
+Get information about suspicious data patterns & schema changes automatically without writing tests. re_data detects trends in your data and creates alerts if something seems suspicious.
+
 ## Metrics
 Monitor predefined and custom metrics about your data. All metrics are stored in your database and accessible for you. re_data custom metrics can be standard dbt macros which make it very easy to add them to your project.
 
-## Alerts
-Get information about suspicious data patterns automatically without writing tests. re_data detects trends in your data and create alerts if something seems suspicious.
+## Lineage
+re_data shows data lineage for you data warehouse. (This is imported from dbt graph). You can navigate your data & investigate alerts & metrics related to each node in the graph.
 
 ## Macros
 re_data ships with a set of macros to save you time and some pain of writing code for cleaning / normalizing / validating your data. Use them to make your project cleaner 😊. You can also use them as a base for your own metrics or data tests.
 
-## Lineage
-
-re_data shows data lineage for you data warehouse. (This is imported from dbt graph). You can navigate your data & investigate alerts & metrics related to each node in the graph.
 
 # Getting started
 

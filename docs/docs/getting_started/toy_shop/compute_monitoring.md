@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Observability data
 
-Now, let's compute the first health data. We will use re_data confiugration already defined in the project. Check it out **[in our repo](https://github.com/re-data/re-data/blob/master/getting_started/toy_shop/dbt_project.yml)** - or in your own editor.
+Now, let's compute the first health data. We will use the re_data configuration already defined in the project. Check it out **[in our repo](https://github.com/re-data/re-data/blob/master/getting_started/toy_shop/dbt_project.yml)** - or in your own editor.
 
 ## First re_data run
 
@@ -37,16 +37,16 @@ postgres=> select table_name, metric, value from toy_shop_re.re_data_metrics whe
 
 ## re_data run for January 2021
 
-On proudction we would setup re_data to run daily/hourly/etc. For toy shop by using re_data python package command we backfill daily data for the past (whole January 2021)
+On production, we would set up re_data to run daily/hourly/etc. For toy shop, by using the re_data python package command we backfill daily data for the past (whole January 2021)
 
 ```
 re_data run --start-date 2021-01-01 --end-date 2021-01-30
 ```
 
-
 ## Looking into anomalies
 
-And now let's look into `alerting` table to see if `re_data` found anything suspicious for us:
+And now let's look into the `alerting` table to see if `re_data` found anything suspicious for us:
+
 
 ```sql title="Viewing computed anomalies"
 postgres=> select table_name, metric, z_score_value, last_value, time_window_end from toy_shop_re.re_data_alerting ;
@@ -66,7 +66,6 @@ postgres=> select table_name, metric, z_score_value, last_value, time_window_end
  "postgres"."toy_shop"."customers"      | min_length      |        4.7999999976 |                  4 | 2021-01-26 00:00:00
 ```
 
-We can see there are copule of things re_data flagged for us.
-In the next setup.
+We can see there are a couple of things re_data flagged for us.
 
-Let's generate UI to look closer into what's happening.
+In the next setup, let's generate UI to look closer into what's happening.
