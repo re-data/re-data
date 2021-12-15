@@ -45,12 +45,6 @@ module.exports = {
           activeBasePath: 'reference'
         },
         {
-          to: 'docs/bi_integration/introduction',
-          label: 'External tools',
-          position: 'left',
-          activeBasePath: 'External tools'
-        },
-        {
           to: 'docs/qa',
           label: 'Q&A',
           position: 'left',
