@@ -67,8 +67,7 @@ const generateAlertRow = (alert: Alert): ReactElement => {
 
 const Alerts: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
-  let { alerts } = overview;
-  alerts = [];
+  const { alerts } = overview;
 
   return (
     <>
