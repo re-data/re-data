@@ -117,8 +117,39 @@ def overview():
 
 
 @overview.command()
-def generate():
-    command_list = ['dbt', 'run-operation', 'generate_overview']
+@click.option(
+    '--start-date',
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str((date.today() - timedelta(days=7)).strftime("%Y-%m-%d")),
+    help="Specify starting date to generate overview data, by default re_data will use 7 days ago for that value"
+)
+@click.option(
+    '--end-date',
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str(date.today().strftime("%Y-%m-%d")),
+    help="""
+        Specify end date to compute monitoring data, by default re_data will use today for that.
+        And compute stats for last full data for that
+    """
+)
+@click.option(
+    '--interval',
+    type=click.STRING,
+    default='days:1',
+    help="""
+        Specify interval format. e.g. `days:1` translates to a time interval of 1 day
+    """
+)
+def generate(start_date, end_date, interval):
+    start_date = str(start_date)
+    end_date = str(end_date)
+    import yaml
+    args = {
+        'start_date': start_date,
+        'end_date': end_date,
+        'interval': interval
+    }
+    command_list = ['dbt', 'run-operation', 'generate_overview', '--args', yaml.dump(args)]
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
     # todo: get target_path from dbt_project.yml
