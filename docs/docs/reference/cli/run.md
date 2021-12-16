@@ -8,7 +8,12 @@ sidebar_position: 1
 
 ### run
 ```
-re_data run --start-date 2021-01-01 --end-date 2021-01-30
+re_data run --start-date 2021-01-01 --end-date 2021-01-30 --interval days:1
 ```
 
-The above command computes monthly re_data stats with (currently hardcoded) daily granularity. After running these commands re_data dbt specific models will have information about anomalies, metrics & schema changes happening in your data warehouse.
+Running this command will create/fill re_data specific models with observability data.
+
+Supported argments:
+- start-date (*default: today - 7 days*) - start date of period for which you generate data
+- end-date (*default: today*) - end date of period for which you generate data
+- interval (*default: days:1*) - basic time grain for the overview, supported values - *days*, *hours*, example: **days:7**, **hours:1**.

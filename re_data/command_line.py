@@ -71,13 +71,30 @@ def detect():
     """
 )
 @click.option(
+    '--interval',
+    type=click.STRING,
+    default='days:1',
+    help="""
+        Specify interval format. e.g. `days:1` translates to a time interval of 1 day
+    """
+)
+@click.option(
     '--full-refresh',
     is_flag=True,
     help='Warning! If specified re_data runs first dbt run with --full-refresh option cleaning all previously gathered profiling information'
 )
-def run(start_date, end_date, full_refresh):
+def run(start_date, end_date, interval, full_refresh):
     for_date = start_date
-    total_days = (end_date - start_date).days
+
+    time_grain, num_str = interval.split(':')
+    num = int(num_str)
+
+    if time_grain == 'days':
+        delta = timedelta(days=num)
+    elif time_grain == 'hours':
+        delta = timedelta(hours=num)
+    else:
+        raise Exception(f"Unsupported time grain {time_grain}")
 
     while for_date < end_date:
 
@@ -85,7 +102,7 @@ def run(start_date, end_date, full_refresh):
 
         dbt_vars = {
             're_data:time_window_start': str(for_date),
-            're_data:time_window_end': str(for_date + timedelta(days=1)),
+            're_data:time_window_end': str(for_date + delta),
             're_data:anomaly_detection_window_start': str(for_date - timedelta(days=30))
         }
 
@@ -96,7 +113,7 @@ def run(start_date, end_date, full_refresh):
         completed_process = subprocess.run(run_list)
         completed_process.check_returncode()
 
-        for_date += timedelta(days=1)
+        for_date += delta
 
         print(
             f"Running for date: {for_date.date()}",
