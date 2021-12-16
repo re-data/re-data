@@ -40,7 +40,7 @@ module.exports = {
         },
         {
           to: 'docs/reference/data_preparation/data_cleaning',
-          label: 'Features',
+          label: 'Reference',
           position: 'left',
           activeBasePath: 'reference'
         },
