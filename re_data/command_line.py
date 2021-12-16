@@ -98,7 +98,9 @@ def run(start_date, end_date, interval, full_refresh):
 
     while for_date < end_date:
 
-        print(f"Running for date: {for_date.date()}", "RUN")
+        start_str = for_date.strftime("%Y-%m-%d %H:%M")
+        end_str = (for_date + delta).strftime("%Y-%m-%d %H:%M")
+        print(f"Running for time interval: {start_str} - {end_str}", "RUN")
 
         dbt_vars = {
             're_data:time_window_start': str(for_date),
