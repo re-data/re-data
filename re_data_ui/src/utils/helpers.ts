@@ -70,11 +70,11 @@ export const generateAnomalyValue = (anomaly: Anomaly): string => {
 };
 
 export const metricValue = (metric: Metric): number => {
-  const value = Number(metric.value);
+  let value = Number(metric.value);
   if (metric.metric === 'freshness') {
-    return value / 60 / 60;
+    value = value / 60 / 60;
   }
-  return value;
+  return Math.round(value * 100) / 100;
 };
 
 export const getFormatter = (metricName: string): string => {

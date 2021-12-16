@@ -16,7 +16,6 @@ import { MarkArea1DDataItemOption, MarkArea2DDataItemOption } from 'echarts/type
 import { useSearchParams } from 'react-router-dom';
 import { BiHappyAlt, BiSad } from 'react-icons/all';
 import {
-  DATE_FORMAT,
   extractComponentFromIdentifier, generateAnomalyIdentifier,
   getFormatter,
   metricValue,
@@ -49,6 +48,15 @@ type ECOption = echarts.ComposeOption<| LineSeriesOption
   | TooltipComponentOption
   | GridComponentOption>;
 
+const formatTime = (timeWindowEnd: string, intervalLengthSec: number): string => {
+  const xAxisTimestampFormat = 'YYYY-MM-DD HH:mm';
+  const xAxisDateFormat = 'YYYY-MM-DD';
+  if (intervalLengthSec < 86400) {
+    return dayjs(timeWindowEnd).format(xAxisTimestampFormat);
+  }
+  return dayjs(timeWindowEnd).format(xAxisDateFormat);
+};
+
 const generateMarkAreas = (
   anomaliesMap: Map<string, Anomaly[]>,
   columnName: string,
@@ -64,13 +72,16 @@ const generateMarkAreas = (
   }
   for (const anomaly of anomalies) {
     if (anomaly.metric === metricName) {
+      const intervalLengthSec = Number(anomaly.interval_length_sec);
+      const prevTimeWindowEnd = dayjs(anomaly.time_window_end)
+        .subtract(intervalLengthSec, 's').format();
+      const currTimeWindowEnd = anomaly.time_window_end;
       arr.push([
         {
-          xAxis: dayjs(anomaly.time_window_end)
-            .subtract(Number(anomaly.interval_length_sec), 's').format(DATE_FORMAT),
+          xAxis: formatTime(prevTimeWindowEnd, intervalLengthSec),
         },
         {
-          xAxis: dayjs(anomaly.time_window_end).format(DATE_FORMAT),
+          xAxis: formatTime(currTimeWindowEnd, intervalLengthSec),
         },
       ]);
     }
@@ -117,7 +128,7 @@ const generateMetricChartOption = (
     },
     xAxis: {
       type: 'category',
-      data: metrics.map((m) => dayjs(m.time_window_end).format(DATE_FORMAT)),
+      data: metrics.map((m) => formatTime(m.time_window_end, Number(m.interval_length_sec))),
     },
     yAxis: {
       type: 'value',
@@ -142,6 +153,9 @@ const generateMetricChartOption = (
     ],
     tooltip: {
       trigger: 'axis',
+      axisPointer: {
+        type: 'line',
+      },
     },
     visualMap: {
       show: false,
@@ -181,11 +195,11 @@ const MetricCharts: React.FC<MetricChartsProps> = (
       const key = generateAnomalyIdentifier(model, anomaly);
       if (tableMetricChartsMap.has(key)) {
         const val = tableMetricChartsMap.get(key) as ECOption;
-        anomaliesChartOptions.push([key, val]);
+        anomaliesChartOptions.push([key, { ...val }]);
       }
       if (columnMetricChartsMap.has(key)) {
         const val = columnMetricChartsMap.get(key) as ECOption;
-        anomaliesChartOptions.push([key, val]);
+        anomaliesChartOptions.push([key, { ...val }]);
       }
     }
   });
@@ -204,16 +218,18 @@ const MetricCharts: React.FC<MetricChartsProps> = (
     <>
       {showAnomalies
         ? (
-          <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
-            {alertMetricCharts.length ? alertMetricCharts : (
-              <EmptyContent text="No Anomalies!">
-                <BiHappyAlt size={50} color="#392396" />
-              </EmptyContent>
-            )}
-          </div>
+          <>
+            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
+              {alertMetricCharts.length ? alertMetricCharts : (
+                <EmptyContent text="No Anomalies!">
+                  <BiHappyAlt size={50} color="#392396" />
+                </EmptyContent>
+              )}
+            </div>
+          </>
         )
         : (
-          <div>
+          <>
             <span className="text-lg text--capitalize">Table Metrics</span>
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
               {tableMetricCharts.length ? tableMetricCharts : (
@@ -230,7 +246,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
                 </EmptyContent>
               )}
             </div>
-          </div>
+          </>
         )}
     </>
   );
