@@ -14,7 +14,7 @@ import {
 import { VisualOptionPiecewise } from 'echarts/types/src/util/types';
 import { MarkArea1DDataItemOption, MarkArea2DDataItemOption } from 'echarts/types/src/component/marker/MarkAreaModel';
 import { useSearchParams } from 'react-router-dom';
-import { BiHappyAlt } from 'react-icons/all';
+import { BiHappyAlt, BiSad } from 'react-icons/all';
 import {
   DATE_FORMAT,
   extractComponentFromIdentifier, generateAnomalyIdentifier,
@@ -218,7 +218,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
               {tableMetricCharts.length ? tableMetricCharts : (
                 <EmptyContent text="No table metrics!">
-                  <BiHappyAlt size={50} color="#392396" />
+                  <BiSad size={50} color="#392396" />
                 </EmptyContent>
               )}
             </div>
@@ -226,7 +226,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
               {columnMetricCharts.length ? columnMetricCharts : (
                 <EmptyContent text="No column metrics!">
-                  <BiHappyAlt size={50} color="#392396" />
+                  <BiSad size={50} color="#392396" />
                 </EmptyContent>
               )}
             </div>

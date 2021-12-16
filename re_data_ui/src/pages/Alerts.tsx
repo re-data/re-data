@@ -67,11 +67,11 @@ const generateAlertRow = (alert: Alert): ReactElement => {
 
 const Alerts: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { alerts } = overview;
+  const { alerts, graph } = overview;
 
   return (
     <>
-      {alerts.length
+      {(alerts.length || !graph)
         ? (
           <div className="grid grid-cols-1">
             <h1 className="pl-3 mb-3 text-2xl">Alerts</h1>

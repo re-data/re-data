@@ -115,8 +115,7 @@ const Dashboard: React.FC = (): ReactElement => {
           Accept: 'application/json',
         },
       });
-      const rawJson: Array<RawOverviewData> = await response.json();
-      const overviewData = rawJson as unknown as Array<RawOverviewData>;
+      const overviewData: Array<RawOverviewData> = await response.json();
 
       const overview: OverviewData = {
         alerts: [],

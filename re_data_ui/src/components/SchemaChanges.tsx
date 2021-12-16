@@ -18,6 +18,7 @@ const SchemaChanges: React.FC<SchemaChangesProps> = (
 
   return (
     <>
+      <span className="text-lg text--capitalize">Schema Changes</span>
       {schemaChanges.length
         ? (
           <div className="mb-3 grid grid-cols-1">
@@ -33,7 +34,7 @@ const SchemaChanges: React.FC<SchemaChangesProps> = (
                             className="px-6 py-3 text-left text-xs font-medium
                              text-gray-500 uppercase tracking-wider"
                           >
-                            Schema Changes
+                            Message
                           </th>
                         </tr>
                       </thead>
@@ -61,9 +62,11 @@ const SchemaChanges: React.FC<SchemaChangesProps> = (
           </div>
         )
         : (
-          <EmptyContent text="No Schema Changes!">
-            <BiHappyAlt size={50} color="#392396" />
-          </EmptyContent>
+          <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
+            <EmptyContent text="No Schema Changes!">
+              <BiHappyAlt size={50} color="#392396" />
+            </EmptyContent>
+          </div>
         )}
     </>
   );
