@@ -11,6 +11,7 @@ from http.server import SimpleHTTPRequestHandler
 import webbrowser
 from socketserver import TCPServer
 from yachalk import chalk
+import yaml
 
 @click.group(help=f"re_data CLI")
 def main():
@@ -156,7 +157,6 @@ def overview():
 def generate(start_date, end_date, interval):
     start_date = str(start_date)
     end_date = str(end_date)
-    import yaml
     args = {
         'start_date': start_date,
         'end_date': end_date,
