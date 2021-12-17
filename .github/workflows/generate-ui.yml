@@ -30,11 +30,16 @@ jobs:
         with:
           python-version: "3.7.x"
 
-      - name: Install dependencies and run metrics
+      - name: Install re_data and dependencies
+        working-directory: .
+        run: |
+          pip install .
+          pip install dbt-postgres==1.0.0
+
+      - name: Initialize data and compute metrics
         working-directory: ./getting_started/toy_shop
         run: |
-          pip install dbt==0.21.0
-          pip install re_data==0.4.0
+          dbt --version
           dbt deps
           dbt seed
           dbt run --exclude package:re_data

@@ -9,7 +9,7 @@
 
 # What is re_data?
 
-re_data is an open-source data quality & observability framework for modern data stack. 😊
+re_data is an open-source data quality & observability framework for the modern data stack. 😊
 
 Currently, re_data focuses on observing the dbt project (together with underlaying data warehouse - Postgres, BigQuery, Snowflake, Redshift).
 
@@ -29,8 +29,7 @@ Check out our **[live demo](https://re-data.github.io/re-data/ui-feature-react-a
 
 # Source code
 
-Data transformations in re_data are implemented as dbt package, if interested in source code details check it our [here!](https://github.com/re-data/dbt-re-data)
-
+Data transformations in re_data are implemented as a dbt package if interested in source code details, check it out [here!](https://github.com/re-data/dbt-re-data)
 # Integrations
 
 We support most of the main data warehouses supported by dbt. We plan to add support for Spark (now officially supported by dbt).
