@@ -137,7 +137,8 @@ def overview():
     type=click.STRING,
     default='days:1',
     help="""
-        Specify interval format. e.g. `days:1` translates to a time interval of 1 day
+        Specify interval format. e.g. `days:1` for a time interval of 1 day
+        or `hours:1` for a time interval of 1 hour
     """
 )
 def generate(start_date, end_date, interval):
