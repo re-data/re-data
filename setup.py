@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="re_data",
-    version="0.4.0",
+    version="0.5.0",
     author="redata-team",
     author_email="mateusz@getre.io",
     description="re_data - data quality framework",
@@ -25,8 +25,9 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        "click>=7.1.2,<8.0.0",
-    	"dbt>=0.20.0,<0.22.0"
+        "click>=8,<9",
+        "dbt-core>=0.20.0,<1.1.0",
+        "yachalk>=0.1.0,<0.2.0",
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={

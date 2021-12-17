@@ -233,7 +233,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
             <span className="text-lg text--capitalize">Table Metrics</span>
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
               {tableMetricCharts.length ? tableMetricCharts : (
-                <EmptyContent text="No table metrics!">
+                <EmptyContent text="Add this table to re_data config, to generate metrics">
                   <BiSad size={50} color="#392396" />
                 </EmptyContent>
               )}
@@ -241,7 +241,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
             <span className="text-lg text--capitalize">Column Metrics</span>
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
               {columnMetricCharts.length ? columnMetricCharts : (
-                <EmptyContent text="No column metrics!">
+                <EmptyContent text="Add this table to re_data config, to generate metrics">
                   <BiSad size={50} color="#392396" />
                 </EmptyContent>
               )}
