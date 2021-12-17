@@ -23,7 +23,8 @@ dbt run --models package:re_data --vars \
 This computes **[metrics](/docs/reference/data_monitoring/metrics#default-metrics)** for the monitored tables. Let's just see how many customers/order_items/orders we have added in on 01-01-2021.
 
 ```sql title="Viewing computed metrics"
-postgres=> select table_name, metric, value from toy_shop_re.re_data_metrics where metric in( 'row_count', 'global__row_count');
+select table_name, metric, value from toy_shop_re.re_data_metrics where metric in( 'row_count', 'global__row_count');
+
                table_name                |      metric       | value
 -----------------------------------------+-------------------+-------
  "postgres"."toy_shop"."orders"          | row_count         |   151
@@ -49,7 +50,8 @@ And now let's look into the `alerting` table to see if `re_data` found anything 
 
 
 ```sql title="Viewing computed anomalies"
-postgres=> select table_name, metric, z_score_value, last_value, time_window_end from toy_shop_re.re_data_alerting ;
+select table_name, metric, z_score_value, last_value, time_window_end from toy_shop_re.re_data_alerting ;
+
                table_name               |     metric      |    z_score_value    |     last_value     |   time_window_end
 ----------------------------------------+-----------------+---------------------+--------------------+---------------------
  "postgres"."toy_shop"."order_items"    | freshness       |  3.0867937457815877 |               2048 | 2021-01-20 00:00:00
