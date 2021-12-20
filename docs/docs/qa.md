@@ -6,9 +6,9 @@ sidebar_position: 5
 
 ### How do I run re_data?
 
-re_data doesn't have any internal scheduler and it's leaving the operation of regularly computing metrics for you to set up. We believe it's best to use existing scheduling tools your company has and we are not trying to build one. 
+re_data doesn't have any internal scheduler and it's leaving the operation of regularly computing metrics for you to set up. We believe it's best to use existing scheduling tools your company has and we are not trying to build a new one. 
 
-As re_data is a dbt package, you can (and we have installations of that) run re_data using just dbt cloud & set up jobs for computing metrics there. But definitely others methods like running it in Airflow dag are also possible.
+As re_data is a dbt package, you can (and we have installations of that) run re_data using just dbt cloud & set up jobs for computing metrics there. But definitely other methods like running it in Airflow dag are also possible.
 
 ### What are common examples of "bad data"?
 
