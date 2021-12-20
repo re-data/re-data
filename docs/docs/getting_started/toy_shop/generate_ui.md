@@ -7,7 +7,7 @@ sidebar_position: 3
 Now let's investigate generated data in re_data UI. We first generate HTML/JSON from the data warehouse and then serve files.
 
 ```
-re_data overview generate
+re_data overview generate --start-date 2021-01-01 --end-date 2021-01-30 --interval days:1
 re_data overview serve
 ```
 

@@ -35,7 +35,7 @@ const formatOverviewData = (
       dbtGraph = JSON.parse(item.data) as DbtGraph;
       return;
     }
-    const model = stripQuotes(item.table_name);
+    const model = stripQuotes(item.table_name).toLowerCase();
     if (!result.has(model)) {
       const obj: ReDataModelDetails = {
         anomalies: new Map<string, Array<Anomaly>>(),

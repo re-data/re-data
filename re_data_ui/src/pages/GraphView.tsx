@@ -50,10 +50,11 @@ const generateGraph = (overview: OverviewData) => {
   }
   const dbtNodes = overview.graph.nodes;
   const dbtSources = overview.graph.sources;
+
   Object.entries(dbtNodes).forEach(([model, details]) => {
     const [resource, packageName, modelName] = model.split('.');
     if (resource !== 'test' && packageName !== 're_data') {
-      const modelId = `${details.database}.${details.schema}.${details.name}`;
+      const modelId = `${details.database}.${details.schema}.${details.name}`.toLowerCase();
       const node: VisNode = {
         id: modelId,
         label: modelName,
@@ -68,7 +69,7 @@ const generateGraph = (overview: OverviewData) => {
           : dbtSources[parent];
         if (parentNode) {
           // in coming edge only if parent node exists
-          const parentModelId = `${parentNode.database}.${parentNode.schema}.${parentNode.name}`;
+          const parentModelId = `${parentNode.database}.${parentNode.schema}.${parentNode.name}`.toLowerCase();
           const edge: VisEdge = {
             from: parentModelId,
             to: modelId,
