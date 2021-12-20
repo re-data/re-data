@@ -26,7 +26,7 @@ const SchemaChanges: React.FC<SchemaChangesProps> = (
               <div className="-my-2 sm:-mx-6 lg:-mx-8">
                 <div className="py-2 align-middle inline-block max-w-full sm:px-6 lg:px-8">
                   <div className="shadow overflow-scroll border-b border-gray-200 sm:rounded-lg">
-                    <table className="max-w-full divide-y divide-gray-200">
+                    <table className="max-w-full divide-y divide-gray-200 w-full">
                       <thead className="bg-gray-50">
                         <tr>
                           <th
