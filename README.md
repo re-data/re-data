@@ -9,26 +9,17 @@
 
 # What is re_data?
 
-re_data is a set of tools (dbt macros & models) that helps you make sure your data pipelines are clean & reliable. 😊
+re_data is an open-source data quality & observability framework for the modern data stack. 😊
 
-## Data Preparation
+Currently, re_data focuses on observing the dbt project (together with underlaying data warehouse - Postgres, BigQuery, Snowflake, Redshift).
 
-re_data data preparation macros help you clean your data faster, with less code & a smaller chance of errors.
-Currently, we support four types of data preparation:
+# Live demo
 
-- data cleaning
-- data filtering
-- data normalization
-- data validation
+Check out our **[live demo](https://re-data.github.io/re-data/ui-feature-react-app/#/alerts)** of what re_data can do for you 😊
 
-## Data Monitoring
-
-re_data metrics & alerts models contain information about data quality which lets you discover bad data much faster. You can:
- - use built-in metrics & extend them with your code
- - test them as regular dbt models
- - visualize them in your favourite BI tool
- - trigger external (Slack/Pagerduty/etc.) alerts based on them
-
+<p align="center">
+<img alt="Demo" width=100% src="docs/static/screenshots/ui/graph.png"/>
+</p>
 
 # Getting started
 
@@ -38,8 +29,7 @@ re_data metrics & alerts models contain information about data quality which let
 
 # Source code
 
-As dbt packages currently need to be a seperate github repos, most of source code of re_data can be found [here](https://github.com/re-data/dbt-re-data)
-
+Data transformations in re_data are implemented as a dbt package if interested in source code details, check it out [here!](https://github.com/re-data/dbt-re-data)
 # Integrations
 
 We support most of the main data warehouses supported by dbt. We plan to add support for Spark (now officially supported by dbt).

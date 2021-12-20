@@ -20,8 +20,8 @@ vars:
   # *required if you want to configure re_data in code (not in DB)
   re_data:monitored:
 
-    - schema: dq_raw
-      database: postgres
+    - schema: dq_raw # (optional)
+      database: postgres # (optional)
       tables:
         - name: sample_table
           time_filter: creation_time
@@ -90,16 +90,6 @@ In general, we advise setting up a time window this way that all new data is mon
 It's also possible to compute metrics from overlapping data for example last 7 days.
 
 By default, re_data computes daily stats from the last day (it actually uses exact configuration from example for that)
-
-### re_data:schemas
-
-Schemas you would like to monitor, re_data will inspect all tables from those schemas, you can choose which tables to monitor and can setup details about that either in:
- - your dbt project (`re_data:monitored` var)
- - in your database
-
-:::info
-By default `re_data` queries the same DB as your dbt project (usually defined in `~/.dbt/profiles.yml` file). In BigQuery and Snowflake, schemas passed can also take the form of `db_name.schema_name` which will cause `re_data` to query `db_name` specified to find tables to monitor.
-:::
 
 ### re_data:monitored
 

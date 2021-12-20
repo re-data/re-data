@@ -4,30 +4,39 @@ sidebar_position: 1
 
 # What is re_data?
 
-re_data is a set of tools (dbt macros & models) that helps you make sure your data pipelines are clean & reliable. 😊
+re_data is an open-source data quality & observability framework for modern data stack. 😊
 
-## Data Preparation
+Currently, re_data focuses on observing the dbt project (together with underlaying data warehouse - Postgres, BigQuery, Snowflake, Redshift).
 
-re_data data preparation macros help you clean your data faster, with less code & a smaller chance of errors.
-Currently, we support four types of data preparation:
+# Live demo
 
-- data cleaning
-- data filtering
-- data normalization
-- data validation
 
-## Data Monitoring
+Check out our **[live demo](https://re-data.github.io/re-data/ui-feature-react-app/#/alerts)** of what re_data can do for you! 😊
 
-re_data metrics & alerts models contain information about data quality which lets you discover bad data much faster. You can:
- - use built-in metrics & extend them with your code
- - test them as regular dbt models
- - visualize them in your favourite BI tool
- - trigger external (Slack/Pagerduty/etc.) alerts based on them
+![GraphExample](/screenshots/ui/graph.png)
 
-## Installation
+# Features
 
-re_data is primarily a dbt package, so it's very easy to add to the existing dbt projects. Check out **[installation](/docs/getting_started/installation/for_dbt_users)** tutorial.
+## Alerts
+Get information about suspicious data patterns & schema changes automatically without writing tests. re_data detects trends in your data and creates alerts if something seems suspicious.
 
-If you are not using dbt, re_data can still be a great option to start monitoring your existing tables. Check out installation for users: **[new to dbt](/docs/getting_started/installation/new_to_dbt)** in this case.
+## Metrics
+Monitor predefined and custom metrics about your data. All metrics are stored in your database and accessible for you. re_data custom metrics can be standard dbt macros which make it very easy to add them to your project.
+
+## Lineage
+re_data shows data lineage for you data warehouse. (This is imported from dbt graph). You can navigate your data & investigate alerts & metrics related to each node in the graph.
+
+## Macros
+re_data ships with a set of macros to save you time and some pain of writing code for cleaning / normalizing / validating your data. Use them to make your project cleaner 😊. You can also use them as a base for your own metrics or data tests.
+
+## Tests
+re_data ships with a set of generic dbt tests which can be used to assert that metrics computed are meeting your assumptions.
+
+# Getting started
+
+re_data is very easy to add to existing dbt projects. Check out **[installation](/docs/getting_started/installation/for_dbt_users)** instructions and follow **[toy shop](/docs/getting_started/toy_shop/toy_shop_data)** tutorial to see how you can generate re_data observability data & UI for your data warehouse.
+
+If you are not using dbt, re_data can still be a great option to start monitoring your existing tables. Check out installation for new users: **[new to dbt](/docs/getting_started/installation/new_to_dbt)** in this case.
+
 
 Have more questions? Check out the rest of re_data docs, or ask as on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)** (we are very responsive there)

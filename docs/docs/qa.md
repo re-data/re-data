@@ -2,19 +2,27 @@
 sidebar_position: 5
 ---
 
-# Q&A
-
-### Can I compute business metrics in re_data?
-
-re_data monitoring is meant for metrics which inform you about the problems in data. Monthly revenue dropping by 30% will definitely be seen as a problem for many people. So we think it's good to track it with re_data in your data warehouse. In general metrics which can be pre-computed and stored in DWH are good candiates for metrics to add to re_data.
-
-Still a lot of business metrics aren't like that, BI tools enable users choose different dimensions & filters and investigate metrics this way. This type of metrics are not good candidates to using with re_data and storing with DWH, as you would need to pre-compute everything user can actually query (and it quickly grows exponentially).
+# Q&A 💬
 
 ### How do I run re_data?
 
 re_data doesn't have any internal scheduler and it's leaving the operation of regularly computing metrics for you to set up. We believe it's best to use existing scheduling tools your company has and we are not trying to build a new one. 
 
 As re_data is a dbt package, you can (and we have installations of that) run re_data using just dbt cloud & set up jobs for computing metrics there. But definitely other methods like running it in Airflow dag are also possible.
+
+### What are common examples of "bad data"?
+
+Here is are a couple of problems we call "bad data":
+
+ - Data is incomplete (or sometimes just empty)
+   - Think about your data missing an important source which other team stopped a week ago
+   - is based on 1000, not 100000 rows which normally come from the source
+   - is just still empty for an important board meeting...
+
+ - Data is based on erroneous assumptions
+   - For example, you assumed there will be no `nulls` in the table or from another side `nulls` were supposed to be there and suddenly `zeroes` appear instead breaking averages computed by reports.
+   - Records in this table were not supposed to have any duplicate names, IDs, etc...
+
 
 #### Other questions?
 

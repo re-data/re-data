@@ -40,15 +40,9 @@ module.exports = {
         },
         {
           to: 'docs/reference/data_preparation/data_cleaning',
-          label: 'Features',
+          label: 'Reference',
           position: 'left',
           activeBasePath: 'reference'
-        },
-        {
-          to: 'docs/bi_integration/introduction',
-          label: 'External tools',
-          position: 'left',
-          activeBasePath: 'External tools'
         },
         {
           to: 'docs/qa',

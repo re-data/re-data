@@ -16,7 +16,7 @@ packages:
     ***
     
     - package: re-data/re_data
-      version: [">=0.4.0", "<0.5.0"]
+      version: [">=0.5.0", "<0.6.0"]
 
 ```
 
@@ -26,12 +26,10 @@ And run:
 dbt deps
 ```
 
-## Optionally
+## Adding re_data python package for observability UI
 
-Optionally you can install re_data python package, which simplifies running some dbt commands related to re_data models.
+To generate re_data observability UI you need to install re_data python packge. You can do it simply like that:
 
 ```
 pip install re_data
 ```
-
-We will talk more about this in the Getting started tutorial

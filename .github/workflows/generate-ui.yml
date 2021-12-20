@@ -1,0 +1,92 @@
+name: Generate UI for toy_shop project
+
+on: push
+
+env:
+  DBT_PROFILES_DIR: ${{ github.workspace }}/getting_started/toy_shop
+
+jobs:
+  generate-ui:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.7.x"
+
+      - name: Install re_data and dependencies
+        working-directory: .
+        run: |
+          pip install .
+          pip install dbt-postgres==1.0.0
+
+      - name: Initialize data and compute metrics
+        working-directory: ./getting_started/toy_shop
+        run: |
+          dbt --version
+          dbt deps
+          dbt seed
+          dbt run --exclude package:re_data
+          re_data run --start-date 2021-01-01 --end-date 2021-01-15
+          dbt run-operation schema_change_add_orders_column
+          re_data run --start-date 2021-01-15 --end-date 2021-01-16
+          dbt run-operation schema_change_drop_orders_column
+          re_data run --start-date 2021-01-16 --end-date 2021-01-31
+          dbt run-operation generate_overview --args '{start_date: 2021-01-01, end_date: 2021-01-31, interval: days:1}'        
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Copy overview data
+        run: 'cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json'
+        shell: bash
+
+      - name: Set homepage in package.json
+        working-directory: ./re_data_ui
+        run: contents=$(jq '.homepage="https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}"' package.json) && echo "${contents}" > package.json
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: ./re_data_ui
+        run: |
+          npm ci
+
+      - name: Build app for production
+        working-directory: ./re_data_ui
+        run: npm run build
+        env:
+          PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}
+
+      - name: Keep only index.html and overview json file
+        working-directory: ./re_data_ui/build
+        run: |
+          rm -rf static
+          shopt -s extglob
+          rm -- !(index.html|overview.json)
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./re_data_ui/build
+          destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}
