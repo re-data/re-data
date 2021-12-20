@@ -155,8 +155,8 @@ def overview():
     """
 )
 def generate(start_date, end_date, interval):
-    start_date = str(start_date)
-    end_date = str(end_date)
+    start_date = str(start_date.date())
+    end_date = str(end_date.date())
     args = {
         'start_date': start_date,
         'end_date': end_date,
