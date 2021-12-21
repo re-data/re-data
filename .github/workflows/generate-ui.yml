@@ -69,7 +69,7 @@ jobs:
       - name: Install dependencies
         working-directory: ./re_data_ui
         run: |
-          npm ci
+          npm install
 
       - name: Build app for production
         working-directory: ./re_data_ui
