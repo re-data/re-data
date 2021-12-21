@@ -5,9 +5,7 @@ config-version: 2
 profile: 'toy_shop'
 
 target-path: "target"
-clean-targets:
-    - "target"
-    - "dbt_modules"
+clean-targets: ["target", "dbt_modules", "dbt_packages"]
 
 models:
   re_data:

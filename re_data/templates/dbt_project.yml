@@ -16,9 +16,7 @@ macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
 target-path: "target"  # directory which will store compiled SQL files
-clean-targets:         # directories to be removed by `dbt clean`
-- "target"
-- "dbt_modules"
+clean-targets: ["target", "dbt_modules", "dbt_packages"]
 
 vars:
   re_data:alerting_z_score: 3
