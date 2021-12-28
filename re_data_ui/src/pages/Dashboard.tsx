@@ -7,10 +7,10 @@ import {
   ReDataModelDetails, Anomaly,
   Metric,
   OverviewData,
-  RedataOverviewContext, DbtGraph, SchemaChange, ITableSchema, Alert,
+  RedataOverviewContext, SchemaChange, ITableSchema, Alert,
 } from '../contexts/redataOverviewContext';
 import {
-  appendToMapKey, generateMetricIdentifier, RE_DATA_OVERVIEW_FILE, stripQuotes,
+  appendToMapKey, generateMetricIdentifier, RE_DATA_OVERVIEW_FILE, stripQuotes, DBT_MANIFEST_FILE,
 } from '../utils/helpers';
 
 interface RawOverviewData {
@@ -26,15 +26,11 @@ interface RawOverviewData {
 
 const formatOverviewData = (
   data: Array<RawOverviewData>,
-): [DbtGraph | null, Map<string, ReDataModelDetails>, Alert[]] => {
+): [Map<string, ReDataModelDetails>, Alert[]] => {
   const result = new Map<string, ReDataModelDetails>();
   const alertsAndSchemaChanges: Alert[] = [];
-  let dbtGraph: DbtGraph | null = null;
   data.forEach((item: RawOverviewData) => {
-    if (item.type === 'dbt_graph') {
-      dbtGraph = JSON.parse(item.data) as DbtGraph;
-      return;
-    }
+    console.log(item);
     const model = stripQuotes(item.table_name).toLowerCase();
     if (!result.has(model)) {
       const obj: ReDataModelDetails = {
@@ -96,7 +92,7 @@ const formatOverviewData = (
     const y = b.type === 'anomaly' ? (b.value as Anomaly).time_window_end : (b.value as SchemaChange).detected_time;
     return dayjs(y).diff(x);
   });
-  return [dbtGraph, result, alertsAndSchemaChanges];
+  return [result, alertsAndSchemaChanges];
 };
 
 const Dashboard: React.FC = (): ReactElement => {
@@ -117,16 +113,26 @@ const Dashboard: React.FC = (): ReactElement => {
       });
       const overviewData: Array<RawOverviewData> = await response.json();
 
+      const graph = await fetch(DBT_MANIFEST_FILE, {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+
+      const graphData = await graph.json();
+      console.log(graphData);
+
       const overview: OverviewData = {
         alerts: [],
         aggregated_models: new Map<string, ReDataModelDetails>(),
         graph: null,
         generated_at: '',
       };
-      const [graph, aggregatedModels, alerts] = formatOverviewData(overviewData);
+      const [aggregatedModels, alerts] = formatOverviewData(overviewData);
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
-      overview.graph = graph;
+      overview.graph = graphData;
       console.log(overview);
       setReDataOverview(overview);
     } catch (e) {

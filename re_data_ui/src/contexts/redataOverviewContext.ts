@@ -160,7 +160,7 @@ export interface OverviewData {
 }
 
 export interface NewOverviewData {
-  type: 'alert' | 'metric' | 'dbt_graph' | 'schema_change' | 'schema';
+  type: 'alert' | 'metric' | 'schema_change' | 'schema';
   table_name: string;
   column_name: string;
   computed_on: string;
