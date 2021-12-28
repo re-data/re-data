@@ -24,3 +24,5 @@ yarn-error.log*
 
 overview.json
 public/overview.json
+
+yarn.lock

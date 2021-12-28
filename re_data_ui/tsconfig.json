@@ -19,11 +19,15 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "typeRoots": [ "./types", "./node_modules/@types"],
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ],
     "downlevelIteration": true,
   },
   "include": [
-    "src"
+    "src",
+    "types/react-table/index.d.ts"
   ],
   "exclude": [
     "node_modules",
