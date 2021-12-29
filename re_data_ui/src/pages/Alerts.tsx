@@ -1,4 +1,3 @@
-/* eslint-disable comma-dangle */
 import dayjs from 'dayjs';
 import React, { ReactElement, useContext, useMemo } from 'react';
 import { BiHappyAlt } from 'react-icons/all';
@@ -7,10 +6,10 @@ import AlertBadge from '../components/AlertBadge';
 import EmptyContent from '../components/EmptyContent';
 import Table, { ColumnsProps } from '../components/Table';
 import {
-  Alert, Anomaly, OverviewData, RedataOverviewContext, SchemaChange
+  Alert, Anomaly, OverviewData, RedataOverviewContext, SchemaChange,
 } from '../contexts/redataOverviewContext';
 import {
-  generateAnomalyMessage, generateAnomalyValue, generateSchemaChangeMessage
+  generateAnomalyMessage, generateAnomalyValue, generateSchemaChangeMessage,
 } from '../utils/helpers';
 
 const generateAlertData = (alerts: Alert[]) => {
@@ -113,7 +112,7 @@ const Alerts: React.FC = (): ReactElement => {
     <>
       {(alerts.length || !graph)
         ? (
-          <div className="grid grid-cols-1" style={{ overflowY: 'scroll' }}>
+          <div className="grid grid-cols-1 overflow-y-scroll">
             <h1 className="pl-3 mb-3 text-2xl">Alerts</h1>
             <div className="flex flex-col">
               <Table columns={columns} data={data} />
