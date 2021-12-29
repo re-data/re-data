@@ -7,7 +7,7 @@ import {
   ReDataModelDetails, Anomaly,
   Metric,
   OverviewData,
-  RedataOverviewContext, SchemaChange, ITableSchema, Alert,
+  RedataOverviewContext, SchemaChange, ITableSchema, Alert, DbtGraph,
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey, generateMetricIdentifier, RE_DATA_OVERVIEW_FILE, stripQuotes, DBT_MANIFEST_FILE,
@@ -30,7 +30,7 @@ const formatOverviewData = (
   const result = new Map<string, ReDataModelDetails>();
   const alertsAndSchemaChanges: Alert[] = [];
   data.forEach((item: RawOverviewData) => {
-    console.log(item);
+    if (!item.table_name) return;
     const model = stripQuotes(item.table_name).toLowerCase();
     if (!result.has(model)) {
       const obj: ReDataModelDetails = {
@@ -104,24 +104,17 @@ const Dashboard: React.FC = (): ReactElement => {
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
+    const headers = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
     try {
-      const response = await fetch(RE_DATA_OVERVIEW_FILE, {
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-      const overviewData: Array<RawOverviewData> = await response.json();
-
-      const graph = await fetch(DBT_MANIFEST_FILE, {
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-
-      const graphData = await graph.json();
-      console.log(graphData);
+      const [overviewRequest, dbtManifestRequest] = await Promise.all([
+        fetch(RE_DATA_OVERVIEW_FILE, { headers }),
+        fetch(DBT_MANIFEST_FILE, { headers }),
+      ]);
+      const overviewData: Array<RawOverviewData> = await overviewRequest.json();
+      const graphData: DbtGraph = await dbtManifestRequest.json();
 
       const overview: OverviewData = {
         alerts: [],
