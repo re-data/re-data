@@ -92,7 +92,7 @@ const ModelDetails: React.FC = (): ReactElement => {
       <div className="bg-white rounded shadow border p-3">
 
         <div>
-          <ul className="nav sticky top-0 bg-white z-10">
+          <ul className="transition ease-in-out delay-150 nav sticky top-0 bg-white z-10">
             <li
               className={activeTab === ModelTabs.METRICS ? 'active' : ''}
               role="presentation"
