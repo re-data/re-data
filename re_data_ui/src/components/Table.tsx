@@ -1,8 +1,7 @@
-/* eslint-disable comma-dangle */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import {
-  Row, TableInstance, useAsyncDebounce, useGlobalFilter, usePagination, useSortBy, useTable
+  Row, TableInstance, useAsyncDebounce, useGlobalFilter, usePagination, useSortBy, useTable,
 } from 'react-table';
 
 export interface ColumnsProps {
