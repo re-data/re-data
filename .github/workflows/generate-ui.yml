@@ -62,7 +62,7 @@ jobs:
         shell: bash
 
       - name: Copy dbt manifest
-        run: 'cp getting_started/toy_shop/target/manifest.json re_data_ui/public/manifest.json'
+        run: 'cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json'
         shell: bash
 
       - name: Set homepage in package.json
