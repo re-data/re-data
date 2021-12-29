@@ -32,7 +32,7 @@ Check out our **[live demo](https://re-data.github.io/re-data/ui-feature-react-a
 Data transformations in re_data are implemented as a dbt package if interested in source code details, check it out [here!](https://github.com/re-data/dbt-re-data)
 # Integrations
 
-We support most of the main data warehouses supported by dbt. We plan to add support for Spark (now officially supported by dbt).
+We support most of the main data warehouses supported by dbt. We plan to add support for Spark and Databricks (now officially supported by dbt).
 
 |      | Integration | Status     |
 | :---        |    :----:   |          ---: |
@@ -41,6 +41,7 @@ We support most of the main data warehouses supported by dbt. We plan to add sup
 | <img height="40" src="https://dbdb.io/media/logos/amazon-redshift.png" />  | Redshift        | Supported      |
 | <img height="40" src="https://www.snowflake.com/wp-content/themes/snowflake/img/snowflake-logo-blue@2x.png" />  | Snowflake        | Supported      |
 | <img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Apache_Spark_logo.svg/1200px-Apache_Spark_logo.svg.png" />  | Apache Spark        | Planned      |
+| <img height="40" src="https://cdn.freelogovectors.net/wp-content/uploads/2020/11/databricks-logo.png" />  | Databricks        | Planned      |
 
 
 # License
