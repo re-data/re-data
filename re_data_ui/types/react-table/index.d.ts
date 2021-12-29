@@ -1,3 +1,12 @@
+/**
+ * React Table declaration file
+ * * This file is needed to properly extend the default implementation of React Table
+ * ? It adds the following types declaration to the React Table declaration:
+ * ? - `FilterProps`
+ * ? - `SortProps`
+ * ? - `PaginationProps`
+ */
+
 import {
   UseColumnOrderInstanceProps,
   UseColumnOrderState,

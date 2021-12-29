@@ -49,6 +49,12 @@ const CustomFilter = ({
   );
 };
 
+/**
+ * @param  {array of objects} columns
+ * @param  {array of objects} data
+ * @param  {boolean} showSearch - default: true
+ * @returns JSX
+ */
 const Table = ({ columns, data, showSearch = true }: ITable): JSX.Element => {
   const {
     getTableProps,
@@ -107,7 +113,7 @@ const Table = ({ columns, data, showSearch = true }: ITable): JSX.Element => {
                     <span>
                       {column.isSorted ? (
                         <>
-                          { column.isSortedDesc ? (
+                          {column.isSortedDesc ? (
                             <span className="ml-2 text-gray-400">↓</span>
                           ) : (
                             <span className="ml-2 text-gray-400">↑</span>
