@@ -12,6 +12,7 @@ import {
 import {
   appendToMapKey, generateMetricIdentifier, RE_DATA_OVERVIEW_FILE, stripQuotes,
 } from '../utils/helpers';
+import Alerts from './Alerts';
 
 interface RawOverviewData {
   type: 'alert' | 'metric' | 'dbt_graph' | 'schema_change' | 'schema';
@@ -148,6 +149,7 @@ const Dashboard: React.FC = (): ReactElement => {
           <div className="max-w-full mx-auto h-full">
             <div className="px-4 py-6 sm:px-0 h-full">
               <Outlet />
+              <Alerts />
             </div>
           </div>
         </main>
