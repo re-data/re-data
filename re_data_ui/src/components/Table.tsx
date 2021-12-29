@@ -11,8 +11,8 @@ export interface ColumnsProps {
 
 export interface ITable {
   columns: ColumnsProps[];
-  data: Record<string, unknown>[] | any[];
-  showSearch?: boolean ;
+  data: Record<string, unknown>[];
+  showSearch?: boolean;
 }
 
 interface IFilter {

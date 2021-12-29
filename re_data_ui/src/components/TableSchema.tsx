@@ -9,6 +9,7 @@ const TableSchema: React.FC<TableSchemaProps> = (
   props: PropsWithChildren<TableSchemaProps>,
 ): ReactElement => {
   const { tableSchemas } = props;
+  const data = tableSchemas as unknown as Record<string, unknown>[];
 
   const columns: ColumnsProps[] = useMemo(() => [
     {
@@ -29,7 +30,7 @@ const TableSchema: React.FC<TableSchemaProps> = (
           <div className="-my-2 sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block w-full max-w-full sm:px-6 lg:px-8">
               <div className="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">
-                <Table columns={columns} data={tableSchemas} showSearch={false} />
+                <Table columns={columns} data={data} showSearch={false} />
               </div>
             </div>
           </div>
