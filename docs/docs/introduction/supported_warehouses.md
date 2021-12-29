@@ -13,7 +13,7 @@ We support most of the main data warehouses supported by dbt. We plan to add sup
 | <img height="40" src="https://dbdb.io/media/logos/amazon-redshift.png" />  | Redshift        | Supported      |
 | <img height="40" src="https://www.snowflake.com/wp-content/themes/snowflake/img/snowflake-logo-blue@2x.png" />  | Snowflake        | Supported      |
 | <img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Apache_Spark_logo.svg/1200px-Apache_Spark_logo.svg.png" />  | Apache Spark        | Planned      |
-| <img height="40" src="https://upload.wikimedia.org/wikipedia/commons/6/63/Databricks_Logo.png" />  | Databricks        | Planned      |
+| <img height="40" src="https://cdn.freelogovectors.net/wp-content/uploads/2020/11/databricks-logo.png" />  | Databricks        | Planned      |
 
 
 Using other data warehouses and want them being supported? Or need help with data warehouse setup?
