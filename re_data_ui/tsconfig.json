@@ -20,14 +20,12 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "typeRoots": [
-      "./types",
-      "./node_modules/@types"
+      "./types"
     ],
     "downlevelIteration": true,
   },
   "include": [
     "src",
-    "types/react-table/index.d.ts"
   ],
   "exclude": [
     "node_modules",
