@@ -14,7 +14,7 @@ import {
 } from '../utils/helpers';
 
 interface RawOverviewData {
-  type: 'alert' | 'metric' | 'dbt_graph' | 'schema_change' | 'schema';
+  type: 'alert' | 'metric' | 'schema_change' | 'schema';
   // eslint-disable-next-line camelcase
   table_name: string;
   // eslint-disable-next-line camelcase
