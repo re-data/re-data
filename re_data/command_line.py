@@ -165,6 +165,13 @@ def generate(start_date, end_date, interval):
     command_list = ['dbt', 'run-operation', 'generate_overview', '--args', yaml.dump(args)]
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
+
+    dbt_manifest_path = os.path.join(os.getcwd(), 'target', 'manifest.json')
+    re_data_manifest = os.path.join(os.getcwd(), 'target', 're_data', 'dbt_manifest.json')
+    command_list = ['cp', dbt_manifest_path, re_data_manifest]
+    completed_process = subprocess.run(command_list)
+    completed_process.check_returncode()
+
     # todo: get target_path from dbt_project.yml
     target_file_path = os.path.join(os.getcwd(), 'target', 're_data', 'index.html')
     shutil.copyfile(OVERVIEW_INDEX_FILE_PATH, target_file_path)
