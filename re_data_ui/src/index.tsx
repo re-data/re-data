@@ -1,18 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import { Routes, Route, HashRouter } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import './index.css';
 import Alerts from './pages/Alerts';
 import Dashboard from './pages/Dashboard';
 import GraphView from './pages/GraphView';
+import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <HashRouter>
     <Routes>
       <Route path="/" element={<App />}>
         <Route path="/" element={<Dashboard />}>
+          <Route path="/" element={<Alerts />} />
           <Route path="alerts" element={<Alerts />} />
           <Route path="graph" element={<GraphView />} />
         </Route>
