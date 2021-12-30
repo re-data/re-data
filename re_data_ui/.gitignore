@@ -26,3 +26,5 @@ overview.json
 public/overview.json
 
 yarn.lock
+public/dbt_manifest.json
+package-lock.json
