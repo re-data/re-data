@@ -13,6 +13,8 @@ from socketserver import TCPServer
 from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
+from re_data.utils import format_alerts_to_table
+
 
 @click.group(help=f"re_data CLI")
 def main():
@@ -128,6 +130,7 @@ def run(start_date, end_date, interval, full_refresh):
 @click.group(help=f"Generate overview page for your re_data project")
 def overview():
     pass
+
 
 @click.group(help=f"Notification for various channels (email, slack, etc)")
 def notify():
@@ -246,7 +249,9 @@ def slack(start_date, end_date, webhook_url):
     with open(os.path.join(re_data_dir, 'alerts.json')) as f:
         alerts = json.load(f)
     if len(alerts) > 0:
-        message = f':red_circle: {len(alerts)} alerts found between {start_date} and {end_date}.'
+        tabulated_alerts = format_alerts_to_table(alerts)
+        message = f':red_circle: {len(alerts)} alerts found between {start_date} and {end_date}. ' \
+                  f'\n\n```{tabulated_alerts}```'
     else:
         message = f':white_check_mark: No alerts found between {start_date} and {end_date}.'
     slack_notify(webhook_url, message)
