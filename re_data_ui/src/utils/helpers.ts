@@ -4,6 +4,7 @@ import {
 } from '../contexts/redataOverviewContext';
 
 export const RE_DATA_OVERVIEW_FILE = 'overview.json';
+export const DBT_MANIFEST_FILE = 'dbt_manifest.json';
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 export const DATE_FORMAT = 'YYYY-MM-DD';
 
