@@ -12,6 +12,7 @@ import webbrowser
 from socketserver import TCPServer
 from yachalk import chalk
 import yaml
+from re_data.notifications.slack import slack_notify
 
 @click.group(help=f"re_data CLI")
 def main():
@@ -128,6 +129,10 @@ def run(start_date, end_date, interval, full_refresh):
 def overview():
     pass
 
+@click.group(help=f"Notification for various channels (email, slack, etc)")
+def notify():
+    pass
+
 
 @overview.command()
 @click.option(
@@ -165,12 +170,19 @@ def generate(start_date, end_date, interval):
     command_list = ['dbt', 'run-operation', 'generate_overview', '--args', yaml.dump(args)]
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
+
+    dbt_manifest_path = os.path.join(os.getcwd(), 'target', 'manifest.json')
+    re_data_manifest = os.path.join(os.getcwd(), 'target', 're_data', 'dbt_manifest.json')
+    command_list = ['cp', dbt_manifest_path, re_data_manifest]
+    completed_process = subprocess.run(command_list)
+    completed_process.check_returncode()
+
     # todo: get target_path from dbt_project.yml
     target_file_path = os.path.join(os.getcwd(), 'target', 're_data', 'index.html')
     shutil.copyfile(OVERVIEW_INDEX_FILE_PATH, target_file_path)
 
     print(
-            f"Generating overview page", chalk.green("SUCCESS")
+        f"Generating overview page", chalk.green("SUCCESS")
     )
 
 
@@ -181,8 +193,8 @@ def serve():
 
     port = 8085
     address = '0.0.0.0'
-    
-    httpd = TCPServer((address, port), SimpleHTTPRequestHandler) 
+
+    httpd = TCPServer((address, port), SimpleHTTPRequestHandler)
 
     if True:
         try:
@@ -197,4 +209,51 @@ def serve():
         httpd.server_close()
 
 
+@notify.command()
+@click.option(
+    '--start-date',
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str((date.today() - timedelta(days=7)).strftime("%Y-%m-%d")),
+    help="Specify starting date to generate alert data, by default re_data will use 7 days ago for that value"
+)
+@click.option(
+    '--end-date',
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str(date.today().strftime("%Y-%m-%d")),
+    help="""
+        Specify end date used in generating alert data, by default re_data will use current date for that.
+    """
+)
+@click.option(
+    '--webhook-url',
+    type=click.STRING,
+    required=True,
+    help="Incoming webhook url to post messages from external sources into Slack."
+         " e.g. https://hooks.slack.com/services/T0JKJQKQS/B0JKJQKQS/XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+)
+def slack(start_date, end_date, webhook_url):
+    start_date = str(start_date.date())
+    end_date = str(end_date.date())
+    args = {
+        'start_date': start_date,
+        'end_date': end_date,
+    }
+    command_list = ['dbt', 'run-operation', 'export_alerts', '--args', yaml.dump(args)]
+    completed_process = subprocess.run(command_list)
+    completed_process.check_returncode()
+
+    re_data_dir = os.path.join(os.getcwd(), 'target', 're_data')
+    with open(os.path.join(re_data_dir, 'alerts.json')) as f:
+        alerts = json.load(f)
+    if len(alerts) > 0:
+        message = f':red_circle: {len(alerts)} alerts found between {start_date} and {end_date}.'
+    else:
+        message = f':white_check_mark: No alerts found between {start_date} and {end_date}.'
+    slack_notify(webhook_url, message)
+    print(
+        f"Notification sent", chalk.green("SUCCESS")
+    )
+
+
 main.add_command(overview)
+main.add_command(notify)
