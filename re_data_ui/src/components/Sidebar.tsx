@@ -38,11 +38,6 @@ const Sidebar: React.FC = (): ReactElement => (
       <nav data-dev-hint="main navigation">
         <NavLink
           to="alerts"
-          // style={({ isActive }) => ({
-          //   display: 'block',
-          //   margin: '1rem 0',
-          //   color: isActive ? 'red' : '',
-          // })}
           className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
         >
           <ImNotification size="1.25em" />
