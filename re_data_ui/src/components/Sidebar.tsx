@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
-import { Link } from 'react-router-dom';
 import {
-  BiNetworkChart, ImNotification, BsSlack, SiReadthedocs,
+  BiNetworkChart, BsSlack, ImNotification, SiReadthedocs,
 } from 'react-icons/all';
+import { NavLink } from 'react-router-dom';
 
 const Sidebar: React.FC = (): ReactElement => (
   <aside
@@ -32,26 +32,25 @@ const Sidebar: React.FC = (): ReactElement => (
               fill="white"
             />
           </svg>
-
         </span>
       </a>
 
       <nav data-dev-hint="main navigation">
-        <Link
+        <NavLink
           to="alerts"
-          className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
         >
           <ImNotification size="1.25em" />
           <span>Alerts</span>
-        </Link>
+        </NavLink>
 
-        <Link
+        <NavLink
           to="graph"
-          className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
         >
           <BiNetworkChart size="1.25em" />
           <span>Graph</span>
-        </Link>
+        </NavLink>
       </nav>
     </div>
 

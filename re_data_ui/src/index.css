@@ -20,6 +20,13 @@ code {
     --tw-translate-x: -100%;
 }
 
+.navlink {
+    @apply flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-600 hover:text-white
+}
+.navlink.active {
+    @apply bg-gray-700
+}
+
 #menu-close-icon {
     display: none;
 }
