@@ -27,6 +27,12 @@ code {
     @apply bg-gray-700
 }
 
+.details-cell {
+    color: #1d39c4;
+    background: #f0f5ff;
+    border-color: #adc6ff;
+}
+
 #menu-close-icon {
     display: none;
 }

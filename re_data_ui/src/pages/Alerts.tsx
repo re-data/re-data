@@ -53,11 +53,12 @@ const AlertCell = ({ value, column, row }: alertProps) => (
     <AlertBadge
       error={row.original[column.alertType] === 'anomaly'}
     />
-    <span
+    <Link
+      to={`/graph?model=${value}`}
       className="text-sm text-gray-900"
     >
       {value}
-    </span>
+    </Link>
   </>
 );
 
@@ -69,7 +70,8 @@ type DetailsProps = {
 const DetailsCell = ({ column, row }: DetailsProps) => (
   <Link
     to={`/graph?model=${row.original[column.model]}`}
-    className="text-indigo-600 hover:text-indigo-900 font-medium"
+    title="View graph details"
+    className="details-cell text-xs hover:text-indigo-900 font-medium border px-4 py-1 rounded-full"
   >
     Details
   </Link>
