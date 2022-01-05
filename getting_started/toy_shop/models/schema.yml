@@ -4,5 +4,16 @@ sources:
   - name: toy_shop
     tables:
       - name: orders
+        columns:
+          - name: customer_id
+            tests:
+              - not_null
+              - unique
+          - name: status
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [pending, shipped, delivered, not paid, paid]
+
       - name: order_items
       - name: customers

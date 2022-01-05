@@ -7,6 +7,9 @@ profile: 'toy_shop'
 target-path: "target"
 clean-targets: ["target", "dbt_modules", "dbt_packages"]
 
+on-run-end:
+  - "{{ re_data.save_results_history(results) }}"
+
 models:
   re_data:
     enabled: true
