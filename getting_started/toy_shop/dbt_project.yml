@@ -8,7 +8,7 @@ target-path: "target"
 clean-targets: ["target", "dbt_modules", "dbt_packages"]
 
 on-run-end:
-  - "{{ re_data.save_results_history(results) }}"
+  - "{{ re_data.save_test_history(results) }}"
 
 models:
   re_data:
