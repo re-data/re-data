@@ -1,20 +1,18 @@
+import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import dayjs from 'dayjs';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import {
-  ReDataModelDetails, Anomaly,
-  Metric,
-  OverviewData,
-  RedataOverviewContext, SchemaChange, ITableSchema, Alert, DbtGraph,
+  Alert, Anomaly, DbtGraph, ITableSchema, ITestSchema, Metric,
+  OverviewData, ReDataModelDetails, RedataOverviewContext, SchemaChange,
 } from '../contexts/redataOverviewContext';
 import {
-  appendToMapKey, generateMetricIdentifier, RE_DATA_OVERVIEW_FILE, stripQuotes, DBT_MANIFEST_FILE,
+  appendToMapKey, DBT_MANIFEST_FILE, generateMetricIdentifier, RE_DATA_OVERVIEW_FILE, stripQuotes,
 } from '../utils/helpers';
 
 interface RawOverviewData {
-  type: 'alert' | 'metric' | 'schema_change' | 'schema';
+  type: 'alert' | 'metric' | 'schema_change' | 'schema' | 'test';
   // eslint-disable-next-line camelcase
   table_name: string;
   // eslint-disable-next-line camelcase
@@ -26,9 +24,10 @@ interface RawOverviewData {
 
 const formatOverviewData = (
   data: Array<RawOverviewData>,
-): [Map<string, ReDataModelDetails>, Alert[]] => {
+): [Map<string, ReDataModelDetails>, ITestSchema[], Alert[]] => {
   const result = new Map<string, ReDataModelDetails>();
   const alertsAndSchemaChanges: Alert[] = [];
+  const tests: ITestSchema[] = [];
   data.forEach((item: RawOverviewData) => {
     if (!item.table_name) return;
     const model = stripQuotes(item.table_name).toLowerCase();
@@ -41,6 +40,7 @@ const formatOverviewData = (
           columnMetrics: new Map<string, Array<Metric>>(),
         },
         tableSchema: [],
+        testSchema: [],
       };
       result.set(model, obj);
     }
@@ -69,6 +69,13 @@ const formatOverviewData = (
       const schema = JSON.parse(item.data) as ITableSchema;
       schema.column_name = columnName;
       details.tableSchema.push(schema);
+    } else if (item.type === 'test') {
+      const schema = JSON.parse(item.data) as ITestSchema;
+      schema.column_name = columnName;
+      schema.model = model;
+      schema.run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss');
+      details.testSchema.push(schema);
+      tests.push(schema);
     }
   });
   // loop through each table/model and sort by ascending order by
@@ -92,7 +99,7 @@ const formatOverviewData = (
     const y = b.type === 'anomaly' ? (b.value as Anomaly).time_window_end : (b.value as SchemaChange).detected_time;
     return dayjs(y).diff(x);
   });
-  return [result, alertsAndSchemaChanges];
+  return [result, tests, alertsAndSchemaChanges];
 };
 
 const Dashboard: React.FC = (): ReactElement => {
@@ -101,6 +108,7 @@ const Dashboard: React.FC = (): ReactElement => {
     aggregated_models: new Map<string, ReDataModelDetails>(),
     graph: null,
     generated_at: '',
+    tests: [],
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -118,15 +126,17 @@ const Dashboard: React.FC = (): ReactElement => {
 
       const overview: OverviewData = {
         alerts: [],
+        tests: [],
         aggregated_models: new Map<string, ReDataModelDetails>(),
         graph: null,
         generated_at: '',
       };
-      const [aggregatedModels, alerts] = formatOverviewData(overviewData);
+      const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData);
+
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
       overview.graph = graphData;
-      console.log(overview);
+      overview.tests = tests;
       setReDataOverview(overview);
     } catch (e) {
       console.log('Unable to load overview file');

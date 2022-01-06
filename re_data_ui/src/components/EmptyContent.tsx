@@ -11,7 +11,7 @@ const EmptyContent: React.FC<EmptyContentProps> = (
   return (
     <div className="grid place-items-center">
       {children}
-      <span className="text-lg text--capitalize">{text}</span>
+      <span className="text-md mt-2 text--capitalize">{text}</span>
     </div>
   );
 };

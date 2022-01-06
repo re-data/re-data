@@ -21,8 +21,9 @@ code {
 }
 
 .navlink {
-    @apply flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-600 hover:text-white
+    @apply flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-600 hover:text-white
 }
+
 .navlink.active {
     @apply bg-gray-700
 }
@@ -31,6 +32,22 @@ code {
     color: #1d39c4;
     background: #f0f5ff;
     border-color: #adc6ff;
+}
+
+.pass {
+    color: #389e0d;
+    background: #f6ffed;
+    border-color: #b7eb8f;
+}
+
+.fail {
+    color: #d4380d;
+    background: #fff2e8;
+    border-color: #ffbb96;
+}
+
+select {
+    margin: 0 1px;
 }
 
 #menu-close-icon {

@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import {
-  BiNetworkChart, BsSlack, ImNotification, SiReadthedocs,
+  BiNetworkChart, BsSlack, ImNotification, SiReadthedocs, SiSpeedtest, RiTableAltFill,
 } from 'react-icons/all';
 import { NavLink } from 'react-router-dom';
 
@@ -50,6 +50,21 @@ const Sidebar: React.FC = (): ReactElement => (
         >
           <BiNetworkChart size="1.25em" />
           <span>Graph</span>
+        </NavLink>
+        <NavLink
+          to="tests"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+        >
+          <SiSpeedtest size="1.25em" />
+          <span>Tests</span>
+        </NavLink>
+
+        <NavLink
+          to="tables"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+        >
+          <RiTableAltFill size="1.25em" />
+          <span>Tables</span>
         </NavLink>
       </nav>
     </div>

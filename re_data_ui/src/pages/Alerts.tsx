@@ -115,7 +115,7 @@ const Alerts: React.FC = (): ReactElement => {
       {(alerts.length || !graph)
         ? (
           <div className="grid grid-cols-1 overflow-y-scroll">
-            <h1 className="pl-3 mb-3 text-2xl">Alerts</h1>
+            <h1 className="mb-3 text-2xl font-semibold">Alerts</h1>
             <div className="flex flex-col">
               <Table columns={columns} data={data} />
             </div>

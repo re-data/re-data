@@ -13,6 +13,7 @@ export interface ITable {
   columns: ColumnsProps[];
   data: Record<string, unknown>[];
   showSearch?: boolean;
+  RightComponent?: React.FunctionComponent<unknown> | null;
 }
 
 interface IFilter {
@@ -33,11 +34,11 @@ const CustomFilter = ({
   }, 200);
 
   return (
-    <label className="flex gap-x-2 items-baseline mb-3 mt-2">
+    <label className="flex gap-x-2 items-baseline w-1/4">
       <span className="text-gray-700">Search: </span>
       <input
         type="text"
-        className="mt-1 block w-full sm:w-1/4 px-2 py-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        className="mt-1 block w-full px-2 py-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         value={value || ''}
         onChange={(e) => {
           setValue(e.target.value);
@@ -53,9 +54,12 @@ const CustomFilter = ({
  * @param  {array of objects} columns
  * @param  {array of objects} data
  * @param  {boolean} showSearch - default: true
+ * @param  {ReactElement | null} RightComponent - default: null
  * @returns JSX
  */
-const Table = ({ columns, data, showSearch = true }: ITable): JSX.Element => {
+const Table = ({
+  columns, data, showSearch = true, RightComponent = null,
+}: ITable): JSX.Element => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -85,12 +89,20 @@ const Table = ({ columns, data, showSearch = true }: ITable): JSX.Element => {
 
   return (
     <>
-      {showSearch && (
-        <CustomFilter
-          preGlobalFilteredRows={preGlobalFilteredRows}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        />
+      {(showSearch || RightComponent) && (
+        <div className="flex justify-between items-center pb-3 pt-2">
+          {showSearch && (
+            <CustomFilter
+              preGlobalFilteredRows={preGlobalFilteredRows}
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+          )}
+
+          {RightComponent && (
+            <RightComponent />
+          )}
+        </div>
       )}
 
       <table
