@@ -48,7 +48,7 @@ jobs:
           re_data run --start-date 2021-01-15 --end-date 2021-01-16
           dbt run-operation schema_change_drop_orders_column
           re_data run --start-date 2021-01-16 --end-date 2021-01-31
-          dbt test --exclude package:re_data || true
+          (dbt test --exclude package:re_data; exit 0)
           re_data generate overview --start-date 2021-01-01 --end-date 2022-06-31
 
       - uses: actions/setup-node@v2
