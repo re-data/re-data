@@ -53,8 +53,10 @@ const ModelDetails: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
 
   useEffect(() => {
-    const details = init(overview, fullTableName) as ReDataModelDetails;
-    setModelDetails(details);
+    if (fullTableName && overview) {
+      const details = init(overview, fullTableName) as ReDataModelDetails;
+      setModelDetails(details);
+    }
   }, [fullTableName]);
 
   const showAnomalies = (): void => setActiveTab(ModelTabs.ANOMALIES);
@@ -74,7 +76,7 @@ const ModelDetails: React.FC = (): ReactElement => {
           <SchemaChanges modelDetails={modelDetails} />
         </>
       );
-    } return <span>Click on node to show metrics, anomalies or schema changes</span>;
+    } return <></>;
   };
 
   return (
@@ -113,7 +115,9 @@ const ModelDetails: React.FC = (): ReactElement => {
             </span>
           </div>
           <div className="outlet">
-            {renderTab(activeTab) }
+            {modelDetails
+              ? renderTab(activeTab)
+              : <span>Click on node to show metrics, anomalies or schema changes</span>}
           </div>
         </div>
       </div>

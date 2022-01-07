@@ -3,8 +3,8 @@ import React, {
 } from 'react';
 import { BiHappyAlt } from 'react-icons/all';
 import { Link } from 'react-router-dom';
-import EmptyContent from '../components/EmptyContent';
-import Table, { ColumnsProps } from '../components/Table';
+import { EmptyContent, Table } from '../components';
+import { ColumnsProps } from '../components/Table';
 import { ITestSchema, OverviewData, RedataOverviewContext } from '../contexts/redataOverviewContext';
 
 type valueProps = {

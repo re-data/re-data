@@ -1,12 +1,30 @@
-import React, { ReactElement, useContext, useState } from 'react';
+import React, {
+  ReactElement, useContext, useMemo, useState,
+} from 'react';
 import { BiHappyAlt } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
-import EmptyContent from '../components/EmptyContent';
-import MetricCharts from '../components/MetricCharts';
-import SchemaChanges from '../components/SchemaChanges';
-import TableSchema from '../components/TableSchema';
+import {
+  TableSchema, SchemaChanges, Select, EmptyContent, MetricCharts,
+} from '../components';
 import { OverviewData, ReDataModelDetails, RedataOverviewContext } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
+
+type optionsProps = {
+  value: string;
+  label: string;
+}
+
+const generateOptions = (models: Map<string, ReDataModelDetails>) => {
+  const result: optionsProps[] = [];
+  [...models.keys()].map((model) => {
+    result.push({
+      value: model,
+      label: model,
+    });
+    return true;
+  });
+  return result;
+};
 
 const Tables: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
@@ -18,47 +36,64 @@ const Tables: React.FC = (): ReactElement => {
 
   const { init } = useModel();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const option = e.target.value;
-    setURLSearchParams({ model: option });
-
-    const details = init(overview, option) as ReDataModelDetails;
-    setModelDetails(details);
+  const handleChange = (option: optionsProps | null) => {
+    console.log(option);
+    if (option) {
+      const details = init(overview, option?.value);
+      setModelDetails(details);
+      setURLSearchParams({ model: option.value });
+    }
   };
+
+  const options = useMemo(() => generateOptions(models), [models]) || [];
 
   return (
     <div className="grid grid-cols-1 overflow-y-scroll">
       <h1 className="mb-3 text-2xl font-semibold">Tables</h1>
-      <div>
-        <input
-          list="tbl_name"
-          onChange={handleChange}
-          placeholder="Please enter table name to check details"
-          className="mb-3 block w-full px-2 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+      <div className="w-1/3 ml-1 mb-4">
+        <Select
+          options={options}
+          handleChange={handleChange}
+          placeholder="Please enter a table name to check details"
         />
-        <datalist id="tbl_name">
-          <option value="">Select Table Name</option>
-          {[...models.keys()].map((model) => (
-            <option key={model}>{model}</option>
-          ))}
-        </datalist>
       </div>
+
       {modelDetails ? (
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full">
           <section className="bg-white rounded-md px-3 py-4 mb-4">
             <h3 className="mb-3 text-md font-medium">Anomalies</h3>
-            <MetricCharts modelDetails={modelDetails} showAnomalies />
+            <div className="outlet">
+              <MetricCharts
+                modelDetails={modelDetails}
+                showAnomalies
+                showTitle={false}
+                fullWidth={false}
+              />
+            </div>
           </section>
           <section className="bg-white rounded-md px-3 py-4 mb-4">
             <h3 className="mb-3 text-md font-medium">Metics</h3>
-            <MetricCharts modelDetails={modelDetails} showAnomalies={false} />
+            <div className="outlet">
+              <MetricCharts
+                modelDetails={modelDetails}
+                showAnomalies={false}
+                showTitle={false}
+                fullWidth={false}
+              />
+            </div>
           </section>
           <section className="bg-white rounded-md px-3 py-4 mb-4">
             <h3 className="mb-3 text-md font-medium">Schema</h3>
-            <>
-              <TableSchema tableSchemas={modelDetails.tableSchema} />
-              <SchemaChanges modelDetails={modelDetails} />
-            </>
+            <div className="grid grid-cols-2 gap-4">
+              <TableSchema
+                tableSchemas={modelDetails.tableSchema}
+                showTitle={false}
+              />
+              <SchemaChanges
+                modelDetails={modelDetails}
+                showTitle={false}
+              />
+            </div>
           </section>
         </div>
       ) : (

@@ -3,8 +3,8 @@ import React, { ReactElement, useContext, useMemo } from 'react';
 import { BiHappyAlt } from 'react-icons/all';
 import { Link } from 'react-router-dom';
 import AlertBadge from '../components/AlertBadge';
-import EmptyContent from '../components/EmptyContent';
-import Table, { ColumnsProps } from '../components/Table';
+import { EmptyContent, Table } from '../components';
+import { ColumnsProps } from '../components/Table';
 import {
   Alert, Anomaly, OverviewData, RedataOverviewContext, SchemaChange,
 } from '../contexts/redataOverviewContext';
