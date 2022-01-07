@@ -19,7 +19,7 @@ sources:
             tests:
               - not_null
 
-          - name: created_at
+          - name: amount
             tests:
               - not_null
 
