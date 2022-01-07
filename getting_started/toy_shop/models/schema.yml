@@ -8,12 +8,16 @@ sources:
           - name: customer_id
             tests:
               - not_null
-              - unique
+
           - name: status
             tests:
               - not_null
               - accepted_values:
-                  values: [pending, shipped, delivered, not paid, paid]
+                  values: [pending, shipped, delivered, not paid, paid, ok]
+
+          - name: created_at
+            tests:
+              - not_null
 
       - name: order_items
       - name: customers
