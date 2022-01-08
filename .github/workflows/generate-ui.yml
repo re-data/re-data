@@ -43,7 +43,9 @@ jobs:
           dbt deps
           dbt seed
           dbt run --exclude package:re_data
+          dbt test --exclude package:re_data || true
           re_data run --start-date 2021-01-01 --end-date 2021-01-15
+          dbt test --exclude package:re_data || true
           dbt run-operation schema_change_add_orders_column
           re_data run --start-date 2021-01-15 --end-date 2021-01-16
           dbt run-operation schema_change_drop_orders_column
