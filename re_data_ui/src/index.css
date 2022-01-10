@@ -76,3 +76,6 @@ select {
     }
 }
 
+li.active-tab {
+    border-bottom: 3px solid rgba(31, 41, 55, var(--tw-bg-opacity));
+}
