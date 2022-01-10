@@ -1,14 +1,13 @@
-/* eslint-disable comma-dangle */
 import React, {
-  ReactElement, useContext, useMemo, useState
+  ReactElement, useContext, useMemo, useState,
 } from 'react';
 import { BiHappyAlt } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
 import {
-  EmptyContent, MetricCharts, SchemaChanges, Select, TableSchema
+  EmptyContent, MetricCharts, SchemaChanges, Select, TableSchema,
 } from '../components';
 import {
-  OverviewData, ReDataModelDetails, RedataOverviewContext
+  OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
 
@@ -69,7 +68,7 @@ const Tables: React.FC = (): ReactElement => {
 
       {modelDetails ? (
         <div className="flex flex-col w-full">
-          <nav className="top-0 sticky bg-gray-100 py-1 mb-1">
+          <nav className="top-0 z-10 sticky bg-gray-100 py-1 mb-1">
             <ul className="flex align-items">
               <li
                 className={`mr-4 ${activeTab === 'anomalies' && 'active-tab'}`}
