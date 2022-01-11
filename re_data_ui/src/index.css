@@ -79,3 +79,13 @@ select {
 li.active-tab {
     border-bottom: 3px solid rgba(31, 41, 55, var(--tw-bg-opacity));
 }
+
+.sticky-nav {
+    @apply z-10 sticky bg-gray-100 py-1 pl-2;
+    height: 33px;
+    top: -1.5rem;
+}
+
+#react-select-2-listbox {
+    @apply z-20;
+}

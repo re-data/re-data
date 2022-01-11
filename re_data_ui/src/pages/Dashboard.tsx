@@ -109,6 +109,7 @@ const Dashboard: React.FC = (): ReactElement => {
     graph: null,
     generated_at: '',
     tests: [],
+    loading: true,
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -130,6 +131,7 @@ const Dashboard: React.FC = (): ReactElement => {
         aggregated_models: new Map<string, ReDataModelDetails>(),
         graph: null,
         generated_at: '',
+        loading: false,
       };
       const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData);
 

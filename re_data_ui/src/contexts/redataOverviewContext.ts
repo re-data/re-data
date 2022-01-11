@@ -167,6 +167,7 @@ export interface OverviewData {
   aggregated_models: Map<string, ReDataModelDetails>;
   graph: DbtGraph | null;
   generated_at: string;
+  loading: boolean;
 }
 
 export interface NewOverviewData {
@@ -183,4 +184,5 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   graph: null,
   generated_at: '',
   tests: [],
+  loading: true,
 });

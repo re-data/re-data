@@ -1,5 +1,5 @@
 import React, {
-  ReactElement, useContext, useMemo, useState,
+  ReactElement, useContext, useEffect, useMemo, useState,
 } from 'react';
 import { BiHappyAlt } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
@@ -28,23 +28,29 @@ const generateOptions = (models: Map<string, ReDataModelDetails>) => {
   return result;
 };
 
+const showA = true;
+
 const Tables: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { aggregated_models: models } = overview;
   const [activeTab, setActiveTab] = useState('');
+  const [callApi, setCallApi] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setURLSearchParams] = useSearchParams();
+
+  const [searchParams] = useSearchParams();
+  const model = searchParams.get('model') as string;
+  const tab = searchParams.get('tab') as string;
 
   const [modelDetails, setModelDetails] = useState<ReDataModelDetails>();
 
   const { init } = useModel();
 
   const handleChange = (option: optionsProps | null) => {
-    console.log(option);
     if (option) {
-      const details = init(overview, option?.value);
+      const details = init(overview, option?.value) as ReDataModelDetails;
       setModelDetails(details);
-      // setURLSearchParams({ model: option.value });
+      setURLSearchParams({ model: option.value });
     }
   };
 
@@ -52,8 +58,27 @@ const Tables: React.FC = (): ReactElement => {
 
   const handleScroll = (idName: string) => {
     setActiveTab(idName);
+    setURLSearchParams({
+      model,
+      tab: idName,
+    });
     document?.getElementById(idName)?.scrollIntoView();
   };
+
+  useEffect(() => {
+    if (model && !overview.loading && callApi) {
+      setCallApi(false);
+      const details = init(overview, model) as ReDataModelDetails;
+      setModelDetails(details);
+    }
+  }, [overview.loading]);
+
+  useEffect(() => {
+    if (tab && !callApi) {
+      setActiveTab(tab);
+      document?.getElementById(tab)?.scrollIntoView();
+    }
+  }, [callApi]);
 
   return (
     <div className="grid grid-cols-1">
@@ -68,37 +93,28 @@ const Tables: React.FC = (): ReactElement => {
 
       {modelDetails ? (
         <div className="flex flex-col w-full">
-          <nav className="top-0 z-10 sticky bg-gray-100 py-1 mb-1">
+          <nav className="sticky-nav">
             <ul className="flex align-items">
               <li
                 className={`mr-4 ${activeTab === 'anomalies' && 'active-tab'}`}
               >
-                <a
-                  href="./#/tables/#anomalies"
-                  onClick={() => handleScroll('anomalies')}
-                >
+                <button type="button" onClick={() => handleScroll('anomalies')}>
                   Anomalies
-                </a>
+                </button>
               </li>
               <li
                 className={`mr-4 ${activeTab === 'metrics' && 'active-tab'}`}
               >
-                <a
-                  href="./#/tables/#metrics"
-                  onClick={() => handleScroll('metrics')}
-                >
+                <button type="button" onClick={() => handleScroll('metrics')}>
                   Metrics
-                </a>
+                </button>
               </li>
               <li
                 className={`mr-4 ${activeTab === 'schema' && 'active-tab'}`}
               >
-                <a
-                  href="./#/tables/#schema"
-                  onClick={() => handleScroll('schema')}
-                >
+                <button type="button" onClick={() => handleScroll('schema')}>
                   Schema
-                </a>
+                </button>
               </li>
             </ul>
           </nav>
@@ -108,7 +124,7 @@ const Tables: React.FC = (): ReactElement => {
               <div className="outlet">
                 <MetricCharts
                   modelDetails={modelDetails}
-                  showAnomalies
+                  showAnomalies={showA}
                   showTitle={false}
                   fullWidth={false}
                 />
