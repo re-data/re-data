@@ -81,8 +81,8 @@ li.active-tab {
 }
 
 .sticky-nav {
-    @apply z-10 sticky bg-gray-100 py-1 pl-2;
-    height: 33px;
+    @apply z-10 sticky bg-gray-100 py-1 pl-2 flex;
+    height: 60px;
     top: -1.5rem;
 }
 

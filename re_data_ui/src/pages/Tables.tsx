@@ -94,7 +94,7 @@ const Tables: React.FC = (): ReactElement => {
       {modelDetails ? (
         <div className="flex flex-col w-full">
           <nav className="sticky-nav">
-            <ul className="flex align-items">
+            <ul className="flex items-center">
               <li
                 className={`mr-4 ${activeTab === 'anomalies' && 'active-tab'}`}
               >
