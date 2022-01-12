@@ -35,6 +35,7 @@ const Tables: React.FC = (): ReactElement => {
   const { aggregated_models: models } = overview;
   const [activeTab, setActiveTab] = useState('');
   const [callApi, setCallApi] = useState(true);
+  const [optionValue, setOptionValue] = useState<optionsProps | null>();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setURLSearchParams] = useSearchParams();
 
@@ -48,6 +49,7 @@ const Tables: React.FC = (): ReactElement => {
 
   const handleChange = (option: optionsProps | null) => {
     if (option) {
+      setOptionValue(option);
       const details = init(overview, option?.value) as ReDataModelDetails;
       setModelDetails(details);
       setURLSearchParams({ model: option.value });
@@ -69,6 +71,10 @@ const Tables: React.FC = (): ReactElement => {
     if (model && !overview.loading && callApi) {
       setCallApi(false);
       const details = init(overview, model) as ReDataModelDetails;
+      setOptionValue({
+        value: model,
+        label: model,
+      });
       setModelDetails(details);
     }
   }, [overview.loading]);
@@ -85,6 +91,7 @@ const Tables: React.FC = (): ReactElement => {
       <h1 className="mb-3 text-2xl font-semibold">Tables</h1>
       <div className="w-1/3 ml-1 mb-4">
         <Select
+          value={optionValue}
           options={options}
           handleChange={handleChange}
           placeholder="Please enter a table name to check details"

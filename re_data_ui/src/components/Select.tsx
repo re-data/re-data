@@ -1,25 +1,29 @@
 import React, { memo } from 'react';
 import Select from 'react-select';
 
-type optionsProps = {
-    value: string;
-    label: string;
+export type optionsProps = {
+  value: string;
+  label: string;
 }
 
-interface selectProps {
+export interface selectProps {
+    value?: optionsProps | null;
     options: optionsProps[];
     placeholder: string;
     handleChange: (option: optionsProps | null) => void;
 }
 
 const SelectInput = memo(
-  ({ options, placeholder, handleChange }:selectProps) => (
+  ({
+    options, placeholder, handleChange, value,
+  }: selectProps) => (
     <Select
       options={options}
       isClearable
       isSearchable
       placeholder={placeholder}
       onChange={handleChange}
+      value={value}
     />
   ),
 );
