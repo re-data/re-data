@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import {
-  BiNetworkChart, BsSlack, ImNotification, SiReadthedocs,
+  BiNetworkChart, BsSlack, ImNotification,
+  SiReadthedocs, SiSpeedtest, VscTable, BsGithub,
 } from 'react-icons/all';
 import { NavLink } from 'react-router-dom';
 
@@ -51,15 +52,39 @@ const Sidebar: React.FC = (): ReactElement => (
           <BiNetworkChart size="1.25em" />
           <span>Graph</span>
         </NavLink>
+        <NavLink
+          to="tests"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+        >
+          <SiSpeedtest size="1.25em" />
+          <span>Tests</span>
+        </NavLink>
+
+        <NavLink
+          to="tables"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+        >
+          <VscTable size="1.25em" />
+          <span>Tables</span>
+        </NavLink>
       </nav>
     </div>
 
     <nav data-dev-hint="second-main-navigation or footer navigation">
       <a
+        href="https://github.com/re-data/re-data"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+      >
+        <BsGithub size="1.25em" />
+        <div>Star</div>
+      </a>
+      <a
         href="https://www.getre.io/slack"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+        className="flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
       >
         <BsSlack size="1.25em" />
         <div>Slack</div>
@@ -68,7 +93,7 @@ const Sidebar: React.FC = (): ReactElement => (
         href="https://re-data.github.io/re-data/"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+        className="flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
       >
         <SiReadthedocs size="1.25em" />
         <span>Docs</span>

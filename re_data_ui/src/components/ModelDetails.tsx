@@ -1,28 +1,25 @@
-import React, { ReactElement, useContext, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import * as echarts from 'echarts/core';
 import { LineChart, ScatterChart } from 'echarts/charts';
 import {
-  GridComponent,
-  TooltipComponent,
-  TitleComponent,
-  SingleAxisComponent,
-  VisualMapComponent,
-  MarkAreaComponent,
+  GridComponent, MarkAreaComponent, SingleAxisComponent,
+  TitleComponent, TooltipComponent, VisualMapComponent,
 } from 'echarts/components';
-import { CanvasRenderer } from 'echarts/renderers';
+import * as echarts from 'echarts/core';
 import { UniversalTransition } from 'echarts/features';
+import { CanvasRenderer } from 'echarts/renderers';
+import React, {
+  ReactElement, useContext, useEffect, useState,
+} from 'react';
+import { useSearchParams } from 'react-router-dom';
+import {
+  OverviewData, ReDataModelDetails, RedataOverviewContext,
+} from '../contexts/redataOverviewContext';
+import useModel from '../hooks/useModel';
 import {
   extractComponentFromIdentifier,
 } from '../utils/helpers';
-import {
-  ReDataModelDetails, Anomaly, Metric,
-  OverviewData,
-  RedataOverviewContext,
-} from '../contexts/redataOverviewContext';
+import MetricCharts from './MetricCharts';
 import './ModelDetails.css';
 import SchemaChanges from './SchemaChanges';
-import MetricCharts from './MetricCharts';
 import TableSchema from './TableSchema';
 
 echarts.use(
@@ -49,43 +46,38 @@ enum ModelTabs {
 const ModelDetails: React.FC = (): ReactElement => {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(ModelTabs.ANOMALIES);
+  const { init } = useModel();
+  const [modelDetails, setModelDetails] = useState<ReDataModelDetails>();
 
-  const renderTab = (tab: ModelTabs, modelDetails: ReDataModelDetails): ReactElement => {
-    if (tab === ModelTabs.METRICS) {
-      return <MetricCharts modelDetails={modelDetails} showAnomalies={false} />;
-    } if (tab === ModelTabs.ANOMALIES) {
-      return <MetricCharts modelDetails={modelDetails} showAnomalies />;
-    }
-    return (
-      <>
-        <TableSchema tableSchemas={modelDetails.tableSchema} />
-        <SchemaChanges modelDetails={modelDetails} />
-      </>
-    );
-  };
-
-  let modelExists = false;
   const fullTableName = searchParams.get('model') as string;
   const overview: OverviewData = useContext(RedataOverviewContext);
+
+  useEffect(() => {
+    if (fullTableName && overview) {
+      const details = init(overview, fullTableName) as ReDataModelDetails;
+      setModelDetails(details);
+    }
+  }, [fullTableName]);
 
   const showAnomalies = (): void => setActiveTab(ModelTabs.ANOMALIES);
   const showSchema = (): void => setActiveTab(ModelTabs.SCHEMA_CHANGES);
   const showMetrics = (): void => setActiveTab(ModelTabs.METRICS);
 
-  let modelDetails: ReDataModelDetails = {
-    anomalies: new Map<string, Array<Anomaly>>(),
-    metrics: {
-      tableMetrics: new Map<string, Array<Metric>>(),
-      columnMetrics: new Map<string, Array<Metric>>(),
-    },
-    schemaChanges: [],
-    tableSchema: [],
+  const renderTab = (tab: ModelTabs): ReactElement => {
+    if (modelDetails) {
+      if (tab === ModelTabs.METRICS) {
+        return <MetricCharts modelDetails={modelDetails} showAnomalies={false} />;
+      } if (tab === ModelTabs.ANOMALIES) {
+        return <MetricCharts modelDetails={modelDetails} showAnomalies />;
+      }
+      return (
+        <>
+          <TableSchema tableSchemas={modelDetails.tableSchema} />
+          <SchemaChanges modelDetails={modelDetails} />
+        </>
+      );
+    } return <></>;
   };
-
-  if (overview.aggregated_models.has(fullTableName)) {
-    modelExists = true;
-    modelDetails = overview.aggregated_models.get(fullTableName) as ReDataModelDetails;
-  }
 
   return (
     <div className="col-span-4 h-auto overflow-y-auto">
@@ -123,14 +115,13 @@ const ModelDetails: React.FC = (): ReactElement => {
             </span>
           </div>
           <div className="outlet">
-            {modelExists
-              ? renderTab(activeTab, modelDetails)
+            {modelDetails
+              ? renderTab(activeTab)
               : <span>Click on node to show metrics, anomalies or schema changes</span>}
           </div>
         </div>
       </div>
     </div>
-
   );
 };
 

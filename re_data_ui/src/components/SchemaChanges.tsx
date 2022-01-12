@@ -5,20 +5,23 @@ import { ReDataModelDetails } from '../contexts/redataOverviewContext';
 import AlertBadge from './AlertBadge';
 import EmptyContent from './EmptyContent';
 
-interface SchemaChangesProps {
+export interface SchemaChangesProps {
   modelDetails: ReDataModelDetails;
+  showTitle?: boolean;
 }
 
 const SchemaChanges: React.FC<SchemaChangesProps> = (
   props: PropsWithChildren<SchemaChangesProps>,
 )
   : ReactElement => {
-  const { modelDetails } = props;
+  const { modelDetails, showTitle = true } = props;
   const { schemaChanges } = modelDetails;
 
   return (
     <>
-      <span className="text-lg text--capitalize">Schema Changes</span>
+      {showTitle && (
+        <span className="text-lg text--capitalize">Schema Changes</span>
+      )}
       {schemaChanges.length
         ? (
           <div className="mb-3 grid grid-cols-1">
