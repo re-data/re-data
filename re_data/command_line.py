@@ -234,7 +234,13 @@ def serve():
     help="Incoming webhook url to post messages from external sources into Slack."
          " e.g. https://hooks.slack.com/services/T0JKJQKQS/B0JKJQKQS/XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 )
-def slack(start_date, end_date, webhook_url):
+@click.option(
+    '--subtitle',
+    type=click.STRING,
+    required=True,
+    help="Extra markdown text to be added to the alert message"
+)
+def slack(start_date, end_date, webhook_url, subtitle):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     args = {
@@ -249,11 +255,19 @@ def slack(start_date, end_date, webhook_url):
     with open(os.path.join(re_data_dir, 'alerts.json')) as f:
         alerts = json.load(f)
     if len(alerts) > 0:
-        tabulated_alerts = format_alerts_to_table(alerts)
-        message = f':red_circle: {len(alerts)} alerts found between {start_date} and {end_date}. ' \
-                  f'\n\n```{tabulated_alerts}```'
+        tabulated_alerts = format_alerts_to_table(alerts[:20])
+        message = f"""
+:red_circle: {len(alerts)} alerts found between {start_date} and {end_date}.
+{subtitle}
+
+_Showing most recent 20 alerts._
+<https://re-data.github.io/re-data/latest/docs/reference/cli/overview|Generate Observability UI> to show more details.
+
+```{tabulated_alerts}```
+"""
     else:
-        message = f':white_check_mark: No alerts found between {start_date} and {end_date}.'
+        message = f""":white_check_mark: No alerts found between {start_date} and {end_date}.
+{subtitle}"""
     slack_notify(webhook_url, message)
     print(
         f"Notification sent", chalk.green("SUCCESS")

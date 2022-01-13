@@ -17,4 +17,4 @@ def format_alerts_to_table(alerts: list) -> str:
             alert['value'],
             alert['time_window_end'],
         ])
-    return tabulate(table, headers=['Model', 'Message', 'Metric Value', 'Time Window'], tablefmt='orgtbl')
+    return tabulate(table, headers=['Model', 'Message', 'Value', 'Time Window'], tablefmt='orgtbl')
