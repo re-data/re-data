@@ -1,1 +1,1 @@
-select * from {{ source('toy_shop', 'orders') }} where status = 'pending'
+select * from {{ ref('orders') }} where status = 'pending'
