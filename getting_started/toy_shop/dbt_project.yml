@@ -7,6 +7,7 @@ profile: 'toy_shop'
 target-path: "target"
 clean-targets: ["target", "dbt_modules", "dbt_packages"]
 
+
 on-run-end:
   - "{{ re_data.save_test_history(results) }}"
 
