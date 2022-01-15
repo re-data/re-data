@@ -93,18 +93,12 @@ const Alerts: React.FC = (): ReactElement => {
       accessor: 'message',
     },
     {
-      Header: 'Metric Value',
+      Header: 'Value',
       accessor: 'value',
     },
     {
       Header: 'Time Window',
       accessor: 'date',
-    },
-    {
-      Header: ' ',
-      accessor: 'details',
-      Cell: DetailsCell,
-      model: 'model',
     },
   ],
   []);
