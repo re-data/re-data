@@ -13,7 +13,7 @@ import * as echarts from 'echarts/core';
 import { MarkArea1DDataItemOption, MarkArea2DDataItemOption } from 'echarts/types/src/component/marker/MarkAreaModel';
 import { VisualOptionPiecewise } from 'echarts/types/src/util/types';
 import React, { PropsWithChildren, ReactElement } from 'react';
-import { BiHappyAlt, BiSad } from 'react-icons/all';
+import { FaRegSmileBeam, FaRegSmileWink } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
 import { Anomaly, Metric, ReDataModelDetails } from '../contexts/redataOverviewContext';
 import {
@@ -229,7 +229,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
             >
               {alertMetricCharts.length ? alertMetricCharts : (
                 <EmptyContent text="No Anomalies!">
-                  <BiHappyAlt size={50} color="#392396" />
+                  <FaRegSmileBeam size={50} color="#392396" />
                 </EmptyContent>
               )}
             </div>
@@ -245,7 +245,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
             >
               {tableMetricCharts.length ? tableMetricCharts : (
                 <EmptyContent text="Add this table to re_data config, to generate metrics">
-                  <BiSad size={50} color="#392396" />
+                  <FaRegSmileWink size={50} color="#392396" />
                 </EmptyContent>
               )}
             </div>
@@ -257,7 +257,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
             >
               {columnMetricCharts.length ? columnMetricCharts : (
                 <EmptyContent text="Add this table to re_data config, to generate metrics">
-                  <BiSad size={50} color="#392396" />
+                  <FaRegSmileWink size={50} color="#392396" />
                 </EmptyContent>
               )}
             </div>

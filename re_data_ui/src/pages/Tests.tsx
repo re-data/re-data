@@ -1,7 +1,7 @@
 import React, {
   ReactElement, useContext, useMemo, useState,
 } from 'react';
-import { BiHappyAlt } from 'react-icons/all';
+import { FaRegSmileWink } from 'react-icons/all';
 import { Link } from 'react-router-dom';
 import { EmptyContent, Table } from '../components';
 import { ColumnsProps } from '../components/Table';
@@ -15,7 +15,7 @@ const ModelCell = ({ value }: valueProps) => (
   <>
     <Link
       to={`/graph?model=${value}`}
-      className="text-sm text-gray-900"
+      className="text-sm text-blue-700 font-semibold"
     >
       {value}
     </Link>
@@ -61,7 +61,7 @@ const RightComponent = ({ options, value, handleChange }: RightComponentProps) =
     onChange={handleChange}
     value={value}
   >
-    <option value="">Select run last</option>
+    <option value="">All sorted by run time (new firsts)</option>
     {options.map((option: string) => (
       <option key={option} value={option}>
         {option}
@@ -141,8 +141,8 @@ const Tests: React.FC = (): ReactElement => {
             </div>
           </div>
         ) : (
-          <EmptyContent text="No Tests!">
-            <BiHappyAlt size={80} color="#392396" />
+          <EmptyContent text="No Tests">
+            <FaRegSmileWink size={80} color="#392396" />
           </EmptyContent>
         )}
     </>

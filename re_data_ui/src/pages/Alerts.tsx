@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import React, { ReactElement, useContext, useMemo } from 'react';
-import { BiHappyAlt } from 'react-icons/all';
+import { FaRegSmileBeam } from 'react-icons/all';
 import { Link } from 'react-router-dom';
 import AlertBadge from '../components/AlertBadge';
 import { EmptyContent, Table } from '../components';
@@ -55,7 +55,7 @@ const AlertCell = ({ value, column, row }: alertProps) => (
     />
     <Link
       to={`/graph?model=${value}`}
-      className="text-sm text-gray-900"
+      className="text-sm text-blue-700 font-semibold"
     >
       {value}
     </Link>
@@ -71,7 +71,7 @@ const DetailsCell = ({ column, row }: DetailsProps) => (
   <Link
     to={`/graph?model=${row.original[column.model]}`}
     title="View graph details"
-    className="details-cell text-xs hover:text-indigo-900 font-medium border px-4 py-1 rounded-full"
+    className="details-cell text-xs hover:text-indigo-900 text-blue-700 font-semibold border px-4 py-1 rounded-full"
   >
     Details
   </Link>
@@ -123,7 +123,7 @@ const Alerts: React.FC = (): ReactElement => {
         )
         : (
           <EmptyContent text="No Alerts!">
-            <BiHappyAlt size={80} color="#392396" />
+            <FaRegSmileBeam size={80} color="#392396" />
           </EmptyContent>
         )}
     </>
