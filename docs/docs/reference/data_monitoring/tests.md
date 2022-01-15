@@ -72,4 +72,4 @@ But of course, the best solution would still very much depend on your specific u
 Overall metrics tests are very lightweight compared to data tests as data they are querying is already aggregated. This can make it possible for you to tests more things with keeping test running-time and costs low.
 
 
-If you would like to ask about your use case, hit as on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)**
+If you would like to ask about your use case, hit as on **[Slack! 😊](https://www.getre.io/slack)**

@@ -90,7 +90,7 @@ const Sidebar: React.FC = (): ReactElement => (
         <div>Join!</div>
       </a>
       <a
-        href="https://re-data.github.io/re-data/"
+        href="https://docs.getre.io/"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
