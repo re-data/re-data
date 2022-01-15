@@ -62,21 +62,6 @@ const AlertCell = ({ value, column, row }: alertProps) => (
   </>
 );
 
-type DetailsProps = {
-  column: Record<string, number>;
-  row:Record<string, string>;
-}
-
-const DetailsCell = ({ column, row }: DetailsProps) => (
-  <Link
-    to={`/graph?model=${row.original[column.model]}`}
-    title="View graph details"
-    className="details-cell text-xs hover:text-indigo-900 text-blue-700 font-semibold border px-4 py-1 rounded-full"
-  >
-    Details
-  </Link>
-);
-
 const Alerts: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { alerts, graph } = overview;
