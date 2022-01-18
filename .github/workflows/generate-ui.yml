@@ -38,6 +38,7 @@ jobs:
 
       - name: Initialize data and compute metrics
         working-directory: ./getting_started/toy_shop
+        shell: bash
         run: |
           dbt --version
           dbt deps
