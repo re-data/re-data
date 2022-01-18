@@ -48,7 +48,8 @@ jobs:
           re_data run --start-date 2021-01-15 --end-date 2021-01-16
           dbt run-operation schema_change_drop_orders_column
           re_data run --start-date 2021-01-16 --end-date 2021-01-31
-          dbt run-operation generate_overview --args '{start_date: 2021-01-01, end_date: 2021-01-31, interval: days:1}'        
+          dbt run-operation generate_overview --args '{start_date: 2021-01-01, end_date: 2021-01-31, interval: days:1}'
+          re_data notify slack --start-date 2021-01-01 --end-date 2021-01-31 --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/commit/${{env.GITHUB_SHA}}|View Commit>"
 
       - uses: actions/setup-node@v2
         with:

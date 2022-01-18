@@ -237,7 +237,7 @@ def serve():
 @click.option(
     '--subtitle',
     type=click.STRING,
-    required=True,
+    default='',
     help="Extra markdown text to be added to the alert message"
 )
 def slack(start_date, end_date, webhook_url, subtitle):
