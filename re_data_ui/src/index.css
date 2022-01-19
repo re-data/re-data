@@ -25,7 +25,7 @@ code {
 }
 
 .navlink.active {
-    @apply bg-gray-700
+    background: #392396;
 }
 
 .details-cell {

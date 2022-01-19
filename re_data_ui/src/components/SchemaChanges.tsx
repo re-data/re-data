@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import { BiHappyAlt } from 'react-icons/all';
+import { FaRegSmileBeam } from 'react-icons/all';
 import { generateSchemaChangeMessage } from '../utils/helpers';
 import { ReDataModelDetails } from '../contexts/redataOverviewContext';
 import AlertBadge from './AlertBadge';
@@ -67,7 +67,7 @@ const SchemaChanges: React.FC<SchemaChangesProps> = (
         : (
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
             <EmptyContent text="No Schema Changes!">
-              <BiHappyAlt size={50} color="#392396" />
+              <FaRegSmileBeam size={50} color="#392396" />
             </EmptyContent>
           </div>
         )}

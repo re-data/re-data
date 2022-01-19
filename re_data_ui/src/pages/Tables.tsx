@@ -1,7 +1,7 @@
 import React, {
   ReactElement, useContext, useEffect, useMemo, useState,
 } from 'react';
-import { BiHappyAlt } from 'react-icons/all';
+import { FaRegSmileWink } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
 import {
   EmptyContent, MetricCharts, SchemaChanges, Select, TableSchema,
@@ -169,8 +169,8 @@ const Tables: React.FC = (): ReactElement => {
         </div>
       ) : (
         <div className="bg-white my-4 py-6 rounded-md">
-          <EmptyContent text="Please type a table name in the input above!">
-            <BiHappyAlt size={80} color="#392396" />
+          <EmptyContent text="Please type a table name in the input above">
+            <FaRegSmileWink size={80} color="#392396" />
           </EmptyContent>
         </div>
       )}

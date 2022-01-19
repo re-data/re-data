@@ -382,4 +382,4 @@ Some important difference between table and column level metrics are:
  
 ## Your metric ideas
 
-If you have other suggestions of metrics you would like supported, please let us know on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)**
+If you have other suggestions of metrics you would like supported, please let us know on **[Slack! 😊](https://www.getre.io/slack)**
