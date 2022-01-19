@@ -158,14 +158,6 @@ export interface ITestSchema {
   run_at: string;
 }
 
-export interface ITestSchema {
-  column_name: string;
-  status: string;
-  test_name: string;
-  model: string;
-  run_at: string;
-}
-
 export interface ITableSchema {
   column_name: string;
   data_type: string;
