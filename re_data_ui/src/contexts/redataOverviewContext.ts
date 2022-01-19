@@ -55,7 +55,7 @@ export interface DbtNode {
   created_at: number
 }
 
-export interface Anomaly {
+export interface Anomaly extends valueProps {
   column_name: string;
   id: string;
   interval_length_sec: string;
@@ -65,6 +65,7 @@ export interface Anomaly {
   metric: string;
   time_window_end: string;
   z_score_value: string;
+  message?: string;
 }
 
 export interface Metric {
@@ -128,7 +129,15 @@ export interface ReDataModelDetails {
   testSchema: Array<ITestSchema>
 }
 
-export interface SchemaChange {
+export interface valueProps {
+  type?: string;
+  model?: string;
+  message?: string;
+  value?: string;
+  time_window_end?: string;
+}
+
+export interface SchemaChange extends valueProps {
   column_name: string;
   data_type: string | null;
   detected_time: string;
@@ -138,6 +147,7 @@ export interface SchemaChange {
   prev_column_name: string | null;
   prev_data_type: string | null;
   prev_is_nullable: string | null;
+  message?: string;
 }
 
 export interface ITestSchema {
@@ -158,7 +168,7 @@ export interface ITableSchema {
 export interface Alert {
   type: 'anomaly' | 'schema_change';
   model: string;
-  value: Anomaly | SchemaChange;
+  value: Anomaly | SchemaChange | valueProps;
 }
 
 export interface OverviewData {

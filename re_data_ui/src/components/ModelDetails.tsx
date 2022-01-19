@@ -53,11 +53,11 @@ const ModelDetails: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
 
   useEffect(() => {
-    if (fullTableName && overview) {
+    if (fullTableName && overview && !overview.loading) {
       const details = init(overview, fullTableName) as ReDataModelDetails;
       setModelDetails(details);
     }
-  }, [fullTableName]);
+  }, [fullTableName, overview.loading]);
 
   const showAnomalies = (): void => setActiveTab(ModelTabs.ANOMALIES);
   const showSchema = (): void => setActiveTab(ModelTabs.SCHEMA_CHANGES);

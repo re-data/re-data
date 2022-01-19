@@ -2,15 +2,12 @@ import dayjs from 'dayjs';
 import React, { ReactElement, useContext, useMemo } from 'react';
 import { BiHappyAlt } from 'react-icons/all';
 import { Link } from 'react-router-dom';
-import AlertBadge from '../components/AlertBadge';
 import { EmptyContent, Table } from '../components';
+import AlertBadge from '../components/AlertBadge';
 import { ColumnsProps } from '../components/Table';
 import {
-  Alert, Anomaly, OverviewData, RedataOverviewContext, SchemaChange,
+  Alert, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
-import {
-  generateAnomalyMessage, generateAnomalyValue, generateSchemaChangeMessage,
-} from '../utils/helpers';
 
 const generateAlertData = (alerts: Alert[]) => {
   const result = [];
@@ -18,24 +15,12 @@ const generateAlertData = (alerts: Alert[]) => {
   for (let index = 0; index < alerts.length; index++) {
     const alert = alerts[index];
     const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
-    let message: string;
-    let timeWindow: string;
-    const value = alert.type === 'anomaly' ? generateAnomalyValue(alert.value as Anomaly) : undefined;
-    if (alert.type === 'schema_change') {
-      const schemaChange = alert.value as SchemaChange;
-      message = generateSchemaChangeMessage(schemaChange);
-      timeWindow = schemaChange.detected_time;
-    } else {
-      const anomaly = alert.value as Anomaly;
-      message = generateAnomalyMessage(anomaly);
-      timeWindow = anomaly.time_window_end;
-    }
     result.push({
-      model: alert.model,
-      type: alert.type,
-      message,
-      value,
-      date: dayjs(timeWindow).format(dateTimeFormat),
+      model: alert.value.model,
+      type: alert.value.type,
+      message: alert.value.message,
+      value: alert.value.value,
+      date: dayjs(alert.value.time_window_end).format(dateTimeFormat),
     });
   }
 
@@ -106,8 +91,8 @@ const Alerts: React.FC = (): ReactElement => {
       Cell: DetailsCell,
       model: 'model',
     },
-  ],
-  []);
+  ], []);
+
   const data = useMemo(() => generateAlertData(alerts), [alerts]) || [];
 
   return (

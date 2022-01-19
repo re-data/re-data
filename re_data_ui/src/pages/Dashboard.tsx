@@ -12,7 +12,7 @@ import {
 } from '../utils/helpers';
 
 interface RawOverviewData {
-  type: 'alert' | 'metric' | 'schema_change' | 'schema' | 'test';
+  type: 'alert' | 'metric' | 'schema_change' | 'schema' | 'test' | 'anomaly';
   // eslint-disable-next-line camelcase
   table_name: string;
   // eslint-disable-next-line camelcase
@@ -64,7 +64,7 @@ const formatOverviewData = (
       const schemaChange = JSON.parse(item.data) as SchemaChange;
       schemaChange.column_name = columnName;
       details.schemaChanges.push(schemaChange);
-      alertsAndSchemaChanges.push({ type: 'schema_change', model, value: schemaChange });
+      // alertsAndSchemaChanges.push({ type: 'schema_change', model, value: schemaChange });
     } else if (item.type === 'schema') {
       const schema = JSON.parse(item.data) as ITableSchema;
       schema.column_name = columnName;
@@ -76,6 +76,11 @@ const formatOverviewData = (
       schema.run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss');
       details.testSchema.push(schema);
       tests.push(schema);
+    } else if (item.type === 'anomaly') {
+      const anomaly = JSON.parse(item.data) as Anomaly;
+      anomaly.column_name = columnName;
+      appendToMapKey(details.anomalies, columnName, anomaly);
+      // alertsAndSchemaChanges.push({ type: 'anomaly', model, value: anomaly });
     }
   });
   // loop through each table/model and sort by ascending order by
