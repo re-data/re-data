@@ -261,7 +261,7 @@ def slack(start_date, end_date, webhook_url, subtitle):
 {subtitle}
 
 _Showing most recent 20 alerts._
-<https://re-data.github.io/re-data/latest/docs/reference/cli/overview|Generate Observability UI> to show more details.
+<https://docs.getre.io/latest/docs/reference/cli/overview|Generate Observability UI> to show more details.
 
 ```{tabulated_alerts}```
 """
