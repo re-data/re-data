@@ -125,6 +125,7 @@ export interface ReDataModelDetails {
   schemaChanges: Array<SchemaChange>;
   metrics: AggregatedMetrics;
   tableSchema: Array<ITableSchema>
+  testSchema: Array<ITestSchema>
 }
 
 export interface SchemaChange {
@@ -139,6 +140,14 @@ export interface SchemaChange {
   prev_is_nullable: string | null;
 }
 
+export interface ITestSchema {
+  column_name: string;
+  status: string;
+  test_name: string;
+  model: string;
+  run_at: string;
+}
+
 export interface ITableSchema {
   column_name: string;
   data_type: string;
@@ -147,20 +156,24 @@ export interface ITableSchema {
 }
 
 export interface Alert {
-  type: 'anomaly' | 'schema_change';
+  type: string;
   model: string;
-  value: Anomaly | SchemaChange;
+  message: string;
+  value: string;
+  time_window_end: string;
 }
 
 export interface OverviewData {
   alerts: Array<Alert>;
+  tests: Array<ITestSchema>;
   aggregated_models: Map<string, ReDataModelDetails>;
   graph: DbtGraph | null;
   generated_at: string;
+  loading: boolean;
 }
 
 export interface NewOverviewData {
-  type: 'alert' | 'metric' | 'dbt_graph' | 'schema_change' | 'schema';
+  type: 'alert' | 'metric' | 'schema_change' | 'schema';
   table_name: string;
   column_name: string;
   computed_on: string;
@@ -172,4 +185,6 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   aggregated_models: new Map<string, ReDataModelDetails>(),
   graph: null,
   generated_at: '',
+  tests: [],
+  loading: true,
 });

@@ -1,9 +1,10 @@
 import dayjs from 'dayjs';
 import {
-  ReDataModelDetails, Anomaly, Metric, SchemaChange,
+  Anomaly, Metric, SchemaChange,
 } from '../contexts/redataOverviewContext';
 
 export const RE_DATA_OVERVIEW_FILE = 'overview.json';
+export const DBT_MANIFEST_FILE = 'dbt_manifest.json';
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 export const DATE_FORMAT = 'YYYY-MM-DD';
 
@@ -26,47 +27,6 @@ export const extractComponentFromIdentifier = (
     return '';
   }
   return arr[idx];
-};
-
-export const generateAnomaliesByTimeWindowEnd = (alert: ReDataModelDetails):
-  { [key: string]: Array<Anomaly> } => {
-  const anomalyMap = alert.anomalies;
-  // const schemaChangesMap = alert.schemaChanges;
-  const alertsByTimeWindowEnd: { [key: string]: Array<Anomaly> } = {};
-  anomalyMap.forEach((anomalies) => {
-    anomalies.forEach((anomaly) => {
-      if (!alertsByTimeWindowEnd[anomaly.time_window_end]) {
-        alertsByTimeWindowEnd[anomaly.time_window_end] = [anomaly];
-      } else {
-        alertsByTimeWindowEnd[anomaly.time_window_end].push(anomaly);
-      }
-    });
-  });
-  return alertsByTimeWindowEnd;
-};
-
-export const generateAnomalyMessage = (anomaly: Anomaly): string => {
-  const lastValue = Number(anomaly.last_value);
-  const lastAvg = Number(anomaly.last_avg);
-  const compareText = lastValue > lastAvg ? 'greater than' : 'less than';
-  const percentage = ((Math.abs(lastValue - lastAvg) / lastAvg) * 100).toFixed(2);
-  const displayText = anomaly.column_name ? `${anomaly.metric}(${anomaly.column_name})` : `${anomaly.metric}`;
-  return `${displayText} is ${percentage}% ${compareText} average`;
-};
-
-export const generateAnomalyValue = (anomaly: Anomaly): string => {
-  const value = Number(anomaly.last_value);
-  if (anomaly.metric === 'freshness') {
-    const hours = value / 60 / 60;
-    return `${hours.toFixed(2)} hours`;
-  }
-  if (anomaly.metric.indexOf('percent') > -1) {
-    return `${value.toFixed(2)}%`;
-  }
-  if (anomaly.metric.indexOf('count') > -1) {
-    return `${value}`;
-  }
-  return `${value.toFixed(2)}`;
 };
 
 export const metricValue = (metric: Metric): number => {

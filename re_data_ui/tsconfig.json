@@ -19,11 +19,13 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "typeRoots": [ "./types", "./node_modules/@types"],
+    "typeRoots": [
+      "./types"
+    ],
     "downlevelIteration": true,
   },
   "include": [
-    "src"
+    "src",
   ],
   "exclude": [
     "node_modules",

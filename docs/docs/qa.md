@@ -26,4 +26,4 @@ Here is are a couple of problems we call "bad data":
 
 #### Other questions?
 
-Have more questions? Ask as on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)** (we are very responsive there)
+Have more questions? Ask as on **[Slack! 😊](https://www.getre.io/slack)** (we are very responsive there)

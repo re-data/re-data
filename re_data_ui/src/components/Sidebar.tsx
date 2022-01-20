@@ -1,8 +1,9 @@
 import React, { ReactElement } from 'react';
-import { Link } from 'react-router-dom';
 import {
-  BiNetworkChart, ImNotification, BsSlack, SiReadthedocs,
+  BiNetworkChart, BsSlack, ImNotification,
+  SiReadthedocs, SiSpeedtest, VscTable, BsGithub,
 } from 'react-icons/all';
+import { NavLink } from 'react-router-dom';
 
 const Sidebar: React.FC = (): ReactElement => (
   <aside
@@ -32,44 +33,67 @@ const Sidebar: React.FC = (): ReactElement => (
               fill="white"
             />
           </svg>
-
         </span>
       </a>
 
       <nav data-dev-hint="main navigation">
-        <Link
+        <NavLink
           to="alerts"
-          className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
         >
           <ImNotification size="1.25em" />
           <span>Alerts</span>
-        </Link>
+        </NavLink>
 
-        <Link
+        <NavLink
           to="graph"
-          className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
         >
           <BiNetworkChart size="1.25em" />
           <span>Graph</span>
-        </Link>
+        </NavLink>
+        <NavLink
+          to="tests"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+        >
+          <SiSpeedtest size="1.25em" />
+          <span>Tests</span>
+        </NavLink>
+
+        <NavLink
+          to="tables"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+        >
+          <VscTable size="1.25em" />
+          <span>Tables</span>
+        </NavLink>
       </nav>
     </div>
 
     <nav data-dev-hint="second-main-navigation or footer navigation">
       <a
+        href="https://github.com/re-data/re-data"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+      >
+        <BsGithub size="1.25em" />
+        <div>GitHub</div>
+      </a>
+      <a
         href="https://www.getre.io/slack"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+        className="flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
       >
         <BsSlack size="1.25em" />
-        <div>Slack</div>
+        <div>Join!</div>
       </a>
       <a
-        href="https://re-data.github.io/re-data/"
+        href="https://docs.getre.io/"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+        className="flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
       >
         <SiReadthedocs size="1.25em" />
         <span>Docs</span>
@@ -78,7 +102,7 @@ const Sidebar: React.FC = (): ReactElement => (
       <div
         className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
       >
-        <span className="italic">version 0.5.0</span>
+        <span className="italic">version 0.5.1</span>
       </div>
     </nav>
   </aside>

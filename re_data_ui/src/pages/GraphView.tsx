@@ -164,7 +164,7 @@ const GraphView: React.FC = (): ReactElement => {
 
   return (
     <div className="h-full">
-      <h1 className="pl-3 mb-3 text-2xl">Graph View</h1>
+      <h1 className="mb-3 text-2xl font-semibold">Graph</h1>
       <div
         className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-12
              gap-4 border-2 border-solid border-gray-200
