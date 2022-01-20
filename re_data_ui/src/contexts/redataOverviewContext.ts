@@ -156,9 +156,11 @@ export interface ITableSchema {
 }
 
 export interface Alert {
-  type: 'anomaly' | 'schema_change';
+  type: string;
   model: string;
-  value: Anomaly | SchemaChange;
+  message: string;
+  value: string;
+  time_window_end: string;
 }
 
 export interface OverviewData {

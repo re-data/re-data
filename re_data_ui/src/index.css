@@ -86,6 +86,6 @@ li.active-tab {
     top: -1.5rem;
 }
 
-#react-select-2-listbox {
-    @apply z-20;
+.css-26l3qy-menu {
+    z-index: 100 !important;
 }
