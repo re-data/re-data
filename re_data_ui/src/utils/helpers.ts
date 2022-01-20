@@ -29,41 +29,6 @@ export const extractComponentFromIdentifier = (
   return arr[idx];
 };
 
-export const generateAnomaliesByTimeWindowEnd = (alert: ReDataModelDetails):
-  { [key: string]: Array<Anomaly> } => {
-  const anomalyMap = alert.anomalies;
-  // const schemaChangesMap = alert.schemaChanges;
-  const alertsByTimeWindowEnd: { [key: string]: Array<Anomaly> } = {};
-  anomalyMap.forEach((anomalies) => {
-    anomalies.forEach((anomaly) => {
-      if (!alertsByTimeWindowEnd[anomaly.time_window_end]) {
-        alertsByTimeWindowEnd[anomaly.time_window_end] = [anomaly];
-      } else {
-        alertsByTimeWindowEnd[anomaly.time_window_end].push(anomaly);
-      }
-    });
-  });
-  return alertsByTimeWindowEnd;
-};
-
-export const generateAnomalyMessage = (anomaly: Anomaly): string => {
-  const lastValue = Number(anomaly.last_value);
-  const lastAvg = Number(anomaly.last_avg);
-  const compareText = lastValue > lastAvg ? 'greater than' : 'less than';
-  const percentage = ((Math.abs(lastValue - lastAvg) / lastAvg) * 100).toFixed(2);
-  const displayText = anomaly.column_name ? `${anomaly.metric}(${anomaly.column_name})` : `${anomaly.metric}`;
-  return `${displayText} is ${percentage}% ${compareText} average`;
-};
-
-export const generateAnomalyValue = (anomaly: Anomaly): string => {
-  const value = Number(anomaly.last_value);
-  if (anomaly.metric === 'freshness') {
-    const hours = value / 60 / 60;
-    return `${hours.toFixed(2)} hours`;
-  }
-  return `${value.toFixed(2)}`;
-};
-
 export const metricValue = (metric: Metric): number => {
   let value = Number(metric.value);
   if (metric.metric === 'freshness') {
