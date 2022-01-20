@@ -17,6 +17,7 @@ interface VisNode {
   id: string | number,
   label: string | number;
   shape: string;
+  color?: string;
 }
 
 interface VisEdge {
@@ -59,6 +60,7 @@ const generateGraph = (overview: OverviewData) => {
         id: modelId,
         label: modelName,
         shape: 'box',
+        color: 'red',
       };
       graph.nodes.push(node);
 
