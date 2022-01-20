@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {
-  ReDataModelDetails, Anomaly, Metric, SchemaChange,
+  Anomaly, Metric, SchemaChange,
 } from '../contexts/redataOverviewContext';
 
 export const RE_DATA_OVERVIEW_FILE = 'overview.json';
