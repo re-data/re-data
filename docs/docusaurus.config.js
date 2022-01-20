@@ -5,8 +5,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 module.exports = {
   title: 're_data docs',
   tagline: 'data quality framework',
-  url: 'https://re-data.github.io',
-  baseUrl: '/re-data/',
+  url: 'https://docs.getre.io/',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',

@@ -40,4 +40,4 @@ re_data observability UI meant to help you:
 
 ## Want to learn more?
 
-Check out the rest of re_data docs, or ask as on **[Slack! 😊](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)** (we are very responsive there)
+Check out the rest of re_data docs, or ask as on **[Slack! 😊](https://www.getre.io/slack)** (we are very responsive there)

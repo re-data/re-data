@@ -4,6 +4,8 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import Alerts from './pages/Alerts';
+import Tests from './pages/Tests';
+import Tables from './pages/Tables';
 import Dashboard from './pages/Dashboard';
 import GraphView from './pages/GraphView';
 import reportWebVitals from './reportWebVitals';
@@ -16,6 +18,8 @@ ReactDOM.render(
           <Route path="/" element={<Alerts />} />
           <Route path="alerts" element={<Alerts />} />
           <Route path="graph" element={<GraphView />} />
+          <Route path="tests" element={<Tests />} />
+          <Route path="tables" element={<Tables />} />
         </Route>
       </Route>
     </Routes>
