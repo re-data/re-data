@@ -8,7 +8,8 @@ import {
   OverviewData, ReDataModelDetails, RedataOverviewContext, SchemaChange,
 } from '../contexts/redataOverviewContext';
 import {
-  appendToMapKey, DBT_MANIFEST_FILE, generateMetricIdentifier, RE_DATA_OVERVIEW_FILE, stripQuotes,
+  appendToMapKey, DBT_MANIFEST_FILE, generateMetricIdentifier,
+  RE_DATA_OVERVIEW_FILE, stripQuotes,
 } from '../utils/helpers';
 
 interface RawOverviewData {
@@ -26,7 +27,7 @@ const formatOverviewData = (
   data: Array<RawOverviewData>,
 ): [Map<string, ReDataModelDetails>, ITestSchema[], Alert[]] => {
   const result = new Map<string, ReDataModelDetails>();
-  const alertsAndSchemaChanges: Alert[] = [];
+  const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
   data.forEach((item: RawOverviewData) => {
     if (!item.table_name) return;
@@ -47,10 +48,8 @@ const formatOverviewData = (
     const columnName = item.column_name ? item.column_name : '';
     const details = result.get(model) as ReDataModelDetails;
     if (item.type === 'alert') {
-      const anomaly = JSON.parse(item.data) as Anomaly;
-      anomaly.column_name = columnName;
-      appendToMapKey(details.anomalies, columnName, anomaly);
-      alertsAndSchemaChanges.push({ type: 'anomaly', model, value: anomaly });
+      const alert = JSON.parse(item.data) as Alert;
+      alertsChanges.push(alert);
     } else if (item.type === 'metric') {
       const metric = JSON.parse(item.data) as Metric;
       metric.column_name = columnName;
@@ -64,7 +63,6 @@ const formatOverviewData = (
       const schemaChange = JSON.parse(item.data) as SchemaChange;
       schemaChange.column_name = columnName;
       details.schemaChanges.push(schemaChange);
-      // alertsAndSchemaChanges.push({ type: 'schema_change', model, value: schemaChange });
     } else if (item.type === 'schema') {
       const schema = JSON.parse(item.data) as ITableSchema;
       schema.column_name = columnName;
@@ -80,7 +78,7 @@ const formatOverviewData = (
       const anomaly = JSON.parse(item.data) as Anomaly;
       anomaly.column_name = columnName;
       appendToMapKey(details.anomalies, columnName, anomaly);
-      // alertsAndSchemaChanges.push({ type: 'anomaly', model, value: anomaly });
+      // alertsChanges.push({ type: 'anomaly', model, value: anomaly });
     }
   });
   // loop through each table/model and sort by ascending order by
@@ -99,12 +97,9 @@ const formatOverviewData = (
       metricMap.metrics.columnMetrics.set(key, sortedMetrics);
     }
   }
-  alertsAndSchemaChanges.sort((a, b) => {
-    const x = a.type === 'anomaly' ? (a.value as Anomaly).time_window_end : (a.value as SchemaChange).detected_time;
-    const y = b.type === 'anomaly' ? (b.value as Anomaly).time_window_end : (b.value as SchemaChange).detected_time;
-    return dayjs(y).diff(x);
-  });
-  return [result, tests, alertsAndSchemaChanges];
+  alertsChanges.sort((a, b) => dayjs(b.time_window_end).diff(a.time_window_end));
+
+  return [result, tests, alertsChanges];
 };
 
 const Dashboard: React.FC = (): ReactElement => {

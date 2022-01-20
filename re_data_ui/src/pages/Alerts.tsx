@@ -15,12 +15,13 @@ const generateAlertData = (alerts: Alert[]) => {
   for (let index = 0; index < alerts.length; index++) {
     const alert = alerts[index];
     const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+
     result.push({
-      model: alert.value.model,
-      type: alert.value.type,
-      message: alert.value.message,
-      value: alert.value.value,
-      date: dayjs(alert.value.time_window_end).format(dateTimeFormat),
+      model: alert.model,
+      type: alert.type,
+      message: alert.message,
+      value: alert.value,
+      date: dayjs(alert.time_window_end).format(dateTimeFormat),
     });
   }
 
