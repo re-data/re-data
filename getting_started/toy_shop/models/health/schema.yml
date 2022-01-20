@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: pending_orders
+    columns:
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: [pending]
