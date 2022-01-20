@@ -61,14 +61,6 @@ export const generateAnomalyValue = (anomaly: Anomaly): string => {
     const hours = value / 60 / 60;
     return `${hours.toFixed(2)} hours`;
   }
-  // console.log('anomaly value -> ', anomaly);
-  // TODO: this line is throwing issues
-  // if (anomaly.metric.indexOf('percent') > -1) {
-  //   return `${value.toFixed(2)}%`;
-  // }
-  // if (anomaly.metric.indexOf('count') > -1) {
-  //   return `${value}`;
-  // }
   return `${value.toFixed(2)}`;
 };
 
