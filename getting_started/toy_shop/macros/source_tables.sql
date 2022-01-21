@@ -1,5 +1,6 @@
 {% macro create_toy_shop_source_tables() %}
 
+    {% set sql_to_run %}
     CREATE SCHEMA IF NOT EXISTS {{target.schema}}_sources;
     DROP TABLE IF EXISTS {{target.schema}}_sources.toy_shop_customers CASCADE;
     CREATE TABLE IF NOT EXISTS {{target.schema}}_sources.toy_shop_customers (
@@ -509,6 +510,8 @@
         (497, 'Grace', 'Davis', 0, '2021-01-25 14:10:43'),
         (498, 'Amelia', 'Thompson', 0, '2021-01-25 07:28:25'),
         (499, 'Grace', 'White', 57, '2021-01-13 12:52:10');
+        {% endset %}
 
+        {% do run_query(sql_to_run) %}
 
 {% endmacro %} 
