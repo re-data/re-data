@@ -77,7 +77,7 @@ select {
 }
 
 li.active-tab {
-    border-bottom: 3px solid rgba(31, 41, 55, var(--tw-bg-opacity));
+    border-bottom: 3px solid rgba(57,35,150, var(--tw-bg-opacity));
 }
 
 .sticky-nav {
