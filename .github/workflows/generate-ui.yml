@@ -41,6 +41,7 @@ jobs:
         run: |
           dbt --version
           dbt deps
+          dbt run-operation create_toy_shop_source_tables
           dbt seed
           dbt run --exclude package:re_data
           dbt test --exclude package:re_data || true
