@@ -50,7 +50,7 @@ And now let's look into the `alerting` table to see if `re_data` found anything 
 
 
 ```sql title="Viewing computed anomalies"
-select table_name, metric, z_score_value, last_value, time_window_end from toy_shop_re.re_data_alerting ;
+select table_name, metric, z_score_value, last_value, time_window_end from toy_shop_re.re_data_anomalies ;
 
                table_name               |     metric      |    z_score_value    |     last_value     |   time_window_end
 ----------------------------------------+-----------------+---------------------+--------------------+---------------------

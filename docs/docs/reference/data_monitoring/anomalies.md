@@ -15,8 +15,8 @@ Will be detected.
 
 ## How it works?
 
-re_data is currently using z_score to detect anomalies. All detected anomalies are showing up in `re_data_alerting` model.
+re_data is currently using z_score to detect anomalies. All detected anomalies are showing up in `re_data_anomalies` model.
 
 ## Alerting notifications
 
-To receive notifications you would need to set up, tests for `re_data_alerting` table. We recommend adding tests checking for any recent alerts to a dbt test suite.
+To receive notifications you would need to set up, tests for `re_data_anomalies` table. We recommend adding tests checking for any recent alerts to a dbt test suite.

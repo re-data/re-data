@@ -47,7 +47,6 @@ This model refreshes each time re_data runs and describes what re_data computes.
 This table is an optional way of defining what re_data computes. (apart from dbt_project vars configuration). 
 
 2 columns can be edited in this table:
-- `actively_monitored` to `true`/`false` to start/stop monitoring table and computing stats for it, `(default: false)`
 - `time_filter` to the name of the column you would like to use as a time filter.
 
  re_data prioritizes code configuration so changes will only affect tables that are not specified in `dbt_project.yml`. 
@@ -57,7 +56,7 @@ We strongly advise to not configure the same parameters both in DB and code. DB 
 ### re_data_z_score
 Computed z_score for metric. `re_data` looks back on what where metrics values in last 30 days and compute z_score for newest value.
 
-### re_data_alerting
+### re_data_anomalies
 View computed on top of `re_data_z_score` table to contain metrics that look alerting. Alerting threshold is controlled by var `re_data:alerting_z_score`
 which is equal to 3 by default, but can be changed and adjusted.
 
