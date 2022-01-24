@@ -90,6 +90,10 @@ li.active-tab {
     z-index: 100 !important;
 }
 
+.right-component {
+    height: 32px;
+}
+
 .bg-active {
     background: #392396;
 }
