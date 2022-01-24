@@ -1,5 +1,4 @@
 import React, { ReactElement, useContext } from 'react';
-import './GraphView.css';
 import { useSearchParams } from 'react-router-dom';
 import { Options } from 'vis';
 import LineageGraph from '../components/LineageGraph';
@@ -7,6 +6,7 @@ import ModelDetails from '../components/ModelDetails';
 import {
   DbtNode, DbtSource, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
+import './GraphView.css';
 
 interface VisPointer {
   x: number,
@@ -52,34 +52,41 @@ const generateGraph = (overview: OverviewData) => {
   const dbtNodes = overview.graph.nodes;
   const dbtSources = overview.graph.sources;
 
-  Object.entries(dbtNodes).forEach(([model, details]) => {
-    const [resource, packageName, modelName] = model.split('.');
-    if (resource !== 'test' && packageName !== 're_data') {
+  const allNodes = { ...dbtNodes, ...dbtSources };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  Object.entries(allNodes).forEach(([_, details]) => {
+    if (details.resource_type !== 'test' && details.package_name !== 're_data') {
       const modelId = `${details.database}.${details.schema}.${details.name}`.toLowerCase();
       const node: VisNode = {
         id: modelId,
-        label: modelName,
+        label: details.name,
         shape: 'box',
-        color: 'red',
+        color: details.resource_type === 'source' ? 'red' : undefined,
       };
       graph.nodes.push(node);
 
-      const parentNodes = new Set(details.depends_on.nodes);
-      parentNodes.forEach((parent) => {
-        const parentNode: DbtNode | DbtSource = dbtNodes[parent]
-          ? dbtNodes[parent]
-          : dbtSources[parent];
-        if (parentNode) {
-          // in coming edge only if parent node exists
-          const parentModelId = `${parentNode.database}.${parentNode.schema}.${parentNode.name}`.toLowerCase();
-          const edge: VisEdge = {
-            from: parentModelId,
-            to: modelId,
-            arrows: 'to',
-          };
-          graph.edges.push(edge);
-        }
-      });
+      if (details.resource_type !== 'source') {
+        const d = details as DbtNode;
+        const parentNodes = new Set(d.depends_on.nodes);
+        parentNodes.forEach((parent) => {
+          const parentNode: DbtNode | DbtSource = dbtNodes[parent]
+            ? dbtNodes[parent]
+            : dbtSources[parent];
+          if (parentNode) {
+            // in coming edge only if parent node exists
+            const parentModelId = `${parentNode.database}.${parentNode.schema}.${parentNode.name}`.toLowerCase();
+            const edge: VisEdge = {
+              from: parentModelId,
+              to: modelId,
+              arrows: 'to',
+            };
+            graph.edges.push(edge);
+          }
+        });
+      } else {
+        console.log('details is a node -> ', details);
+      }
     }
   });
 
@@ -167,6 +174,11 @@ const GraphView: React.FC = (): ReactElement => {
   return (
     <div className="h-full">
       <h1 className="mb-3 text-2xl font-semibold">Graph</h1>
+
+      {/* <div>
+        <div style={{ width: 20, height: 20, background: 'red' }} />
+        Source
+      </div> */}
       <div
         className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-12
              gap-4 border-2 border-solid border-gray-200
