@@ -54,21 +54,26 @@ jobs:
           re_data run --start-date 2021-01-16 --end-date 2021-01-31
           dbt test --exclude package:re_data || true
           re_data overview generate --start-date 2021-01-01 --end-date 2022-06-30
+
+      - name: Send slack alert notification
+        if: github.repository == 're-data/dbt-re-data'
+        working-directory: .
+        run: |
           re_data notify slack --start-date 2021-01-01 --end-date 2021-01-31 --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit>"
 
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: "14"
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
 
       - name: Copy overview data
-        run: 'cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json'
+        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
         shell: bash
 
       - name: Copy dbt manifest
-        run: 'cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json'
+        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
         shell: bash
 
       - name: Set homepage in package.json
