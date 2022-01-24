@@ -56,7 +56,7 @@ jobs:
           re_data overview generate --start-date 2021-01-01 --end-date 2022-06-30
 
       - name: Send slack alert notification
-        if: github.repository == 're-data/dbt-re-data'
+        if: github.repository == 're-data/re-data'
         working-directory: .
         run: |
           re_data notify slack --start-date 2021-01-01 --end-date 2021-01-31 --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit>"
