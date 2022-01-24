@@ -38,9 +38,11 @@ jobs:
 
       - name: Initialize data and compute metrics
         working-directory: ./getting_started/toy_shop
+        shell: bash
         run: |
           dbt --version
           dbt deps
+          dbt run-operation create_toy_shop_source_tables
           dbt seed
           dbt run --exclude package:re_data
           dbt test --exclude package:re_data || true
@@ -52,6 +54,7 @@ jobs:
           re_data run --start-date 2021-01-16 --end-date 2021-01-31
           dbt test --exclude package:re_data || true
           re_data overview generate --start-date 2021-01-01 --end-date 2022-06-30
+          re_data notify slack --start-date 2021-01-01 --end-date 2021-01-31 --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit>"
 
       - uses: actions/setup-node@v2
         with:

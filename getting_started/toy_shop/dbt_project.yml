@@ -7,7 +7,6 @@ profile: 'toy_shop'
 target-path: "target"
 clean-targets: ["target", "dbt_modules", "dbt_packages"]
 
-
 on-run-end:
   - "{{ re_data.save_test_history(results) }}"
 
@@ -19,7 +18,8 @@ vars:
   re_data:alerting_z_score: 3
   re_data:monitored:
     - tables:
-        - name: customers
+        - name: toy_shop_customers
+          schema: toy_shop_sources
           time_filter: joined_at
           columns:
             - first_name
