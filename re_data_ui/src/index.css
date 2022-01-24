@@ -89,3 +89,11 @@ li.active-tab {
 .css-26l3qy-menu {
     z-index: 100 !important;
 }
+
+.bg-active {
+    background: #392396;
+}
+
+.bg-other {
+    background: #8884d8;
+}

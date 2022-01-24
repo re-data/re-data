@@ -62,7 +62,7 @@ const generateGraph = (overview: OverviewData) => {
         id: modelId,
         label: details.name,
         shape: 'box',
-        color: details.resource_type === 'source' ? 'red' : undefined,
+        color: details.resource_type === 'source' ? '#389e0d' : undefined,
       };
       graph.nodes.push(node);
 
@@ -74,7 +74,6 @@ const generateGraph = (overview: OverviewData) => {
             ? dbtNodes[parent]
             : dbtSources[parent];
           if (parentNode) {
-            // in coming edge only if parent node exists
             const parentModelId = `${parentNode.database}.${parentNode.schema}.${parentNode.name}`.toLowerCase();
             const edge: VisEdge = {
               from: parentModelId,
@@ -175,10 +174,20 @@ const GraphView: React.FC = (): ReactElement => {
     <div className="h-full">
       <h1 className="mb-3 text-2xl font-semibold">Graph</h1>
 
-      {/* <div>
-        <div style={{ width: 20, height: 20, background: 'red' }} />
-        Source
-      </div> */}
+      <div className="flex items-center absolute mt-4 ml-4">
+        <>
+          <div className="w-3 h-3 bg-source" />
+          <p className="text-sm font-medium ml-1 mr-4">Source node</p>
+        </>
+        <>
+          <div className="w-3 h-3 bg-active" />
+          <p className="text-sm font-medium ml-1 mr-4">Active node</p>
+        </>
+        <>
+          <div className="w-3 h-3 bg-other" />
+          <p className="text-sm font-medium ml-1 mr-4">Other node</p>
+        </>
+      </div>
       <div
         className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-12
              gap-4 border-2 border-solid border-gray-200
