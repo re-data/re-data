@@ -28,6 +28,7 @@ setup(
         "click>=8,<9",
         "dbt-core>=0.20.0,<1.1.0",
         "yachalk>=0.1.0,<0.2.0",
+        "tabulate==0.8.9",
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={
