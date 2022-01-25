@@ -3,6 +3,7 @@
         schema_name,
         schema_name + '_re',
         schema_name + '_re_internal',
+        schema_name + '_sources',
         schema_name + '_dbt_test__audit'
     ] %}
     {{ return (schemas) }}
