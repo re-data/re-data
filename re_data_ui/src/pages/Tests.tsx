@@ -57,7 +57,7 @@ type RightComponentProps = {
 
 const RightComponent = ({ options, value, handleChange }: RightComponentProps) => (
   <select
-    className="px-2 py-1 rounded-md w-1/5"
+    className="px-2 py-1 rounded-md w-1/4 right-component"
     onChange={handleChange}
     value={value}
   >
