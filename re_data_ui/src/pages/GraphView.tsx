@@ -98,9 +98,6 @@ const generateGraph = (overview: OverviewData) => {
           }
         });
       }
-      // else {
-      //   console.log('details is a node -> ', details.resource_type);
-      // }
     }
   });
 
