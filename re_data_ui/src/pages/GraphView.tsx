@@ -1,11 +1,10 @@
-/* eslint-disable comma-dangle */
 import React, { ReactElement, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { NodeOptions, Options } from 'vis';
 import LineageGraph from '../components/LineageGraph';
 import ModelDetails from '../components/ModelDetails';
 import {
-  DbtNode, DbtSource, OverviewData, RedataOverviewContext
+  DbtNode, DbtSource, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import './GraphView.css';
 
@@ -51,7 +50,7 @@ const resourceTypeColors: ResourceTypeColorsProps = {
   seed: 'hsl(150deg 66% 44%)',
 };
 
-const supportedResourcesTypes: Array<string> = ['source', 'model', 'seed'];
+const supportedResourcesTypes = new Set(['source', 'model', 'seed']);
 
 const generateGraph = (overview: OverviewData) => {
   const graph: IGraph = {
@@ -68,7 +67,7 @@ const generateGraph = (overview: OverviewData) => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Object.entries(allNodes).forEach(([_, details]) => {
-    if (supportedResourcesTypes.includes(details.resource_type) && details.package_name !== 're_data') {
+    if (supportedResourcesTypes.has(details.resource_type) && details.package_name !== 're_data') {
       const modelId = `${details.database}.${details.schema}.${details.name}`.toLowerCase();
       const node: VisNode = {
         id: modelId,
@@ -76,7 +75,7 @@ const generateGraph = (overview: OverviewData) => {
         shape: 'box',
         color: {
           background: resourceTypeColors[details.resource_type],
-        }
+        },
       };
       graph.nodes.push(node);
 
