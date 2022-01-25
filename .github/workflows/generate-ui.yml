@@ -4,6 +4,13 @@ on: push
 
 env:
   DBT_PROFILES_DIR: ${{ github.workspace }}/getting_started/toy_shop
+  SNOWFLAKE_RE_DATA_TESTING_ACCOUNT: ${{ secrets.SNOWFLAKE_RE_DATA_TESTING_ACCOUNT }}
+  RE_DATA_TESTING_USER: ${{ secrets.RE_DATA_TESTING_USER }}
+  RE_DATA_TESTING_PASSWORD: ${{ secrets.RE_DATA_TESTING_PASSWORD }}
+  REDSHIFT_RE_DATA_TESTING_HOST: ${{ secrets.REDSHIFT_RE_DATA_TESTING_HOST }}
+  BIGQUERY_TESTING_PROJECT_ID: ${{ secrets.BIGQUERY_TESTING_PROJECT_ID }}
+  BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64: ${{ secrets.BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 }}
+  BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH: ${{ github.workspace }}/bigquery-testing-service-account.json
 
 jobs:
   generate-ui:
@@ -40,26 +47,14 @@ jobs:
         working-directory: ./getting_started/toy_shop
         shell: bash
         run: |
-          dbt --version
-          dbt deps
-          dbt run-operation create_toy_shop_source_tables
-          dbt seed
-          dbt run --exclude package:re_data
-          dbt test --exclude package:re_data || true
-          re_data run --start-date 2021-01-01 --end-date 2021-01-15
-          dbt test --exclude package:re_data || true
-          dbt run-operation schema_change_add_orders_column
-          re_data run --start-date 2021-01-15 --end-date 2021-01-16
-          dbt run-operation schema_change_drop_orders_column
-          re_data run --start-date 2021-01-16 --end-date 2021-01-31
-          dbt test --exclude package:re_data || true
-          re_data overview generate --start-date 2021-01-01 --end-date 2022-06-30
+          chmod +x ./setup_toy_shop.sh
+          ./setup_toy_shop.sh toy_shop_postgres
 
       - name: Send slack alert notification
         working-directory: ./getting_started/toy_shop
         if: github.repository == 're-data/re-data'
         run: |
-          re_data notify slack --start-date 2021-01-01 --end-date 2021-01-31 --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit>"
+          re_data notify slack --start-date 2021-01-01 --end-date 2021-01-31 --profile toy_shop_postgres --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} (postgres) |View Commit>"
 
       - uses: actions/setup-node@v2
         with:
@@ -105,3 +100,95 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./re_data_ui/build
           destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}
+
+  generate-ui-other-dbs:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.repository == 're-data/re-data'
+    strategy:
+      fail-fast: false
+      matrix:
+        database: [snowflake, bigquery, redshift]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.7.x"
+
+      - name: Set the TOY_SHOP_SCHEMA environment variable
+        run: |
+          echo "TOY_SHOP_SCHEMA=dq_${GITHUB_REF_SLUG//-/_}" >> $GITHUB_ENV
+
+      - name: Print TOY_SHOP_SCHEMA
+        run: |
+          echo $TOY_SHOP_SCHEMA
+
+      - name: Decode service account for BigQuery
+        if: matrix.database == 'bigquery'
+        run: 'echo $BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 | base64 --decode > $BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH'
+        shell: bash
+
+      - name: Install re_data and dependencies
+        working-directory: .
+        run: |
+          pip install .
+          pip install dbt-${{ matrix.database }}==1.0.0
+
+      - name: Initialize data and compute metrics
+        working-directory: ./getting_started/toy_shop
+        shell: bash
+        run: |
+          chmod +x ./setup_toy_shop.sh
+          ./setup_toy_shop.sh toy_shop_${{ matrix.database }}
+
+      - name: Send slack alert notification
+        working-directory: ./getting_started/toy_shop
+        if: github.repository == 're-data/re-data'
+        run: |
+          re_data notify slack --start-date 2021-01-01 --end-date 2021-01-31 --profile toy_shop_${{ matrix.database }} --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} (${{ matrix.database }}) |View Commit>"
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Copy overview data
+        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
+        shell: bash
+
+      - name: Copy dbt manifest
+        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
+        shell: bash
+
+      - name: Set homepage in package.json
+        working-directory: ./re_data_ui
+        run: contents=$(jq '.homepage="https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}"' package.json) && echo "${contents}" > package.json
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: ./re_data_ui
+        run: |
+          npm install
+
+      - name: Build app for production
+        working-directory: ./re_data_ui
+        run: npm run build
+        env:
+          PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}
+
+      - name: Keep only index.html, overview json and dbt_manifest.json file
+        working-directory: ./re_data_ui/build
+        run: |
+          rm -rf static
+          shopt -s extglob
+          rm -- !(index.html|overview.json|dbt_manifest.json)
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./re_data_ui/build
+          destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}
