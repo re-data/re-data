@@ -94,10 +94,18 @@ li.active-tab {
     height: 32px;
 }
 
-.bg-active {
-    background: #392396;
+.bg-source {
+    background: hsl(97deg 66% 44%);
 }
 
-.bg-other {
-    background: #8884d8;
+.bg-seed {
+    background: hsl(150deg 66% 44%);
+}
+
+.bg-model {
+    background: hsl(190deg 100% 35%);
+}
+
+.rounded-tooltip {
+    border-radius: 0.2rem;
 }

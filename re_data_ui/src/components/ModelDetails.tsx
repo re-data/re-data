@@ -80,8 +80,8 @@ const ModelDetails: React.FC = (): ReactElement => {
   };
 
   return (
-    <div className="col-span-4 h-auto overflow-y-auto">
-      <div className="bg-white rounded shadow border p-3">
+    <div className="col-span-4 h-auto overflow-y-auto bg-white border rounded shadow">
+      <div className="p-3">
 
         <div>
           <ul className="transition ease-in-out delay-150 nav sticky top-0 bg-white z-10">
@@ -117,7 +117,7 @@ const ModelDetails: React.FC = (): ReactElement => {
           <div className="outlet">
             {modelDetails
               ? renderTab(activeTab)
-              : <span>Click on node to show metrics, anomalies or schema changes</span>}
+              : <p className="font-medium text-center">Click on node to show metrics, anomalies or schema changes</p>}
           </div>
         </div>
       </div>
