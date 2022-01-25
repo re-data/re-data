@@ -1,29 +1,28 @@
 import React, { ReactElement, useContext } from 'react';
-import './GraphView.css';
 import { useSearchParams } from 'react-router-dom';
-import { Options } from 'vis';
+import { NodeOptions, Options } from 'vis';
 import LineageGraph from '../components/LineageGraph';
 import ModelDetails from '../components/ModelDetails';
 import {
   DbtNode, DbtSource, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
+import './GraphView.css';
 
 interface VisPointer {
   x: number,
   y: number
 }
 
-interface VisNode {
+interface VisNode extends NodeOptions {
   id: string | number,
-  label: string | number;
   shape: string;
-  color?: string;
 }
 
 interface VisEdge {
   from: string | number,
   to: string | number;
   arrows: string;
+  color?: string;
 }
 
 export interface VisNetworkEventParams {
@@ -41,6 +40,18 @@ export interface IGraph {
   edges: Array<VisEdge>;
 }
 
+type ResourceTypeColorsProps = {
+  [key: string]: string;
+}
+
+const resourceTypeColors: ResourceTypeColorsProps = {
+  source: 'hsl(97deg 66% 44%)',
+  model: 'hsl(190deg 100% 35%)',
+  seed: 'hsl(150deg 66% 44%)',
+};
+
+const supportedResourcesTypes = new Set(['source', 'model', 'seed']);
+
 const generateGraph = (overview: OverviewData) => {
   const graph: IGraph = {
     nodes: [],
@@ -52,34 +63,40 @@ const generateGraph = (overview: OverviewData) => {
   const dbtNodes = overview.graph.nodes;
   const dbtSources = overview.graph.sources;
 
-  Object.entries(dbtNodes).forEach(([model, details]) => {
-    const [resource, packageName, modelName] = model.split('.');
-    if (resource !== 'test' && packageName !== 're_data') {
+  const allNodes = { ...dbtNodes, ...dbtSources };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  Object.entries(allNodes).forEach(([_, details]) => {
+    if (supportedResourcesTypes.has(details.resource_type) && details.package_name !== 're_data') {
       const modelId = `${details.database}.${details.schema}.${details.name}`.toLowerCase();
       const node: VisNode = {
         id: modelId,
-        label: modelName,
+        label: details.name,
         shape: 'box',
-        color: 'red',
+        color: {
+          background: resourceTypeColors[details.resource_type],
+        },
       };
       graph.nodes.push(node);
 
-      const parentNodes = new Set(details.depends_on.nodes);
-      parentNodes.forEach((parent) => {
-        const parentNode: DbtNode | DbtSource = dbtNodes[parent]
-          ? dbtNodes[parent]
-          : dbtSources[parent];
-        if (parentNode) {
-          // in coming edge only if parent node exists
-          const parentModelId = `${parentNode.database}.${parentNode.schema}.${parentNode.name}`.toLowerCase();
-          const edge: VisEdge = {
-            from: parentModelId,
-            to: modelId,
-            arrows: 'to',
-          };
-          graph.edges.push(edge);
-        }
-      });
+      if (details.resource_type !== 'source') {
+        const d = details as DbtNode;
+        const parentNodes = new Set(d.depends_on.nodes);
+        parentNodes.forEach((parent) => {
+          const parentNode: DbtNode | DbtSource = dbtNodes[parent]
+            ? dbtNodes[parent]
+            : dbtSources[parent];
+          if (parentNode) {
+            const parentModelId = `${parentNode.database}.${parentNode.schema}.${parentNode.name}`.toLowerCase();
+            const edge: VisEdge = {
+              from: parentModelId,
+              to: modelId,
+              arrows: 'to',
+            };
+            graph.edges.push(edge);
+          }
+        });
+      }
     }
   });
 
@@ -117,27 +134,32 @@ const GraphView: React.FC = (): ReactElement => {
     width: '100%',
     edges: {
       color: {
-        color: '#8884d8',
-        highlight: '#8884d8',
-        hover: '#8884d8',
-        inherit: false,
+        color: '#6F798B70',
+        highlight: '#6F798B70',
+        hover: '#6F798B70',
+        inherit: true,
       },
       dashes: false,
       smooth: true,
     },
     nodes: {
       color: {
-        border: '#8884d8',
-        background: '#8884d8',
+        border: 'transparent',
         highlight: '#392396',
         hover: {
-          border: '#392396',
-          background: '#8884d8',
+          border: 'transparent',
+          background: '#503d9d',
         },
       },
-      // "color": "#8884d8",
       font: {
         color: '#ffffff',
+        size: 22,
+      },
+      margin: {
+        top: 7,
+        left: 14,
+        right: 14,
+        bottom: 7,
       },
     },
     layout: {
@@ -145,7 +167,7 @@ const GraphView: React.FC = (): ReactElement => {
         enabled: true,
         levelSeparation: 485,
         nodeSpacing: 50,
-        treeSpacing: 35,
+        treeSpacing: 50,
         blockShifting: false,
         edgeMinimization: true,
         parentCentralization: false,
@@ -154,7 +176,12 @@ const GraphView: React.FC = (): ReactElement => {
       },
     },
     interaction: {
-      hover: true, navigationButtons: false, multiselect: true, keyboard: { enabled: true },
+      hover: true,
+      navigationButtons: false,
+      multiselect: true,
+      keyboard: {
+        enabled: true,
+      },
     },
     physics: {
       enabled: false,
@@ -167,10 +194,24 @@ const GraphView: React.FC = (): ReactElement => {
   return (
     <div className="h-full">
       <h1 className="mb-3 text-2xl font-semibold">Graph</h1>
+
+      <div className="flex items-center absolute mt-4 ml-4">
+        <>
+          <div className="w-3 h-3 bg-source rounded-tooltip" />
+          <p className="text-sm font-medium ml-1 mr-4">Source node</p>
+        </>
+        <>
+          <div className="w-3 h-3 bg-seed rounded-tooltip" />
+          <p className="text-sm font-medium ml-1 mr-4">Seed node</p>
+        </>
+        <>
+          <div className="w-3 h-3 bg-model rounded-tooltip" />
+          <p className="text-sm font-medium ml-1 mr-4">Model node</p>
+        </>
+      </div>
       <div
         className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-12
-             gap-4 border-2 border-solid border-gray-200
-              rounded-lg h-full"
+        gap-4 bg-white border-2 border-solid border-gray-200 rounded-lg h-full"
       >
         <LineageGraph
           data={data}
