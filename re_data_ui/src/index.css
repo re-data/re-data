@@ -77,7 +77,7 @@ select {
 }
 
 li.active-tab {
-    border-bottom: 3px solid rgba(31, 41, 55, var(--tw-bg-opacity));
+    border-bottom: 3px solid rgba(57,35,150, var(--tw-bg-opacity));
 }
 
 .sticky-nav {
@@ -88,4 +88,24 @@ li.active-tab {
 
 .css-26l3qy-menu {
     z-index: 100 !important;
+}
+
+.right-component {
+    height: 32px;
+}
+
+.bg-source {
+    background: hsl(97deg 66% 44%);
+}
+
+.bg-seed {
+    background: hsl(150deg 66% 44%);
+}
+
+.bg-model {
+    background: hsl(190deg 100% 35%);
+}
+
+.rounded-tooltip {
+    border-radius: 0.2rem;
 }
