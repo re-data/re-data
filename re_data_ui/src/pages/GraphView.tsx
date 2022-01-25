@@ -16,7 +16,6 @@ interface VisPointer {
 interface VisNode extends NodeOptions {
   id: string | number,
   shape: string;
-  color?: string;
 }
 
 interface VisEdge {
