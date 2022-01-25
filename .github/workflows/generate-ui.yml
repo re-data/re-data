@@ -47,7 +47,7 @@ jobs:
           pip install dbt-postgres==1.0.0
 
       - name: Install dbt dependencies
-        working-directory: .
+        working-directory: ./getting_started/toy_shop
         run: |
           dbt --version
           dbt deps
@@ -145,7 +145,7 @@ jobs:
           pip install dbt-${{ matrix.database }}==1.0.0
 
       - name: Install dbt dependencies
-        working-directory: .
+        working-directory: ./getting_started/toy_shop
         run: |
           dbt --version
           dbt deps
