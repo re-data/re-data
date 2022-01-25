@@ -45,6 +45,8 @@ jobs:
         run: |
           pip install .
           pip install dbt-postgres==1.0.0
+          dbt --version
+          dbt deps
 
       - name: Initialize data and compute metrics
         working-directory: ./getting_started/toy_shop
@@ -137,6 +139,8 @@ jobs:
         run: |
           pip install .
           pip install dbt-${{ matrix.database }}==1.0.0
+          dbt --version
+          dbt deps
 
       - name: Drop schemas
         working-directory: ./getting_started/toy_shop

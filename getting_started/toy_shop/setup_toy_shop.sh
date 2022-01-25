@@ -2,8 +2,6 @@
 
 dbt_profile=$1
 
-dbt --version
-dbt deps
 dbt run-operation create_toy_shop_source_tables --profile $dbt_profile
 dbt seed --profile $dbt_profile
 dbt run --exclude package:re_data --profile $dbt_profile
