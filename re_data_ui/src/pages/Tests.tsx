@@ -12,14 +12,12 @@ type valueProps = {
 }
 
 const ModelCell = ({ value }: valueProps) => (
-  <>
-    <Link
-      to={`/graph?model=${value}`}
-      className="text-sm text-blue-700 font-semibold"
-    >
-      {value}
-    </Link>
-  </>
+  <Link
+    to={`/graph?model=${value}`}
+    className="text-sm text-blue-700 font-semibold"
+  >
+    {value}
+  </Link>
 );
 
 const StatusCell = ({ value }: valueProps) => (
@@ -98,8 +96,11 @@ const Tests: React.FC = (): ReactElement => {
       Header: 'Column',
       accessor: 'column_name',
     },
-  ],
-  []);
+    {
+      Header: 'Run At',
+      accessor: 'run_at',
+    },
+  ], []);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const option = e.target.value;
@@ -141,7 +142,7 @@ const Tests: React.FC = (): ReactElement => {
             </div>
           </div>
         ) : (
-          <EmptyContent text="No Tests">
+          <EmptyContent text="No Test">
             <FaRegSmileWink size={80} color="#392396" />
           </EmptyContent>
         )}
