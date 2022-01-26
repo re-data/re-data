@@ -20,11 +20,11 @@ const TestNameCell = ({ value }: valueProps) => (
 );
 
 const StatusCell = ({ value }: valueProps) => (
-  <span
-    className={`${value?.toLowerCase()} text-xs font-medium border px-4 py-1 rounded-full`}
+  <div
+    className={`${value?.toLowerCase()} text-xs font-medium text-center py-1 rounded-full`}
   >
     {value}
-  </span>
+  </div>
 );
 
 const generateTestsData = (tests: ITestSchema[], model: string) => {

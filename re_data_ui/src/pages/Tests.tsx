@@ -13,7 +13,7 @@ type valueProps = {
 
 const ModelCell = ({ value }: valueProps) => (
   <Link
-    to={`/graph?model=${value}`}
+    to={`/graph?model=${value.toLowerCase()}`}
     className="text-sm text-blue-700 font-semibold"
   >
     {value}
@@ -21,11 +21,11 @@ const ModelCell = ({ value }: valueProps) => (
 );
 
 const StatusCell = ({ value }: valueProps) => (
-  <span
-    className={`${value?.toLowerCase()} text-xs font-medium border px-4 py-1 rounded-full`}
+  <div
+    className={`${value?.toLowerCase()} text-xs font-medium text-center py-1 rounded-full`}
   >
     {value}
-  </span>
+  </div>
 );
 
 const generateTestsData = (tests: ITestSchema[]) => {
@@ -95,10 +95,6 @@ const Tests: React.FC = (): ReactElement => {
     {
       Header: 'Column',
       accessor: 'column_name',
-    },
-    {
-      Header: 'Run At',
-      accessor: 'run_at',
     },
   ], []);
 
