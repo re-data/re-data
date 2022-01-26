@@ -1,12 +1,20 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import {
-  Row, TableInstance, useAsyncDebounce, useGlobalFilter, usePagination, useSortBy, useTable,
+  Row, TableInstance, useAsyncDebounce,
+  useGlobalFilter, usePagination, useSortBy, useTable,
 } from 'react-table';
 
+export interface CellProps {
+  value: string;
+  column: Record<string, number>;
+  row:Record<string, string>;
+}
 export interface ColumnsProps {
   Header: string;
   accessor: string;
+  Cell?: ({ value, column, row }: CellProps) => JSX.Element;
+  type?: string;
 }
 
 export interface ITable {

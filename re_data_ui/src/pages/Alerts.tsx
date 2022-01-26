@@ -4,9 +4,9 @@ import { FaRegSmileBeam } from 'react-icons/all';
 import { Link } from 'react-router-dom';
 import { EmptyContent, Table } from '../components';
 import AlertBadge from '../components/AlertBadge';
-import { ColumnsProps } from '../components/Table';
+import { ColumnsProps, CellProps } from '../components/Table';
 import {
-  Alert, OverviewData, RedataOverviewContext
+  Alert, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 
 const generateAlertData = (alerts: Alert[]) => {
@@ -28,16 +28,10 @@ const generateAlertData = (alerts: Alert[]) => {
   return result;
 };
 
-type alertProps = {
-  value: string;
-  column: Record<string, number>;
-  row:Record<string, string>;
-}
-
-const AlertCell = ({ value, column, row }: alertProps) => (
+const AlertCell = ({ value, column, row }: CellProps) => (
   <>
     <AlertBadge
-      error={row.original[column.alertType] === 'anomaly'}
+      error={row.original[column.type] === 'anomaly'}
     />
     <Link
       to={`/graph?model=${value?.toLowerCase()}`}
@@ -57,7 +51,7 @@ const Alerts: React.FC = (): ReactElement => {
       Header: 'Model',
       accessor: 'model',
       Cell: AlertCell,
-      alertType: 'type',
+      type: 'type',
     },
     {
       Header: 'Message',
