@@ -6,7 +6,7 @@ import { EmptyContent, Table } from '../components';
 import AlertBadge from '../components/AlertBadge';
 import { ColumnsProps } from '../components/Table';
 import {
-  Alert, OverviewData, RedataOverviewContext,
+  Alert, OverviewData, RedataOverviewContext
 } from '../contexts/redataOverviewContext';
 
 const generateAlertData = (alerts: Alert[]) => {
@@ -40,7 +40,7 @@ const AlertCell = ({ value, column, row }: alertProps) => (
       error={row.original[column.alertType] === 'anomaly'}
     />
     <Link
-      to={`/graph?model=${value}`}
+      to={`/graph?model=${value?.toLowerCase()}`}
       className="text-sm text-blue-700 font-semibold"
     >
       {value}
