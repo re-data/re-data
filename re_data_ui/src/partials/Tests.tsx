@@ -38,7 +38,7 @@ const StatusCell = ({ value }: CellProps) => (
 
 const RightComponent = ({ options, value, handleChange }: RightComponentProps) => (
   <select
-    className="px-2 py-1 rounded-md w-1/4 right-component"
+    className="px-2 py-1 rounded-md w-1/4 right-component border border-gray-300"
     onChange={handleChange}
     value={value}
   >
