@@ -27,7 +27,7 @@ const TableSchema: React.FC<TableSchemaProps> = (
   return (
     <>
       {showTitle && (
-        <span className="text-lg text--capitalize">Table Schema</span>
+        <span className="text-lg">Table Schema</span>
       )}
       <div className="mb-3 grid grid-cols-1">
         <div className="flex flex-col">

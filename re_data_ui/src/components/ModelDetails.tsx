@@ -81,43 +81,45 @@ const ModelDetails: React.FC = (): ReactElement => {
 
   return (
     <div className="col-span-4 h-auto overflow-y-auto bg-white border rounded shadow">
-      <div className="p-3">
+      <div className="py-3">
 
         <div>
-          <ul className="transition ease-in-out delay-150 nav sticky top-0 bg-white z-10">
-            <li
-              className={activeTab === ModelTabs.METRICS ? 'active' : ''}
-              role="presentation"
-              onClick={showMetrics}
-            >
-              Metrics
-            </li>
-            <li
-              className={activeTab === ModelTabs.ANOMALIES ? 'active' : ''}
-              role="presentation"
-              onClick={showAnomalies}
-            >
-              Anomalies
-            </li>
-            <li
-              className={activeTab === ModelTabs.SCHEMA_CHANGES ? 'active' : ''}
-              role="presentation"
-              onClick={showSchema}
-            >
-              Schema
-            </li>
-          </ul>
-          <div className="mb-2">
+          <nav className="side-nav transition ease-in-out delay-150 sticky top-0 bg-white z-10">
+            <ul className="">
+              <li
+                className={activeTab === ModelTabs.METRICS ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showMetrics}
+              >
+                Metrics
+              </li>
+              <li
+                className={activeTab === ModelTabs.ANOMALIES ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showAnomalies}
+              >
+                Anomalies
+              </li>
+              <li
+                className={activeTab === ModelTabs.SCHEMA_CHANGES ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showSchema}
+              >
+                Schema
+              </li>
+            </ul>
+          </nav>
+          <p className="mb-2 pl-3">
             <span
               className="text-2xl text--capitalize font-bold"
             >
               {extractComponentFromIdentifier(fullTableName, 'tableName')}
             </span>
-          </div>
+          </p>
           <div className="outlet">
             {modelDetails
               ? renderTab(activeTab)
-              : <p className="font-medium text-center">Click on node to show metrics, anomalies or schema changes</p>}
+              : <p className="font-medium p-3 text-center">Click on node to show metrics, anomalies or schema changes</p>}
           </div>
         </div>
       </div>

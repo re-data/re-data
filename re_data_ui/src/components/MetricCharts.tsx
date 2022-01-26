@@ -238,7 +238,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
         : (
           <>
             {showTitle && (
-              <span className="text-lg text--capitalize">Table Metrics</span>
+              <span className="text-lg text-capitalize">Table Metrics</span>
             )}
             <div
               className={`${(!fullWidth && tableMetricCharts.length) && 'grid grid-cols-2 gap-4'} shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3`}
@@ -250,7 +250,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
               )}
             </div>
             {showTitle && (
-              <span className="text-lg text--capitalize">Column Metrics</span>
+              <span className="text-lg">Column Metrics</span>
             )}
             <div
               className={`${(!fullWidth && columnMetricCharts.length) && 'grid grid-cols-2 gap-4'} shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3`}
