@@ -1,11 +1,12 @@
 nav.side-nav {
     margin: 0 auto .5rem;
     height: 60px;
-    @apply w-full flex;
+    @apply w-full flex justify-center;
 }
 
 .side-nav ul {
-    @apply flex items-center w-full justify-around
+    @apply flex items-center w-full justify-around;
+    width: 75%;
 }
 
 .side-nav ul li {

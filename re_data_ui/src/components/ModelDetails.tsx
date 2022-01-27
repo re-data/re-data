@@ -81,7 +81,7 @@ const ModelDetails: React.FC = (): ReactElement => {
 
   return (
     <div className="col-span-4 h-auto overflow-y-auto bg-white border rounded shadow">
-      <div className="py-3">
+      <div className="p-3 pt-0">
 
         <div>
           <nav className="side-nav transition ease-in-out delay-150 sticky top-0 bg-white z-10">
@@ -109,9 +109,9 @@ const ModelDetails: React.FC = (): ReactElement => {
               </li>
             </ul>
           </nav>
-          <p className="mb-2 pl-3">
+          <p className="mb-2 text-center">
             <span
-              className="text-2xl text--capitalize font-bold"
+              className="text-2xl font-bold"
             >
               {extractComponentFromIdentifier(fullTableName, 'tableName')}
             </span>

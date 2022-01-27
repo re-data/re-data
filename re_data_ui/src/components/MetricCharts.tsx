@@ -225,7 +225,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
         ? (
           <>
             <div
-              className={`${(!fullWidth && alertMetricCharts.length) && 'grid grid-cols-2 gap-4'} shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3`}
+              className={`${(!fullWidth && alertMetricCharts.length) && 'grid grid-cols-2 gap-4'} overflow-hidden sm:rounded-lg p-4 mt-3 mb-3`}
             >
               {alertMetricCharts.length ? alertMetricCharts : (
                 <EmptyContent text="No Anomalies!">
@@ -241,7 +241,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
               <span className="text-lg text-capitalize">Table Metrics</span>
             )}
             <div
-              className={`${(!fullWidth && tableMetricCharts.length) && 'grid grid-cols-2 gap-4'} shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3`}
+              className={`${(!fullWidth && tableMetricCharts.length) && 'grid grid-cols-2 gap-4'} overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3`}
             >
               {tableMetricCharts.length ? tableMetricCharts : (
                 <EmptyContent text="Add this table to re_data config, to generate metrics">
@@ -253,7 +253,7 @@ const MetricCharts: React.FC<MetricChartsProps> = (
               <span className="text-lg">Column Metrics</span>
             )}
             <div
-              className={`${(!fullWidth && columnMetricCharts.length) && 'grid grid-cols-2 gap-4'} shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3`}
+              className={`${(!fullWidth && columnMetricCharts.length) && 'grid grid-cols-2 gap-4'} overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3`}
             >
               {columnMetricCharts.length ? columnMetricCharts : (
                 <EmptyContent text="Add this table to re_data config, to generate metrics">
