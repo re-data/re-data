@@ -10,6 +10,7 @@ import {
   OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
+import { TestsPartial } from '../partials';
 
 type optionsProps = {
   value: string;
@@ -120,7 +121,14 @@ const Tables: React.FC = (): ReactElement => {
                 className={`mr-4 ${activeTab === 'schema' && 'active-tab'}`}
               >
                 <button type="button" onClick={() => handleScroll('schema')}>
-                  Schema
+                  Schemas
+                </button>
+              </li>
+              <li
+                className={`mr-4 ${activeTab === 'tests' && 'active-tab'}`}
+              >
+                <button type="button" onClick={() => handleScroll('tests')}>
+                  Tests
                 </button>
               </li>
             </ul>
@@ -162,6 +170,18 @@ const Tables: React.FC = (): ReactElement => {
                 <SchemaChanges
                   modelDetails={modelDetails}
                   showTitle={false}
+                />
+              </div>
+            </div>
+          </section>
+          <section id="tests" className="pb-4 pt-4">
+            <div className="bg-white rounded-md px-3 py-4">
+              <h3 className="mb-3 text-md font-medium">Tests</h3>
+              <div className="grid grid-cols-1 gap-4">
+                <TestsPartial
+                  showRunAt
+                  showModel={false}
+                  modelName={model}
                 />
               </div>
             </div>

@@ -35,15 +35,14 @@ code {
 }
 
 .pass {
-    color: #389e0d;
-    background: #f6ffed;
-    border-color: #b7eb8f;
+    color: #FFF;
+    background: hsl(150deg 66% 44%);
+    width: 60px;
 }
 
 .fail {
-    color: #d4380d;
-    background: #fff2e8;
-    border-color: #ffbb96;
+    @apply bg-red-600 text-white;
+    width: 60px;
 }
 
 select {

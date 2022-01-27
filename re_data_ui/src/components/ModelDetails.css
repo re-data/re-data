@@ -1,44 +1,18 @@
-ul.nav {
-    width: 100%;
-    margin: 0 auto 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid #392396;
-    border-radius: 2rem;
+nav.side-nav {
+    margin: 0 auto .5rem;
+    height: 60px;
+    @apply w-full flex justify-center;
 }
 
-ul.nav li {
-    width: 50%;
-    padding: .3rem;
-    list-style: none;
-    text-align: center;
-    font-size: small;
-    cursor: pointer;
-    transition: all 0.7s;
-    border-radius: 0;
+.side-nav ul {
+    @apply flex items-center w-full justify-around;
+    width: 75%;
 }
 
-ul.nav li:first-child {
-    border-bottom-left-radius: 2rem;
-    border-top-left-radius: 2rem;
+.side-nav ul li {
+    @apply text-center cursor-pointer;
 }
 
-ul.nav li:not(:first-child):not(:last-child) {
-    border-left: 1px solid #392396;
-    border-right: 1px solid #392396;
-}
-
-ul.nav li:last-child {
-    border-bottom-right-radius: 2rem;
-    border-top-right-radius: 2rem;
-}
-
-ul.nav li:hover {
-    background: #8884d8;
-}
-
-ul.nav li.active {
-    background: #392396;
-    color: #fff;
+.side-nav ul li.active {
+    @apply pb-1;
 }
