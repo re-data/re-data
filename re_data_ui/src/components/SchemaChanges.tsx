@@ -20,7 +20,7 @@ const SchemaChanges: React.FC<SchemaChangesProps> = (
   return (
     <>
       {showTitle && (
-        <span className="text-lg text--capitalize">Schema Changes</span>
+        <span className="text-lg">Schema Changes</span>
       )}
       {schemaChanges.length
         ? (
