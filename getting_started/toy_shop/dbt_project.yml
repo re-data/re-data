@@ -29,10 +29,12 @@ models:
             - age
 
 sources:
-  toy_shop_sources:
-    toy_shop_customers:
-      +re_data_monitored: true
-      +enabled: true
+  toy_shop:
+    sources:
+      toy_shop_sources:
+        toy_shop_customers:
+          +re_data_monitored: true
+          +re_data_time_filter: joined_at
 
 seeds:
   toy_shop:
