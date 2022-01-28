@@ -2,9 +2,9 @@
 sidebar_position: 2
 ---
 
-# Observability data
+# Reliability data
 
-Now, let's compute the first health data. We will use the re_data configuration already defined in the project. Check it out **[in our repo](https://github.com/re-data/re-data/blob/master/getting_started/toy_shop/dbt_project.yml)** - or in your own editor.
+Now, let's compute the first health data. We will use the re_data configuration already defined in the project. Check it out **[in our repo](https://github.com/re-data/re-data/blob/master/getting_started/toy_shop/dbt_project.yml)**
 
 ## First re_data run
 

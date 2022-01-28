@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Observability UI 👀
+# Reliability UI 👀
 
 Now let's investigate generated data in re_data UI. We first generate HTML/JSON from the data warehouse and then serve files.
 
@@ -28,9 +28,23 @@ From the alerts view, you can go to learn more details about specific alerts in 
 
 Graph view lets you investigate anomalies, metrics & schema changes on top of the dbt lineage graph.
 
+
+## Tests
+
+![GraphExample](/screenshots/ui/tests.png)
+
+Tests view lets you see history of all dbt tests run. (re_data comes with a `save_test_history` macro which when passed into `on-run-end` dbt configuration, saves tests history into the data warehouse)
+
+
+## Tables
+
+![GraphExample](/screenshots/ui/tables.png)
+
+Tables view lets you investigate any table easily. Check out for anomalies, metrics, tests related to it.
+
 ## Use cases 
 
-re_data observability UI meant to help you:
+re_data this UI meant to help you:
 
  - gain more confidence in data produced 😊
  - know first if any problems are appearing in the data

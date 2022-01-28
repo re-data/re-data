@@ -23,26 +23,9 @@ Check out our **[live demo](https://getre.io/demo)** of what re_data can do for 
 
 # Getting started
 
-[Check our docs!](https://docs.getre.io/) 📓 📓
+**[Check our docs!](https://docs.getre.io/)** 📓 📓 📓
 
-[Join re_data community on Slack](https://www.getre.io/slack) (we are very responsive there)
-
-# Source code
-
-Data transformations in re_data are implemented as a dbt package if interested in source code details, check it out [here!](https://github.com/re-data/dbt-re-data)
-# Integrations
-
-We support most of the main data warehouses supported by dbt. We plan to add support for Spark and Databricks (now officially supported by dbt).
-
-|      | Integration | Status     |
-| :---        |    :----:   |          ---: |
-| <img height="40" src="https://miro.medium.com/max/1024/0*eDEy4S8zFfYnRt1X.png" />      | BigQuery       | Supported |
-| <img height="40" src="https://www.pngkey.com/png/full/20-201458_when-ubers-engineering-team-published-a-blog-post.png" />   | PostgreSQL        | Supported      |
-| <img height="40" src="https://dbdb.io/media/logos/amazon-redshift.png" />  | Redshift        | Supported      |
-| <img height="40" src="https://www.snowflake.com/wp-content/themes/snowflake/img/snowflake-logo-blue@2x.png" />  | Snowflake        | Supported      |
-| <img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Apache_Spark_logo.svg/1200px-Apache_Spark_logo.svg.png" />  | Apache Spark        | Planned      |
-| <img height="40" src="https://cdn.freelogovectors.net/wp-content/uploads/2020/11/databricks-logo.png" />  | Databricks        | Planned      |
-
+**[Join re_data community on Slack](https://www.getre.io/slack)** (we are very responsive there)
 
 # License
 re_data is licensed under the MIT license. See the [LICENSE](LICENSE) file for licensing information.
