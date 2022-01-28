@@ -1,0 +1,79 @@
+---
+sidebar_position: 0
+---
+
+# Configuration
+
+To run re_data you would need to configure for what tables re_data should run + optionally override metrics, time_window and some others parameters used for computation.
+
+## Monitored tables config
+
+## Other optional parameters of config
+
+Sample configuration for other parameters can look like that:
+
+```yaml title="Optional parameters of re_data configuration"
+vars:
+  # (optional) if not passed, stats for last day will be computed
+  re_data:time_window_start: '{{ (run_started_at - modules.datetime.timedelta(1)).strftime("%Y-%m-%d 00:00:00") }}'
+  re_data:time_window_end: '{{ run_started_at.strftime("%Y-%m-%d 00:00:00") }}'
+
+  # (optional) override standard metrics computed for all your tables
+  re_data:metrics_base:
+    table:
+      - row_count
+      - freshness
+      - buy_count # my own custom metric
+      
+    column:
+      numeric:
+        - min
+        - max
+        - avg
+        - stddev
+        - variance
+        - nulls_count
+        - diff # my own custom metric
+        
+      text:
+        - min_length
+        - max_length
+        - avg_length
+        - nulls_count
+        - missing_count
+
+  # (optional) global z_score threshold to used when triggering alerts
+  re_data:alerting_z_score: 3
+
+  # (optional) tells how much hisory you want to consider when looking for anomalies
+  re_data:anomaly_detection_look_back_days: 30
+```
+
+### re_data:time_window_start, re_data:time_window_end
+
+re_data metrics are time-based. (re_data filters all your table data to a specific time window.)
+In general, we advise setting up a time window this way that all new data is monitored.
+It's also possible to compute metrics from overlapping data for example last 7 days.
+
+By default, re_data computes daily stats from the last day (it actually uses exact configuration from example for that)
+
+### re_data:metrics_base
+
+This is a set of metrics to compute for all monitored tables.
+Some metrics like `row_count` are table level, others are specified
+per column type: so that expression will be run for all columns of this type.
+
+Here you only add metrics if you want to compute them for all tables which are monitored. You can also setup metrics to be computed for specific tables only (with table specific config)
+
+:::info
+schema changes are currently not set up using this parameter. Every monitored table is scanned for schema changed currently.
+:::
+
+### re_data:alerting_z_score
+
+The threshold for alerting, you can leave it as is or update depending on your experience.  (By default it's 3)
+
+
+### re_data:anomaly_detection_look_back_days
+
+The period which `re_data` considers when looking for anomalies. (By default it's 30 days)

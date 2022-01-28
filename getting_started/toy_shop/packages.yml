@@ -2,5 +2,4 @@ packages:
     - package: dbt-labs/dbt_utils
       version: [">=0.7.0", "<0.9.0"]
     
-    - git: https://github.com/re-data/dbt-re-data.git
-      revision: feature/dbt-config-support
+    - local: ../../../dbt-re-data
