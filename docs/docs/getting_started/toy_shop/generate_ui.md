@@ -42,16 +42,4 @@ Tests view lets you see history of all dbt tests run. (re_data comes with a `sav
 
 Tables view lets you investigate any table easily. Check out for anomalies, metrics, tests related to it.
 
-## Use cases 
-
-re_data this UI meant to help you:
-
- - gain more confidence in data produced 😊
- - know first if any problems are appearing in the data
- - analyse anomaly & schema change impact on other tables
- - find the root cause for the problems appearing
- - share information with team members & other teams easily
-
-## Want to learn more?
-
-Check out the rest of re_data docs, or ask as on **[Slack! 😊](https://www.getre.io/slack)** (we are very responsive there)
+In the next setup, let's see how we can notify ourselves about problems in the data
