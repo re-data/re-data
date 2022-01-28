@@ -2,6 +2,17 @@ version: 2
 
 models:
   - name: pending_orders
+    config:
+      re_data_columns:
+        - amount
+        - status
+      re_data_metrics:
+        table:
+          - orders_above_100
+        column:
+          status:
+            - distinct_values
+          
     columns:
       - name: status
         tests:

@@ -15,13 +15,12 @@ models:
     enabled: true
 
   toy_shop:
-    re_data_monitored: true
-    re_data_time_filter: created_at
+    +re_data_monitored: true
+    +re_data_time_filter: created_at
 
     orders_per_age:
-      re_data_time_filter:
-
-      re_data_metrics:
+      +re_data_time_filter:
+      +re_data_metrics:
         table:
           - orders_above_100
         columns:
@@ -30,27 +29,29 @@ models:
           - age
 
 sources:
-  toy_shop_customers:
-    re_data_monitored: true
+  toy_shop_sources:
+    toy_shop_customers:
+      +re_data_monitored: true
 
 seeds:
-  order_items:
-    re_data_monitored: true
-    re_data_time_filter: added_at
-    re_data_columns:
-      - name
-      - amount
-  
-  orders:
-    re_data_monitored: true
-    re_data_time_filter: created_at
-    re_data_metrics:
-      table:
-        - orders_above_100
+  toy_shop:
+    order_items:
+      +re_data_monitored: true
+      +re_data_time_filter: added_at
+      +re_data_columns:
+        - name
+        - amount
+    
+    orders:
+      +re_data_monitored: true
+      +re_data_time_filter: created_at
+      +re_data_metrics:
+        table:
+          - orders_above_100
 
-      column:
-        status:
-          - distinct_values
+        column:
+          status:
+            - distinct_values
 
 vars:
   re_data:alerting_z_score: 3
