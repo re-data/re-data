@@ -6,6 +6,7 @@ dbt_profile=$1
 dbt run-operation create_toy_shop_source_tables --profile $dbt_profile
 dbt seed --profile $dbt_profile
 dbt run --exclude package:re_data --profile $dbt_profile
+dbt run --select re_data_test_history --profile $dbt_profile
 dbt test --exclude package:re_data --profile $dbt_profile || true
 re_data run --start-date 2021-01-01 --end-date 2021-01-06 --profile $dbt_profile
 dbt test --exclude package:re_data --profile $dbt_profile || true
