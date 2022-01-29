@@ -23,7 +23,7 @@ And here is a brief description of what all columns mean:
 - `id` - unique id generated for column, generated from table_name, column_name, metric, time_window_start, time_window_end. In the case of these 5 metrics being the same for newly generated data, data for metric will be overwritten. 
 - `table_name` - full name of the monitored table in your database
 - `column_name` - column name, or empty value in case of table level metrics 
-- `metric` - name of metric, are defined in **[metrics](/docs/reference/data_monitoring/metrics)**
+- `metric` - name of metric, are defined in **[metrics](/docs/reference/metrics/overview)**
 - `value` - value of a metric (curently all re_data metrics are numeric)
 - `time_window_start` - timestamp of time window start
 - `time_window_end` - timestamp of time window end
