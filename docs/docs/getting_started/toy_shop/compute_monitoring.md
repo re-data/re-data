@@ -20,7 +20,7 @@ dbt run --models package:re_data --vars \
 
 *Note, if we don't pass time window parameters re_data will compute stats from the previous day*
 
-This computes **[metrics](/docs/reference/data_monitoring/metrics#default-metrics)** for the monitored tables. Let's just see how many customers/order_items/orders we have added in on 01-01-2021.
+This computes metrics for the monitored tables. Let's just see how many customers/order_items/orders we have added in on 01-01-2021.
 
 ```sql title="Viewing computed metrics"
 select table_name, metric, value from toy_shop_re.re_data_metrics where metric in( 'row_count', 'global__row_count');

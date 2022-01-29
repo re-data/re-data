@@ -31,7 +31,8 @@ __      title               rental_rate	rating      created_at
 
 ## Extra Table Metrics
 
-### [distinct_table_rows](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_distinct_table_rows)
+### distinct_table_rows
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_distinct_table_rows)
 This metric computes the distinct number of rows in the given table
 ```
 time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
@@ -43,7 +44,8 @@ distinct_rows = 10
 :::info
 [`regex_match_expression`](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.regex_match_expression) is resolved at runtime depending on the database in use.
 :::
-### [match_regex](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_match_regex)
+### match_regex
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_match_regex)
 
 Determines the count of values in a given column that matches the specified regex. Suppose we want to check if
 the rating column matches a specific regular expression pattern and we define it in our dbt_project.yml file.
@@ -83,7 +85,8 @@ where created_at between time_window_start and time_window_end
 match_regex = 4 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
 ```
 
-### [match_regex_percent](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_match_regex_percent)
+### match_regex_percent
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_match_regex_percent)
 
 Determines the percentage of values in a given column that matches the specified regex.
 
@@ -92,7 +95,8 @@ Suppose we use the same configuration for the match_regex metric above, we have
 match_regex_percent = 40 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
 ```
 
-### [not_match_regex](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_not_match_regex)
+### not_match_regex
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_not_match_regex)
 
 Determines the count of values in a given column that does **not** match the specified regex.
 
@@ -101,7 +105,8 @@ Suppose we pass in ([0-9]+) as our regex parameter,
 not_match_regex = 6 where created_at is between 2021-09-01T00:00:00 and 2021-09-02T00:00:00
 ```
 
-### [distinct_values](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_distinct_values)
+### distinct_values
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_distinct_values)
 
 Determines the count of values in a given column that are unique.
 
@@ -117,7 +122,8 @@ time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 distinct_values = 5. (PG)
 ```
 
-### [duplicate_values](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_duplicate_values)
+### duplicate_values
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_duplicate_values)
 
 Determines the count of values in a given column that are duplicated.
 
@@ -134,7 +140,8 @@ time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 duplicate_values = 4. (PG-13, G, NC-17, R)
 ```
 
-### [duplicate_rows](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_duplicate_rows)
+### duplicate_rows
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_duplicate_rows)
 
 Determines the count of rows in a given column that have values which are duplicates.
 
@@ -151,7 +158,8 @@ time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 duplicate_count = 9. (PG-13[2], G[3], NC-17[2], R[2])
 ```
 
-### [unique_rows](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_unique_rows)
+### unique_rows
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_unique_rows)
 Determines the count of rows in a given column that have values which are unique.
 
 ```
@@ -167,7 +175,8 @@ time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:00:00
 distinct_count = 1 (PG)
 ```
 
-### [approx_distinct_values](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_approx_distinct_values)
+### approx_distinct_values
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_approx_distinct_values)
 Determines the approximate distinct count of values in a given column. This metric is useful in large tables where an approximation is sufficient and query performance is required. <br/>
 **Note:** Postgres does not support for approximate count of distinct values unlike [bigquery](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.bigquery__approx_distinct_values), [snowflake](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.snowflake__approx_distinct_values) and [redshift](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.redshift__approx_distinct_values).
 
