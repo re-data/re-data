@@ -5,7 +5,7 @@ dbt_docs_base_url: https://re-data.github.io/dbt-re-data
 
 # Base metrics
 
-Base metrics are computed for all monitored tables. If you would rather not computed some of them it's easy to change base metrics list via `re_data:metrics_base` variable.
+Base metrics are computed for all monitored tables. If you would rather not compute some of them it's easy to change the base metrics list via the `re_data:metrics_base` variable.
 
 ```csv title="Sample table for example metrics"
 __      title               rental_rate	rating      created_at
@@ -46,8 +46,9 @@ row_count = 10 where time window is >= 2021-09-01T00:00:00 and < 2021-09-02T00:0
 ### freshness
 #### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_freshness)
 
-Information about the latest record in a given time frame. Suppose we are calculating the `freshness` metric in the table above for the time window `[2021-09-01T00:00:00, 2021-09-02T00:00:00)`. We observe that the latest record 
-in that time frame appears in row 9 with `created_at=2021-09-01T20:00:00`. `freshness` is the difference between the end of the time window and the latest record in the time frame in seconds. For this example described, freshness would be calculated as 
+Information about the latest record in a given time frame. Suppose we calculate the `freshness` metric in the table above for the time window `[2021-09-01T00:00:00, 2021-09-02T00:00:00)`. We observe that the latest record 
+in that time frame appears in row 9 with `created_at=2021-09-01T20:00:00`. `freshness` is the difference between the end of the time window and the latest record in the time frame in seconds. For this example described, re_data would calculate freshness as:
+
 ```
 2021-09-02T00:00:00 - 2021-09-01T20:00:00 = 14400
 ```

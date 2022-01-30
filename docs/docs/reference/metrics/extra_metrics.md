@@ -4,7 +4,7 @@ dbt_docs_base_url: https://re-data.github.io/dbt-re-data
 ---
 
 # Extra Metrics
-There are metrics provided by re_data but are not computed by default in monitored tables. You can enable them by updating configuration for the specific table. You can also make the base metrics by adding them to `re_data:metrics_base`.
+There are metrics provided by re_data but are not computed by default in monitored tables. You can enable them by updating the configuration for the specific table. You can also make the base metrics by adding them to `re_data:metrics_base`.
 
 ```csv title="Sample table for which we compute extra metrics"
 __      title               rental_rate	rating      created_at

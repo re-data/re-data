@@ -17,7 +17,7 @@ on-run-end:
 ```
 
 :::info
-on-run-end hooks are called for dbt tests since dbt 1.0.0, so this re_data feature is only available with new dbt version.
+on-run-end hooks are called for dbt tests since dbt 1.0.0, so this re_data feature is only available with the new dbt version.
 :::
 
 
@@ -37,9 +37,9 @@ select * from toy_shop_re.re_data_test_history
  postgres.toy_shop.orders | status      | not_null_orders_status                                                     | Pass   | 2022-01-13 08:49:39
 ```
 
-## tests view
+## Tests view
 
-Tests view lets you see the history of all dbt tests run, you can filter on the table, time, etc.
+Tests view lets you see the history of all dbt tests run. You can filter on the table, time, etc.
 
 ![GraphExample](/screenshots/ui/tests.png)
 
