@@ -23,7 +23,7 @@ In case metric is more than single sql expression, you can also create them by u
 ## Time based
 
 We recommend that most of your metrics computed would be time-based (data is then filtered by the `time_filter` specified in the table config.
-`time_filter` can be either some date column comparable to timestamp or SQL expression that will be comparable to the timestamp in your data warehouse.
+`time_filter` can be either some date column comparable to timestamp or SQL expression that will be comparable to the timestamp in your data warehouse. *(And if you think we can shorten this definition to just SQL expression as column name is one, you are right 😊*
 
 ## Global
 

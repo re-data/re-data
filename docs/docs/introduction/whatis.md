@@ -28,13 +28,13 @@ re_data stores dbt test history making it easier to inspect it.
 Apart from that re_data ships with a set of generic dbt tests which can be used to assert that metrics computed are meeting your assumptions.
 
 ## Lineage
-re_data shows data lineage for you data warehouse. (This is imported from dbt graph). You can navigate your data & investigate alerts & metrics related to each node in the graph.
+re_data shows data lineage for your data warehouse. (This is imported from the dbt graph). You can navigate your data & investigate alerts & metrics related to each node in the graph.
 
 ## Macros
 re_data ships with a set of macros to save you time and some pain of writing code for cleaning / normalizing / validating your data. Use them to make your project cleaner 😊. You can also use them as a base for your own metrics or data tests.
 
 ## Notifications
-re_data sends notifications about suspeicious data patterns, schema chanages to your Slack so you can react quickly and fix the issues.
+re_data sends notifications about suspicious data patterns, schema changes to your Slack so you can react quickly and fix the issues.
 
 # Getting started
 

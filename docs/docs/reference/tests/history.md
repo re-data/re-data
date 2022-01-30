@@ -16,7 +16,7 @@ on-run-end:
 
 ```
 
-:::info
+:::caution
 on-run-end hooks are called for dbt tests since dbt 1.0.0, so this re_data feature is only available with the new dbt version.
 :::
 

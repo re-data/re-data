@@ -10,15 +10,17 @@ You can create both table-level or column-level metrics.
 
 Metrics can be defined in any place in your dbt project, as macros with names following the pattern: `re_data_metric_(your_name)` 
 
- - Both column and table level metrics take a dictionary called `context`. Any extra configuration passed to a metric in `re_data:monitored` would be merged with the context dicionary.
- - ```python
-    # Below is the structure of a context dictionary by default
-    {
-        "column_name": # contains the name of the column to compute the metric on. null in table metrics
-        "table_name": # contains the full table name for reference in metric query definition
-        "metric_name": # name of the metric being computed
-        "time_filter": # time column used to filter the time window
-    }
+ - Both column and table level metrics take a dictionary called `context`. Any extra configuration passed to a `re_data_metrics` config would be merged with the context dicionary and avaiable under `config` key. Check out example usage config dict in [match_regex](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_match_regex) metric.
+
+```python
+# Below is the structure of a context dictionary by default
+{
+    "column_name": # contains the name of the column to compute the metric on. null in table metrics
+    "table_name": # contains the full table name for reference in metric query definition
+    "metric_name": # name of the metric being computed
+    "time_filter": # time column used to filter the time window
+    "config": # none or dictionary containing arguments passed to custom metrics
+}
  ```
 
 Here are examples of custom metrics (one table, one column level)

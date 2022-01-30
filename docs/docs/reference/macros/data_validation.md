@@ -11,7 +11,8 @@ Check out the list of currently available validations and let us know if you cou
 
 ## Date & Time
 
-### [re_data.valid_date_eu](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_date_eu)
+### valid_date_eu
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_date_eu)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -30,7 +31,8 @@ This macro checks if data meets european date format. (-./) allowed as separator
 
 ```
 
-### [re_data.valid_date_us](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_date_us)
+### valid_date_us
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_date_us)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -49,7 +51,8 @@ This macro checks if data meets us date format.
 
 ```
 
-### [re_data.valid_date_inverse](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_date_inverse)
+### valid_date_inverse
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_date_inverse)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -68,7 +71,8 @@ This macro checks if data is in inversed date format.
  2020-01-31 |               true
 ```
 
-### [re_data.valid_date_iso_8601](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_date_iso_8601)
+### valid_date_iso_8601
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_date_iso_8601)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -87,7 +91,8 @@ This macro checks if data is valid is time format.
 ```
 
 
-### [re_data.valid_time_12h](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_time_12h)
+### valid_time_12h
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_time_12h)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -105,7 +110,8 @@ This macro checks if data is valid 12h time (HH:MM) format.
  13:59:01                  |          false
 ```
 
-### [re_data.valid_time_24h](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_time_24h)
+### valid_time_24h
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_time_24h)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -124,7 +130,8 @@ This macro checks if data is valid 24h time (HH:MM) format.
 ```
 
 
-### [re_data.valid_time](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_time)
+### valid_time
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_time)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -147,7 +154,8 @@ This macro checks if data is valid time, see examples:
 
 ##  Numbers
 
-### [re_data.valid_number](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_number)
+### valid_number
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_number)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -165,7 +173,8 @@ This macro checks if data is valid integer number.
 ```
 
 
-### [re_data.is_number_decimal_point](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.is_number_decimal_point)
+### is_number_decimal_point
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.is_number_decimal_point)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -183,7 +192,8 @@ This macro checks if data is valid number with deciaml point.
 ```
 
 
-### [re_data.valid_number_decimal_comma](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_number_decimal_comma)
+### valid_number_decimal_comma
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_number_decimal_comma)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -202,7 +212,8 @@ This macro checks if data is valid number with deciaml comma.
 ```
 
 
-### [re_data.valid_number_percentage](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_number_percentage)
+### valid_number_percentage
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_number_percentage)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -222,7 +233,8 @@ This macro checks if data is in percentage format.
 ```
 
 
-### [re_data.valid_number_percentage_point](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_number_percentage_point)
+### valid_number_percentage_point
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_number_percentage_point)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -242,7 +254,8 @@ This macro checks if data in percentage format (using point for decimals).
 ```
 
 
-### [re_data.valid_number_percentage_comma](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_number_percentage_comma)
+### valid_number_percentage_comma
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_number_percentage_comma)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -264,7 +277,8 @@ This macro checks if data in percentage format (using comma for decimals).
 
 ## IP
 
-### [re_data.valid_ip_v4](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_ip_v4)
+### valid_ip_v4
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_ip_v4)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -284,7 +298,8 @@ This macro checks if data is valid ip_v4.
 ```
 
 
-### [re_data.valid_ip_v6](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_ip_v6)
+### valid_ip_v6
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_ip_v6)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -313,7 +328,8 @@ This macro checks if data is valid ip_v6.
 ```
 
 
-### [re_data.valid_ip](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_ip)
+### valid_ip
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_ip)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -335,7 +351,8 @@ This macro checks if data is valid ip either ipv4 or ipv6.
 ## Email
 
 
-### [re_data.valid_email](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_email)
+### valid_email
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_email)
 Arguments:
 *column: The column to perform validation on.*
 
@@ -357,7 +374,8 @@ This macro checks if data is valid email, using plus sign is not allowed (treate
 ## UUID
 
 
-### [re_data.valid_uuid](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_uuid)
+### valid_uuid
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.valid_uuid)
 Arguments:
 *column: The column to perform validation on.*
 
