@@ -2,11 +2,44 @@
 sidebar_position: 0
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Configuration
 
 To run re_data you would need to configure for what tables re_data should run + optionally override metrics, time_window and some others parameters used for computation.
 
 ## Monitored tables config
+
+<Tabs
+  defaultValue="config_block"
+  values={[
+    {label: 'Config block', value: 'config_block'},
+    {label: 'Property file', value: 'property_file'},
+    {label: 'Project file', value: 'project_file'},
+    {label: 'Vars variable', value: 'vars_variable'},
+  ]}>
+  <TabItem value="project_file">
+  <File name='models/properties.yml'>
+
+  ```yaml
+  version: 2
+
+  models:
+    - name: [<model-name>]
+      config:
+        [materialized](materialized): <materialization_name>
+        [sql_header](sql_header): <string>
+
+  ```
+
+  </File>
+
+  </TabItem>
+  <TabItem value="property_file">This is an orange 🍊</TabItem>
+  <TabItem value="config_block">This is a banana 🍌</TabItem>
+  <TabItem value="vars_variable">This is a banana 🍌</TabItem>
+</Tabs>
 
 ## Other optional parameters of config
 
