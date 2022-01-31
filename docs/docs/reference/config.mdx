@@ -130,12 +130,11 @@ vars:
 </Tabs>
 
 :::info
-Notice that only `Config block` and `Property file` configuration can only be applied to models, sources 
-needs to be configured in `dbt_project.yml` file (as currently, dbt doesn't accept config for them)
+Notice that you can only apply the `Config block` and `Property file` configuration to models. Sources need to be configured in the `dbt_project.yml` file. Currently, dbt doesn't accept config for them, as stated in [dbt docs](https://docs.getdbt.com/reference/source-configs).
 :::
 
 :::caution
-`re_data:monitored` vars configuration was the first method introduced, but we are currently considering removing this way of configuring monitoring. If you are already using this configuration method, loving it and don't want to migrate, let us know on [Slack](https://www.getre.io/slack)!
+`re_data:monitored` vars configuration was the first method introduced by us, we are currently considering removing this way of configuring monitoring. If you are already using this configuration method, loving it and don't want to migrate, let us know on [Slack](https://www.getre.io/slack)!
 :::
 
 You can define configuration on many levels; it's common to enable re_data for a group of tables (for example, all sources). It's also common to override some of the properties for specific groups.
@@ -150,7 +149,7 @@ Set to `true` to enable monitoring for a given table or set of tables.
 
 ### re_data_time_filter
 
-SQL expression (for example, column name) to filter records of the table to a specific time range. It can be set to `null` if you wish to compute metrics on the whole table.
+SQL expression (for example, column name) to filter records of the table to a specific time range. It can be set to `null` if you wish to compute metrics on the whole table. This expression will be compared to `re_data:time_window_start` and `re_data:time_window_end` vars during the run. (described below)
 
 ### re_data_columns (optional)
 

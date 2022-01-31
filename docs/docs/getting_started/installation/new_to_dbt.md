@@ -9,7 +9,7 @@ You are not using dbt (yet?) in your company but would like to try to re_data
 
 **Excellent choice!** re_data can help you with data quality and is a good way to start using dbt in your organization, even if you are: not yet ready to switch, or happy with the current way of transforming data. 
 
-## Install re_data package & init your project
+## Install re_data package
 
 For new users we recommend installing re_data package:
 
@@ -19,7 +19,9 @@ pip install re_data
 
 re_data includes dbt in dependencies so after this step you will already have it installed in your system.
 
-Then initialize your dbt project with:
+## Init your dbt project
+
+Then you can initialize your dbt project with:
 
 ```bash
 re_data init project_name
