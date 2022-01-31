@@ -23,11 +23,6 @@ models:
       +re_data_monitored: true
       +re_data_time_filter: created_at
 
-      orders_per_age:
-        +re_data_metrics:
-          table:
-            - orders_above_100
-
 sources:
   toy_shop:
     toy_shop_sources:

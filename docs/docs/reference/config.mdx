@@ -7,16 +7,16 @@ import TabItem from '@theme/TabItem';
 
 # Configuration ⚙️
 
-To run re_data you would need to configure what tables should be monitored and set up some properties of this monitoring. Currently re_data supports dbt native configuration (by leveraging dbt models & sources configs)as well as configuration by `re_data:monitored` var.
+To run re_data you would need to configure what tables should be monitored and set up some properties of this monitoring. You may also want/need to update some of the defaults vars use by re_data to run it for specific time windows or compute types of metrics you need.
+
+## Monitoring config
+
+Currently re_data supports dbt native configuration (by leveraging dbt models & sources configs)as well as configuration by `re_data:monitored` var.
 
 If you are not familiar with dbt models & sources configuration we encourage to check the dbt: [model-configs](https://docs.getdbt.com/reference/model-configs) and [source-configs](https://docs.getdbt.com/reference/source-configs) documentation.
 
 re_data dbt native cofiguration follows the same rules as dbt configuration, config block inside model will have the most priority and configuration in `dbt_project.yml` will have the least priority.
 Additionaly `re_data` gives the least prority to vars configuration in `re_data:monitored` variable.
-
-
-
-## Monitored tables config
 
 <Tabs
   defaultValue="config_block"
@@ -33,9 +33,12 @@ Additionaly `re_data` gives the least prority to vars configuration in `re_data:
 {{
     config(
       re_data_monitored=true,
-      re_data_time_filter='creation_time'
+      re_data_time_filter='creation_time',
+      re_data_columns=['amount', 'status'],
+      re_data_metrics={'table': ['orders_obove_100'], 'column': { 'status': 'distinct_values' }}
     )
 }}
+
 
 select ...
 ```
