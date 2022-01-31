@@ -59,5 +59,6 @@ Simple shortcut which lets you check if the metric has one specific value
 
 Simple shortcut which lets you check if metric values are in the range
 
+## Other test use cases
 
-If you would like to ask about your use case, hit as on **[Slack! 😊](https://www.getre.io/slack)**
+If you would like us to add some other tests, information about tests history, etc., join **[Slack! 😊](https://www.getre.io/slack)** and let us know! 😊  

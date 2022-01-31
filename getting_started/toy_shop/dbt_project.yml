@@ -7,6 +7,10 @@ profile: 'toy_shop'
 target-path: "target"
 clean-targets: ["target", "dbt_modules", "dbt_packages"]
 
+model-paths:
+  - "models"
+  - "sources"
+
 on-run-end:
   - "{{ re_data.save_test_history(results) }}"
 
@@ -23,18 +27,13 @@ models:
         +re_data_metrics:
           table:
             - orders_above_100
-          columns:
-            - amount
-            - status
-            - age
 
 sources:
   toy_shop:
-    sources:
-      toy_shop_sources:
-        toy_shop_customers:
-          +re_data_monitored: true
-          +re_data_time_filter: joined_at
+    toy_shop_sources:
+      toy_shop_customers:
+        +re_data_monitored: true
+        +re_data_time_filter: joined_at
 
 seeds:
   toy_shop:

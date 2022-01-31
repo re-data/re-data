@@ -5,7 +5,7 @@ sidebar_position: 0
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Configuration
+# Configuration ⚙️
 
 To run re_data you would need to configure what tables should be monitored and set up some properties of this monitoring. Currently re_data supports dbt native configuration (by leveraging dbt models & sources configs)as well as configuration by `re_data:monitored` var.
 
@@ -78,26 +78,22 @@ models:
         +re_data_metrics:
           table:
             - orders_above_100
-          columns:
-            - amount
-            - status
-            - age
-  sources:
-    toy_shop:
-      sources:
-        toy_shop_sources:
-          toy_shop_customers:
-            +re_data_monitored: true
-            +re_data_time_filter: joined_at
 
-  seeds:
-    toy_shop:
-      order_items:
+sources:
+  toy_shop:
+    toy_shop_sources:
+      toy_shop_customers:
         +re_data_monitored: true
-        +re_data_time_filter: added_at
-        +re_data_columns:
-          - name
-          - amount
+        +re_data_time_filter: joined_at
+  
+seeds:
+  toy_shop:
+    order_items:
+      +re_data_monitored: true
+      +re_data_time_filter: added_at
+      +re_data_columns:
+        - name
+        - amount
 
 ```
 

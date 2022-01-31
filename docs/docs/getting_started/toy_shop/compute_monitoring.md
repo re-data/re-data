@@ -18,7 +18,9 @@ dbt run --models package:re_data --vars \
     }'
 ```
 
-*Note, if we don't pass time window parameters re_data will compute stats from the previous day*
+:::info
+Note, if we don't pass time window parameters re_data will compute stats for the previous day.
+:::
 
 This computes metrics for the monitored tables. Let's just see how many customers/order_items/orders we have added in on 01-01-2021.
 
@@ -70,4 +72,40 @@ select table_name, metric, z_score_value, last_value, time_window_end from toy_s
 
 We can see there are a couple of things re_data flagged for us.
 
-In the next setup, let's generate UI to look closer into what's happening.
+## Running tests
+
+Before moving on and investigating it in re_data UI. Let's run tests to see if they point to any problems in our data:
+
+
+```bash title="Running tests"
+$ dbt test
+
+...
+
+09:50:06  Finished running 31 tests, 1 hook in 4.72s.
+09:50:06
+09:50:06  Completed with 3 errors and 0 warnings:
+09:50:06
+09:50:06  Failure in test accepted_values_orders_status__pending__shipped__delivered__not_paid__paid (seeds/schema.yml)
+09:50:06    Got 1 result, configured to fail if != 0
+09:50:06
+09:50:06    compiled SQL at target/compiled/toy_shop/seeds/schema.yml/accepted_values_orders_a63e7616d678ec9b14b0f2b1cb0f332a.sql
+09:50:06
+09:50:06  Failure in test not_null_orders_amount (seeds/schema.yml)
+09:50:06    Got 1 result, configured to fail if != 0
+09:50:06
+09:50:06    compiled SQL at target/compiled/toy_shop/seeds/schema.yml/not_null_orders_amount.sql
+09:50:06
+09:50:06  Failure in test source_not_null_toy_shop_sources_toy_shop_customers_age (models/sources/schema.yml)
+09:50:06    Got 94 results, configured to fail if != 0
+09:50:06
+09:50:06    compiled SQL at target/compiled/toy_shop/models/sources/schema.yml/source_not_null_toy_shop_sources_toy_shop_customers_age.sql
+09:50:06
+09:50:06  Done. PASS=28 WARN=0 ERROR=3 SKIP=0 TOTAL=31
+
+```
+
+
+Ok, so some of the tests are failing. At least they should fail for you ... 😊
+
+Let's move to the next chapter and investigate what's going on.
