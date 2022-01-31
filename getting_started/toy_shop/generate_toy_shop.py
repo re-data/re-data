@@ -12,7 +12,7 @@ def random_date(begin: datetime.datetime, end: datetime.datetime):
     return datetime.datetime.fromtimestamp(dt_seconds)
 
 start_date = datetime.datetime(2021, 1, 1)
-end_date = datetime.datetime(2021,1, 10)
+end_date = datetime.datetime(2021,1, 11)
 
 def write_to_csv(list, header, filename):
     with open(filename, "w") as f:
@@ -26,7 +26,7 @@ def get_proper_date():
 
 
 def orders():
-    states = ["not paid", "paid", "pending", "shipped", "delivered"]
+    states = ["paid", "pending", "delivered"]
 
     orders = []    
     for i in range(1, 5000):
@@ -37,7 +37,12 @@ def orders():
         created_at = get_proper_date()
         orders.append([id, customer_id, status, amount, created_at])
 
-    orders.append([id + 2, 100, "ok", "", datetime.datetime(2021, 1, 5, 10, 19, 0)])
+    orders.append([id + 2, 100, "ok", "", datetime.datetime(2021, 1, 10, 10, 18, 0)])
+    orders.append([id + 3, 100, "sold", "", datetime.datetime(2021, 1, 10, 10, 15, 0)])
+    orders.append([id + 4, 100, "bad", "", datetime.datetime(2021, 1, 10, 10, 13, 0)])
+    orders.append([id + 5, 100, "failed", "", datetime.datetime(2021, 1, 10, 10, 19, 0)])
+    orders.append([id + 6, 100, "okay", "", datetime.datetime(2021, 1, 10, 10, 17, 0)])
+    orders.append([id + 7, 100, "new", "", datetime.datetime(2021, 1, 10, 10, 17, 0)])
     write_to_csv(orders, ["id","customer_id","status","amount","created_at"], "seeds/orders.csv")
 
 def customers():
