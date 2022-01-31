@@ -63,7 +63,7 @@ jobs:
         working-directory: ./getting_started/toy_shop
         if: github.repository == 're-data/re-data'
         run: |
-          re_data notify slack --start-date 2021-01-01 --end-date 2021-01-10 --profile toy_shop_postgres --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit - (postgres)>"
+          re_data notify slack --start-date 2021-01-01 --end-date 2021-01-11 --profile toy_shop_postgres --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit - (postgres)>"
 
       - uses: actions/setup-node@v2
         with:
@@ -178,7 +178,7 @@ jobs:
         working-directory: ./getting_started/toy_shop
         if: github.repository == 're-data/re-data'
         run: |
-          re_data notify slack --start-date 2021-01-01 --end-date 2021-01-10 --profile toy_shop_${{ matrix.database }} --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit> - (${{ matrix.database }})"
+          re_data notify slack --start-date 2021-01-01 --end-date 2021-01-11 --profile toy_shop_${{ matrix.database }} --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit> - (${{ matrix.database }})"
 
       - uses: actions/setup-node@v2
         with:
