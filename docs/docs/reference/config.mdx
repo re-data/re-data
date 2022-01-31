@@ -104,16 +104,27 @@ seeds:
 
 ```yml title="dbt_project.yml"
 vars:
-  ... 
   re_data:monitored:
     - tables:
-        - name: sample_with_anomaly
-          time_filter: creation_time
+        - name: toy_shop_customers
+          schema: toy_shop_sources
+          time_filter: joined_at
+          columns:
+            - first_name
+            - last_name
+            - age
 
-        - name: sample_without_time_filter
+        - name: order_items
+          time_filter: added_at
+          columns:
+            - name
+            - amount
 
-    - tables:
-      - name: re_data_source_test_table
+        - name: orders
+          schema: toy_shop
+          database: sample_database
+          time_filter: created_at
+
 ```
 </TabItem>
 </Tabs>
