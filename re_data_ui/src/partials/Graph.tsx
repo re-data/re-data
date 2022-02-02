@@ -1,6 +1,4 @@
-import React, {
-  ReactElement, useContext,
-} from 'react';
+import React, { ReactElement, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { NodeOptions, Options } from 'vis';
 import LineageGraph from '../components/LineageGraph';
@@ -60,7 +58,7 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
   if (!overview.graph) {
     return graph;
   }
-  const { dbtMapping } = overview;
+  const { dbtNodeIdMapping } = overview;
   const dbtNodes = overview.graph.nodes;
   const dbtSources = overview.graph.sources;
 
@@ -68,7 +66,7 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
 
   if (modelName) {
     const { parent_map: parentNodes, child_map: childNodes } = overview.graph;
-    const modelTitle = dbtMapping[modelName];
+    const modelTitle = dbtNodeIdMapping[modelName];
 
     // get all the parents and the child nodes of the model name;
     const modelParentNodes = parentNodes[modelTitle] || [];

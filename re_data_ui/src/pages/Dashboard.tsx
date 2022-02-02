@@ -128,7 +128,7 @@ const Dashboard: React.FC = (): ReactElement => {
     generated_at: '',
     tests: [],
     loading: true,
-    dbtMapping: {}
+    dbtNodeIdMapping: {}
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -151,17 +151,17 @@ const Dashboard: React.FC = (): ReactElement => {
         graph: null,
         generated_at: '',
         loading: false,
-        dbtMapping: {},
+        dbtNodeIdMapping: {},
       };
       const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData);
 
-      const dbtMapping = formatDbtData(graphData);
+      const dbtNodeIdMapping = formatDbtData(graphData);
 
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
       overview.graph = graphData;
       overview.tests = tests;
-      overview.dbtMapping = dbtMapping;
+      overview.dbtNodeIdMapping = dbtNodeIdMapping;
       setReDataOverview(overview);
     } catch (e) {
       console.log('Unable to load overview file');
