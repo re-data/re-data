@@ -100,3 +100,5 @@ export const appendToMapKey = (
   }
   return map;
 };
+
+export const supportedResTypes = new Set(['source', 'model', 'seed']);

@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
@@ -5,12 +6,12 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import {
   Alert, Anomaly, DbtGraph, ITableSchema, ITestSchema, Metric,
-  OverviewData, ReDataModelDetails, RedataOverviewContext, SchemaChange,
+  OverviewData, ReDataModelDetails, RedataOverviewContext, SchemaChange
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey, DBT_MANIFEST_FILE, generateMetricIdentifier,
-  RE_DATA_OVERVIEW_FILE, stripQuotes,
-} from '../utils/helpers';
+  RE_DATA_OVERVIEW_FILE, stripQuotes, supportedResTypes
+} from '../utils';
 
 interface RawOverviewData {
   type: 'alert' | 'metric' | 'schema_change' | 'schema' | 'test' | 'anomaly';
@@ -102,6 +103,23 @@ const formatOverviewData = (
   return [result, tests, alertsChanges];
 };
 
+const formatDbtData = (graphData: DbtGraph) => {
+  const result: Record<string, string> = {};
+  Object.entries({ ...graphData.sources, ...graphData.nodes })
+    .forEach(([key, value]) => {
+      const {
+        database, schema, name,
+        resource_type: resourceType,
+      } = value;
+
+      if (supportedResTypes.has(resourceType)) {
+        const ourName = `${database}.${schema}.${name}`.toLowerCase();
+        result[ourName] = key;
+      }
+    });
+  return result;
+};
+
 const Dashboard: React.FC = (): ReactElement => {
   const initialOverview: OverviewData = {
     alerts: [],
@@ -110,6 +128,7 @@ const Dashboard: React.FC = (): ReactElement => {
     generated_at: '',
     tests: [],
     loading: true,
+    dbtMapping: {}
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -132,13 +151,17 @@ const Dashboard: React.FC = (): ReactElement => {
         graph: null,
         generated_at: '',
         loading: false,
+        dbtMapping: {},
       };
       const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData);
+
+      const dbtMapping = formatDbtData(graphData);
 
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
       overview.graph = graphData;
       overview.tests = tests;
+      overview.dbtMapping = dbtMapping;
       setReDataOverview(overview);
     } catch (e) {
       console.log('Unable to load overview file');

@@ -20,7 +20,7 @@ import {
   extractComponentFromIdentifier, generateAnomalyIdentifier,
   getFormatter,
   metricValue,
-} from '../utils/helpers';
+} from '../utils';
 import EmptyContent from './EmptyContent';
 
 export interface MetricChartsProps {
