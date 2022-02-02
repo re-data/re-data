@@ -16,7 +16,7 @@ import {
 import useModel from '../hooks/useModel';
 import {
   extractComponentFromIdentifier,
-} from '../utils/helpers';
+} from '../utils';
 import MetricCharts from './MetricCharts';
 import './ModelDetails.css';
 import SchemaChanges from './SchemaChanges';

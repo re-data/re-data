@@ -9,8 +9,9 @@ import {
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey, DBT_MANIFEST_FILE, generateMetricIdentifier,
-  RE_DATA_OVERVIEW_FILE, stripQuotes,
-} from '../utils/helpers';
+  generateModelId,
+  RE_DATA_OVERVIEW_FILE, stripQuotes, supportedResTypes,
+} from '../utils';
 
 interface RawOverviewData {
   type: 'alert' | 'metric' | 'schema_change' | 'schema' | 'test' | 'anomaly';
@@ -102,6 +103,20 @@ const formatOverviewData = (
   return [result, tests, alertsChanges];
 };
 
+const formatDbtData = (graphData: DbtGraph) => {
+  const result: Record<string, string> = {};
+  Object.entries({ ...graphData.sources, ...graphData.nodes })
+    .forEach(([key, value]) => {
+      const { resource_type: resourceType } = value;
+
+      if (supportedResTypes.has(resourceType)) {
+        const modelId = generateModelId(value);
+        result[modelId] = key;
+      }
+    });
+  return result;
+};
+
 const Dashboard: React.FC = (): ReactElement => {
   const initialOverview: OverviewData = {
     alerts: [],
@@ -110,6 +125,7 @@ const Dashboard: React.FC = (): ReactElement => {
     generated_at: '',
     tests: [],
     loading: true,
+    dbtMapping: {},
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -132,13 +148,17 @@ const Dashboard: React.FC = (): ReactElement => {
         graph: null,
         generated_at: '',
         loading: false,
+        dbtMapping: {},
       };
       const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData);
+
+      const dbtMapping = formatDbtData(graphData);
 
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
       overview.graph = graphData;
       overview.tests = tests;
+      overview.dbtMapping = dbtMapping;
       setReDataOverview(overview);
     } catch (e) {
       console.log('Unable to load overview file');
