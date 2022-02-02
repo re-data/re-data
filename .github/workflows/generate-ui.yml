@@ -1,6 +1,6 @@
 name: Generate UI for toy_shop project
 
-on: push
+on: [push, delete]
 
 env:
   DBT_PROFILES_DIR: ${{ github.workspace }}/getting_started/toy_shop
