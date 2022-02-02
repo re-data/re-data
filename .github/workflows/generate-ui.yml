@@ -208,6 +208,13 @@ jobs:
         env:
           PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}
 
+        # while deploying to gh-pages, redshift & bigquery encounter a race condition while pushing to the branch causing one to fail usually bigquery.
+        # sleeping for 60s give enough? time for the redshift step to deploy to gh-pages before the BigQuery step begins
+      - name: Sleep for 60 mins (BigQuery)
+        if: matrix.database == 'bigquery'
+        run: sleep 60
+        shell: bash
+
       - name: Keep only index.html, overview json and dbt_manifest.json file
         working-directory: ./re_data_ui/build
         run: |
