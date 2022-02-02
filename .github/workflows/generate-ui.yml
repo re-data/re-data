@@ -277,6 +277,7 @@ jobs:
 
       - name: Delete generated documentation and observability UI for branch
         run: |
+          ls
           rm -rf ${{env.GITHUB_EVENT_REF_SLUG}}
           rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}
           rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}-snowflake
