@@ -276,7 +276,6 @@ jobs:
         uses: rlespinasse/github-slug-action@v3.x
 
       - name: Delete generated documentation and observability UI for branch
-        working-directory: ./getting_started/toy_shop
         run: |
           rm -rf ${{env.GITHUB_EVENT_REF_SLUG}}
           rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}
