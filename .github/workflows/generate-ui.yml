@@ -221,3 +221,42 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./re_data_ui/build
           destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}
+
+  clean-up-schemas:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'delete' && github.repository == 're-data/re-data'
+    strategy:
+      fail-fast: false
+      matrix:
+        database: [snowflake, bigquery, redshift]
+    steps:        
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.7.x"
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Set the TOY_SHOP_SCHEMA environment variable
+        run: |
+          echo "TOY_SHOP_SCHEMA=toy_shop_${GITHUB_EVENT_REF_SLUG//-/_}" >> $GITHUB_ENV
+
+      - name: Print TOY_SHOP_SCHEMA
+        run: |
+          echo $TOY_SHOP_SCHEMA
+
+      - name: Decode service account for BigQuery
+        if: matrix.database == 'bigquery'
+        run: 'echo $BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 | base64 --decode > $BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH'
+        shell: bash
+
+      - name: Install dependencies and drop branch schema
+        working-directory: ./getting_started/toy_shop
+        run: |
+          pip install -r requirements.txt
+          pip install dbt-${{ matrix.database }}==1.0.0
+          dbt deps
+          dbt run-operation drop_all_schemas --args "{ schema_name: ${{ env.TOY_SHOP_SCHEMA }} }" --profile toy_shop_${{ matrix.database }}
