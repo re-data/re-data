@@ -25,15 +25,15 @@ const LineageGraph: React.FC<LineageGraphProps> = (
     events, showModelDetails,
   } = props;
   const model = searchParams.get('model');
-  // console.log('data: ', data);
+
   useEffect(() => {
-    if (network && model && data) {
+    if (network && model && data && !showModelDetails) {
       network?.body?.data?.nodes?.clear();
-      network?.body?.data?.nodes?.add(data.nodes);
       network?.body?.data?.edges?.clear();
+      network?.body?.data?.nodes?.add(data.nodes);
       network?.body?.data?.edges?.add(data.edges);
     }
-    if (showModelDetails) {
+    if (model && network && network?.body?.nodes[model]) {
       // highlight the node on graph screen
       network?.selectNodes([model], true);
     }
@@ -59,7 +59,6 @@ const LineageGraph: React.FC<LineageGraphProps> = (
   );
 };
 
-// eslint-disable-next-line consistent-return
 export default memo(LineageGraph, (prevState, nextState) => {
   const { overviewDataLoaded, showModelDetails, data: prevData } = prevState;
   const { data } = nextState;

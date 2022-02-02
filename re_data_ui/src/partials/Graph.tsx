@@ -1,5 +1,5 @@
 import React, {
-  ReactElement, useContext, useEffect, useState,
+  ReactElement, useContext,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { NodeOptions, Options } from 'vis';
@@ -187,29 +187,12 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
     showModelDetails = true,
   } = props;
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const [graph, setGraph] = useState<IGraph>({
-    nodes: [],
-    edges: [],
-  });
-
-  const updateGraph = async () => {
-    if (overview.graph) {
-      if (modelName) {
-        setGraph(generateGraph(overview, modelName));
-      } else if (!modelName) {
-        setGraph(generateGraph(overview));
-      }
-    }
-  };
-
-  useEffect(() => {
-    (async function anyNameFunction() {
-      await updateGraph();
-    }());
-  }, [modelName, overview]);
-  // if graph is not null, then we have fetched the overview json file
   const overviewDataLoaded = !!overview.graph;
   const [, setURLSearchParams] = useSearchParams();
+
+  const graph = modelName
+    ? generateGraph(overview, modelName)
+    : generateGraph(overview);
 
   const events = {
     selectNode: (params: VisNetworkEventParams) => {
@@ -225,7 +208,9 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
       }
     },
     deselectNode: () => {
-      setURLSearchParams({});
+      if (showModelDetails) {
+        setURLSearchParams({});
+      }
     },
   };
 
