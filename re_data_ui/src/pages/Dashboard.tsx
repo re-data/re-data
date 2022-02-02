@@ -10,6 +10,7 @@ import {
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey, DBT_MANIFEST_FILE, generateMetricIdentifier,
+  generateModelId,
   RE_DATA_OVERVIEW_FILE, stripQuotes, supportedResTypes
 } from '../utils';
 
@@ -107,14 +108,11 @@ const formatDbtData = (graphData: DbtGraph) => {
   const result: Record<string, string> = {};
   Object.entries({ ...graphData.sources, ...graphData.nodes })
     .forEach(([key, value]) => {
-      const {
-        database, schema, name,
-        resource_type: resourceType,
-      } = value;
+      const { resource_type: resourceType } = value;
 
       if (supportedResTypes.has(resourceType)) {
-        const ourName = `${database}.${schema}.${name}`.toLowerCase();
-        result[ourName] = key;
+        const modelId = generateModelId(value);
+        result[modelId] = key;
       }
     });
   return result;

@@ -6,7 +6,7 @@ import ModelDetails from '../components/ModelDetails';
 import {
   DbtNode, DbtSource, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
-import { supportedResTypes } from '../utils';
+import { supportedResTypes, generateModelId } from '../utils';
 
 export interface VisPointer {
   x: number,
@@ -77,7 +77,7 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
     // draw the child nodes and connect it to the node using an edge
 
     const details = allNodes[modelTitle];
-    const modelId = `${details.database}.${details.schema}.${details.name}`.toLowerCase();
+    const modelId = generateModelId(details);
     graph.nodes.push({
       id: modelId,
       label: details.name,
@@ -87,12 +87,9 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
 
     modelParentNodes.forEach((parent) => {
       const parentDetails = allNodes[parent];
-      const {
-        database, schema, name,
-        resource_type: resourceType,
-      } = parentDetails;
+      const { name, resource_type: resourceType } = parentDetails;
       if (supportedResTypes.has(resourceType)) {
-        const parentModelId = `${database}.${schema}.${name}`.toLowerCase();
+        const parentModelId = generateModelId(parentDetails);
         graph.nodes.push({
           id: parentModelId,
           label: name,
@@ -134,7 +131,7 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
   } else {
     Object.entries(allNodes).forEach(([, details]) => {
       if (supportedResTypes.has(details.resource_type) && details.package_name !== 're_data') {
-        const modelId = `${details.database}.${details.schema}.${details.name}`.toLowerCase();
+        const modelId = generateModelId(details);
         const node: VisNode = {
           id: modelId,
           label: details.name,
@@ -153,7 +150,7 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
               ? dbtNodes[parent]
               : dbtSources[parent];
             if (parentNode) {
-              const parentModelId = `${parentNode.database}.${parentNode.schema}.${parentNode.name}`.toLowerCase();
+              const parentModelId = generateModelId(parentNode);
               const edge: VisEdge = {
                 from: parentModelId,
                 to: modelId,
