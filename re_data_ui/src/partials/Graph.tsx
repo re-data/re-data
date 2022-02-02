@@ -85,56 +85,52 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
       color: resourceTypeColors[details.resource_type],
     });
 
-    if (modelParentNodes.length) {
-      modelParentNodes.forEach((parent) => {
-        const parentDetails = allNodes[parent];
-        const {
-          database, schema, name,
-          resource_type: resourceType,
-        } = parentDetails;
-        if (supportedResTypes.has(resourceType)) {
-          const parentModelId = `${database}.${schema}.${name}`.toLowerCase();
-          graph.nodes.push({
-            id: parentModelId,
-            label: name,
-            shape: 'box',
-            color: resourceTypeColors[resourceType],
-          });
+    modelParentNodes.forEach((parent) => {
+      const parentDetails = allNodes[parent];
+      const {
+        database, schema, name,
+        resource_type: resourceType,
+      } = parentDetails;
+      if (supportedResTypes.has(resourceType)) {
+        const parentModelId = `${database}.${schema}.${name}`.toLowerCase();
+        graph.nodes.push({
+          id: parentModelId,
+          label: name,
+          shape: 'box',
+          color: resourceTypeColors[resourceType],
+        });
 
-          const edge: VisEdge = {
-            from: parentModelId,
-            to: modelId,
-            arrows: 'to',
-          };
-          graph.edges.push(edge);
-        }
-      });
-    }
-    if (modelChildNodes.length) {
-      modelChildNodes.forEach((child) => {
-        const childDetails = allNodes[child];
-        const {
-          database, schema, name,
-          resource_type: resourceType,
-        } = childDetails;
-        if (supportedResTypes.has(resourceType)) {
-          const childModelId = `${database}.${schema}.${name}`.toLowerCase();
-          graph.nodes.push({
-            id: childModelId,
-            label: name,
-            shape: 'box',
-            color: resourceTypeColors[resourceType],
-          });
+        const edge: VisEdge = {
+          from: parentModelId,
+          to: modelId,
+          arrows: 'to',
+        };
+        graph.edges.push(edge);
+      }
+    });
+    modelChildNodes.forEach((child) => {
+      const childDetails = allNodes[child];
+      const {
+        database, schema, name,
+        resource_type: resourceType,
+      } = childDetails;
+      if (supportedResTypes.has(resourceType)) {
+        const childModelId = `${database}.${schema}.${name}`.toLowerCase();
+        graph.nodes.push({
+          id: childModelId,
+          label: name,
+          shape: 'box',
+          color: resourceTypeColors[resourceType],
+        });
 
-          const edge: VisEdge = {
-            from: modelId,
-            to: childModelId,
-            arrows: 'to',
-          };
-          graph.edges.push(edge);
-        }
-      });
-    }
+        const edge: VisEdge = {
+          from: modelId,
+          to: childModelId,
+          arrows: 'to',
+        };
+        graph.edges.push(edge);
+      }
+    });
   } else {
     Object.entries(allNodes).forEach(([, details]) => {
       if (supportedResTypes.has(details.resource_type) && details.package_name !== 're_data') {
