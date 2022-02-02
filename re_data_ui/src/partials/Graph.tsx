@@ -4,7 +4,7 @@ import { NodeOptions, Options } from 'vis';
 import LineageGraph from '../components/LineageGraph';
 import ModelDetails from '../components/ModelDetails';
 import {
-  DbtNode, DbtSource, OverviewData, RedataOverviewContext
+  DbtNode, DbtSource, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import { generateModelId, supportedResTypes } from '../utils';
 
