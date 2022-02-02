@@ -61,7 +61,7 @@ Return type: boolean
 This macro checks if data is in inversed date format.
 
 ```sql
-=> select date_time, {{ re_data.valid_date_eu('date_time')}} as valid_date_inverse
+=> select date_time, {{ re_data.valid_date_inverse('date_time')}} as valid_date_inverse
 
  date_time  | valid_date_inverse
 ------------+--------------------

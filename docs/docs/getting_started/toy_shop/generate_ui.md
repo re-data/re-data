@@ -42,4 +42,4 @@ Tests view lets you see history of all dbt tests run. (re_data comes with a `sav
 
 Tables view lets you investigate any table easily. Check out for anomalies, metrics, tests related to it.
 
-In the next setup, let's see how we can notify ourselves about problems in the data
+In the next section, let's see how we can notify ourselves about problems in the data
