@@ -80,44 +80,46 @@ const ModelDetails: React.FC = (): ReactElement => {
   };
 
   return (
-    <div className="col-span-4 h-auto overflow-y-auto">
-      <div className="bg-white rounded shadow border p-3">
+    <div className="col-span-4 h-auto overflow-y-auto bg-white border rounded shadow">
+      <div className="p-3 pt-0">
 
         <div>
-          <ul className="transition ease-in-out delay-150 nav sticky top-0 bg-white z-10">
-            <li
-              className={activeTab === ModelTabs.METRICS ? 'active' : ''}
-              role="presentation"
-              onClick={showMetrics}
-            >
-              Metrics
-            </li>
-            <li
-              className={activeTab === ModelTabs.ANOMALIES ? 'active' : ''}
-              role="presentation"
-              onClick={showAnomalies}
-            >
-              Anomalies
-            </li>
-            <li
-              className={activeTab === ModelTabs.SCHEMA_CHANGES ? 'active' : ''}
-              role="presentation"
-              onClick={showSchema}
-            >
-              Schema
-            </li>
-          </ul>
-          <div className="mb-2">
+          <nav className="side-nav transition ease-in-out delay-150 sticky top-0 bg-white z-10">
+            <ul className="">
+              <li
+                className={activeTab === ModelTabs.METRICS ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showMetrics}
+              >
+                Metrics
+              </li>
+              <li
+                className={activeTab === ModelTabs.ANOMALIES ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showAnomalies}
+              >
+                Anomalies
+              </li>
+              <li
+                className={activeTab === ModelTabs.SCHEMA_CHANGES ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showSchema}
+              >
+                Schema
+              </li>
+            </ul>
+          </nav>
+          <p className="mb-2 text-center">
             <span
-              className="text-2xl text--capitalize font-bold"
+              className="text-2xl font-bold"
             >
               {extractComponentFromIdentifier(fullTableName, 'tableName')}
             </span>
-          </div>
+          </p>
           <div className="outlet">
             {modelDetails
               ? renderTab(activeTab)
-              : <span>Click on node to show metrics, anomalies or schema changes</span>}
+              : <p className="font-medium p-3 text-center">Click on node to show metrics, anomalies or schema changes</p>}
           </div>
         </div>
       </div>

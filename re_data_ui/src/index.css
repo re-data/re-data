@@ -35,15 +35,14 @@ code {
 }
 
 .pass {
-    color: #389e0d;
-    background: #f6ffed;
-    border-color: #b7eb8f;
+    color: #FFF;
+    background: hsl(150deg 66% 44%);
+    width: 60px;
 }
 
 .fail {
-    color: #d4380d;
-    background: #fff2e8;
-    border-color: #ffbb96;
+    @apply bg-red-600 text-white;
+    width: 60px;
 }
 
 select {
@@ -88,4 +87,24 @@ li.active-tab {
 
 .css-26l3qy-menu {
     z-index: 100 !important;
+}
+
+.right-component {
+    height: 32px;
+}
+
+.bg-source {
+    background: hsl(97deg 66% 44%);
+}
+
+.bg-seed {
+    background: hsl(150deg 66% 44%);
+}
+
+.bg-model {
+    background: hsl(190deg 100% 35%);
+}
+
+.rounded-tooltip {
+    border-radius: 0.2rem;
 }

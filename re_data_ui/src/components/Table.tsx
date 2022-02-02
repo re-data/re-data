@@ -1,12 +1,20 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import {
-  Row, TableInstance, useAsyncDebounce, useGlobalFilter, usePagination, useSortBy, useTable,
+  Row, TableInstance, useAsyncDebounce,
+  useGlobalFilter, usePagination, useSortBy, useTable,
 } from 'react-table';
 
+export interface CellProps {
+  value: string;
+  column: Record<string, number>;
+  row:Record<string, string>;
+}
 export interface ColumnsProps {
   Header: string;
   accessor: string;
+  Cell?: ({ value, column, row }: CellProps) => JSX.Element;
+  type?: string;
 }
 
 export interface ITable {
@@ -38,7 +46,7 @@ const CustomFilter = ({
       <span className="text-gray-700">Search: </span>
       <input
         type="text"
-        className="mt-1 block w-full px-2 py-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        className="block w-full px-2 py-1 rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         value={value || ''}
         onChange={(e) => {
           setValue(e.target.value);
