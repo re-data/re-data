@@ -5,12 +5,12 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import {
   Alert, Anomaly, DbtGraph, ITableSchema, ITestSchema, Metric,
-  OverviewData, ReDataModelDetails, RedataOverviewContext, SchemaChange
+  OverviewData, ReDataModelDetails, RedataOverviewContext, SchemaChange,
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey, DBT_MANIFEST_FILE, generateMetricIdentifier,
   generateModelId,
-  RE_DATA_OVERVIEW_FILE, stripQuotes, supportedResTypes
+  RE_DATA_OVERVIEW_FILE, stripQuotes, supportedResTypes,
 } from '../utils';
 
 interface RawOverviewData {
@@ -125,7 +125,7 @@ const Dashboard: React.FC = (): ReactElement => {
     generated_at: '',
     tests: [],
     loading: true,
-    dbtNodeIdMapping: {}
+    dbtMapping: {},
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -148,17 +148,17 @@ const Dashboard: React.FC = (): ReactElement => {
         graph: null,
         generated_at: '',
         loading: false,
-        dbtNodeIdMapping: {},
+        dbtMapping: {},
       };
       const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData);
 
-      const dbtNodeIdMapping = formatDbtData(graphData);
+      const dbtMapping = formatDbtData(graphData);
 
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
       overview.graph = graphData;
       overview.tests = tests;
-      overview.dbtNodeIdMapping = dbtNodeIdMapping;
+      overview.dbtMapping = dbtMapping;
       setReDataOverview(overview);
     } catch (e) {
       console.log('Unable to load overview file');

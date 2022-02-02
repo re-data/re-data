@@ -4,9 +4,9 @@ import { NodeOptions, Options } from 'vis';
 import LineageGraph from '../components/LineageGraph';
 import ModelDetails from '../components/ModelDetails';
 import {
-  DbtNode, DbtSource, OverviewData, RedataOverviewContext,
+  DbtNode, DbtSource, OverviewData, RedataOverviewContext
 } from '../contexts/redataOverviewContext';
-import { supportedResTypes, generateModelId } from '../utils';
+import { generateModelId, supportedResTypes } from '../utils';
 
 export interface VisPointer {
   x: number,
@@ -58,7 +58,7 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
   if (!overview.graph) {
     return graph;
   }
-  const { dbtNodeIdMapping } = overview;
+  const { dbtMapping } = overview;
   const dbtNodes = overview.graph.nodes;
   const dbtSources = overview.graph.sources;
 
@@ -66,7 +66,7 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
 
   if (modelName) {
     const { parent_map: parentNodes, child_map: childNodes } = overview.graph;
-    const modelTitle = dbtNodeIdMapping[modelName];
+    const modelTitle = dbtMapping[modelName];
 
     // get all the parents and the child nodes of the model name;
     const modelParentNodes = parentNodes[modelTitle] || [];

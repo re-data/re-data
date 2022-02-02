@@ -172,7 +172,7 @@ export interface OverviewData {
   graph: DbtGraph | null;
   generated_at: string;
   loading: boolean;
-  dbtNodeIdMapping: Record<string, string>;
+  dbtMapping: Record<string, string>;
 }
 
 export interface NewOverviewData {
@@ -190,5 +190,5 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   generated_at: '',
   tests: [],
   loading: true,
-  dbtNodeIdMapping: {},
+  dbtMapping: {},
 });
