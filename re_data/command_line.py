@@ -87,7 +87,14 @@ def detect():
     is_flag=True,
     help='Warning! If specified re_data runs first dbt run with --full-refresh option cleaning all previously gathered profiling information'
 )
-def run(start_date, end_date, interval, full_refresh):
+@click.option(
+    '--profile',
+    type=click.STRING,
+    help="""
+        Specify profile to be used with dbt.
+    """
+)
+def run(start_date, end_date, interval, full_refresh, profile):
     for_date = start_date
 
     time_grain, num_str = interval.split(':')
@@ -115,6 +122,9 @@ def run(start_date, end_date, interval, full_refresh):
         run_list = ['dbt'] + ['run'] + ['--models'] + ['package:re_data'] + ['--vars'] + [json.dumps(dbt_vars)]
         if for_date == start_date and full_refresh:
             run_list.append('--full-refresh')
+        
+        if profile:
+            run_list.extend(['--profile', profile])
 
         completed_process = subprocess.run(run_list)
         completed_process.check_returncode()
@@ -162,7 +172,14 @@ def notify():
         or `hours:1` for a time interval of 1 hour
     """
 )
-def generate(start_date, end_date, interval):
+@click.option(
+    '--profile',
+    type=click.STRING,
+    help="""
+        Specify profile to be used with dbt.
+    """
+)
+def generate(start_date, end_date, interval, profile):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     args = {
@@ -171,6 +188,8 @@ def generate(start_date, end_date, interval):
         'interval': interval
     }
     command_list = ['dbt', 'run-operation', 'generate_overview', '--args', yaml.dump(args)]
+    if profile:
+        command_list.extend(['--profile', profile])
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
 
@@ -240,7 +259,14 @@ def serve():
     default='',
     help="Extra markdown text to be added to the alert message"
 )
-def slack(start_date, end_date, webhook_url, subtitle):
+@click.option(
+    '--profile',
+    type=click.STRING,
+    help="""
+        Specify profile to be used with dbt.
+    """
+)
+def slack(start_date, end_date, webhook_url, subtitle, profile):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     args = {
@@ -248,6 +274,8 @@ def slack(start_date, end_date, webhook_url, subtitle):
         'end_date': end_date,
     }
     command_list = ['dbt', 'run-operation', 'export_alerts', '--args', yaml.dump(args)]
+    if profile:
+        command_list.extend(['--profile', profile])
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
 
