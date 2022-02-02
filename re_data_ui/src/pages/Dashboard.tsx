@@ -1,4 +1,3 @@
-/* eslint-disable comma-dangle */
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
