@@ -277,11 +277,11 @@ jobs:
       - name: Delete generated documentation and observability UI for branch
         working-directory: ./getting_started/toy_shop
         run: |
-          rm -rf ${{env.GITHUB_REF_SLUG}}
-          rm -rf ui-${{env.GITHUB_REF_SLUG}}
-          rm -rf ui-${{env.GITHUB_REF_SLUG}}-snowflake
-          rm -rf ui-${{env.GITHUB_REF_SLUG}}-bigquery
-          rm -rf ui-${{env.GITHUB_REF_SLUG}}-redshift
+          rm -rf ${{env.GITHUB_EVENT_REF_SLUG}}
+          rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}
+          rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}-snowflake
+          rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}-bigquery
+          rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}-redshift
 
       - name: Update github pages
         uses: peaceiris/actions-gh-pages@v3
