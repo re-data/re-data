@@ -15,10 +15,5 @@ re_data run --start-date 2021-01-06 --end-date 2021-01-07 --profile $dbt_profile
 dbt run-operation schema_change_drop_orders_column --profile $dbt_profile
 re_data run --start-date 2021-01-07 --end-date 2021-01-11 --profile $dbt_profile
 
-if [ "$dbt_profile" = "toy_shop_postgres" ]; then
-  echo "Running for full month on postgres"
-  re_data run --start-date 2021-01-11 --end-date 2021-01-30 --profile $dbt_profile
-fi
-
 dbt test --exclude package:re_data --profile $dbt_profile || true
 re_data overview generate --start-date 2021-01-01 --end-date 2022-06-30 --profile $dbt_profile
