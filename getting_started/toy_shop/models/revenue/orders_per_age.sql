@@ -1,5 +1,5 @@
 {{
-    config(re_data_metrics={'table': ['orders_above_100']})
+    config(re_data_metrics={'table': ['orders_above_100']}, re_data_columns=['amount', 'status', 'age'])
 }}
 
 select o.id, o.amount, o.status, c.age, o.created_at from 

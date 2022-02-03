@@ -23,12 +23,21 @@ models:
       +re_data_monitored: true
       +re_data_time_filter: created_at
 
+      revenue_per_age:
+        +re_data_columns:
+          - sum
+          - age
+
 sources:
   toy_shop:
     toy_shop_sources:
       toy_shop_customers:
         +re_data_monitored: true
         +re_data_time_filter: joined_at
+        +re_data_columns:
+          - first_name
+          - last_name
+          - age
 
 seeds:
   toy_shop:
