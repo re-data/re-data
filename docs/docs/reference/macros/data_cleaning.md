@@ -8,7 +8,8 @@ Data cleaning refers to fixing incorrect, corrupted, incorrectly formatted data 
 
 re_data provides the fol macros to help reduce the time required to clean up a dataset. Check out the list of data cleaning macros available and let us know if you could use some different ones on **[Slack 😊](https://www.getre.io/slack)** or **[Github](https://github.com/re-data/re-data/issues/new?assignees=&labels=&template=macro_request.md&title=%5BMACRO%5D)**.
 
-### [clean_additional_whitespaces](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.clean_additional_whitespaces)
+### clean_additional_whitespaces
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.clean_additional_whitespaces)
 *Arguments:*
 - *column: The column name or column expression to perform the cleaning operation on.*
 
@@ -32,7 +33,8 @@ from {{ ref('sample_user_data') }}
  ruth   langworth       |  ruth langworth        |
  lane swift             |  lane swift            |
 ```
-### [clean_blacklist](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.clean_blacklist)
+### clean_blacklist
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.clean_blacklist)
 *Arguments:*
 - *column: The column name or column expression to perform the cleaning operation on.*
 - *chars_to_blacklist: List of words or regex patterns to match in the column.*
@@ -56,7 +58,8 @@ from {{ ref("sample_user_data") }}
 ```
 
 This macro helps find certain words or regex pattern in a given column and replace it with the given replacement value.
-### [clean_capitalize_words](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.clean_capitalize_words)
+### clean_capitalize_words
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.clean_capitalize_words)
 *Arguments:*
 - *column: The column name or column expression to perform the cleaning operation on.*
 

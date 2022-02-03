@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import {
   Alert, Anomaly, DbtGraph, ITableSchema, ITestSchema, Metric,
-  OverviewData, ReDataModelDetails, RedataOverviewContext, SchemaChange,
+  OverviewData, ReDataModelDetails, RedataOverviewContext, SchemaChange, SelectOptionProps,
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey, DBT_MANIFEST_FILE, generateMetricIdentifier,
@@ -100,21 +100,27 @@ const formatOverviewData = (
   }
   alertsChanges.sort((a, b) => dayjs(b.time_window_end).diff(a.time_window_end));
 
+  console.log('result -> ', result);
   return [result, tests, alertsChanges];
 };
 
 const formatDbtData = (graphData: DbtGraph) => {
-  const result: Record<string, string> = {};
+  const dbtMapping: Record<string, string> = {};
+  const modelNodes: SelectOptionProps[] = [];
   Object.entries({ ...graphData.sources, ...graphData.nodes })
     .forEach(([key, value]) => {
-      const { resource_type: resourceType } = value;
+      const { resource_type: resourceType, package_name: packageName } = value;
 
-      if (supportedResTypes.has(resourceType)) {
+      if (supportedResTypes.has(resourceType) && packageName !== 're_data') {
         const modelId = generateModelId(value);
-        result[modelId] = key;
+        dbtMapping[modelId] = key;
+        modelNodes.push({
+          value: modelId,
+          label: modelId,
+        });
       }
     });
-  return result;
+  return { dbtMapping, modelNodes };
 };
 
 const Dashboard: React.FC = (): ReactElement => {
@@ -126,6 +132,7 @@ const Dashboard: React.FC = (): ReactElement => {
     tests: [],
     loading: true,
     dbtMapping: {},
+    modelNodes: [],
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -149,16 +156,20 @@ const Dashboard: React.FC = (): ReactElement => {
         generated_at: '',
         loading: false,
         dbtMapping: {},
+        modelNodes: [],
       };
       const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData);
 
-      const dbtMapping = formatDbtData(graphData);
+      const { dbtMapping, modelNodes } = formatDbtData(graphData);
 
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
       overview.graph = graphData;
       overview.tests = tests;
       overview.dbtMapping = dbtMapping;
+      overview.modelNodes = modelNodes;
+
+      console.log('overview -> ', overview);
       setReDataOverview(overview);
     } catch (e) {
       console.log('Unable to load overview file');
@@ -171,7 +182,7 @@ const Dashboard: React.FC = (): ReactElement => {
 
   return (
     <RedataOverviewContext.Provider value={reDataOverview}>
-      <div className="relative min-h-screen md:flex" data-dev-hint="container">
+      <div className="relative min-h-screen md:flex overflow-hidden" data-dev-hint="container">
         <Header />
         <Sidebar />
 
