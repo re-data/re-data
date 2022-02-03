@@ -1,7 +1,5 @@
-import React, { PropsWithChildren, ReactElement } from 'react';
 import dayjs from 'dayjs';
 import EChartsReactCore from 'echarts-for-react/lib/core';
-import * as echarts from 'echarts/core';
 import { LineSeriesOption, ScatterSeriesOption } from 'echarts/charts';
 import {
   GridComponentOption,
@@ -11,21 +9,25 @@ import {
   TooltipComponentOption,
   VisualMapComponentOption,
 } from 'echarts/components';
-import { VisualOptionPiecewise } from 'echarts/types/src/util/types';
+import * as echarts from 'echarts/core';
 import { MarkArea1DDataItemOption, MarkArea2DDataItemOption } from 'echarts/types/src/component/marker/MarkAreaModel';
+import { VisualOptionPiecewise } from 'echarts/types/src/util/types';
+import React, { PropsWithChildren, ReactElement } from 'react';
+import { FaRegSmileBeam, FaRegSmileWink } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
-import { BiHappyAlt, BiSad } from 'react-icons/all';
+import { Anomaly, Metric, ReDataModelDetails } from '../contexts/redataOverviewContext';
 import {
   extractComponentFromIdentifier, generateAnomalyIdentifier,
   getFormatter,
   metricValue,
-} from '../utils/helpers';
-import { Anomaly, Metric, ReDataModelDetails } from '../contexts/redataOverviewContext';
+} from '../utils';
 import EmptyContent from './EmptyContent';
 
-interface MetricChartsProps {
+export interface MetricChartsProps {
   modelDetails: ReDataModelDetails,
   showAnomalies: boolean,
+  showTitle?: boolean,
+  fullWidth?: boolean,
 }
 
 interface VisualPiece extends VisualOptionPiecewise {
@@ -174,7 +176,10 @@ const generateMetricChartOption = (
 const MetricCharts: React.FC<MetricChartsProps> = (
   props: PropsWithChildren<MetricChartsProps>,
 ): ReactElement => {
-  const { modelDetails, showAnomalies } = props;
+  const {
+    modelDetails, showAnomalies,
+    showTitle = true, fullWidth = true,
+  } = props;
   const [searchParams] = useSearchParams();
   const model = searchParams.get('model') as string;
   const anomaliesMap = modelDetails.anomalies;
@@ -219,10 +224,12 @@ const MetricCharts: React.FC<MetricChartsProps> = (
       {showAnomalies
         ? (
           <>
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
+            <div
+              className={`${(!fullWidth && alertMetricCharts.length) && 'grid grid-cols-2 gap-4'} overflow-hidden sm:rounded-lg p-4 mt-3 mb-3`}
+            >
               {alertMetricCharts.length ? alertMetricCharts : (
                 <EmptyContent text="No Anomalies!">
-                  <BiHappyAlt size={50} color="#392396" />
+                  <FaRegSmileBeam size={50} color="#392396" />
                 </EmptyContent>
               )}
             </div>
@@ -230,19 +237,27 @@ const MetricCharts: React.FC<MetricChartsProps> = (
         )
         : (
           <>
-            <span className="text-lg text--capitalize">Table Metrics</span>
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
+            {showTitle && (
+              <span className="text-lg text-capitalize">Table Metrics</span>
+            )}
+            <div
+              className={`${(!fullWidth && tableMetricCharts.length) && 'grid grid-cols-2 gap-4'} overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3`}
+            >
               {tableMetricCharts.length ? tableMetricCharts : (
                 <EmptyContent text="Add this table to re_data config, to generate metrics">
-                  <BiSad size={50} color="#392396" />
+                  <FaRegSmileWink size={50} color="#392396" />
                 </EmptyContent>
               )}
             </div>
-            <span className="text-lg text--capitalize">Column Metrics</span>
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
+            {showTitle && (
+              <span className="text-lg">Column Metrics</span>
+            )}
+            <div
+              className={`${(!fullWidth && columnMetricCharts.length) && 'grid grid-cols-2 gap-4'} overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3`}
+            >
               {columnMetricCharts.length ? columnMetricCharts : (
                 <EmptyContent text="Add this table to re_data config, to generate metrics">
-                  <BiSad size={50} color="#392396" />
+                  <FaRegSmileWink size={50} color="#392396" />
                 </EmptyContent>
               )}
             </div>

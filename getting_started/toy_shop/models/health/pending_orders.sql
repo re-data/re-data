@@ -1,1 +1,0 @@
-select * from {{ source('toy_shop', 'orders') }} where status = 'pending'

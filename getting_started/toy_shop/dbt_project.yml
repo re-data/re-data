@@ -7,80 +7,60 @@ profile: 'toy_shop'
 target-path: "target"
 clean-targets: ["target", "dbt_modules", "dbt_packages"]
 
+model-paths:
+  - "models"
+  - "sources"
+
+on-run-end:
+  - "{{ re_data.save_test_history(results) }}"
+
 models:
   re_data:
     enabled: true
 
+  toy_shop:
+    revenue:
+      +re_data_monitored: true
+      +re_data_time_filter: created_at
+
+      revenue_per_age:
+        +re_data_columns:
+          - sum
+          - age
+
+sources:
+  toy_shop:
+    toy_shop_sources:
+      toy_shop_customers:
+        +re_data_monitored: true
+        +re_data_time_filter: joined_at
+        +re_data_columns:
+          - first_name
+          - last_name
+          - age
+
+seeds:
+  toy_shop:
+    order_items:
+      +re_data_monitored: true
+      +re_data_time_filter: added_at
+      +re_data_columns:
+        - name
+        - amount
+    
+    orders:
+      +re_data_monitored: true
+      +re_data_time_filter: created_at
+      +re_data_metrics:
+        table:
+          - orders_above_100
+
+        column:
+          status:
+            - distinct_values
+
 vars:
-  re_data:alerting_z_score: 3
-  re_data:monitored:
-    - tables:
-        - name: customers
-          time_filter: joined_at
-          columns:
-            - first_name
-            - last_name
-            - age
-
-        - name: order_items
-          time_filter: added_at
-          columns:
-            - name
-            - amount
-
-        - name: orders
-          time_filter: created_at
-
-          metrics:
-            table:
-              - orders_above_100
-
-            column:
-              status:
-                - distinct_values
-
-          columns:
-            - amount
-            - status
-
-        - name: companies
-          time_filter: null
-          columns:
-            - brand_name
-            - show
-            - year
-
-        - name: pending_orders
-          time_filter: created_at
-
-          metrics:
-            table:
-              - orders_above_100
-              
-          columns:
-            - amount
-            - status
-
-        - name: orders_per_age
-          time_filter: created_at
-
-          metrics:
-            table:
-              - orders_above_100
-
-          columns:
-            - amount
-            - status
-            - age
-        
-        - name: revenue_per_age
-          time_filter: created_at
-          columns:
-            - sum
-            - age
-
-      actively_monitored: true
-
+  re_data:alerting_z_score: 2
   re_data:metrics_base:
     table:
       - row_count

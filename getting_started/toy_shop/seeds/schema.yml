@@ -1,0 +1,37 @@
+version: 2
+
+seeds:
+  - name: order_items
+  - name: companies
+    config:
+      re_data_monitored: true
+      re_data_time_filter: null
+      re_data_columns:
+        - brand_name
+        - show
+        - year
+
+  - name: orders
+    config:
+      re_data_columns:
+        - amount
+        - status
+
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: [pending, shipped, delivered, not paid, paid]
+
+      - name: created_at
+        tests:
+          - not_null
+
+      - name: amount
+        tests:
+          - not_null

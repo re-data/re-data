@@ -1,0 +1,237 @@
+---
+sidebar_position: 0
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Configuration ⚙️
+
+To run re_data you would need to configure what tables should be monitored and set up some properties of this monitoring. You may also want/need to update some of the defaults vars use by re_data to run it for specific time windows or compute types of metrics you need.
+
+## Monitoring config
+
+Currently re_data supports dbt native configuration (by leveraging dbt models & sources configs)as well as configuration by `re_data:monitored` var.
+
+If you are not familiar with dbt models & sources configuration we encourage to check the dbt: [model-configs](https://docs.getdbt.com/reference/model-configs) and [source-configs](https://docs.getdbt.com/reference/source-configs) documentation.
+
+re_data dbt native cofiguration follows the same rules as dbt configuration, config block inside model will have the most priority and configuration in `dbt_project.yml` will have the least priority.
+Additionaly `re_data` gives the least prority to vars configuration in `re_data:monitored` variable.
+
+<Tabs
+  defaultValue="config_block"
+  values={[
+    {label: 'Config block', value: 'config_block'},
+    {label: 'Property file', value: 'property_file'},
+    {label: 'Project file', value: 'project_file'},
+    {label: 'Vars variable', value: 'vars_variable'},
+  ]}>
+
+  <TabItem value="config_block">
+
+```sql title="<model_name>.sql"
+{{
+    config(
+      re_data_monitored=true,
+      re_data_time_filter='creation_time',
+      re_data_columns=['amount', 'status'],
+      re_data_metrics={'table': ['orders_obove_100'], 'column': { 'status': 'distinct_values' }}
+    )
+}}
+
+
+select ...
+```
+  </TabItem>
+
+  <TabItem value="property_file">
+
+```yml title=schema.yml
+version: 2
+
+models:
+  - name: pending_orders
+    config:
+      +re_data_monitored: true
+      +re_data_time_filter: created_at
+      +re_data_columns:
+        - amount
+        - status
+      +re_data_metrics:
+        table:
+          - orders_above_100
+        column:
+          status:
+            - distinct_values
+          
+          
+```
+  </TabItem>
+
+  <TabItem value="project_file">
+
+```yml title="dbt_project.yml"
+models:
+  toy_shop:
+    revenue:
+      +re_data_monitored: true
+      +re_data_time_filter: created_at
+
+      orders_per_age:
+        +re_data_metrics:
+          table:
+            - orders_above_100
+
+sources:
+  toy_shop:
+    toy_shop_sources:
+      toy_shop_customers:
+        +re_data_monitored: true
+        +re_data_time_filter: joined_at
+  
+seeds:
+  toy_shop:
+    order_items:
+      +re_data_monitored: true
+      +re_data_time_filter: added_at
+      +re_data_columns:
+        - name
+        - amount
+
+```
+
+  </TabItem>
+
+
+<TabItem value="vars_variable">
+
+```yml title="dbt_project.yml"
+vars:
+  re_data:monitored:
+    - tables:
+        - name: toy_shop_customers
+          schema: toy_shop_sources
+          time_filter: joined_at
+          columns:
+            - first_name
+            - last_name
+            - age
+
+        - name: order_items
+          time_filter: added_at
+          columns:
+            - name
+            - amount
+
+        - name: orders
+          schema: toy_shop
+          database: sample_database
+          time_filter: created_at
+
+```
+</TabItem>
+</Tabs>
+
+:::info
+Notice that you can only apply the `Config block` and `Property file` configuration to models. Sources need to be configured in the `dbt_project.yml` file. Currently, dbt doesn't accept config for them, as stated in [dbt docs](https://docs.getdbt.com/reference/source-configs).
+:::
+
+:::caution
+`re_data:monitored` vars configuration was the first method introduced by us, we are currently considering removing this way of configuring monitoring. If you are already using this configuration method, loving it and don't want to migrate, let us know on [Slack](https://www.getre.io/slack)!
+:::
+
+You can define configuration on many levels; it's common to enable re_data for a group of tables (for example, all sources). It's also common to override some of the properties for specific groups.
+
+Now let's go over the configuration you can set on models
+
+## Monitoring properties
+
+### re_data_monitored
+
+Set to `true` to enable monitoring for a given table or set of tables.
+
+### re_data_time_filter
+
+SQL expression (for example, column name) to filter records of the table to a specific time range. It can be set to `null` if you wish to compute metrics on the whole table. This expression will be compared to `re_data:time_window_start` and `re_data:time_window_end` vars during the run. (described below)
+
+### re_data_columns (optional)
+
+Set of columns for which re_data should compute metrics. If not specified, re_data will compute stats for all columns with either numeric or text types.
+
+
+
+### re_data_metrics (optional)
+
+Additional metrics to be computed for a given table (set of tables). Those can be either whole `table` level or `column` level. (Check out **[metrics](/docs/reference/metrics/overview_metric)** section to learn distinction between the two)
+
+You can be pass any number of already defined or your custom metrics to be computed. Check out **[extra metrics](/docs/reference/metrics/extra_metrics)** section for available metrics and **[custom metrics](/docs/reference/metrics/your_own_metric)** for ways to define your own metrics.
+
+
+## Other re_data config vars (optional)
+
+Sample configuration for other parameters can look like that:
+
+```yaml title="Parameters of re_data configuration"
+vars:
+  # (optional) if not passed, stats for last day will be computed
+  re_data:time_window_start: '{{ (run_started_at - modules.datetime.timedelta(1)).strftime("%Y-%m-%d 00:00:00") }}'
+  re_data:time_window_end: '{{ run_started_at.strftime("%Y-%m-%d 00:00:00") }}'
+
+  # (optional) override standard metrics computed for all your tables
+  re_data:metrics_base:
+    table:
+      - row_count
+      - freshness
+      - buy_count # my own custom metric
+      
+    column:
+      numeric:
+        - min
+        - max
+        - avg
+        - stddev
+        - variance
+        - nulls_count
+        - diff # my own custom metric
+        
+      text:
+        - min_length
+        - max_length
+        - avg_length
+        - nulls_count
+        - missing_count
+
+  # (optional) global z_score threshold to used when triggering alerts
+  re_data:alerting_z_score: 3
+
+  # (optional) tells how much hisory you want to consider when looking for anomalies
+  re_data:anomaly_detection_look_back_days: 30
+```
+
+### re_data:time_window_start, re_data:time_window_end
+
+re_data metrics are time-based. (re_data filters all your table data to a specific time window.)
+In general, we advise setting up a time window this way that all new data is monitored.
+It's also possible to compute metrics from overlapping data for example last 7 days.
+
+By default, re_data computes daily stats from the last day (it actually uses exact configuration from example for that)
+
+### re_data:metrics_base
+
+This is a set of metrics to compute for all monitored tables.
+Some metrics like `row_count` are table level, others are specified
+per column type: so that expression will be run for all columns of this type.
+
+Here you only add metrics if you want to compute them for all tables which are monitored. You can also set up metrics to be computed for specific tables only (with table specific config)
+
+:::info
+schema changes are currently not set up using this parameter. Every monitored table is scanned for schema changed currently.
+:::
+
+### re_data:alerting_z_score
+
+The threshold for alerting, you can leave it as is or update depending on your experience.  (By default, it's 3)
+
+### re_data:anomaly_detection_look_back_days
+
+The period which `re_data` considers when looking for anomalies. (By default, it's 30 days)

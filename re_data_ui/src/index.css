@@ -20,6 +20,35 @@ code {
     --tw-translate-x: -100%;
 }
 
+.navlink {
+    @apply flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-600 hover:text-white
+}
+
+.navlink.active {
+    background: #392396;
+}
+
+.details-cell {
+    color: #1d39c4;
+    background: #f0f5ff;
+    border-color: #adc6ff;
+}
+
+.pass {
+    color: #FFF;
+    background: hsl(150deg 66% 44%);
+    width: 60px;
+}
+
+.fail {
+    @apply bg-red-600 text-white;
+    width: 60px;
+}
+
+select {
+    margin: 0 1px;
+}
+
 #menu-close-icon {
     display: none;
 }
@@ -46,3 +75,40 @@ code {
     }
 }
 
+li.active-tab {
+    border-bottom: 3px solid rgba(57,35,150, var(--tw-bg-opacity));
+}
+
+.sticky-nav {
+    @apply z-10 sticky bg-gray-100 py-1 pl-2 flex;
+    height: 60px;
+    top: -1.5rem;
+}
+
+.css-26l3qy-menu {
+    z-index: 100 !important;
+}
+
+.right-component {
+    height: 32px;
+}
+
+.bg-source {
+    background: hsl(97deg 66% 44%);
+}
+
+.bg-seed {
+    background: hsl(150deg 66% 44%);
+}
+
+.bg-model {
+    background: hsl(190deg 100% 35%);
+}
+
+.rounded-tooltip {
+    border-radius: 0.2rem;
+}
+
+.graph-view {
+    min-height: 30rem;
+}

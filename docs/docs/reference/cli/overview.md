@@ -4,7 +4,7 @@ sidebar_position: 0
 
 # Overview
 
-`re_data overview` cli command is used to generate & serve observability UI. 
+`re_data overview` cli command is used to generate & serve reliability UI. 
 
 ### generate
 ```

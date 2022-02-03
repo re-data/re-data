@@ -8,7 +8,8 @@ Data normalization refers to a process wherein data within a dataset is reorgani
 
 re_data provides the following macros for normalization. Check out the list of data normalization macros and let us know if you could use some different ones on **[Slack 😊](https://www.getre.io/slack)** or **[Github](https://github.com/re-data/re-data/issues/new?assignees=&labels=&template=macro_request.md&title=%5BMACRO%5D)**.
 
-###  [normalize_values](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.normalize_values)
+### normalize_values
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.normalize_values)
 *Arguments:*
 - *source_relation: The model that contains the column in which the normalization would be performed on.*
 - *column: The column name or column expression to be normalized.*

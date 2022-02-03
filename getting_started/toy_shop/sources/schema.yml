@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: '{{ target.schema + "_sources" }}'
+    tables:
+      - name: toy_shop_customers
+        columns:
+          - name: id
+
+          - name: first_name
+            tests:
+              - not_null
+
+          - name: last_name
+            tests:
+              - not_null
+
+          - name: age
+            tests:
+              - not_null
+
+          - name: joined_at

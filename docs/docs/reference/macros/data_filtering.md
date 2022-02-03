@@ -13,7 +13,8 @@ Filtering may be used to:
 
 re_data provides the following macros for filtering data. Check out the list of currently available filters and let us know if you could use some different ones on **[Slack 😊](https://www.getre.io/slack)** or **[Github](https://github.com/re-data/re-data/issues/new?assignees=&labels=&template=macro_request.md&title=%5BMACRO%5D)**.
 
-### [filter_remove_duplicates](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.filter_remove_duplicates)
+### filter_remove_duplicates
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.filter_remove_duplicates)
 *Arguments:*
 - *relation: dbt model to perform the filtering on*
 - *unique_cols: List of columns that uniquely identify each row*
@@ -42,7 +43,8 @@ This macro allows you to remove duplicate rows from a dbt model based on certain
  2   |  completed   |    13:05:23     |
  3   |  completed   |    13:30:00     |
 ```
-### [filter_get_duplicates](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.filter_get_duplicates)
+### filter_get_duplicates
+#### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.filter_get_duplicates)
 *Arguments:*
 - *relation: dbt base model to perform the filtering on*
 - *unique_cols: List of columns that uniquely identify each row*

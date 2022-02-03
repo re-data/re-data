@@ -1,16 +1,13 @@
 import dayjs from 'dayjs';
 import React, { ReactElement, useContext, useMemo } from 'react';
-import { BiHappyAlt } from 'react-icons/all';
+import { FaRegSmileBeam } from 'react-icons/all';
 import { Link } from 'react-router-dom';
+import { EmptyContent, Table } from '../components';
 import AlertBadge from '../components/AlertBadge';
-import EmptyContent from '../components/EmptyContent';
-import Table, { ColumnsProps } from '../components/Table';
+import { ColumnsProps, CellProps } from '../components/Table';
 import {
-  Alert, Anomaly, OverviewData, RedataOverviewContext, SchemaChange,
+  Alert, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
-import {
-  generateAnomalyMessage, generateAnomalyValue, generateSchemaChangeMessage,
-} from '../utils/helpers';
 
 const generateAlertData = (alerts: Alert[]) => {
   const result = [];
@@ -18,61 +15,31 @@ const generateAlertData = (alerts: Alert[]) => {
   for (let index = 0; index < alerts.length; index++) {
     const alert = alerts[index];
     const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
-    let message: string;
-    let timeWindow: string;
-    const value = alert.type === 'anomaly' ? generateAnomalyValue(alert.value as Anomaly) : undefined;
-    if (alert.type === 'schema_change') {
-      const schemaChange = alert.value as SchemaChange;
-      message = generateSchemaChangeMessage(schemaChange);
-      timeWindow = schemaChange.detected_time;
-    } else {
-      const anomaly = alert.value as Anomaly;
-      message = generateAnomalyMessage(anomaly);
-      timeWindow = anomaly.time_window_end;
-    }
+
     result.push({
       model: alert.model,
       type: alert.type,
-      message,
-      value,
-      date: dayjs(timeWindow).format(dateTimeFormat),
+      message: alert.message,
+      value: alert.value,
+      date: dayjs(alert.time_window_end).format(dateTimeFormat),
     });
   }
 
   return result;
 };
 
-type alertProps = {
-  value: string;
-  column: Record<string, number>;
-  row:Record<string, string>;
-}
-
-const AlertCell = ({ value, column, row }: alertProps) => (
+const AlertCell = ({ value, column, row }: CellProps) => (
   <>
     <AlertBadge
-      error={row.original[column.alertType] === 'anomaly'}
+      error={row.original[column.type] === 'anomaly'}
     />
-    <span
-      className="text-sm text-gray-900"
+    <Link
+      to={`/graph?model=${value?.toLowerCase()}`}
+      className="text-sm text-blue-700 font-semibold"
     >
       {value}
-    </span>
+    </Link>
   </>
-);
-
-type DetailsProps = {
-  column: Record<string, number>;
-  row:Record<string, string>;
-}
-
-const DetailsCell = ({ column, row }: DetailsProps) => (
-  <Link
-    to={`/graph?model=${row.original[column.model]}`}
-    className="text-indigo-600 hover:text-indigo-900 font-medium"
-  >
-    Details
-  </Link>
 );
 
 const Alerts: React.FC = (): ReactElement => {
@@ -84,28 +51,22 @@ const Alerts: React.FC = (): ReactElement => {
       Header: 'Model',
       accessor: 'model',
       Cell: AlertCell,
-      alertType: 'type',
+      type: 'type',
     },
     {
       Header: 'Message',
       accessor: 'message',
     },
     {
-      Header: 'Metric Value',
+      Header: 'Value',
       accessor: 'value',
     },
     {
       Header: 'Time Window',
       accessor: 'date',
     },
-    {
-      Header: ' ',
-      accessor: 'details',
-      Cell: DetailsCell,
-      model: 'model',
-    },
-  ],
-  []);
+  ], []);
+
   const data = useMemo(() => generateAlertData(alerts), [alerts]) || [];
 
   return (
@@ -113,7 +74,7 @@ const Alerts: React.FC = (): ReactElement => {
       {(alerts.length || !graph)
         ? (
           <div className="grid grid-cols-1 overflow-y-scroll">
-            <h1 className="pl-3 mb-3 text-2xl">Alerts</h1>
+            <h1 className="mb-3 text-2xl font-semibold">Alerts</h1>
             <div className="flex flex-col">
               <Table columns={columns} data={data} />
             </div>
@@ -121,7 +82,7 @@ const Alerts: React.FC = (): ReactElement => {
         )
         : (
           <EmptyContent text="No Alerts!">
-            <BiHappyAlt size={80} color="#392396" />
+            <FaRegSmileBeam size={80} color="#392396" />
           </EmptyContent>
         )}
     </>
