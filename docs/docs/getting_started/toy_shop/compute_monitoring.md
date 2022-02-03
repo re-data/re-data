@@ -70,6 +70,7 @@ select table_name, metric, z_score_value, last_value, time_window_end from toy_s
  "postgres"."toy_shop"."orders"                     | avg_length      |   -2.20745908506349 | 6.4363636363636365 | 2021-01-11 00:00:00
  "postgres"."toy_shop"."orders"                     | distinct_values |  2.8460498940015415 |                  9 | 2021-01-11 00:00:00
  "postgres"."toy_shop_sources"."toy_shop_customers" | row_count       |  2.0283702112970112 |                 25 | 2021-01-11 00:00:00
+ ```
 
 We can see there are a couple of things re_data flagged for us.
 
@@ -79,7 +80,7 @@ Before moving on and investigating it in re_data UI. Let's run tests to see if t
 
 
 ```bash title="Running tests"
-$ dbt test
+$ dbt test --select package:toy_shop
 
 ...
 
