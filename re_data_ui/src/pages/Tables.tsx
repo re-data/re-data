@@ -1,5 +1,5 @@
 import React, {
-  ReactElement, useContext, useEffect, useMemo, useState,
+  ReactElement, useContext, useEffect, useState,
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
@@ -7,36 +7,19 @@ import {
   EmptyContent, MetricCharts, SchemaChanges, Select, TableSchema,
 } from '../components';
 import {
-  OverviewData, ReDataModelDetails, RedataOverviewContext,
+  SelectOptionProps, OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
 import { GraphPartial, TestsPartial } from '../partials';
-
-type optionsProps = {
-  value: string;
-  label: string;
-}
-
-const generateOptions = (models: Map<string, ReDataModelDetails>) => {
-  const result: optionsProps[] = [];
-  [...models.keys()].map((model) => {
-    result.push({
-      value: model,
-      label: model,
-    });
-    return true;
-  });
-  return result;
-};
 
 const showA = true;
 
 const Tables: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { aggregated_models: models } = overview;
+  const { modelNodes } = overview;
   const [activeTab, setActiveTab] = useState('');
   const [callApi, setCallApi] = useState(true);
-  const [optionValue, setOptionValue] = useState<optionsProps | null>();
+  const [optionValue, setOptionValue] = useState<SelectOptionProps | null>();
   const [, setURLSearchParams] = useSearchParams();
 
   const [searchParams] = useSearchParams();
@@ -47,7 +30,7 @@ const Tables: React.FC = (): ReactElement => {
 
   const { init } = useModel();
 
-  const handleChange = (option: optionsProps | null) => {
+  const handleChange = (option: SelectOptionProps | null) => {
     if (option) {
       setOptionValue(option);
       const details = init(overview, option?.value) as ReDataModelDetails;
@@ -55,8 +38,6 @@ const Tables: React.FC = (): ReactElement => {
       setURLSearchParams({ model: option.value });
     }
   };
-
-  const options = useMemo(() => generateOptions(models), [models]) || [];
 
   const handleScroll = (idName: string) => {
     setActiveTab(idName);
@@ -92,7 +73,7 @@ const Tables: React.FC = (): ReactElement => {
       <div className="md:w-1/3 w-full ml-1 mb-4">
         <Select
           value={optionValue}
-          options={options}
+          options={modelNodes}
           handleChange={handleChange}
           placeholder="Please enter a table name to check details"
         />
@@ -124,17 +105,17 @@ const Tables: React.FC = (): ReactElement => {
                 </button>
               </li>
               <li
-                className={`mr-4 ${activeTab === 'tests' && 'active-tab'}`}
-              >
-                <button type="button" onClick={() => handleScroll('tests')}>
-                  Tests
-                </button>
-              </li>
-              <li
                 className={`mr-4 ${activeTab === 'graph' && 'active-tab'}`}
               >
                 <button type="button" onClick={() => handleScroll('graph')}>
                   Graph
+                </button>
+              </li>
+              <li
+                className={`mr-4 ${activeTab === 'tests' && 'active-tab'}`}
+              >
+                <button type="button" onClick={() => handleScroll('tests')}>
+                  Tests
                 </button>
               </li>
             </ul>
@@ -180,6 +161,14 @@ const Tables: React.FC = (): ReactElement => {
               </div>
             </div>
           </section>
+          <section id="graph" className="pb-4 pt-4">
+            <div className="bg-white rounded-md px-3 py-4">
+              <h3 className="mb-3 text-md font-medium">Graph</h3>
+              <div className="relative graph-view h-96">
+                <GraphPartial modelName={model} showModelDetails={false} />
+              </div>
+            </div>
+          </section>
           <section id="tests" className="pb-4 pt-4">
             <div className="bg-white rounded-md px-3 py-4">
               <h3 className="mb-3 text-md font-medium">Tests</h3>
@@ -189,14 +178,6 @@ const Tables: React.FC = (): ReactElement => {
                   showModel={false}
                   modelName={model}
                 />
-              </div>
-            </div>
-          </section>
-          <section id="graph" className="pb-4 pt-4">
-            <div className="bg-white rounded-md px-3 py-4">
-              <h3 className="mb-3 text-md font-medium">Graph</h3>
-              <div className="relative graph-view h-96">
-                <GraphPartial modelName={model} showModelDetails={false} />
               </div>
             </div>
           </section>
