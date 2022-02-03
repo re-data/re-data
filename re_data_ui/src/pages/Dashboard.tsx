@@ -171,7 +171,7 @@ const Dashboard: React.FC = (): ReactElement => {
 
   return (
     <RedataOverviewContext.Provider value={reDataOverview}>
-      <div className="relative min-h-screen md:flex" data-dev-hint="container">
+      <div className="relative min-h-screen md:flex overflow-hidden" data-dev-hint="container">
         <Header />
         <Sidebar />
 

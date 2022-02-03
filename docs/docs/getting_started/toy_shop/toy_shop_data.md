@@ -19,7 +19,7 @@ cd re-data/getting_started/toy_shop/
 ```
 
 ## Toy shop data
-Toy shop DB has 4 seed tables which we would like to observe:
+Toy shop DB has 4 source & seed tables which we would like to observe:
   - customers
   - orders
   - order_items
@@ -32,6 +32,10 @@ And some other dbt models we would like to observe too:
 - revenue_per_age
 
 You can check them in `models` and `seeds` folders for more details.
+
+:::info
+We use seeds instead of sources much more often than you would normally do in dbt. We do just out of easiness of setup which dbt gives for them.
+:::
 
 ## Profile setup
 
@@ -58,6 +62,6 @@ Now you are ready to load toy_shop seed data & create project models. Notice we 
 
 ```
 dbt seed
+dbt run-operation create_toy_shop_source_tables
 dbt run --exclude package:re_data
 ```
-

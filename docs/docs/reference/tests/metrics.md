@@ -1,12 +1,12 @@
 ---
-sidebar_position: 4
+sidebar_position: 2
 ---
 
-# Tests
+# Testing metrics
 
 re_data models (specifically `re_data_metrics` model) can be tested like any other dbt model. Because of the nature of metrics we created a couple of custom tests to help you with metrics testing.
 
-Here is a very simple example of metrics tests
+Here is an example of metrics tests
 
 ```sql title="models/metrics/re_data_metrics.yml"  
 version: 2
@@ -59,17 +59,6 @@ Simple shortcut which lets you check if the metric has one specific value
 
 Simple shortcut which lets you check if metric values are in the range
 
-## Testing metrics vs testing models
+## Other test use cases
 
-Some of the metrics produced and possible tests for them may overlap with tests
-you are already doing on your models.
-In this case, we advise to:
- - testing things that cannot happen in your models tests
- - testing for warning things that are alerting (but can happen and you don't want to stop processing because of it with re_data metrics)
-
-But of course, the best solution would still very much depend on your specific use case.
-
-Overall metrics tests are very lightweight compared to data tests as data they are querying is already aggregated. This can make it possible for you to tests more things with keeping test running-time and costs low.
-
-
-If you would like to ask about your use case, hit as on **[Slack! 😊](https://www.getre.io/slack)**
+If you would like us to add some other tests, information about tests history, etc., join **[Slack! 😊](https://www.getre.io/slack)** and let us know! 😊  

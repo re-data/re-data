@@ -32,4 +32,6 @@ Below is a sample alert notification message sent by a slack app created.
 
 By default, the most recent 20 alerts are shown and you can generate the Observability UI to show more details relating to alerts.
 
-## Email
+## Want to learn more?
+
+Check out the rest of re_data docs, or ask as on **[Slack! 😊](https://www.getre.io/slack)** (we are very responsive there)

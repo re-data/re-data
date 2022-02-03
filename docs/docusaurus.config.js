@@ -39,7 +39,7 @@ module.exports = {
           activeBasePath: 'reference'
         },
         {
-          to: 'docs/reference/data_preparation/data_cleaning',
+          to: 'docs/reference/config',
           label: 'Reference',
           position: 'left',
           activeBasePath: 'reference'
