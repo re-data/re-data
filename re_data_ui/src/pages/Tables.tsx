@@ -10,7 +10,7 @@ import {
   OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
-import { TestsPartial } from '../partials';
+import { GraphPartial, TestsPartial } from '../partials';
 
 type optionsProps = {
   value: string;
@@ -37,8 +37,7 @@ const Tables: React.FC = (): ReactElement => {
   const [activeTab, setActiveTab] = useState('');
   const [callApi, setCallApi] = useState(true);
   const [optionValue, setOptionValue] = useState<optionsProps | null>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, setURLSearchParams] = useSearchParams();
+  const [, setURLSearchParams] = useSearchParams();
 
   const [searchParams] = useSearchParams();
   const model = searchParams.get('model') as string;
@@ -90,7 +89,7 @@ const Tables: React.FC = (): ReactElement => {
   return (
     <div className="grid grid-cols-1">
       <h1 className="mb-3 text-2xl font-semibold">Tables</h1>
-      <div className="w-1/3 ml-1 mb-4">
+      <div className="md:w-1/3 w-full ml-1 mb-4">
         <Select
           value={optionValue}
           options={options}
@@ -129,6 +128,13 @@ const Tables: React.FC = (): ReactElement => {
               >
                 <button type="button" onClick={() => handleScroll('tests')}>
                   Tests
+                </button>
+              </li>
+              <li
+                className={`mr-4 ${activeTab === 'graph' && 'active-tab'}`}
+              >
+                <button type="button" onClick={() => handleScroll('graph')}>
+                  Graph
                 </button>
               </li>
             </ul>
@@ -183,6 +189,14 @@ const Tables: React.FC = (): ReactElement => {
                   showModel={false}
                   modelName={model}
                 />
+              </div>
+            </div>
+          </section>
+          <section id="graph" className="pb-4 pt-4">
+            <div className="bg-white rounded-md px-3 py-4">
+              <h3 className="mb-3 text-md font-medium">Graph</h3>
+              <div className="relative graph-view h-96">
+                <GraphPartial modelName={model} showModelDetails={false} />
               </div>
             </div>
           </section>

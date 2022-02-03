@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: toy_shop_sources
+  - name: '{{ target.schema + "_sources" }}'
     tables:
       - name: toy_shop_customers
         columns:
@@ -18,5 +18,5 @@ sources:
           - name: age
             tests:
               - not_null
-            
+
           - name: joined_at

@@ -2,7 +2,7 @@
 
     {% set sql_to_run %}
     CREATE SCHEMA IF NOT EXISTS {{target.schema}}_sources;
-    DROP TABLE IF EXISTS {{target.schema}}_sources.toy_shop_customers CASCADE;
+    DROP TABLE IF EXISTS {{target.schema}}_sources.toy_shop_customers;
     CREATE TABLE IF NOT EXISTS {{target.schema}}_sources.toy_shop_customers (
         id {{ re_data.integer_type() }},
         first_name {{ re_data.string_type() }},

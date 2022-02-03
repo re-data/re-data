@@ -108,3 +108,7 @@ li.active-tab {
 .rounded-tooltip {
     border-radius: 0.2rem;
 }
+
+.graph-view {
+    min-height: 30rem;
+}
