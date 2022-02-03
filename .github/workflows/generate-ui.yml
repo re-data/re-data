@@ -148,7 +148,7 @@ jobs:
       - name: Replace sources schema in dbt_project.yml vars
         working-directory: ./getting_started/toy_shop
         run: |
-          sed -ri 's/^(\s*)(schema\s*:\s*toy_shop_sources\s*$)/\1schema: ${{ env.TOY_SHOP_SCHEMA }}_sources/' dbt_project.yml
+          sed -ri 's/toy_shop_sources/${{ env.TOY_SHOP_SCHEMA }}_sources/' dbt_project.yml
           cat dbt_project.yml
 
       - name: Install dbt dependencies
