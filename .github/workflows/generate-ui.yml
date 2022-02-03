@@ -263,7 +263,6 @@ jobs:
       - name: Install dependencies and drop branch schema
         working-directory: ./getting_started/toy_shop
         run: |
-          pip install -r requirements.txt
           pip install dbt-${{ matrix.database }}==1.0.0
           dbt deps
           dbt run-operation drop_all_schemas --args "{ schema_name: ${{ env.TOY_SHOP_SCHEMA }} }" --profile toy_shop_${{ matrix.database }}
