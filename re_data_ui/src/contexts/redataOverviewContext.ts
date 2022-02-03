@@ -113,6 +113,8 @@ export interface DbtGraph {
   exposures: Record<string, unknown>;
   nodes: { [key: string]: DbtNode };
   sources: { [key: string]: DbtSource };
+  child_map: { [key: string]: [] };
+  parent_map: { [key: string]: [] };
 }
 
 export interface AggregatedMetrics {
@@ -170,6 +172,7 @@ export interface OverviewData {
   graph: DbtGraph | null;
   generated_at: string;
   loading: boolean;
+  dbtMapping: Record<string, string>;
 }
 
 export interface NewOverviewData {
@@ -187,4 +190,5 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   generated_at: '',
   tests: [],
   loading: true,
+  dbtMapping: {},
 });

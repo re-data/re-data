@@ -15,7 +15,8 @@ models:
     enabled: true
 
 vars:
-  re_data:alerting_z_score: 3
+  re_data:alerting_z_score: 2
+  re_data:anomaly_detection_look_back_days: 10
   re_data:monitored:
     - tables:
         - name: toy_shop_customers

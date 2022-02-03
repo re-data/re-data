@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {
-  Anomaly, Metric, SchemaChange,
+  Anomaly, DbtNode, DbtSource, Metric, SchemaChange,
 } from '../contexts/redataOverviewContext';
 
 export const RE_DATA_OVERVIEW_FILE = 'overview.json';
@@ -99,4 +99,11 @@ export const appendToMapKey = (
     map.set(key, [item]);
   }
   return map;
+};
+
+export const supportedResTypes = new Set(['source', 'model', 'seed']);
+
+export const generateModelId = (details: DbtNode | DbtSource): string => {
+  const { database, schema, name } = details;
+  return `${database}.${schema}.${name}`.toLowerCase();
 };

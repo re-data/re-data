@@ -10,3 +10,53 @@ toy_shop:
       dbname: postgres
       schema: toy_shop
       threads: 4
+toy_shop_postgres:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: postgres
+      password: postgres
+      port: 5432
+      dbname: postgres
+      schema: toy_shop
+      threads: 4
+toy_shop_snowflake:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_RE_DATA_TESTING_ACCOUNT') }}"
+      user: "{{ env_var('RE_DATA_TESTING_USER') }}"
+      password: "{{ env_var('RE_DATA_TESTING_PASSWORD') }}"
+      database: RE_DATA_TESTING
+      warehouse: RE_DATA_TESTING_DWH
+      schema: "{{ env_var('TOY_SHOP_SCHEMA') }}"
+      threads: 4
+toy_shop_redshift:
+  target: dev
+  outputs:
+    dev:
+      type: redshift
+      host: "{{ env_var('REDSHIFT_RE_DATA_TESTING_HOST') }}"
+      user: "{{ env_var('RE_DATA_TESTING_USER') }}"
+      password: "{{ env_var('RE_DATA_TESTING_PASSWORD') }}"
+      port: 5439
+      dbname: re_data_testing
+      schema: "{{ env_var('TOY_SHOP_SCHEMA') }}"
+      threads: 4
+toy_shop_bigquery:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('BIGQUERY_TESTING_PROJECT_ID') }}"
+      dataset: "{{ env_var('TOY_SHOP_SCHEMA') }}"
+      threads: 4
+      keyfile: "{{ env_var('BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH') }}"
+      location: EU
+      timeout_seconds: 300
+      priority: interactive
+      retries: 1
