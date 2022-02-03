@@ -7,9 +7,13 @@ sidebar_position: 3
 Now let's investigate generated data in re_data UI. We first generate HTML/JSON from the data warehouse and then serve files.
 
 ```
-re_data overview generate --start-date 2021-01-01 --end-date 2021-01-30 --interval days:1
+re_data overview generate --start-date 2021-01-01 --interval days:1
 re_data overview serve
 ```
+
+:::info
+We don't pass --end-date to `re_data overview generate` and this is causing re_data to use the default (today). We generate for this whole period to get also tests history (just ran) displayed
+:::
 
 After running these commands you should be able to see views similar to those:
 
