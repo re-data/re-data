@@ -128,7 +128,7 @@ jobs:
 
       - name: Set the TOY_SHOP_SCHEMA environment variable
         run: |
-          echo "TOY_SHOP_SCHEMA=toy_shop_${GITHUB_REF_SLUG//-/_}" >> $GITHUB_ENV
+          echo "TOY_SHOP_SCHEMA=toy_shop_${GITHUB_REF_SLUG//[^[:alnum:]]/_}" >> $GITHUB_ENV
 
       - name: Print TOY_SHOP_SCHEMA
         run: |
@@ -243,7 +243,7 @@ jobs:
 
       - name: Set the TOY_SHOP_SCHEMA environment variable
         run: |
-          echo "TOY_SHOP_SCHEMA=toy_shop_${GITHUB_EVENT_REF_SLUG//-/_}" >> $GITHUB_ENV
+          echo "TOY_SHOP_SCHEMA=toy_shop_${GITHUB_EVENT_REF_SLUG//[^[:alnum:]]/_}" >> $GITHUB_ENV
 
       - name: Print TOY_SHOP_SCHEMA
         run: |
