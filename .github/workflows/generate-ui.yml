@@ -16,6 +16,7 @@ jobs:
   generate-ui:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     services:
       postgres:
         image: postgres
@@ -128,7 +129,7 @@ jobs:
 
       - name: Set the TOY_SHOP_SCHEMA environment variable
         run: |
-          echo "TOY_SHOP_SCHEMA=toy_shop_${GITHUB_REF_SLUG//-/_}" >> $GITHUB_ENV
+          echo "TOY_SHOP_SCHEMA=toy_shop_${GITHUB_REF_SLUG//[^[:alnum:]]/_}" >> $GITHUB_ENV
 
       - name: Print TOY_SHOP_SCHEMA
         run: |
@@ -250,7 +251,7 @@ jobs:
 
       - name: Set the TOY_SHOP_SCHEMA environment variable
         run: |
-          echo "TOY_SHOP_SCHEMA=toy_shop_${GITHUB_EVENT_REF_SLUG//-/_}" >> $GITHUB_ENV
+          echo "TOY_SHOP_SCHEMA=toy_shop_${GITHUB_EVENT_REF_SLUG//[^[:alnum:]]/_}" >> $GITHUB_ENV
 
       - name: Print TOY_SHOP_SCHEMA
         run: |
@@ -267,3 +268,34 @@ jobs:
           pip install dbt-${{ matrix.database }}==1.0.0
           dbt deps
           dbt run-operation drop_all_schemas --args "{ schema_name: ${{ env.TOY_SHOP_SCHEMA }} }" --profile toy_shop_${{ matrix.database }}
+
+  clean-up-deployment:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'delete'
+    
+    steps:        
+      - name: Check out
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Delete generated documentation and observability UI for branch
+        run: |
+          ls
+          rm -rf ${{env.GITHUB_EVENT_REF_SLUG}}
+          rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}
+          rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}-snowflake
+          rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}-bigquery
+          rm -rf ui-${{env.GITHUB_EVENT_REF_SLUG}}-redshift
+
+      - name: Update github pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          force_orphan: true
+          keep_files: true
+          # allow_empty_commit: true
