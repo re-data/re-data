@@ -16,7 +16,6 @@ jobs:
   generate-ui:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
     services:
       postgres:
         image: postgres
