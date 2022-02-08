@@ -24,13 +24,8 @@ const LineageGraph: React.FC<LineageGraphProps> = (
   } = props;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [network, setNetwork] = useState<any>(null);
-  const [options, setOptions] = useState<Options>(networkOptions);
   const [searchParams] = useSearchParams();
   const model = searchParams.get('model');
-
-  // useEffect(() => {
-  //   setOptions(networkOptions);
-  // }, [networkOptions]);
 
   useEffect(() => {
     if (network && model && data && !showModelDetails) {
