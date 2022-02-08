@@ -55,9 +55,11 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
     nodes: [],
     edges: [],
   };
-  if (!overview.graph) {
+
+  if (!overview.graph || !overview.modelNodes) {
     return graph;
   }
+
   const { dbtMapping } = overview;
   const dbtNodes = overview.graph.nodes;
   const dbtSources = overview.graph.sources;
@@ -129,39 +131,42 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
       }
     });
   } else {
-    Object.entries(allNodes).forEach(([, details]) => {
-      if (supportedResTypes.has(details.resource_type) && details.package_name !== 're_data') {
-        const modelId = generateModelId(details);
-        const node: VisNode = {
-          id: modelId,
-          label: details.name,
-          shape: 'box',
-          color: {
-            background: resourceTypeColors[details.resource_type],
-          },
-        };
-        graph.nodes.push(node);
+    const { modelNodes } = overview;
+    for (let index = 0; index < modelNodes.length; index++) {
+      const currentNode = modelNodes[index];
+      const modelTitle = dbtMapping[currentNode.label];
+      const details = allNodes[modelTitle];
+      const modelId = generateModelId(details);
 
-        if (details.resource_type !== 'source') {
-          const d = details as DbtNode;
-          const parentNodes = new Set(d.depends_on.nodes);
-          parentNodes.forEach((parent) => {
-            const parentNode: DbtNode | DbtSource = dbtNodes[parent]
-              ? dbtNodes[parent]
-              : dbtSources[parent];
-            if (parentNode) {
-              const parentModelId = generateModelId(parentNode);
-              const edge: VisEdge = {
-                from: parentModelId,
-                to: modelId,
-                arrows: 'to',
-              };
-              graph.edges.push(edge);
-            }
-          });
-        }
+      const node: VisNode = {
+        id: modelId,
+        label: details.name,
+        shape: 'box',
+        color: {
+          background: resourceTypeColors[details.resource_type],
+        },
+      };
+      graph.nodes.push(node);
+
+      if (details.resource_type !== 'source') {
+        const d = details as DbtNode;
+        const parentNodes = new Set(d.depends_on.nodes);
+        parentNodes.forEach((parent) => {
+          const parentNode: DbtNode | DbtSource = dbtNodes[parent]
+            ? dbtNodes[parent]
+            : dbtSources[parent];
+          if (parentNode) {
+            const parentModelId = generateModelId(parentNode);
+            const edge: VisEdge = {
+              from: parentModelId,
+              to: modelId,
+              arrows: 'to',
+            };
+            graph.edges.push(edge);
+          }
+        });
       }
-    });
+    }
   }
 
   return graph;
@@ -256,8 +261,9 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
       navigationButtons: false,
       multiselect: false,
       keyboard: {
-        enabled: true,
+        enabled: false,
       },
+      zoomView: !!showModelDetails,
     },
     physics: {
       enabled: false,
@@ -269,19 +275,19 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
 
   return (
     <>
-      <div className="flex items-center absolute mt-4 ml-4">
-        <>
+      <div className="flex items-center absolute mt-4 ml-4 z-20">
+        <div className="flex items-center">
           <div className="w-3 h-3 bg-source rounded-tooltip" />
           <p className="text-sm font-medium ml-1 mr-4">Source node</p>
-        </>
-        <>
+        </div>
+        <div className="flex items-center">
           <div className="w-3 h-3 bg-seed rounded-tooltip" />
           <p className="text-sm font-medium ml-1 mr-4">Seed node</p>
-        </>
-        <>
+        </div>
+        <div className="flex items-center">
           <div className="w-3 h-3 bg-model rounded-tooltip" />
           <p className="text-sm font-medium ml-1 mr-4">Model node</p>
-        </>
+        </div>
       </div>
       <div
         className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-12
