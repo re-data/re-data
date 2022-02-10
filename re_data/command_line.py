@@ -15,6 +15,48 @@ import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import format_alerts_to_table
 
+def add_options(options):
+    def _add_options(func):
+        for option in reversed(options):
+            func = option(func)
+        return func
+    return _add_options
+
+
+dbt_flags = [
+    click.option(
+    '--profile',
+    type=click.STRING,
+    help="""
+        Which profile to load. Overrides setting in dbt_project.yml
+    """
+    ),
+    click.option(
+        '--target',
+        type=click.STRING,
+        help="""
+            Which target to load for the given profile.
+        """
+    ),
+    click.option(
+        '--project-dir',
+        type=click.STRING,
+        help="""
+            Which directory to look in for the dbt_project.yml
+            file. Default is the current working directory and its
+            parents
+        """
+    ),
+    click.option(
+        '--profiles-dir',
+        type=click.STRING,
+        help="""
+            Which directory to look in for the profiles.yml file.
+            Default = ~/.dbt
+        """
+    )
+]
+
 
 @click.group(help=f"re_data CLI")
 def main():
@@ -48,10 +90,15 @@ def init(project_name):
 
 
 @main.command()
-def detect():
+@add_options(dbt_flags)
+def detect(profile, target):
     print(f"Detecting tables", "RUN")
 
     run_list = ['dbt', 'run', '--models', 're_data_tables', 're_data_columns']
+    if profile:
+        run_list.extend(['--profile', profile])
+    if target:
+        run_list.extend(['--target', target])
     completed_process = subprocess.run(run_list)
     completed_process.check_returncode()
 
@@ -87,20 +134,7 @@ def detect():
     is_flag=True,
     help='Warning! If specified re_data runs first dbt run with --full-refresh option cleaning all previously gathered profiling information'
 )
-@click.option(
-    '--profile',
-    type=click.STRING,
-    help="""
-        Specify profile to be used with dbt.
-    """
-)
-@click.option(
-    '--target',
-    type=click.STRING,
-    help="""
-        Which target to load for the given profile.
-    """
-)
+@add_options(dbt_flags)
 def run(start_date, end_date, interval, full_refresh, profile, target):
     for_date = start_date
 
@@ -181,21 +215,9 @@ def notify():
         or `hours:1` for a time interval of 1 hour
     """
 )
-@click.option(
-    '--profile',
-    type=click.STRING,
-    help="""
-        Specify profile to be used with dbt.
-    """
-)
-@click.option(
-    '--target',
-    type=click.STRING,
-    help="""
-        Which target to load for the given profile.
-    """
-)
+@add_options(dbt_flags)
 def generate(start_date, end_date, interval, profile, target):
+    print(start_date, end_date, interval, profile, target)
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     args = {
@@ -282,20 +304,7 @@ def serve(port):
     default='',
     help="Extra markdown text to be added to the alert message"
 )
-@click.option(
-    '--profile',
-    type=click.STRING,
-    help="""
-        Specify profile to be used with dbt.
-    """
-)
-@click.option(
-    '--target',
-    type=click.STRING,
-    help="""
-        Which target to load for the given profile.
-    """
-)
+@add_options(dbt_flags)
 def slack(start_date, end_date, webhook_url, subtitle, profile, target):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
