@@ -79,3 +79,15 @@ vars:
         - max_length
         - avg_length
         - missing_percent
+  re_data:monitored:
+    - tables:
+        - name: pending_orders
+          time_filter: created_at
+
+          metrics:
+            table:
+              - orders_above_100
+
+          columns:
+            - amount
+            - status
