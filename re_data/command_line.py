@@ -94,7 +94,14 @@ def detect():
         Specify profile to be used with dbt.
     """
 )
-def run(start_date, end_date, interval, full_refresh, profile):
+@click.option(
+    '--target',
+    type=click.STRING,
+    help="""
+        Which target to load for the given profile.
+    """
+)
+def run(start_date, end_date, interval, full_refresh, profile, target):
     for_date = start_date
 
     time_grain, num_str = interval.split(':')
@@ -125,6 +132,8 @@ def run(start_date, end_date, interval, full_refresh, profile):
         
         if profile:
             run_list.extend(['--profile', profile])
+        if target:
+            run_list.extend(['--target', target])
 
         completed_process = subprocess.run(run_list)
         completed_process.check_returncode()
@@ -179,7 +188,14 @@ def notify():
         Specify profile to be used with dbt.
     """
 )
-def generate(start_date, end_date, interval, profile):
+@click.option(
+    '--target',
+    type=click.STRING,
+    help="""
+        Which target to load for the given profile.
+    """
+)
+def generate(start_date, end_date, interval, profile, target):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     args = {
@@ -190,6 +206,8 @@ def generate(start_date, end_date, interval, profile):
     command_list = ['dbt', 'run-operation', 'generate_overview', '--args', yaml.dump(args)]
     if profile:
         command_list.extend(['--profile', profile])
+    if target:
+        command_list.extend(['--target', target])
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
 
@@ -208,12 +226,17 @@ def generate(start_date, end_date, interval, profile):
     )
 
 
+@click.option(
+    '--port',
+    type=click.INT,
+    default=8085,
+    help="Specify the port number for the UI server. Default is 8085"
+)
 @overview.command()
-def serve():
+def serve(port):
     serve_dir = os.path.join(os.getcwd(), 'target', 're_data')
     os.chdir(serve_dir)
 
-    port = 8085
     address = '0.0.0.0'
 
     httpd = TCPServer((address, port), SimpleHTTPRequestHandler)
@@ -266,7 +289,14 @@ def serve():
         Specify profile to be used with dbt.
     """
 )
-def slack(start_date, end_date, webhook_url, subtitle, profile):
+@click.option(
+    '--target',
+    type=click.STRING,
+    help="""
+        Which target to load for the given profile.
+    """
+)
+def slack(start_date, end_date, webhook_url, subtitle, profile, target):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     args = {
@@ -276,6 +306,8 @@ def slack(start_date, end_date, webhook_url, subtitle, profile):
     command_list = ['dbt', 'run-operation', 'export_alerts', '--args', yaml.dump(args)]
     if profile:
         command_list.extend(['--profile', profile])
+    if target:
+        command_list.extend(['--target', target])
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
 
