@@ -22,14 +22,20 @@ def add_options(options):
         return func
     return _add_options
 
+def add_dbt_flags(command_list, flags):
+    for key, value in flags.items():
+        if value:
+            command_list.extend([f'--{key}', value])
+    print(command_list)
+
 
 dbt_flags = [
     click.option(
-    '--profile',
-    type=click.STRING,
-    help="""
-        Which profile to load. Overrides setting in dbt_project.yml
-    """
+        '--profile',
+        type=click.STRING,
+        help="""
+            Which profile to load. Overrides setting in dbt_project.yml
+        """
     ),
     click.option(
         '--target',
@@ -91,14 +97,11 @@ def init(project_name):
 
 @main.command()
 @add_options(dbt_flags)
-def detect(profile, target):
+def detect(**kwargs):
     print(f"Detecting tables", "RUN")
 
     run_list = ['dbt', 'run', '--models', 're_data_tables', 're_data_columns']
-    if profile:
-        run_list.extend(['--profile', profile])
-    if target:
-        run_list.extend(['--target', target])
+    add_dbt_flags(run_list, kwargs)
     completed_process = subprocess.run(run_list)
     completed_process.check_returncode()
 
@@ -135,7 +138,7 @@ def detect(profile, target):
     help='Warning! If specified re_data runs first dbt run with --full-refresh option cleaning all previously gathered profiling information'
 )
 @add_options(dbt_flags)
-def run(start_date, end_date, interval, full_refresh, profile, target):
+def run(start_date, end_date, interval, full_refresh, **kwargs):
     for_date = start_date
 
     time_grain, num_str = interval.split(':')
@@ -164,10 +167,7 @@ def run(start_date, end_date, interval, full_refresh, profile, target):
         if for_date == start_date and full_refresh:
             run_list.append('--full-refresh')
         
-        if profile:
-            run_list.extend(['--profile', profile])
-        if target:
-            run_list.extend(['--target', target])
+        add_dbt_flags(run_list, kwargs)
 
         completed_process = subprocess.run(run_list)
         completed_process.check_returncode()
@@ -216,8 +216,7 @@ def notify():
     """
 )
 @add_options(dbt_flags)
-def generate(start_date, end_date, interval, profile, target):
-    print(start_date, end_date, interval, profile, target)
+def generate(start_date, end_date, interval, **kwargs):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     args = {
@@ -226,10 +225,7 @@ def generate(start_date, end_date, interval, profile, target):
         'interval': interval
     }
     command_list = ['dbt', 'run-operation', 'generate_overview', '--args', yaml.dump(args)]
-    if profile:
-        command_list.extend(['--profile', profile])
-    if target:
-        command_list.extend(['--target', target])
+    add_dbt_flags(command_list, kwargs)
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
 
@@ -305,7 +301,7 @@ def serve(port):
     help="Extra markdown text to be added to the alert message"
 )
 @add_options(dbt_flags)
-def slack(start_date, end_date, webhook_url, subtitle, profile, target):
+def slack(start_date, end_date, webhook_url, subtitle, **kwargs):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     args = {
@@ -313,10 +309,7 @@ def slack(start_date, end_date, webhook_url, subtitle, profile, target):
         'end_date': end_date,
     }
     command_list = ['dbt', 'run-operation', 'export_alerts', '--args', yaml.dump(args)]
-    if profile:
-        command_list.extend(['--profile', profile])
-    if target:
-        command_list.extend(['--target', target])
+    add_dbt_flags(command_list, kwargs)
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
 
