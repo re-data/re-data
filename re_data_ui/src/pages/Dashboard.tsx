@@ -100,7 +100,6 @@ const formatOverviewData = (
   }
   alertsChanges.sort((a, b) => dayjs(b.time_window_end).diff(a.time_window_end));
 
-  console.log('result -> ', result);
   return [result, tests, alertsChanges];
 };
 

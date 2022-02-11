@@ -7,7 +7,7 @@ sidebar_position: 1
 re_data adds dbt macros which make it possible to save test history to your data warehouse & later on investigate them with our reliability UI.
 
 ## on-run-end
-To start saving tests you just need to call re_data `save_test_history` macro in `on-run-end` hook. You can do it by adding the code below into your `dbt_prroject.yml`. In case of having some other hooks existing already you just need to add this as an item into the list.
+To start saving tests you just need to call re_data `save_test_history` macro in `on-run-end` hook. You can do it by adding the code below into your `dbt_project.yml`. In case of having some other hooks existing already you just need to add this as an item into the list.
 
 ```yml dbt_project.yml
 
