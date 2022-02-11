@@ -26,6 +26,7 @@ def add_dbt_flags(command_list, flags):
     for key, value in flags.items():
         if value:
             command_list.extend([f'--{key}', value])
+    print(' '.join(command_list))
 
 
 dbt_flags = [
@@ -99,7 +100,7 @@ def init(project_name):
 def detect(**kwargs):
     print(f"Detecting tables", "RUN")
 
-    run_list = ['dbt', 'run', '--models', 're_data_tables', 're_data_columns']
+    run_list = ['dbt', 'run', '--models', 're_data_columns', 're_data_monitored']
     add_dbt_flags(run_list, kwargs)
     completed_process = subprocess.run(run_list)
     completed_process.check_returncode()
