@@ -29,7 +29,7 @@ Check out our **[live demo](https://getre.io/demo)** of what re_data can do for 
 
 # Support
 
-If you like what we are building, support us! Star ⭐ https://github.com/re-data/re-data on Github. We will also plant a tree 🌳 for every star we get, so you will also support our planet 🌍 😊
+If you like what we are building, support us! Star ⭐ [re_data](https://github.com/re-data/re-data) on Github. We will also plant a tree 🌳 for every star we get, so you will also support our planet 🌍 😊
 
 # License
 re_data is licensed under the MIT license. See the [LICENSE](LICENSE) file for licensing information.
