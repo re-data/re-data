@@ -26,7 +26,6 @@ def add_dbt_flags(command_list, flags):
     for key, value in flags.items():
         if value:
             command_list.extend([f'--{key}', value])
-    print(command_list)
 
 
 dbt_flags = [
