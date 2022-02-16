@@ -109,8 +109,9 @@ export const generateModelId = (details: DbtNode | DbtSource): string => {
   } = details;
   let identifier;
   if (details.resource_type === 'source') {
-    const detail = details as DbtSource;
-    identifier = detail.identifier ? detail.identifier : detail.name;
+    // eslint-disable-next-line no-param-reassign
+    details = details as DbtSource;
+    identifier = details.identifier ? details.identifier : details.name;
   } else {
     identifier = details.name;
   }
