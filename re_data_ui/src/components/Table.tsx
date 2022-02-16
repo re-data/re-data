@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import {
   Row, TableInstance, useAsyncDebounce,
   useGlobalFilter, usePagination, useSortBy, useTable,
@@ -30,7 +30,7 @@ interface IFilter {
   setGlobalFilter: (v?: string) => void;
 }
 
-const CustomFilter = ({
+const CustomFilter = memo(({
   preGlobalFilteredRows,
   globalFilter,
   setGlobalFilter,
@@ -56,7 +56,7 @@ const CustomFilter = ({
       />
     </label>
   );
-};
+});
 
 /**
  * @param  {array of objects} columns

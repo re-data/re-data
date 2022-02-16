@@ -1,5 +1,6 @@
 import React, {
-  memo, PropsWithChildren, ReactElement, useEffect, useState,
+  memo, PropsWithChildren, ReactElement,
+  useCallback, useEffect, useState,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Options, TimelineEvents } from 'vis';
@@ -17,13 +18,13 @@ export interface LineageGraphProps {
 const LineageGraph: React.FC<LineageGraphProps> = (
   props: PropsWithChildren<LineageGraphProps>,
 ): ReactElement => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [network, setNetwork] = useState<any>(null);
-  const [searchParams] = useSearchParams();
   const {
     data, overviewDataLoaded, networkOptions,
     events, showModelDetails,
   } = props;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [network, setNetwork] = useState<any>(null);
+  const [searchParams] = useSearchParams();
   const model = searchParams.get('model');
 
   useEffect(() => {
@@ -39,9 +40,10 @@ const LineageGraph: React.FC<LineageGraphProps> = (
     }
   }, [model, network, data, showModelDetails]);
 
-  const getNetwork = (n: unknown) => {
+  const getNetwork = useCallback((n: unknown) => {
+    console.log(n);
     setNetwork(n);
-  };
+  }, []);
 
   return (
     <div className={showModelDetails ? 'col-span-8' : 'col-span-12'}>
