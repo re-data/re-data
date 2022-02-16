@@ -104,6 +104,9 @@ export const appendToMapKey = (
 export const supportedResTypes = new Set(['source', 'model', 'seed']);
 
 export const generateModelId = (details: DbtNode | DbtSource): string => {
-  const { database, schema, name, identifier } = details;
-  return `${database}.${schema}.${identifier || name}`.toLowerCase();
+  const {
+    database, schema,
+  } = details;
+  const identifier = details.resource_type === 'source' ? (details as DbtSource).identifier : details.name;
+  return `${database}.${schema}.${identifier}`.toLowerCase();
 };
