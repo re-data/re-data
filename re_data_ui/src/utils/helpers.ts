@@ -103,7 +103,22 @@ export const appendToMapKey = (
 
 export const supportedResTypes = new Set(['source', 'model', 'seed']);
 
-export const generateModelId = (details: DbtNode | DbtSource): string => {
-  const { database, schema, name, identifier } = details;
-  return `${database}.${schema}.${identifier || name}`.toLowerCase();
+type DbtNodeOrSource = DbtNode | DbtSource
+
+function isAliasedSource(node: DbtNodeOrSource): node is DbtSource {
+  if ((node as DbtSource).identifier) {
+    return true;
+  }
+  return false;
+}
+
+export const generateModelId = (details: DbtNodeOrSource): string => {
+  const { database, schema } = details;
+  let resolvedName: string;
+  if (isAliasedSource(details)) {
+    resolvedName = details.identifier;
+  } else {
+    resolvedName = details.name;
+  }
+  return `${database}.${schema}.${resolvedName}`.toLowerCase();
 };
