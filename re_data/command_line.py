@@ -15,6 +15,8 @@ import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import format_alerts_to_table
 from dbt.config.project import Project
+from re_data.tracking import anonymous_tracking
+
 
 def add_options(options):
     def _add_options(func):
@@ -91,6 +93,7 @@ def main():
 @click.argument(
     'project_name'
 )
+@anonymous_tracking
 def init(project_name):
     print(f"Creating {project_name} template project")
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -115,6 +118,7 @@ def init(project_name):
 
 @main.command()
 @add_options(dbt_flags)
+@anonymous_tracking
 def detect(**kwargs):
     print(f"Detecting tables", "RUN")
 
@@ -156,6 +160,7 @@ def detect(**kwargs):
     help='Warning! If specified re_data runs first dbt run with --full-refresh option cleaning all previously gathered profiling information'
 )
 @add_options(dbt_flags)
+@anonymous_tracking
 def run(start_date, end_date, interval, full_refresh, **kwargs):
     for_date = start_date
 
@@ -242,6 +247,7 @@ def notify():
     """
 )
 @add_options(dbt_flags)
+@anonymous_tracking
 def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
@@ -286,6 +292,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     """
 )
 @overview.command()
+@anonymous_tracking
 @add_options([dbt_project_dir_option])
 def serve(port, re_data_target_dir, **kwargs):
     _, serve_dir = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
@@ -345,6 +352,7 @@ def serve(port, re_data_target_dir, **kwargs):
     """
 )
 @add_options(dbt_flags)
+@anonymous_tracking
 def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwargs):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
