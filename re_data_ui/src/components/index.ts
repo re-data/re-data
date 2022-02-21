@@ -6,3 +6,6 @@ export { default as MetricCharts } from './MetricCharts';
 export { default as ModelDetails } from './ModelDetails';
 export { default as TableSchema } from './TableSchema';
 export { default as SchemaChanges } from './SchemaChanges';
+export { default as FlowGraph } from './FlowGraph';
+// export { default as Node } from './CustomNode';
+export { default as LineageGraph } from './LineageGraph';

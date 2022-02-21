@@ -1,0 +1,41 @@
+
+.layoutflow {
+    height: 590px;
+    position: relative;
+    border: 1px solid red;
+  }
+  
+  .controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    z-index: 100;
+    /* display: none; */
+    border: 1px solid red;
+  }
+  
+  .controls button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid red;
+  }
+  
+  .controls button:not(:first-child) {
+    margin-left: 0.7rem;
+  }
+  
+  .controls svg {
+    height: 1rem;
+    width: 1rem;
+  }
+  
+  /* https://reactflow.dev/docs/theming/ */
+  .react-flow {
+    /* background: lightgray; */
+    height: 580px;
+    padding-top: 10px;
+  }
+  

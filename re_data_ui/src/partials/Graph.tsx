@@ -1,8 +1,13 @@
-import React, { ReactElement, useContext } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { NodeOptions, Options } from 'vis';
-import LineageGraph from '../components/LineageGraph';
-import ModelDetails from '../components/ModelDetails';
+/* eslint-disable no-continue */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, {
+  ReactElement, useContext, useState,
+} from 'react';
+import { NodeOptions } from 'vis';
+import { FlowGraph, ModelDetails } from '../components';
+// import LineageGraph from '../components/LineageGraph';
+// import ModelDetails from '../components/ModelDetails';
 import {
   DbtNode, DbtSource, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
@@ -50,7 +55,13 @@ const resourceTypeColors: ResourceTypeColorsProps = {
   seed: 'hsl(150deg 66% 44%)',
 };
 
-const generateGraph = (overview: OverviewData, modelName?: string | null) => {
+type GenerateGraphProps = {
+  overview: OverviewData;
+  modelName?: string | null;
+  modelType?: string | null;
+}
+
+const generateGraph = ({ overview, modelName, modelType }:GenerateGraphProps) => {
   const graph: IGraph = {
     nodes: [],
     edges: [],
@@ -78,14 +89,20 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
     // draw the parent nodes and connect it to the node using an edge
     // draw the child nodes and connect it to the node using an edge
 
+    const index = 0;
     const details = allNodes[modelTitle];
     const modelId = generateModelId(details);
-    graph.nodes.push({
+
+    const n = {
+      key: index + 1,
       id: modelId,
       label: details.name,
       shape: 'box',
-      color: resourceTypeColors[details.resource_type],
-    });
+      color: {
+        background: resourceTypeColors[details.resource_type],
+      },
+    };
+    graph.nodes.push(n);
 
     modelParentNodes.forEach((parent) => {
       const parentDetails = allNodes[parent];
@@ -96,7 +113,9 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
           id: parentModelId,
           label: name,
           shape: 'box',
-          color: resourceTypeColors[resourceType],
+          color: {
+            background: resourceTypeColors[details.resource_type],
+          },
         });
 
         const edge: VisEdge = {
@@ -119,7 +138,9 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
           id: childModelId,
           label: name,
           shape: 'box',
-          color: resourceTypeColors[resourceType],
+          color: {
+            background: resourceTypeColors[details.resource_type],
+          },
         });
 
         const edge: VisEdge = {
@@ -138,10 +159,23 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
       const details = allNodes[modelTitle];
       const modelId = generateModelId(details);
 
-      const node: VisNode = {
+      // for monitored nodes
+      const config = details.config as any;
+
+      // console.log('details in -> ', config?.re_data_monitored);
+
+      // check if model type exists and this currentNode is of that type
+      if (modelType && modelType !== details.resource_type) {
+        continue;
+      }
+
+      const node = {
+        // const node: VisNode = {
+        key: index + 1,
         id: modelId,
         label: details.name,
         shape: 'box',
+        isMonitored: config?.re_data_monitored || false,
         color: {
           background: resourceTypeColors[details.resource_type],
         },
@@ -182,124 +216,53 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
     modelName = null,
     showModelDetails = true,
   } = props;
+
   const overview: OverviewData = useContext(RedataOverviewContext);
   const overviewDataLoaded = !!overview.graph;
-  const [, setURLSearchParams] = useSearchParams();
+  // const [modelType, setModelType] = useState<string | null>('model');
+  const [modelType, setModelType] = useState<string | null>(null);
 
-  const graph = modelName
-    ? generateGraph(overview, modelName)
-    : generateGraph(overview);
+  const graph = generateGraph({ overview, modelName, modelType });
 
-  const events = {
-    selectNode: (params: VisNetworkEventParams) => {
-      if (showModelDetails) {
-        if (!params.nodes || params.nodes.length !== 1) {
-        // only select a single node
-          return;
-        }
-        const modelIdentifier = params.nodes[0];
-        setURLSearchParams({
-          model: modelIdentifier,
-        });
-      }
-    },
-    deselectNode: () => {
-      if (showModelDetails) {
-        setURLSearchParams({});
-      }
-    },
-  };
-
-  const networkOptions: Options = {
-    height: '100%',
-    width: '100%',
-    edges: {
-      color: {
-        color: '#6F798B70',
-        highlight: '#6F798B70',
-        hover: '#6F798B70',
-        inherit: true,
-      },
-      dashes: false,
-      smooth: true,
-    },
-    nodes: {
-      color: {
-        border: 'transparent',
-        highlight: '#392396',
-        hover: {
-          border: 'transparent',
-          background: '#503d9d',
-        },
-      },
-      font: {
-        color: '#ffffff',
-        size: 22,
-      },
-      margin: {
-        top: 7,
-        left: 14,
-        right: 14,
-        bottom: 7,
-      },
-    },
-    layout: {
-      hierarchical: {
-        enabled: true,
-        levelSeparation: 485,
-        nodeSpacing: 50,
-        treeSpacing: 50,
-        blockShifting: false,
-        edgeMinimization: true,
-        parentCentralization: false,
-        direction: 'LR',
-        sortMethod: 'directed',
-      },
-    },
-    interaction: {
-      hover: true,
-      navigationButtons: false,
-      multiselect: false,
-      keyboard: {
-        enabled: false,
-      },
-      zoomView: !!showModelDetails,
-    },
-    physics: {
-      enabled: false,
-      hierarchicalRepulsion: { centralGravity: 0 },
-      minVelocity: 0.75,
-      solver: 'hierarchicalRepulsion',
-    },
-  };
+  // console.log('graph -> ', JSON.stringify(graph));
 
   return (
     <>
       <div className="flex items-center absolute mt-4 ml-4 z-20">
-        <div className="flex items-center">
+        <button type="button" onClick={() => setModelType('source')} className="flex items-center">
           <div className="w-3 h-3 bg-source rounded-tooltip" />
-          <p className="text-sm font-medium ml-1 mr-4">Source node</p>
-        </div>
-        <div className="flex items-center">
+          <p className="text-sm font-medium ml-1 mr-4">Source nodes</p>
+        </button>
+        <button type="button" onClick={() => setModelType('seed')} className="flex items-center">
           <div className="w-3 h-3 bg-seed rounded-tooltip" />
-          <p className="text-sm font-medium ml-1 mr-4">Seed node</p>
-        </div>
-        <div className="flex items-center">
+          <p className="text-sm font-medium ml-1 mr-4">Seed nodes</p>
+        </button>
+        <button type="button" onClick={() => setModelType('model')} className="flex items-center">
           <div className="w-3 h-3 bg-model rounded-tooltip" />
-          <p className="text-sm font-medium ml-1 mr-4">Model node</p>
-        </div>
+          <p className="text-sm font-medium ml-1 mr-4">Model nodes</p>
+        </button>
+        {modelType !== null && (
+          <button type="button" onClick={() => setModelType(null)} className="flex items-center">
+            <div className="w-3 h-3 bg-model rounded-tooltip" />
+            <p className="text-sm font-medium ml-1 mr-4">All nodes</p>
+          </button>
+        )}
       </div>
       <div
         className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-12
         gap-4 bg-white border-2 border-solid border-gray-200 rounded-lg h-full"
       >
-        <LineageGraph
+        {/* <LineageGraph
           data={graph}
           events={events}
           networkOptions={networkOptions}
           overviewDataLoaded={overviewDataLoaded}
           showModelDetails={showModelDetails}
-        />
+        /> */}
+
+        <div className={showModelDetails ? 'col-span-8' : 'col-span-12'}>
+          {overviewDataLoaded && <FlowGraph data={graph} />}
+        </div>
 
         {showModelDetails && <ModelDetails />}
       </div>

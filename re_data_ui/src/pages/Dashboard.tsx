@@ -168,7 +168,7 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.dbtMapping = dbtMapping;
       overview.modelNodes = modelNodes;
 
-      console.log('overview -> ', overview);
+      // console.log('overview -> ', overview);
       setReDataOverview(overview);
     } catch (e) {
       console.log('Unable to load overview file');
