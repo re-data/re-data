@@ -60,7 +60,7 @@ seeds:
             - distinct_values
 
 vars:
-  re_data:alerting_z_score: 2
+  re_data:alerting_z_score: 3
   re_data:metrics_base:
     table:
       - row_count
