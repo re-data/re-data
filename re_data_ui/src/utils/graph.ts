@@ -79,8 +79,8 @@ function formatData(params: formatDataProps): any {
   return elements;
 }
 
-const nodeWidth = 172;
-const nodeHeight = 36;
+const DEFAULT_WIDTH = 172;
+const DEFAULT_HEIGHT = 36;
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -91,7 +91,10 @@ const getLayoutElements = (elements: any[], direction = 'LR'): any => {
 
   elements.forEach((el: any) => {
     if (isNode(el)) {
-      dagreGraph.setNode(el.id, { width: nodeWidth, height: nodeHeight });
+      dagreGraph.setNode(el.id, {
+        width: DEFAULT_WIDTH,
+        height: DEFAULT_HEIGHT,
+      });
     } else {
       dagreGraph.setEdge(el.source, el.target);
     }
@@ -105,16 +108,9 @@ const getLayoutElements = (elements: any[], direction = 'LR'): any => {
       el.targetPosition = isHorizontal ? Position.Left : Position.Top;
       el.sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
 
-      // unfortunately we need this little hack to pass a slightly different position
-      // to notify react flow about the change. Moreover we are shifting the dagre node position
-      // (anchor=center center) to the top left so it matches the react
-      //    flow node anchor point(top left).
-      // width: el.__rf?.width ?? DEFAULT_WIDTH,
-      // height: el.__rf?.height ?? DEFAULT_HEIGHT
-
       el.position = {
-        x: nodeWithPosition.x - nodeWidth / 2 + Math.random() / 1000,
-        y: nodeWithPosition.y - nodeHeight / 2,
+        x: nodeWithPosition.x - DEFAULT_WIDTH / 2 + Math.random() / 1000,
+        y: nodeWithPosition.y - DEFAULT_HEIGHT / 2,
       };
     }
 

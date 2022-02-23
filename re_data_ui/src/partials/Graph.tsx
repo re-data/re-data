@@ -64,6 +64,14 @@ type GenerateGraphProps = {
   alerts?: AlertsType;
 }
 
+const getAlertData = (modelId: string) => {
+  const { aggregated_models: aggregatedModels }: OverviewData = useContext(RedataOverviewContext);
+
+  const { anomalies, schemaChanges } = aggregatedModels.get(modelId) as ReDataModelDetails;
+
+  return { anomalies, schemaChanges };
+};
+
 const generateGraph = (
   {
     overview, modelName,
@@ -81,7 +89,6 @@ const generateGraph = (
   }
 
   const {
-    aggregated_models: aggregatedModels,
     dbtMapping,
     modelNodes,
     graph: { nodes: dbtNodes, sources: dbtSources }
@@ -89,7 +96,10 @@ const generateGraph = (
   const allNodes = { ...dbtNodes, ...dbtSources };
 
   if (modelName) {
-    const { parent_map: parentNodes, child_map: childNodes } = overview.graph;
+    const {
+      parent_map: parentNodes,
+      child_map: childNodes
+    } = overview.graph;
     const modelTitle = dbtMapping[modelName];
 
     // get all the parents and the child nodes of the model name;
@@ -104,66 +114,93 @@ const generateGraph = (
     const details = allNodes[modelTitle];
     const modelId = generateModelId(details);
 
-    const n = {
-      key: index + 1,
-      id: modelId,
-      label: details.name,
-      shape: 'box',
-      color: {
-        background: resourceTypeColors[details.resource_type],
-      },
-    };
-    graph.nodes.push(n);
+    const { anomalies, schemaChanges } = getAlertData(modelId);
 
-    modelParentNodes.forEach((parent) => {
-      const parentDetails = allNodes[parent];
-      const { name, resource_type: resourceType } = parentDetails;
-      if (supportedResTypes.has(resourceType)) {
-        const parentModelId = generateModelId(parentDetails);
-        graph.nodes.push({
-          id: parentModelId,
-          label: name,
-          shape: 'box',
-          color: {
-            background: resourceTypeColors[details.resource_type],
-          },
-        });
+    if (!modelType && !alerts) {
+      const n = {
+        key: index + 1,
+        id: modelId,
+        label: details.name,
+        shape: 'box',
+        anomalies: anomalies.size > 0,
+        schemaChanges: schemaChanges.length > 0,
+        color: {
+          background: resourceTypeColors[details.resource_type],
+        },
+      };
+      graph.nodes.push(n);
 
-        const edge: VisEdge = {
-          from: parentModelId,
-          to: modelId,
-          arrows: 'to',
-        };
-        graph.edges.push(edge);
-      }
-    });
-    modelChildNodes.forEach((child) => {
-      const childDetails = allNodes[child];
-      const {
-        database, schema, name,
-        resource_type: resourceType,
-      } = childDetails;
-      if (supportedResTypes.has(resourceType)) {
-        const childModelId = `${database}.${schema}.${name}`.toLowerCase();
-        graph.nodes.push({
-          id: childModelId,
-          label: name,
-          shape: 'box',
-          color: {
-            background: resourceTypeColors[details.resource_type],
-          },
-        });
+      modelParentNodes.forEach((parent) => {
+        const parentDetails = allNodes[parent];
+        const { name, resource_type: resourceType } = parentDetails;
+        // && (modelType && modelType !== resourceType)
+        if (supportedResTypes.has(resourceType)) {
+          const parentModelId = generateModelId(parentDetails);
+          graph.nodes.push({
+            id: parentModelId,
+            label: name,
+            shape: 'box',
+            color: {
+              background: resourceTypeColors[details.resource_type],
+            },
+          });
 
-        const edge: VisEdge = {
-          from: modelId,
-          to: childModelId,
-          arrows: 'to',
-        };
-        graph.edges.push(edge);
-      }
-    });
+          const edge: VisEdge = {
+            from: parentModelId,
+            to: modelId,
+            arrows: 'to',
+          };
+          graph.edges.push(edge);
+        }
+      });
+      modelChildNodes.forEach((child) => {
+        const childDetails = allNodes[child];
+        const {
+          database, schema, name,
+          resource_type: resourceType,
+        } = childDetails;
+        if (supportedResTypes.has(resourceType)) {
+          console.log(modelType, resourceType, !!(modelType && modelType !== resourceType));
+          if (modelType && modelType !== resourceType) {
+            const childModelId = `${database}.${schema}.${name}`.toLowerCase();
+            graph.nodes.push({
+              id: childModelId,
+              label: name,
+              shape: 'box',
+              color: {
+                background: resourceTypeColors[details.resource_type],
+              },
+            });
+
+            const edge: VisEdge = {
+              from: modelId,
+              to: childModelId,
+              arrows: 'to',
+            };
+            graph.edges.push(edge);
+          }
+        }
+      });
+    } else {
+      // modelType, alerts,
+      // && modelType !== details.resource_type
+      // if (modelType === details.resource_type ) {
+      const n = {
+        key: index + 1,
+        id: modelId,
+        label: details.name,
+        shape: 'box',
+        anomalies: anomalies.size > 0,
+        schemaChanges: schemaChanges.length > 0,
+        color: {
+          background: resourceTypeColors[details.resource_type],
+        },
+      };
+      graph.nodes.push(n);
+      // }
+      console.log('model exist different type');
+    }
   } else {
-    // const {  } = overview;
     for (let index = 0; index < modelNodes.length; index++) {
       const currentNode = modelNodes[index];
       const modelTitle = dbtMapping[currentNode.label];
@@ -173,7 +210,7 @@ const generateGraph = (
       // for monitored nodes
       const config = details.config as any;
       const isNodeMonitored = config?.re_data_monitored || false;
-      const { anomalies, schemaChanges } = aggregatedModels.get(modelId) as ReDataModelDetails;
+      const { anomalies, schemaChanges } = getAlertData(modelId);
 
       if (alerts === 'anomaly' && anomalies.size < 1) {
         continue;
