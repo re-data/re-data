@@ -19,13 +19,14 @@ import CustomNode from './CustomNode';
 
 export interface Props {
   data: any;
+  disableClick?: boolean;
 }
 
 const nodeTypes = {
   'custom-node': CustomNode,
 };
 
-const FlowGraph: FC<Props> = ({ data }: Props): ReactElement => {
+const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
   // console.log('data -> ', data);
   const instanceRef = useRef<OnLoadParams | null>(null);
   const [, setURLSearchParams] = useSearchParams();
@@ -192,7 +193,7 @@ const FlowGraph: FC<Props> = ({ data }: Props): ReactElement => {
             zoomOnScroll={false} // to disable zoom on scroll
             // onConnect={onConnect}
             onElementClick={(_, element: any) => {
-              if (isNode(element)) {
+              if (!disableClick && isNode(element)) {
                 // console.log('element clicked', element);
                 // removeHighlightPath();
                 highlightPath(element, true);

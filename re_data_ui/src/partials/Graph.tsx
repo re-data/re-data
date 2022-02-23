@@ -324,36 +324,37 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
             <p className="text-sm font-medium ml-1">Schema Change</p>
           </button>
         </div>
-        <div className="flex items-center mr-8">
-          <div className="flex items-center justify-center w-full">
-            <label htmlFor="toggleB" className="flex items-center cursor-pointer">
-              <div className="mr-3 text-gray-700 text-sm font-medium">
-                Monitored
-              </div>
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  id="toggleB"
-                  className="sr-only sd"
-                  onChange={() => setMonitored(!monitored)}
-                />
-                <div className="block bg-gray-300 w-10 h-6 rounded-full" />
-                <div className="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" />
-              </div>
-              <div className="ml-3 text-gray-700 text-sm font-medium">
-                All Nodes
-              </div>
-            </label>
+        {showModelDetails && (
+          <div className="flex items-center mr-8">
+            <div className="flex items-center justify-center w-full">
+              <label htmlFor="toggleB" className="flex items-center cursor-pointer">
+                <div className="mr-3 text-gray-700 text-sm font-medium">
+                  Monitored
+                </div>
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    id="toggleB"
+                    className="sr-only sd"
+                    onChange={() => setMonitored(!monitored)}
+                  />
+                  <div className="block bg-gray-300 w-10 h-6 rounded-full" />
+                  <div className="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" />
+                </div>
+                <div className="ml-3 text-gray-700 text-sm font-medium">
+                  All Nodes
+                </div>
+              </label>
+            </div>
           </div>
-
-        </div>
+        )}
       </div>
       <div
         className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-12
         gap-4 bg-white border-2 border-solid border-gray-200 rounded-lg h-full"
       >
         <div className={showModelDetails ? 'col-span-8' : 'col-span-12'}>
-          {overviewDataLoaded && <FlowGraph data={graph} />}
+          {overviewDataLoaded && <FlowGraph data={graph} disableClick={!showModelDetails} />}
         </div>
 
         {showModelDetails && <ModelDetails />}
