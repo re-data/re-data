@@ -15,7 +15,7 @@ const labelActiveStyle = {
   alignItems: 'center',
   // border: '1px solid red',
   fontWeight: 'bold',
-  fontSize: '14px',
+  fontSize: '13px',
 };
 
 const subTitleStyle = {
@@ -24,7 +24,7 @@ const subTitleStyle = {
 };
 
 const subTitleActiveStyle = {
-  fontSize: '10px',
+  fontSize: '9px',
   fontStyle: 'italic',
 };
 

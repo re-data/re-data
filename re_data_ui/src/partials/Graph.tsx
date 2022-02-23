@@ -339,7 +339,7 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
                     onChange={() => setMonitored(!monitored)}
                   />
                   <div className="block bg-gray-300 w-10 h-6 rounded-full" />
-                  <div className="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" />
+                  <div className="dot absolute left-1 top-1 bg-primary w-4 h-4 rounded-full transition" />
                 </div>
                 <div className="ml-3 text-gray-700 text-sm font-medium">
                   All Nodes

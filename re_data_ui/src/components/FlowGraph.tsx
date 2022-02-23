@@ -95,16 +95,14 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
         const incomerIds = allIncomers.map((i: any) => i.id);
         const outgoerIds = allOutgoers.map((o: any) => o.id);
 
-        if (
-          isNode(elem)
-            && (allOutgoers.length > 0 || allIncomers.length > 0)
-        ) {
+        if (isNode(elem)) {
           const highlight = elem.id === node.id
               || incomerIds.includes(elem.id)
             || outgoerIds.includes(elem.id);
 
+          // console.log('selected node -> ', node.id, elem.id);
+
           if (node.id === elem.id) {
-            // console.log('selected node -> ', elem);
             elem.style = {
               ...elem.style,
             };
@@ -135,16 +133,8 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
 
           if (selection && (animated || highlight)) {
             elem.animated = true;
-            // elem.style = {
-            //   ...elem.style,
-            //   stroke: "#ff0000"
-            // };
           } else {
             elem.animated = false;
-            // elem.style = {
-            //   ...elem.style,
-            //   stroke: "#b1b1b7"
-            // };
           }
         }
 
@@ -177,11 +167,8 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
       <div
         className="layoutflow"
         style={{
-          // height: '80vh',
           width: '100%',
           marginTop: '2.5rem',
-          // paddingLeft: '1rem',
-          // border: '1px solid red',
         }}
       >
         <ReactFlowProvider>

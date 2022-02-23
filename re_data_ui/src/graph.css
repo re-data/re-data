@@ -2,6 +2,8 @@
 .layoutflow {
   height: 93%;
   position: relative;
+  width: 100%;
+  margin-top: 2.5rem;
 }
   
 .controls {
@@ -38,7 +40,6 @@
 
 /* https://reactflow.dev/docs/theming/ */
 .react-flow {
-  /* background: red; */
   padding-top: 10px;
 }
 

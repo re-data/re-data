@@ -47,18 +47,6 @@ function formatData(params: formatDataProps): any {
         x: 100,
         y: 50 * +key,
       },
-      style: {
-        // backgroundColor: 'white',
-        // borderWidth: 2,
-        // borderStyle: 'solid',
-        // borderColor: background,
-        // color: 'black',
-        // borderRadius: '4px',
-
-        // color: 'white',
-        // borderColor: '#392396',
-        // backgroundColor: background,
-      },
     };
     elements.push(result);
     // console.log("result -> ", result);
