@@ -22,6 +22,8 @@ function formatData(params: formatDataProps): any {
     const {
       id,
       label,
+      anomalies,
+      schemaChanges,
       isMonitored,
       color: { background },
     } = value;
@@ -33,20 +35,29 @@ function formatData(params: formatDataProps): any {
       key: id,
       type: 'custom-node',
       data: {
+        id,
         label,
         otherName,
-        id,
+        anomalies,
         isMonitored,
-        // backgroundColor: background
+        schemaChanges,
+        borderColor: background,
       },
       position: {
         x: 100,
         y: 50 * +key,
       },
       style: {
-        backgroundColor: background,
-        color: 'white',
-        borderRadius: '4px',
+        // backgroundColor: 'white',
+        // borderWidth: 2,
+        // borderStyle: 'solid',
+        // borderColor: background,
+        // color: 'black',
+        // borderRadius: '4px',
+
+        // color: 'white',
+        // borderColor: '#392396',
+        // backgroundColor: background,
       },
     };
     elements.push(result);

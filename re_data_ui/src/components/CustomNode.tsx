@@ -7,56 +7,94 @@ const labelStyle = {
   alignItems: 'center',
   // border: '1px solid red',
   fontWeight: 'bold',
+  fontSize: '13px',
+};
+
+const labelActiveStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  // border: '1px solid red',
+  fontWeight: 'bold',
   fontSize: '14px',
 };
 
 const subTitleStyle = {
+  fontSize: '9px',
+  fontStyle: 'italic',
+};
+
+const subTitleActiveStyle = {
   fontSize: '10px',
   fontStyle: 'italic',
 };
 
-const dotStyle = {
+const schemaChangesDotStyle = {
   width: '8px',
   height: '8px',
   borderRadius: '8px',
-  backgroundColor: 'red',
+  backgroundColor: 'rgba(252, 211, 77, 1)',
   position: 'absolute' as any,
-  top: '-4px',
-  marginLeft: '5px',
+  top: '-5px',
+  marginLeft: '18px',
+};
+
+const anomaliesDotStyle = {
+  width: '8px',
+  height: '8px',
+  borderRadius: '8px',
+  backgroundColor: 'rgba(220, 38, 38, 1)',
+  position: 'absolute' as any,
+  top: '-5px',
+  marginLeft: '6px',
 };
 
 const nodeStyle = {
-  // border: '1px solid red',
-  padding: '4px 12px',
+  padding: '4px 12px 7px',
   borderRadius: 4,
   overflow: 'hidden',
 };
 
-const containerStyle = {
-  // border: '1px solid red',
-  position: 'relative' as any,
-};
-
 const CustomNode: FC<NodeProps> = (props: NodeProps) => {
-  console.log('props -> ', props);
   const {
     data: {
-      label, otherName, isMonitored,
+      label, otherName, active,
+      borderColor, anomalies, schemaChanges,
     },
   } = props;
+
+  const containerStyle = {
+    border: `2px solid ${borderColor}`,
+    cursor: 'pointer',
+    position: 'relative' as any,
+    backgroundColor: 'white',
+    borderRadius: '4px',
+    // overflow: 'hidden',
+  };
+
+  const containerActiveStyle = {
+    backgroundColor: '#392396',
+    border: 'none',
+    color: 'white',
+    borderRadius: '4px',
+    overflow: 'hidden',
+  };
+
+  // console.log('props io -> ', props);
   return (
-    <div style={containerStyle}>
+    <div style={active ? containerActiveStyle : containerStyle}>
+      {/* <div style={containerStyle}> */}
       <div style={nodeStyle}>
         <Handle type="target" position={Position.Left} />
-        <div style={labelStyle}>
+        <div style={active ? labelActiveStyle : labelStyle}>
           {label}
         </div>
-        <div style={subTitleStyle}>
+        <div style={active ? subTitleActiveStyle : subTitleStyle}>
           {otherName}
         </div>
         <Handle type="source" position={Position.Right} />
       </div>
-      {isMonitored && <div style={dotStyle} />}
+      {anomalies && <div style={anomaliesDotStyle} />}
+      {schemaChanges && <div style={schemaChangesDotStyle} />}
     </div>
   );
 };

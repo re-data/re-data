@@ -100,12 +100,28 @@ const FlowGraph: FC<Props> = ({ data }: Props): ReactElement => {
         ) {
           const highlight = elem.id === node.id
               || incomerIds.includes(elem.id)
-              || outgoerIds.includes(elem.id);
+            || outgoerIds.includes(elem.id);
 
-          elem.style = {
-            ...elem.style,
-            opacity: highlight ? 1 : 0.25,
-          };
+          if (node.id === elem.id) {
+            // console.log('selected node -> ', elem);
+            elem.style = {
+              ...elem.style,
+            };
+            elem.data = {
+              ...elem.data,
+              active: true,
+            };
+          } else {
+            elem.style = {
+              ...elem.style,
+              opacity: highlight ? 1 : 0.25,
+            };
+            elem.data = {
+              ...elem.data,
+              active: false,
+            };
+          }
+
           // console.log("node -> ", elem.style);
         }
 
@@ -126,7 +142,7 @@ const FlowGraph: FC<Props> = ({ data }: Props): ReactElement => {
             elem.animated = false;
             // elem.style = {
             //   ...elem.style,
-            //   // stroke: "#b1b1b7"
+            //   stroke: "#b1b1b7"
             // };
           }
         }
@@ -160,11 +176,11 @@ const FlowGraph: FC<Props> = ({ data }: Props): ReactElement => {
       <div
         className="layoutflow"
         style={{
-          height: '80vh',
+          // height: '80vh',
           width: '100%',
           marginTop: '2.5rem',
           // paddingLeft: '1rem',
-          border: '1px solid red',
+          // border: '1px solid red',
         }}
       >
         <ReactFlowProvider>
@@ -176,17 +192,18 @@ const FlowGraph: FC<Props> = ({ data }: Props): ReactElement => {
             zoomOnScroll={false} // to disable zoom on scroll
             // onConnect={onConnect}
             onElementClick={(_, element: any) => {
-              // console.log('element clicked', element);
               if (isNode(element)) {
-                // console.log('node clicked');
-                removeHighlightPath();
+                // console.log('element clicked', element);
+                // removeHighlightPath();
+                highlightPath(element, true);
                 setURLSearchParams({ model: element.data.id });
               }
             }}
             onElementsRemove={onElementsRemove}
             connectionLineType={ConnectionLineType.SmoothStep}
-            onNodeMouseEnter={(_, node) => highlightPath(node, true)}
-            onNodeMouseLeave={removeHighlightPath}
+            onNodeMouseEnter={removeHighlightPath}
+            // onNodeMouseEnter={(_, node) => highlightPath(node, true)}
+            // onNodeMouseLeave={removeHighlightPath}
             nodeTypes={nodeTypes}
           >
             <Controls />

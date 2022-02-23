@@ -50,6 +50,7 @@ const formatOverviewData = (
     const details = result.get(model) as ReDataModelDetails;
     if (item.type === 'alert') {
       const alert = JSON.parse(item.data) as Alert;
+      // console.log(alert);
       alertsChanges.push(alert);
     } else if (item.type === 'metric') {
       const metric = JSON.parse(item.data) as Metric;
@@ -79,7 +80,6 @@ const formatOverviewData = (
       const anomaly = JSON.parse(item.data) as Anomaly;
       anomaly.column_name = columnName;
       appendToMapKey(details.anomalies, columnName, anomaly);
-      // alertsChanges.push({ type: 'anomaly', model, value: anomaly });
     }
   });
   // loop through each table/model and sort by ascending order by
@@ -168,7 +168,7 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.dbtMapping = dbtMapping;
       overview.modelNodes = modelNodes;
 
-      // console.log('overview -> ', overview);
+      console.log('overview -> ', overview);
       setReDataOverview(overview);
     } catch (e) {
       console.log('Unable to load overview file');
