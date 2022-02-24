@@ -317,6 +317,7 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
         <div className="flex items-center">
           <button
             type="button"
+            disabled={!showModelDetails}
             title="Toggle Source Nodes"
             onClick={() => toggleModelType('source')}
             className={`flex items-center ml-1 mr-4 ${modelType === 'source' && 'active-tab'}`}
@@ -326,6 +327,7 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
           </button>
           <button
             type="button"
+            disabled={!showModelDetails}
             title="Toggle Seed Nodes"
             onClick={() => toggleModelType('seed')}
             className={`flex items-center ml-1 mr-4 ${modelType === 'seed' && 'active-tab'}`}
@@ -335,6 +337,7 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
           </button>
           <button
             type="button"
+            disabled={!showModelDetails}
             title="Toggle Model Nodes"
             onClick={() => toggleModelType('model')}
             className={`flex items-center ml-1 mr-4 ${modelType === 'model' && 'active-tab'}`}
@@ -344,6 +347,7 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
           </button>
           <button
             type="button"
+            disabled={!showModelDetails}
             title="Toggle Model Nodes"
             onClick={() => toggleAlerts('anomaly')}
             className={`flex items-center ml-1 mr-4 ${alerts === 'anomaly' && 'active-tab'}`}

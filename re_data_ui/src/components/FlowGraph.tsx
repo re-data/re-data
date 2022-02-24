@@ -145,14 +145,14 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
 
   const onLoad = (reactFlowInstance: any) => {
     instanceRef.current = reactFlowInstance;
-    reactFlowInstance.fitView();
+    reactFlowInstance?.fitView();
   };
 
-  useEffect(() => {
-    if (instanceRef.current) {
-      instanceRef.current.fitView();
-    }
-  }, [instanceRef, elements]);
+  // useEffect(() => {
+  //   if (instanceRef.current) {
+  //     instanceRef.current.fitView();
+  //   }
+  // }, [instanceRef, elements]);
 
   const onLayout = useCallback(
     (direction) => {
@@ -189,7 +189,7 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
             }}
             onElementsRemove={onElementsRemove}
             connectionLineType={ConnectionLineType.SmoothStep}
-            onNodeMouseEnter={removeHighlightPath}
+            // onNodeMouseEnter={removeHighlightPath}
             // onNodeMouseEnter={(_, node) => highlightPath(node, true)}
             // onNodeMouseLeave={removeHighlightPath}
             nodeTypes={nodeTypes}
