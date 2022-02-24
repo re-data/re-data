@@ -182,7 +182,7 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
             onElementClick={(_, element: any) => {
               if (!disableClick && isNode(element)) {
                 // console.log('element clicked', element);
-                // removeHighlightPath();
+                removeHighlightPath();
                 highlightPath(element, true);
                 setURLSearchParams({ model: element.data.id });
               }
