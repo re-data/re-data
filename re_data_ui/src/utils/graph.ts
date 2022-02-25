@@ -11,9 +11,13 @@ type formatDataProps = {
   edges: { [s: string]: unknown; } | ArrayLike<unknown>;
 }
 
-function formatData(params: formatDataProps): any {
+type Dictionary = {
+  [key: string]: string
+}
+
+function formatData(params: formatDataProps): Elements {
   const elements: Elements = [];
-  const elementObj: any = {};
+  const elementObj: Dictionary = {};
   // let index = 0;
 
   Object.entries(params.nodes).forEach(([key, value]: any) => {
