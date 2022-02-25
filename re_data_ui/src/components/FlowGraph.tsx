@@ -22,7 +22,7 @@ const nodeTypes = {
   'custom-node': CustomNode,
 };
 
-const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
+const FlowGraph: FC<Props> = ({ data, disableClick = false }: Props): ReactElement => {
   const instanceRef = useRef<OnLoadParams | null>(null);
   const [, setURLSearchParams] = useSearchParams();
 
