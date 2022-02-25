@@ -3,17 +3,16 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
-  FC, ReactElement, useCallback, useEffect, useRef, useState
+  FC, ReactElement, useCallback,
+  useEffect, useRef, useState, MouseEvent as ReactMouseEvent
 } from 'react';
 import ReactFlow, {
   ConnectionLineType, Controls, getIncomers,
-  getOutgoers, isEdge,
+  getOutgoers, isEdge, Elements,
   isNode, OnLoadParams, ReactFlowProvider, removeElements
 } from 'react-flow-renderer';
 import { useSearchParams } from 'react-router-dom';
-// import { CustomNodeComponent } from "./others";
 import '../graph.css';
-// import { data } from './data';
 import { formatData, getLayoutElements } from '../utils';
 import CustomNode from './CustomNode';
 
@@ -37,7 +36,7 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
 
   // console.log('result', result, layoutElements);
 
-  const [elements, setElements] = useState<any>(res);
+  const [elements, setElements] = useState<Elements>(res);
   // setElements(res);
 
   useEffect(() => {
@@ -47,30 +46,30 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
 
   // console.log('elements ', elements, data, res);
 
-  const onElementsRemove = (elementsToRemove: any) => {
-    setElements((els: any) => removeElements(elementsToRemove, els));
+  const onElementsRemove = (elementsToRemove: Elements) => {
+    setElements((els) => removeElements(elementsToRemove, els));
   };
 
-  const getAllIncomers = (node: any, el: any): any => getIncomers(node, el).reduce(
+  const getAllIncomer = (node: any, el: Elements): Node[] => getIncomers(node, el).reduce(
     (memo: any, incomer: any) => [
       ...memo,
       incomer,
-      ...getAllIncomers(incomer, elements),
+      ...getAllIncomer(incomer, elements),
     ],
     [],
   );
 
-  const getAllOutgoers = (node: any, el: any): any => getOutgoers(node, el).reduce(
+  const getAllOutgoer = (node: any, el: Elements): Node[] => getOutgoers(node, el).reduce(
     (memo: any, outgoer: any) => [
       ...memo,
       outgoer,
-      ...getAllOutgoers(outgoer, el),
+      ...getAllOutgoer(outgoer, el),
     ],
     [],
   );
 
-  const removeHighlightPath = (): any => {
-    const values = elements?.map((elem: any) => {
+  const removeHighlightPath = (): void => {
+    const values = elements?.map((elem) => {
       if (isNode(elem)) {
         elem.style = {
           ...elem.style,
@@ -86,14 +85,14 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
     setElements(values);
   };
 
-  const highlightPath = (node: any, selection: any): any => {
+  const highlightPath = (node: any, selection: boolean): void => {
     if (node && elements) {
-      const allIncomers = getAllIncomers(node, elements);
-      const allOutgoers = getAllOutgoers(node, elements);
+      const allIncomer = getAllIncomer(node, elements);
+      const allOutgoer = getAllOutgoer(node, elements);
 
-      setElements((prevElements: any) => prevElements?.map((elem: any) => {
-        const incomerIds = allIncomers.map((i: any) => i.id);
-        const outgoerIds = allOutgoers.map((o: any) => o.id);
+      setElements((prevElements) => prevElements?.map((elem) => {
+        const incomerIds = allIncomer.map((i: any) => i.id);
+        const outgoerIds = allOutgoer.map((o: any) => o.id);
 
         if (isNode(elem)) {
           const highlight = elem.id === node.id
@@ -143,7 +142,7 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
     }
   };
 
-  const onLoad = (reactFlowInstance: any) => {
+  const onLoad = (reactFlowInstance: OnLoadParams<any> | null) => {
     instanceRef.current = reactFlowInstance;
     reactFlowInstance?.fitView();
   };
@@ -165,17 +164,24 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
   const onPaneClick = useCallback(() => {
     removeHighlightPath();
     setURLSearchParams({});
-    // setElements((prevEl: any) => prevEl?.map((elem: any) => {
-    //   if (isNode(elem)) {
-    //     console.log('node -> ', elem.style, elem.data);
-    //     elem.data = {
-    //       ...elem.data,
-    //       active: false,
-    //     };
-    //   } else {
-    //     elem.animated = false;
-    //   }
-    // }));
+    const values = elements?.map((elem) => {
+      if (isNode(elem)) {
+        elem.style = {
+          ...elem.style,
+          opacity: 1,
+        };
+        elem.data = {
+          ...elem.data,
+          active: false,
+        };
+      }
+      if (isEdge(elem)) {
+        elem.animated = false;
+      }
+      return elem;
+    });
+
+    setElements(values);
   }, []);
 
   return (
@@ -196,7 +202,7 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
             zoomOnScroll={false} // to disable zoom on scroll
             // onConnect={onConnect}
             onPaneClick={onPaneClick}
-            onElementClick={(_, element: any) => {
+            onElementClick={(_: ReactMouseEvent, element: any): void => {
               if (!disableClick && isNode(element)) {
                 // console.log('element clicked', element);
                 removeHighlightPath();

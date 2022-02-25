@@ -2,7 +2,9 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import dagre from 'dagre';
-import { isNode, Position } from 'react-flow-renderer';
+import {
+  isNode, Position, Elements, ArrowHeadType,
+} from 'react-flow-renderer';
 
 type formatDataProps = {
   nodes: { [s: string]: unknown; } | ArrayLike<unknown>;
@@ -10,7 +12,7 @@ type formatDataProps = {
 }
 
 function formatData(params: formatDataProps): any {
-  const elements: any = [];
+  const elements: Elements = [];
   const elementObj: any = {};
   // let index = 0;
 
@@ -68,7 +70,7 @@ function formatData(params: formatDataProps): any {
         id,
         source,
         target,
-        arrowHeadType: 'arrowclosed',
+        arrowHeadType: ArrowHeadType.ArrowClosed,
       // animated: true
       });
     }

@@ -73,6 +73,7 @@ const getAlertData = (modelId: string, aggregatedModels: Map<string, ReDataModel
   return { anomalies, schemaChanges };
 };
 
+// TODO: refactor this function
 const generateGraph = (
   {
     overview, modelName,
