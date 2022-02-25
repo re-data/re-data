@@ -61,6 +61,9 @@ seeds:
 
 vars:
   re_data:alerting_z_score: 3
+  re_data:anomaly_detector:
+    name: modified_z_score
+    threshold: 3
   re_data:metrics_base:
     table:
       - row_count
