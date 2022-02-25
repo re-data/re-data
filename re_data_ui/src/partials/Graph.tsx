@@ -2,7 +2,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
-  ReactElement, useContext, useState
+  ReactElement, useCallback, useContext, useState
 } from 'react';
 import { Elements } from 'react-flow-renderer';
 import { NodeOptions } from 'vis';
@@ -10,7 +10,9 @@ import { FlowGraph, ModelDetails } from '../components';
 import {
   DbtNode, DbtSource, OverviewData, ReDataModelDetails, RedataOverviewContext
 } from '../contexts/redataOverviewContext';
-import { generateModelId, supportedResTypes, generateNode } from '../utils';
+import {
+  generateEdge, generateModelId, generateNode, supportedResTypes
+} from '../utils';
 
 export interface VisPointer {
   x: number,
@@ -44,11 +46,11 @@ export interface IGraph {
   edges: Array<VisEdge>;
 }
 
-type ResourceTypeColorsProps = {
-  [key: string]: string;
+type Dictionary = {
+  [key: string]: string
 }
 
-const resourceTypeColors: ResourceTypeColorsProps = {
+const resourceTypeColors: Dictionary = {
   source: 'hsl(97deg 66% 44%)',
   model: 'hsl(190deg 100% 35%)',
   seed: 'hsl(150deg 66% 44%)',
@@ -87,6 +89,8 @@ const generateGraph = (
   };
 
   const elements: Elements = [];
+  const elementObj: Dictionary = {};
+  const edgesArr: any = [];
 
   if (!overview.graph || !overview.modelNodes) {
     return graph;
@@ -111,62 +115,32 @@ const generateGraph = (
     const modelParentNodes = parentNodes[modelTitle] || [];
     const modelChildNodes = childNodes[modelTitle] || [];
 
+    // console.log(' modelChildNodes -> ', modelChildNodes);
     // draw the model node
     // draw the parent nodes and connect it to the node using an edge
     // draw the child nodes and connect it to the node using an edge
 
-    const index = 0;
+    // const index = 0;
     const details = allNodes[modelTitle];
     const modelId = generateModelId(details);
 
     const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
 
-    // const n = {
-    //   key: index + 1,
-    //   id: modelId,
-    //   label: details.name,
-    //   shape: 'box',
-    //   anomalies: anomalies.size > 0,
-    //   schemaChanges: schemaChanges.length > 0,
-    //   color: {
-    //     background: resourceTypeColors[details.resource_type],
-    //   },
-    // };
-
     const n = generateNode({
-      index,
+      index: '0',
       modelId,
       details,
-      anomalies,
-      schemaChanges
+      anomalies: anomalies.size > 0,
+      schemaChanges: schemaChanges.length > 0
     });
     graph.nodes.push(n);
+    elements.push(n);
+    elementObj[modelId] = '0';
 
-    // const config = details.config as any;
-    // const isMonitored = config?.re_data_monitored || false;
+    const parentNodesLength = modelParentNodes.length;
 
-    // let otherName = modelId.replace(`.${details.name}`, '');
-    // let result = {
-    //   id: (index + 1).toString(),
-    //   key: modelId,
-    //   type: 'custom-node',
-    //   data: {
-    //     id: modelId,
-    //     label: details.name,
-    //     otherName,
-    //     anomalies,
-    //     isMonitored,
-    //     schemaChanges,
-    //     borderColor: resourceTypeColors[details.resource_type],
-    //   },
-    //   position: {
-    //     x: 100,
-    //     y: 50 * (index + 1),
-    //   },
-    // };
-    // elements.push(result);
-
-    modelParentNodes.forEach((parent) => {
+    for (let index = 0; index < parentNodesLength; index++) {
+      const parent = modelParentNodes[index];
       const parentDetails = allNodes[parent];
       const { name, resource_type: resourceType } = parentDetails;
 
@@ -175,48 +149,24 @@ const generateGraph = (
         const {
           anomalies: parentAnomalies,
           schemaChanges: parentSchemaChanges
-        } = getAlertData(modelId, aggregatedModels);
+        } = getAlertData(parentModelId, aggregatedModels);
 
+        const key = index + 1;
         const parentNode = generateNode({
           modelId: parentModelId,
-          index: index + 1,
+          index: key,
           details: parentDetails,
-          anomalies: parentAnomalies,
-          schemaChanges: parentSchemaChanges
+          anomalies: parentAnomalies.size > 0,
+          schemaChanges: parentSchemaChanges.length > 0
         });
         graph.nodes.push(parentNode);
+        elements.push(parentNode);
+        elementObj[parentModelId] = key?.toString();
 
-        // graph.nodes.push({
-        //   id: parentModelId,
-        //   label: name,
-        //   shape: 'box',
-        //   color: {
-        //     background: resourceTypeColors[parentDetails.resource_type],
-        //   },
-        // });
-
-        // otherName = parentModelId.replace(`.${parentDetails.name}`, '');
-
-        // result = {
-        //   id: (index + 1).toString(),
-        //   key: parentModelId,
-        //   type: 'custom-node',
-        //   data: {
-        //     id: parentModelId,
-        //     label: name,
-        //     otherName,
-        //     anomalies,
-        //     isMonitored,
-        //     schemaChanges,
-        //     borderColor: resourceTypeColors[details.resource_type],
-        //   },
-        //   position: {
-        //     x: 100,
-        //     y: 50 * (index + 1),
-        //   },
-        // };
-        // elements.push(result);
-
+        edgesArr.push({
+          from: parentModelId,
+          to: modelId,
+        });
         const edge: VisEdge = {
           from: parentModelId,
           to: modelId,
@@ -224,8 +174,11 @@ const generateGraph = (
         };
         graph.edges.push(edge);
       }
-    });
-    modelChildNodes.forEach((child) => {
+    }
+
+    for (let index = 0; index < modelChildNodes.length; index++) {
+      const child = modelChildNodes[index];
+      // console.log('child', child);
       const childDetails = allNodes[child];
       const {
         database, schema, name,
@@ -233,41 +186,38 @@ const generateGraph = (
       } = childDetails;
       if (supportedResTypes.has(resourceType)) {
         console.log(modelType, resourceType, !!(modelType && modelType !== resourceType));
-        if (modelType && modelType !== resourceType) {
-          const childModelId = `${database}.${schema}.${name}`.toLowerCase();
-          const {
-            anomalies: childAnomalies,
-            schemaChanges: childSchemaChanges
-          } = getAlertData(modelId, aggregatedModels);
+        const childModelId = `${database}.${schema}.${name}`.toLowerCase();
+        const {
+          anomalies: childAnomalies,
+          schemaChanges: childSchemaChanges
+        } = getAlertData(childModelId, aggregatedModels);
 
-          const childNode = generateNode({
-            modelId: childModelId,
-            index: index + 1,
-            details: childDetails,
-            anomalies: childAnomalies,
-            schemaChanges: childSchemaChanges
-          });
+        const key = index + 1 + parentNodesLength;
+        const childNode = generateNode({
+          modelId: childModelId,
+          index: key,
+          details: childDetails,
+          anomalies: childAnomalies.size > 0,
+          schemaChanges: childSchemaChanges.length > 0
+        });
 
-          graph.nodes.push(childNode);
+        graph.nodes.push(childNode);
+        elements.push(childNode);
+        elementObj[childModelId] = key?.toString();
 
-          // graph.nodes.push({
-          //   id: childModelId,
-          //   label: name,
-          //   shape: 'box',
-          //   color: {
-          //     background: resourceTypeColors[childDetails.resource_type],
-          //   },
-          // });
+        edgesArr.push({
+          from: modelId,
+          to: childModelId,
+        });
 
-          const edge: VisEdge = {
-            from: modelId,
-            to: childModelId,
-            arrows: 'to',
-          };
-          graph.edges.push(edge);
-        }
+        const edge: VisEdge = {
+          from: modelId,
+          to: childModelId,
+          arrows: 'to',
+        };
+        graph.edges.push(edge);
       }
-    });
+    }
   } else {
     for (let index = 0; index < modelNodes.length; index++) {
       const currentNode = modelNodes[index];
@@ -297,23 +247,13 @@ const generateGraph = (
         index,
         modelId,
         details,
-        anomalies,
-        schemaChanges
+        anomalies: anomalies.size > 0,
+        schemaChanges: schemaChanges.length > 0
       });
+      elementObj[modelId] = index?.toString();
+      // console.log('elementObj -> ', elementObj);
 
-      // const node = {
-      //   // const node: VisNode = {
-      //   key: index + 1,
-      //   id: modelId,
-      //   label: details.name,
-      //   shape: 'box',
-      //   anomalies: anomalies.size > 0,
-      //   schemaChanges: schemaChanges.length > 0,
-      //   isMonitored: config?.re_data_monitored || false,
-      //   color: {
-      //     background: resourceTypeColors[details.resource_type],
-      //   },
-      // };
+      elements.push(node);
       graph.nodes.push(node);
 
       if (details.resource_type !== 'source') {
@@ -325,6 +265,11 @@ const generateGraph = (
             : dbtSources[parent];
           if (parentNode) {
             const parentModelId = generateModelId(parentNode);
+            edgesArr.push({
+              from: parentModelId,
+              to: modelId,
+            });
+
             const edge: VisEdge = {
               from: parentModelId,
               to: modelId,
@@ -337,7 +282,19 @@ const generateGraph = (
     }
   }
 
-  return graph;
+  for (let index = 0; index < edgesArr.length; index++) {
+    const { from, to } = edgesArr[index];
+    // console.log('edgesArr -> ', edgesArr.length);
+    // console.log('from , to ', from, to);
+    // console.log('from , to ', elementObj);
+    // console.log('from , to ', from, to, elementObj);
+    const edge = generateEdge({ obj: elementObj, from, to });
+    elements.push(edge);
+  }
+
+  console.log('elements -> ', elements);
+
+  return { graph, elements };
 };
 
 export interface GraphViewProps {
@@ -357,7 +314,7 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
   const [modelType, setModelType] = useState<string | null>(null);
   const [alerts, setAlerts] = useState<AlertsType>(null);
 
-  const graph = generateGraph({
+  const { graph, elements }: any = generateGraph({
     overview,
     modelName,
     modelType,
@@ -384,6 +341,10 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
     });
     setModelType(null);
   };
+
+  const toggleMonitored = useCallback(() => {
+    setMonitored(!monitored);
+  }, [monitored]);
 
   // console.log('graph -> ', JSON.stringify(graph));
 
@@ -453,7 +414,7 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
                     type="checkbox"
                     id="toggleB"
                     className="sr-only sd"
-                    onChange={() => setMonitored(!monitored)}
+                    onChange={toggleMonitored}
                   />
                   <div className="block bg-gray-300 w-10 h-6 rounded-full" />
                   <div className="dot absolute left-1 top-1 bg-primary w-4 h-4 rounded-full transition" />
@@ -471,7 +432,7 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
         gap-4 bg-white border-2 border-solid border-gray-200 rounded-lg h-full"
       >
         <div className={showModelDetails ? 'col-span-8' : 'col-span-12'}>
-          {overviewDataLoaded && <FlowGraph data={graph} disableClick={!showModelDetails} />}
+          {overviewDataLoaded && <FlowGraph data={elements} disableClick={!showModelDetails} />}
         </div>
 
         {showModelDetails && <ModelDetails />}

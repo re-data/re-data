@@ -17,7 +17,8 @@ import { formatData, getLayoutElements } from '../utils';
 import CustomNode from './CustomNode';
 
 export interface Props {
-  data: any;
+  // data: any;
+  data: Elements;
   disableClick?: boolean;
 }
 
@@ -32,8 +33,10 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
 
   // const result = formatData(data);
   // const layoutElements = getLayoutElements(result);
-  const res = getLayoutElements(formatData(data));
+  const res = getLayoutElements(data);
+  // const res = getLayoutElements(formatData(data));
 
+  console.log('result', res);
   // console.log('result', result, layoutElements);
 
   const [elements, setElements] = useState<Elements>(res);

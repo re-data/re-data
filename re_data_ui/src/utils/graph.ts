@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import dagre from 'dagre';
 import {
-  isNode, Position, Elements, ArrowHeadType,
+  ArrowHeadType, Elements, isNode, Position,
 } from 'react-flow-renderer';
 
 type formatDataProps = {
@@ -34,6 +34,7 @@ function formatData(params: formatDataProps): Elements {
       color: { background },
     } = value;
     elementObj[id] = key;
+    // console.log('elementObj -> ', elementObj);
     const otherName = id.replace(`.${label}`, '');
     // console.log(id, label)
     const result = {
@@ -66,6 +67,9 @@ function formatData(params: formatDataProps): Elements {
     const { from, to } = value;
     const source = elementObj[from];
     const target = elementObj[to];
+
+    // console.log('source -> ', source);
+    // console.log('target -> ', target);
 
     if (source && target) {
       const id = `e${source}-${target}`;
@@ -131,16 +135,51 @@ const resourceTypeColors: Dictionary = {
 };
 
 const generateNode = ({
-  modelId, index, details, anomalies, schemaChanges,
+  modelId, index, isMonitored,
+  details, anomalies, schemaChanges,
 }: any): any => ({
-  key: index + 1,
-  id: modelId,
+  // key: index.toString(),
+  // id: modelId,
+  key: modelId,
+  id: index.toString(),
+  type: 'custom-node',
   label: details.name,
   shape: 'box',
-  anomalies: anomalies.size > 0,
-  schemaChanges: schemaChanges.length > 0,
+  anomalies,
+  schemaChanges,
   color: {
     background: resourceTypeColors[details.resource_type],
   },
+  data: {
+    id: modelId,
+    label: details.name,
+    otherName: modelId.replace(`.${details.name}`, ''),
+    anomalies,
+    isMonitored,
+    schemaChanges,
+    borderColor: resourceTypeColors[details.resource_type],
+  },
 });
-export { generateNode, formatData, getLayoutElements };
+
+const generateEdge = ({ obj, from, to }: any) => {
+  const source = obj?.[from];
+  const target = obj?.[to];
+
+  // console.log('source', source);
+  // console.log('target', target);
+
+  const id = `e${source}-${target}`;
+  return ({
+    id,
+    source,
+    target,
+    arrowHeadType: ArrowHeadType.ArrowClosed,
+  });
+};
+
+export {
+  generateEdge,
+  generateNode,
+  formatData,
+  getLayoutElements,
+};

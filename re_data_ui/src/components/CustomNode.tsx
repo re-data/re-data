@@ -45,7 +45,7 @@ const anomaliesDotStyle = {
   borderRadius: '8px',
   backgroundColor: 'rgba(220, 38, 38, 1)',
   position: 'absolute' as any,
-  top: '0px',
+  top: '-5px',
   marginLeft: '6px',
 };
 
