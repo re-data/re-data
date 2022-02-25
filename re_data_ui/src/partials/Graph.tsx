@@ -64,10 +64,11 @@ type GenerateGraphProps = {
   alerts?: AlertsType;
 }
 
-const getAlertData = (modelId: string) => {
-  const { aggregated_models: aggregatedModels }: OverviewData = useContext(RedataOverviewContext);
-
-  const { anomalies, schemaChanges } = aggregatedModels.get(modelId) as ReDataModelDetails;
+const getAlertData = (modelId: string, aggregatedModels: Map<string, ReDataModelDetails>) => {
+  const {
+    anomalies,
+    schemaChanges
+  } = aggregatedModels.get(modelId) as ReDataModelDetails;
 
   return { anomalies, schemaChanges };
 };
@@ -91,6 +92,7 @@ const generateGraph = (
   const {
     dbtMapping,
     modelNodes,
+    aggregated_models: aggregatedModels,
     graph: { nodes: dbtNodes, sources: dbtSources }
   } = overview;
   const allNodes = { ...dbtNodes, ...dbtSources };
@@ -114,7 +116,7 @@ const generateGraph = (
     const details = allNodes[modelTitle];
     const modelId = generateModelId(details);
 
-    const { anomalies, schemaChanges } = getAlertData(modelId);
+    const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
 
     if (!modelType && !alerts) {
       const n = {
@@ -210,7 +212,7 @@ const generateGraph = (
       // for monitored nodes
       const config = details.config as any;
       const isNodeMonitored = config?.re_data_monitored || false;
-      const { anomalies, schemaChanges } = getAlertData(modelId);
+      const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
 
       if (alerts === 'anomaly' && anomalies.size < 1) {
         continue;

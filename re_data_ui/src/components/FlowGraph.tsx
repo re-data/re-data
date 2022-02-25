@@ -162,6 +162,22 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
     [elements],
   );
 
+  const onPaneClick = useCallback(() => {
+    removeHighlightPath();
+    setURLSearchParams({});
+    // setElements((prevEl: any) => prevEl?.map((elem: any) => {
+    //   if (isNode(elem)) {
+    //     console.log('node -> ', elem.style, elem.data);
+    //     elem.data = {
+    //       ...elem.data,
+    //       active: false,
+    //     };
+    //   } else {
+    //     elem.animated = false;
+    //   }
+    // }));
+  }, []);
+
   return (
     <>
       <div
@@ -179,6 +195,7 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
             snapGrid={[15, 15]}
             zoomOnScroll={false} // to disable zoom on scroll
             // onConnect={onConnect}
+            onPaneClick={onPaneClick}
             onElementClick={(_, element: any) => {
               if (!disableClick && isNode(element)) {
                 // console.log('element clicked', element);
