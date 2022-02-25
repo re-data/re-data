@@ -1,16 +1,16 @@
 /* eslint-disable comma-dangle */
-/* eslint-disable no-continue */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   ReactElement, useContext, useState
 } from 'react';
+import { Elements } from 'react-flow-renderer';
 import { NodeOptions } from 'vis';
 import { FlowGraph, ModelDetails } from '../components';
 import {
   DbtNode, DbtSource, OverviewData, ReDataModelDetails, RedataOverviewContext
 } from '../contexts/redataOverviewContext';
-import { generateModelId, supportedResTypes } from '../utils';
+import { generateModelId, supportedResTypes, generateNode } from '../utils';
 
 export interface VisPointer {
   x: number,
@@ -86,6 +86,8 @@ const generateGraph = (
     edges: [],
   };
 
+  const elements: Elements = [];
+
   if (!overview.graph || !overview.modelNodes) {
     return graph;
   }
@@ -120,33 +122,101 @@ const generateGraph = (
     const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
 
     if (!modelType && !alerts) {
-      const n = {
-        key: index + 1,
-        id: modelId,
-        label: details.name,
-        shape: 'box',
-        anomalies: anomalies.size > 0,
-        schemaChanges: schemaChanges.length > 0,
-        color: {
-          background: resourceTypeColors[details.resource_type],
-        },
-      };
+      // const n = {
+      //   key: index + 1,
+      //   id: modelId,
+      //   label: details.name,
+      //   shape: 'box',
+      //   anomalies: anomalies.size > 0,
+      //   schemaChanges: schemaChanges.length > 0,
+      //   color: {
+      //     background: resourceTypeColors[details.resource_type],
+      //   },
+      // };
+
+      const n = generateNode({
+        index,
+        modelId,
+        details,
+        anomalies,
+        schemaChanges
+      });
       graph.nodes.push(n);
+
+      // const config = details.config as any;
+      // const isMonitored = config?.re_data_monitored || false;
+
+      // let otherName = modelId.replace(`.${details.name}`, '');
+      // let result = {
+      //   id: (index + 1).toString(),
+      //   key: modelId,
+      //   type: 'custom-node',
+      //   data: {
+      //     id: modelId,
+      //     label: details.name,
+      //     otherName,
+      //     anomalies,
+      //     isMonitored,
+      //     schemaChanges,
+      //     borderColor: resourceTypeColors[details.resource_type],
+      //   },
+      //   position: {
+      //     x: 100,
+      //     y: 50 * (index + 1),
+      //   },
+      // };
+      // elements.push(result);
 
       modelParentNodes.forEach((parent) => {
         const parentDetails = allNodes[parent];
         const { name, resource_type: resourceType } = parentDetails;
-        // && (modelType && modelType !== resourceType)
+
         if (supportedResTypes.has(resourceType)) {
           const parentModelId = generateModelId(parentDetails);
-          graph.nodes.push({
-            id: parentModelId,
-            label: name,
-            shape: 'box',
-            color: {
-              background: resourceTypeColors[details.resource_type],
-            },
+          const {
+            anomalies: parentAnomalies,
+            schemaChanges: parentSchemaChanges
+          } = getAlertData(modelId, aggregatedModels);
+
+          const parentNode = generateNode({
+            modelId: parentModelId,
+            index: index + 1,
+            details: parentDetails,
+            anomalies: parentAnomalies,
+            schemaChanges: parentSchemaChanges
           });
+          graph.nodes.push(parentNode);
+
+          // graph.nodes.push({
+          //   id: parentModelId,
+          //   label: name,
+          //   shape: 'box',
+          //   color: {
+          //     background: resourceTypeColors[parentDetails.resource_type],
+          //   },
+          // });
+
+          // otherName = parentModelId.replace(`.${parentDetails.name}`, '');
+
+          // result = {
+          //   id: (index + 1).toString(),
+          //   key: parentModelId,
+          //   type: 'custom-node',
+          //   data: {
+          //     id: parentModelId,
+          //     label: name,
+          //     otherName,
+          //     anomalies,
+          //     isMonitored,
+          //     schemaChanges,
+          //     borderColor: resourceTypeColors[details.resource_type],
+          //   },
+          //   position: {
+          //     x: 100,
+          //     y: 50 * (index + 1),
+          //   },
+          // };
+          // elements.push(result);
 
           const edge: VisEdge = {
             from: parentModelId,
@@ -166,14 +236,29 @@ const generateGraph = (
           console.log(modelType, resourceType, !!(modelType && modelType !== resourceType));
           if (modelType && modelType !== resourceType) {
             const childModelId = `${database}.${schema}.${name}`.toLowerCase();
-            graph.nodes.push({
-              id: childModelId,
-              label: name,
-              shape: 'box',
-              color: {
-                background: resourceTypeColors[details.resource_type],
-              },
+            const {
+              anomalies: childAnomalies,
+              schemaChanges: childSchemaChanges
+            } = getAlertData(modelId, aggregatedModels);
+
+            const childNode = generateNode({
+              modelId: childModelId,
+              index: index + 1,
+              details: childDetails,
+              anomalies: childAnomalies,
+              schemaChanges: childSchemaChanges
             });
+
+            graph.nodes.push(childNode);
+
+            // graph.nodes.push({
+            //   id: childModelId,
+            //   label: name,
+            //   shape: 'box',
+            //   color: {
+            //     background: resourceTypeColors[childDetails.resource_type],
+            //   },
+            // });
 
             const edge: VisEdge = {
               from: modelId,
@@ -228,19 +313,27 @@ const generateGraph = (
         continue;
       }
 
-      const node = {
-        // const node: VisNode = {
-        key: index + 1,
-        id: modelId,
-        label: details.name,
-        shape: 'box',
-        anomalies: anomalies.size > 0,
-        schemaChanges: schemaChanges.length > 0,
-        isMonitored: config?.re_data_monitored || false,
-        color: {
-          background: resourceTypeColors[details.resource_type],
-        },
-      };
+      const node = generateNode({
+        index,
+        modelId,
+        details,
+        anomalies,
+        schemaChanges
+      });
+
+      // const node = {
+      //   // const node: VisNode = {
+      //   key: index + 1,
+      //   id: modelId,
+      //   label: details.name,
+      //   shape: 'box',
+      //   anomalies: anomalies.size > 0,
+      //   schemaChanges: schemaChanges.length > 0,
+      //   isMonitored: config?.re_data_monitored || false,
+      //   color: {
+      //     background: resourceTypeColors[details.resource_type],
+      //   },
+      // };
       graph.nodes.push(node);
 
       if (details.resource_type !== 'source') {

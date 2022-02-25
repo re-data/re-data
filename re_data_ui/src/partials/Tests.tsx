@@ -60,7 +60,6 @@ const generateTestsData = (tests: ITestSchema[], modelName?: string | null) => {
     runAts.add(test.run_at);
 
     if (modelName && test.model !== modelName) {
-      // eslint-disable-next-line no-continue
       continue;
     } else {
       result.push({

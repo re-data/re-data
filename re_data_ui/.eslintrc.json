@@ -83,7 +83,8 @@
       }
     ],
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"]
+    "@typescript-eslint/no-shadow": ["error"],
+    "no-continue": ["off"]
   },
   "settings": {
     "import/resolver": {

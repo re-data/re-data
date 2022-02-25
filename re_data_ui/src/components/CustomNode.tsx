@@ -38,13 +38,14 @@ const schemaChangesDotStyle = {
   marginLeft: '18px',
 };
 
+// TODO: set active and in-active styles for this
 const anomaliesDotStyle = {
   width: '8px',
   height: '8px',
   borderRadius: '8px',
   backgroundColor: 'rgba(220, 38, 38, 1)',
   position: 'absolute' as any,
-  top: '-5px',
+  top: '0px',
   marginLeft: '6px',
 };
 
@@ -73,7 +74,7 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
 
   const containerActiveStyle = {
     backgroundColor: '#392396',
-    border: 'none',
+    border: '2px solid #392396',
     color: 'white',
     borderRadius: '4px',
     overflow: 'hidden',

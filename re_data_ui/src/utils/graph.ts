@@ -124,4 +124,23 @@ const getLayoutElements = (elements: any[], direction = 'LR'): any => {
   });
 };
 
-export { formatData, getLayoutElements };
+const resourceTypeColors: Dictionary = {
+  source: 'hsl(97deg 66% 44%)',
+  model: 'hsl(190deg 100% 35%)',
+  seed: 'hsl(150deg 66% 44%)',
+};
+
+const generateNode = ({
+  modelId, index, details, anomalies, schemaChanges,
+}: any): any => ({
+  key: index + 1,
+  id: modelId,
+  label: details.name,
+  shape: 'box',
+  anomalies: anomalies.size > 0,
+  schemaChanges: schemaChanges.length > 0,
+  color: {
+    background: resourceTypeColors[details.resource_type],
+  },
+});
+export { generateNode, formatData, getLayoutElements };
