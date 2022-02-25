@@ -1,60 +1,18 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
-  ReactElement, useCallback, useContext, useState
+  ReactElement, useCallback, useContext, useState,
 } from 'react';
 import { Elements } from 'react-flow-renderer';
-import { NodeOptions } from 'vis';
 import { FlowGraph, ModelDetails } from '../components';
 import {
-  DbtNode, DbtSource, OverviewData, ReDataModelDetails, RedataOverviewContext
+  DbtNode, DbtSource, OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import {
-  generateEdge, generateModelId, generateNode, supportedResTypes
+  generateEdge, generateModelId, generateNode, supportedResTypes,
 } from '../utils';
-
-export interface VisPointer {
-  x: number,
-  y: number
-}
-
-export interface VisNode extends NodeOptions {
-  id: string | number,
-  shape: string;
-}
-
-export interface VisEdge {
-  from: string | number,
-  to: string | number;
-  arrows: string;
-  color?: string;
-}
-
-export interface VisNetworkEventParams {
-  edges?: Array<string>,
-  nodes?: Array<string>,
-  event?: Record<string, unknown>,
-  pointer?: {
-    DOM: VisPointer
-    canvas: VisPointer
-  }
-}
-
-export interface IGraph {
-  nodes: Array<VisNode>;
-  edges: Array<VisEdge>;
-}
 
 type Dictionary = {
   [key: string]: string
 }
-
-const resourceTypeColors: Dictionary = {
-  source: 'hsl(97deg 66% 44%)',
-  model: 'hsl(190deg 100% 35%)',
-  seed: 'hsl(150deg 66% 44%)',
-};
 
 type AlertsType = 'anomaly' | 'schema_change' | null
 
@@ -69,45 +27,39 @@ type GenerateGraphProps = {
 const getAlertData = (modelId: string, aggregatedModels: Map<string, ReDataModelDetails>) => {
   const {
     anomalies,
-    schemaChanges
+    schemaChanges,
   } = aggregatedModels.get(modelId) as ReDataModelDetails;
 
   return { anomalies, schemaChanges };
 };
 
-// TODO: refactor this function
 const generateGraph = (
   {
     overview, modelName,
     modelType, monitored,
     alerts,
   }: GenerateGraphProps,
-) => {
-  const graph: IGraph = {
-    nodes: [],
-    edges: [],
-  };
-
+): Elements => {
   const elements: Elements = [];
   const elementObj: Dictionary = {};
-  const edgesArr: any = [];
+  const edgesArr: Dictionary[] = [];
 
   if (!overview.graph || !overview.modelNodes) {
-    return graph;
+    return elements;
   }
 
   const {
     dbtMapping,
     modelNodes,
     aggregated_models: aggregatedModels,
-    graph: { nodes: dbtNodes, sources: dbtSources }
+    graph: { nodes: dbtNodes, sources: dbtSources },
   } = overview;
   const allNodes = { ...dbtNodes, ...dbtSources };
 
   if (modelName) {
     const {
       parent_map: parentNodes,
-      child_map: childNodes
+      child_map: childNodes,
     } = overview.graph;
     const modelTitle = dbtMapping[modelName];
 
@@ -115,12 +67,6 @@ const generateGraph = (
     const modelParentNodes = parentNodes[modelTitle] || [];
     const modelChildNodes = childNodes[modelTitle] || [];
 
-    // console.log(' modelChildNodes -> ', modelChildNodes);
-    // draw the model node
-    // draw the parent nodes and connect it to the node using an edge
-    // draw the child nodes and connect it to the node using an edge
-
-    // const index = 0;
     const details = allNodes[modelTitle];
     const modelId = generateModelId(details);
 
@@ -131,9 +77,8 @@ const generateGraph = (
       modelId,
       details,
       anomalies: anomalies.size > 0,
-      schemaChanges: schemaChanges.length > 0
+      schemaChanges: schemaChanges.length > 0,
     });
-    graph.nodes.push(n);
     elements.push(n);
     elementObj[modelId] = '0';
 
@@ -142,13 +87,13 @@ const generateGraph = (
     for (let index = 0; index < parentNodesLength; index++) {
       const parent = modelParentNodes[index];
       const parentDetails = allNodes[parent];
-      const { name, resource_type: resourceType } = parentDetails;
+      const { resource_type: resourceType } = parentDetails;
 
       if (supportedResTypes.has(resourceType)) {
         const parentModelId = generateModelId(parentDetails);
         const {
           anomalies: parentAnomalies,
-          schemaChanges: parentSchemaChanges
+          schemaChanges: parentSchemaChanges,
         } = getAlertData(parentModelId, aggregatedModels);
 
         const key = index + 1;
@@ -157,9 +102,8 @@ const generateGraph = (
           index: key,
           details: parentDetails,
           anomalies: parentAnomalies.size > 0,
-          schemaChanges: parentSchemaChanges.length > 0
+          schemaChanges: parentSchemaChanges.length > 0,
         });
-        graph.nodes.push(parentNode);
         elements.push(parentNode);
         elementObj[parentModelId] = key?.toString();
 
@@ -167,29 +111,22 @@ const generateGraph = (
           from: parentModelId,
           to: modelId,
         });
-        const edge: VisEdge = {
-          from: parentModelId,
-          to: modelId,
-          arrows: 'to',
-        };
-        graph.edges.push(edge);
       }
     }
 
     for (let index = 0; index < modelChildNodes.length; index++) {
       const child = modelChildNodes[index];
-      // console.log('child', child);
+
       const childDetails = allNodes[child];
       const {
         database, schema, name,
         resource_type: resourceType,
       } = childDetails;
       if (supportedResTypes.has(resourceType)) {
-        console.log(modelType, resourceType, !!(modelType && modelType !== resourceType));
         const childModelId = `${database}.${schema}.${name}`.toLowerCase();
         const {
           anomalies: childAnomalies,
-          schemaChanges: childSchemaChanges
+          schemaChanges: childSchemaChanges,
         } = getAlertData(childModelId, aggregatedModels);
 
         const key = index + 1 + parentNodesLength;
@@ -198,10 +135,8 @@ const generateGraph = (
           index: key,
           details: childDetails,
           anomalies: childAnomalies.size > 0,
-          schemaChanges: childSchemaChanges.length > 0
+          schemaChanges: childSchemaChanges.length > 0,
         });
-
-        graph.nodes.push(childNode);
         elements.push(childNode);
         elementObj[childModelId] = key?.toString();
 
@@ -209,13 +144,6 @@ const generateGraph = (
           from: modelId,
           to: childModelId,
         });
-
-        const edge: VisEdge = {
-          from: modelId,
-          to: childModelId,
-          arrows: 'to',
-        };
-        graph.edges.push(edge);
       }
     }
   } else {
@@ -226,7 +154,7 @@ const generateGraph = (
       const modelId = generateModelId(details);
 
       // for monitored nodes
-      const config = details.config as any;
+      const config = details.config as Record<string, unknown>;
       const isNodeMonitored = config?.re_data_monitored || false;
       const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
 
@@ -248,13 +176,11 @@ const generateGraph = (
         modelId,
         details,
         anomalies: anomalies.size > 0,
-        schemaChanges: schemaChanges.length > 0
+        schemaChanges: schemaChanges.length > 0,
       });
       elementObj[modelId] = index?.toString();
-      // console.log('elementObj -> ', elementObj);
 
       elements.push(node);
-      graph.nodes.push(node);
 
       if (details.resource_type !== 'source') {
         const d = details as DbtNode;
@@ -269,13 +195,6 @@ const generateGraph = (
               from: parentModelId,
               to: modelId,
             });
-
-            const edge: VisEdge = {
-              from: parentModelId,
-              to: modelId,
-              arrows: 'to',
-            };
-            graph.edges.push(edge);
           }
         });
       }
@@ -284,17 +203,10 @@ const generateGraph = (
 
   for (let index = 0; index < edgesArr.length; index++) {
     const { from, to } = edgesArr[index];
-    // console.log('edgesArr -> ', edgesArr.length);
-    // console.log('from , to ', from, to);
-    // console.log('from , to ', elementObj);
-    // console.log('from , to ', from, to, elementObj);
     const edge = generateEdge({ obj: elementObj, from, to });
     elements.push(edge);
   }
-
-  console.log('elements -> ', elements);
-
-  return { graph, elements };
+  return elements;
 };
 
 export interface GraphViewProps {
@@ -314,7 +226,7 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
   const [modelType, setModelType] = useState<string | null>(null);
   const [alerts, setAlerts] = useState<AlertsType>(null);
 
-  const { graph, elements }: any = generateGraph({
+  const elements: Elements = generateGraph({
     overview,
     modelName,
     modelType,
@@ -345,8 +257,6 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
   const toggleMonitored = useCallback(() => {
     setMonitored(!monitored);
   }, [monitored]);
-
-  // console.log('graph -> ', JSON.stringify(graph));
 
   return (
     <>

@@ -1,23 +1,19 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable array-callback-return */
-/* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
-  FC, ReactElement, useCallback,
-  useEffect, useRef, useState, MouseEvent as ReactMouseEvent
+  FC, MouseEvent as ReactMouseEvent, ReactElement, useCallback,
+  useEffect, useRef, useState,
 } from 'react';
 import ReactFlow, {
-  ConnectionLineType, Controls, getIncomers,
-  getOutgoers, isEdge, Elements,
-  isNode, OnLoadParams, ReactFlowProvider, removeElements
+  ConnectionLineType, Controls, Elements, getIncomers, Edge,
+  getOutgoers, isEdge, isNode, Node, OnLoadParams, ReactFlowProvider,
+  removeElements,
 } from 'react-flow-renderer';
 import { useSearchParams } from 'react-router-dom';
 import '../graph.css';
-import { formatData, getLayoutElements } from '../utils';
+import { getLayoutElements } from '../utils';
 import CustomNode from './CustomNode';
 
 export interface Props {
-  // data: any;
   data: Elements;
   disableClick?: boolean;
 }
@@ -27,34 +23,22 @@ const nodeTypes = {
 };
 
 const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
-  // console.log('data -> ', data);
   const instanceRef = useRef<OnLoadParams | null>(null);
   const [, setURLSearchParams] = useSearchParams();
 
-  // const result = formatData(data);
-  // const layoutElements = getLayoutElements(result);
   const res = getLayoutElements(data);
-  // const res = getLayoutElements(formatData(data));
-
-  console.log('result', res);
-  // console.log('result', result, layoutElements);
-
   const [elements, setElements] = useState<Elements>(res);
-  // setElements(res);
 
   useEffect(() => {
-    // console.log('init loading');
     setElements(res);
   }, [data]);
-
-  // console.log('elements ', elements, data, res);
 
   const onElementsRemove = (elementsToRemove: Elements) => {
     setElements((els) => removeElements(elementsToRemove, els));
   };
 
-  const getAllIncomer = (node: any, el: Elements): Node[] => getIncomers(node, el).reduce(
-    (memo: any, incomer: any) => [
+  const getAllIncomer = (node: Node, el: Elements): Node[] => getIncomers(node, el).reduce(
+    (memo: any, incomer) => [
       ...memo,
       incomer,
       ...getAllIncomer(incomer, elements),
@@ -62,8 +46,8 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
     [],
   );
 
-  const getAllOutgoer = (node: any, el: Elements): Node[] => getOutgoers(node, el).reduce(
-    (memo: any, outgoer: any) => [
+  const getAllOutgoer = (node: Node, el: Elements): Node[] => getOutgoers(node, el).reduce(
+    (memo: any, outgoer) => [
       ...memo,
       outgoer,
       ...getAllOutgoer(outgoer, el),
@@ -73,74 +57,70 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
 
   const removeHighlightPath = (): void => {
     const values = elements?.map((elem) => {
-      if (isNode(elem)) {
-        elem.style = {
-          ...elem.style,
+      const element = elem;
+      if (isNode(element)) {
+        element.style = {
+          ...element.style,
           opacity: 1,
         };
       }
-      if (isEdge(elem)) {
-        elem.animated = false;
+      if (isEdge(element)) {
+        element.animated = false;
       }
-      return elem;
+      return element;
     });
 
     setElements(values);
   };
 
-  const highlightPath = (node: any, selection: boolean): void => {
+  const highlightPath = (node: Node, selection: boolean): void => {
     if (node && elements) {
-      const allIncomer = getAllIncomer(node, elements);
-      const allOutgoer = getAllOutgoer(node, elements);
+      const allIncomer: Node[] = getAllIncomer(node, elements);
+      const allOutgoer: Node[] = getAllOutgoer(node, elements);
 
       setElements((prevElements) => prevElements?.map((elem) => {
-        const incomerIds = allIncomer.map((i: any) => i.id);
-        const outgoerIds = allOutgoer.map((o: any) => o.id);
+        const element = elem;
+        const incomerIds = allIncomer.map((i) => i.id);
+        const outgoerIds = allOutgoer.map((o) => o.id);
 
-        if (isNode(elem)) {
-          const highlight = elem.id === node.id
-              || incomerIds.includes(elem.id)
-            || outgoerIds.includes(elem.id);
+        if (isNode(element)) {
+          const highlight = element.id === node.id
+              || incomerIds.includes(element.id)
+            || outgoerIds.includes(element.id);
 
-          // console.log('selected node -> ', node.id, elem.id);
-
-          if (node.id === elem.id) {
-            elem.style = {
-              ...elem.style,
+          if (node.id === element.id) {
+            element.style = {
+              ...element.style,
             };
-            elem.data = {
-              ...elem.data,
+            element.data = {
+              ...element.data,
               active: true,
             };
           } else {
-            elem.style = {
-              ...elem.style,
+            element.style = {
+              ...element.style,
               opacity: highlight ? 1 : 0.25,
             };
-            elem.data = {
-              ...elem.data,
+            element.data = {
+              ...element.data,
               active: false,
             };
           }
-
-          // console.log("node -> ", elem.style);
         }
 
-        if (isEdge(elem)) {
-          const highlight = elem.source === node.id || elem.target === node.id;
-          const animated = incomerIds.includes(elem.source)
-              && (incomerIds.includes(elem.target) || node.id === elem.target);
-
-          // console.log(`highlight => ${highlight} - animated => ${animated}`);
+        if (isEdge(element)) {
+          const highlight = element.source === node.id || element.target === node.id;
+          const animated = incomerIds.includes(element.source)
+              && (incomerIds.includes(element.target) || node.id === element.target);
 
           if (selection && (animated || highlight)) {
-            elem.animated = true;
+            element.animated = true;
           } else {
-            elem.animated = false;
+            element.animated = false;
           }
         }
 
-        return elem;
+        return element;
       }));
     }
   };
@@ -156,32 +136,25 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
   //   }
   // }, [instanceRef, elements]);
 
-  const onLayout = useCallback(
-    (direction) => {
-      const el = getLayoutElements(elements, direction);
-      setElements(el);
-    },
-    [elements],
-  );
-
   const onPaneClick = useCallback(() => {
     removeHighlightPath();
     setURLSearchParams({});
     const values = elements?.map((elem) => {
-      if (isNode(elem)) {
-        elem.style = {
-          ...elem.style,
+      const element = elem;
+      if (isNode(element)) {
+        element.style = {
+          ...element.style,
           opacity: 1,
         };
-        elem.data = {
-          ...elem.data,
+        element.data = {
+          ...element.data,
           active: false,
         };
       }
-      if (isEdge(elem)) {
-        elem.animated = false;
+      if (isEdge(element)) {
+        element.animated = false;
       }
-      return elem;
+      return element;
     });
 
     setElements(values);
@@ -202,12 +175,10 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
             onLoad={onLoad}
             snapToGrid
             snapGrid={[15, 15]}
-            zoomOnScroll={false} // to disable zoom on scroll
-            // onConnect={onConnect}
+            zoomOnScroll={false}
             onPaneClick={onPaneClick}
-            onElementClick={(_: ReactMouseEvent, element: any): void => {
+            onElementClick={(_: ReactMouseEvent, element: Node | Edge): void => {
               if (!disableClick && isNode(element)) {
-                // console.log('element clicked', element);
                 removeHighlightPath();
                 highlightPath(element, true);
                 setURLSearchParams({ model: element.data.id });
@@ -215,47 +186,10 @@ const FlowGraph: FC<Props> = ({ data, disableClick }: Props): ReactElement => {
             }}
             onElementsRemove={onElementsRemove}
             connectionLineType={ConnectionLineType.SmoothStep}
-            // onNodeMouseEnter={removeHighlightPath}
-            // onNodeMouseEnter={(_, node) => highlightPath(node, true)}
-            // onNodeMouseLeave={removeHighlightPath}
             nodeTypes={nodeTypes}
           >
             <Controls />
-            {/* <Background />
-            <MiniMap /> */}
           </ReactFlow>
-          <div className="controls">
-            <button type="button" onClick={() => onLayout('TB')}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-                />
-              </svg>
-            </button>
-            <button type="button" onClick={() => onLayout('LR')}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-                />
-              </svg>
-            </button>
-          </div>
         </ReactFlowProvider>
       </div>
     </>
