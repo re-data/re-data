@@ -121,173 +121,153 @@ const generateGraph = (
 
     const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
 
-    if (!modelType && !alerts) {
-      // const n = {
-      //   key: index + 1,
-      //   id: modelId,
-      //   label: details.name,
-      //   shape: 'box',
-      //   anomalies: anomalies.size > 0,
-      //   schemaChanges: schemaChanges.length > 0,
-      //   color: {
-      //     background: resourceTypeColors[details.resource_type],
-      //   },
-      // };
+    // const n = {
+    //   key: index + 1,
+    //   id: modelId,
+    //   label: details.name,
+    //   shape: 'box',
+    //   anomalies: anomalies.size > 0,
+    //   schemaChanges: schemaChanges.length > 0,
+    //   color: {
+    //     background: resourceTypeColors[details.resource_type],
+    //   },
+    // };
 
-      const n = generateNode({
-        index,
-        modelId,
-        details,
-        anomalies,
-        schemaChanges
-      });
-      graph.nodes.push(n);
+    const n = generateNode({
+      index,
+      modelId,
+      details,
+      anomalies,
+      schemaChanges
+    });
+    graph.nodes.push(n);
 
-      // const config = details.config as any;
-      // const isMonitored = config?.re_data_monitored || false;
+    // const config = details.config as any;
+    // const isMonitored = config?.re_data_monitored || false;
 
-      // let otherName = modelId.replace(`.${details.name}`, '');
-      // let result = {
-      //   id: (index + 1).toString(),
-      //   key: modelId,
-      //   type: 'custom-node',
-      //   data: {
-      //     id: modelId,
-      //     label: details.name,
-      //     otherName,
-      //     anomalies,
-      //     isMonitored,
-      //     schemaChanges,
-      //     borderColor: resourceTypeColors[details.resource_type],
-      //   },
-      //   position: {
-      //     x: 100,
-      //     y: 50 * (index + 1),
-      //   },
-      // };
-      // elements.push(result);
+    // let otherName = modelId.replace(`.${details.name}`, '');
+    // let result = {
+    //   id: (index + 1).toString(),
+    //   key: modelId,
+    //   type: 'custom-node',
+    //   data: {
+    //     id: modelId,
+    //     label: details.name,
+    //     otherName,
+    //     anomalies,
+    //     isMonitored,
+    //     schemaChanges,
+    //     borderColor: resourceTypeColors[details.resource_type],
+    //   },
+    //   position: {
+    //     x: 100,
+    //     y: 50 * (index + 1),
+    //   },
+    // };
+    // elements.push(result);
 
-      modelParentNodes.forEach((parent) => {
-        const parentDetails = allNodes[parent];
-        const { name, resource_type: resourceType } = parentDetails;
+    modelParentNodes.forEach((parent) => {
+      const parentDetails = allNodes[parent];
+      const { name, resource_type: resourceType } = parentDetails;
 
-        if (supportedResTypes.has(resourceType)) {
-          const parentModelId = generateModelId(parentDetails);
+      if (supportedResTypes.has(resourceType)) {
+        const parentModelId = generateModelId(parentDetails);
+        const {
+          anomalies: parentAnomalies,
+          schemaChanges: parentSchemaChanges
+        } = getAlertData(modelId, aggregatedModels);
+
+        const parentNode = generateNode({
+          modelId: parentModelId,
+          index: index + 1,
+          details: parentDetails,
+          anomalies: parentAnomalies,
+          schemaChanges: parentSchemaChanges
+        });
+        graph.nodes.push(parentNode);
+
+        // graph.nodes.push({
+        //   id: parentModelId,
+        //   label: name,
+        //   shape: 'box',
+        //   color: {
+        //     background: resourceTypeColors[parentDetails.resource_type],
+        //   },
+        // });
+
+        // otherName = parentModelId.replace(`.${parentDetails.name}`, '');
+
+        // result = {
+        //   id: (index + 1).toString(),
+        //   key: parentModelId,
+        //   type: 'custom-node',
+        //   data: {
+        //     id: parentModelId,
+        //     label: name,
+        //     otherName,
+        //     anomalies,
+        //     isMonitored,
+        //     schemaChanges,
+        //     borderColor: resourceTypeColors[details.resource_type],
+        //   },
+        //   position: {
+        //     x: 100,
+        //     y: 50 * (index + 1),
+        //   },
+        // };
+        // elements.push(result);
+
+        const edge: VisEdge = {
+          from: parentModelId,
+          to: modelId,
+          arrows: 'to',
+        };
+        graph.edges.push(edge);
+      }
+    });
+    modelChildNodes.forEach((child) => {
+      const childDetails = allNodes[child];
+      const {
+        database, schema, name,
+        resource_type: resourceType,
+      } = childDetails;
+      if (supportedResTypes.has(resourceType)) {
+        console.log(modelType, resourceType, !!(modelType && modelType !== resourceType));
+        if (modelType && modelType !== resourceType) {
+          const childModelId = `${database}.${schema}.${name}`.toLowerCase();
           const {
-            anomalies: parentAnomalies,
-            schemaChanges: parentSchemaChanges
+            anomalies: childAnomalies,
+            schemaChanges: childSchemaChanges
           } = getAlertData(modelId, aggregatedModels);
 
-          const parentNode = generateNode({
-            modelId: parentModelId,
+          const childNode = generateNode({
+            modelId: childModelId,
             index: index + 1,
-            details: parentDetails,
-            anomalies: parentAnomalies,
-            schemaChanges: parentSchemaChanges
+            details: childDetails,
+            anomalies: childAnomalies,
+            schemaChanges: childSchemaChanges
           });
-          graph.nodes.push(parentNode);
+
+          graph.nodes.push(childNode);
 
           // graph.nodes.push({
-          //   id: parentModelId,
+          //   id: childModelId,
           //   label: name,
           //   shape: 'box',
           //   color: {
-          //     background: resourceTypeColors[parentDetails.resource_type],
+          //     background: resourceTypeColors[childDetails.resource_type],
           //   },
           // });
 
-          // otherName = parentModelId.replace(`.${parentDetails.name}`, '');
-
-          // result = {
-          //   id: (index + 1).toString(),
-          //   key: parentModelId,
-          //   type: 'custom-node',
-          //   data: {
-          //     id: parentModelId,
-          //     label: name,
-          //     otherName,
-          //     anomalies,
-          //     isMonitored,
-          //     schemaChanges,
-          //     borderColor: resourceTypeColors[details.resource_type],
-          //   },
-          //   position: {
-          //     x: 100,
-          //     y: 50 * (index + 1),
-          //   },
-          // };
-          // elements.push(result);
-
           const edge: VisEdge = {
-            from: parentModelId,
-            to: modelId,
+            from: modelId,
+            to: childModelId,
             arrows: 'to',
           };
           graph.edges.push(edge);
         }
-      });
-      modelChildNodes.forEach((child) => {
-        const childDetails = allNodes[child];
-        const {
-          database, schema, name,
-          resource_type: resourceType,
-        } = childDetails;
-        if (supportedResTypes.has(resourceType)) {
-          console.log(modelType, resourceType, !!(modelType && modelType !== resourceType));
-          if (modelType && modelType !== resourceType) {
-            const childModelId = `${database}.${schema}.${name}`.toLowerCase();
-            const {
-              anomalies: childAnomalies,
-              schemaChanges: childSchemaChanges
-            } = getAlertData(modelId, aggregatedModels);
-
-            const childNode = generateNode({
-              modelId: childModelId,
-              index: index + 1,
-              details: childDetails,
-              anomalies: childAnomalies,
-              schemaChanges: childSchemaChanges
-            });
-
-            graph.nodes.push(childNode);
-
-            // graph.nodes.push({
-            //   id: childModelId,
-            //   label: name,
-            //   shape: 'box',
-            //   color: {
-            //     background: resourceTypeColors[childDetails.resource_type],
-            //   },
-            // });
-
-            const edge: VisEdge = {
-              from: modelId,
-              to: childModelId,
-              arrows: 'to',
-            };
-            graph.edges.push(edge);
-          }
-        }
-      });
-    } else {
-      // modelType, alerts,
-      // && modelType !== details.resource_type
-      // if (modelType === details.resource_type ) {
-      const n = {
-        key: index + 1,
-        id: modelId,
-        label: details.name,
-        shape: 'box',
-        anomalies: anomalies.size > 0,
-        schemaChanges: schemaChanges.length > 0,
-        color: {
-          background: resourceTypeColors[details.resource_type],
-        },
-      };
-      graph.nodes.push(n);
-      // }
-      console.log('model exist different type');
-    }
+      }
+    });
   } else {
     for (let index = 0; index < modelNodes.length; index++) {
       const currentNode = modelNodes[index];
