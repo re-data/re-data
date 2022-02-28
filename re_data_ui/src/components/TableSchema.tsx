@@ -3,8 +3,8 @@ import { ITableSchema } from '../contexts/redataOverviewContext';
 import Table, { ColumnsProps } from './Table';
 
 export interface TableSchemaProps {
-  tableSchemas: ITableSchema[],
-  showTitle?: boolean
+  tableSchemas: ITableSchema[];
+  showTitle?: boolean;
 }
 
 const TableSchema: React.FC<TableSchemaProps> = (

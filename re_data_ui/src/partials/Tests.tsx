@@ -7,7 +7,7 @@ import { EmptyContent, Table } from '../components';
 import { CellProps, ColumnsProps } from '../components/Table';
 import { ITestSchema, OverviewData, RedataOverviewContext } from '../contexts/redataOverviewContext';
 
-export type TP = {
+export interface TP {
   showRunAt: boolean;
   showModel: boolean;
   modelName?: string | null;

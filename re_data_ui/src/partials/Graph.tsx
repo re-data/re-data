@@ -211,7 +211,7 @@ const generateGraph = (
 
 export interface GraphViewProps {
   modelName?: string | null;
-  showModelDetails?: boolean
+  showModelDetails?: boolean;
 }
 
 const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElement => {

@@ -24,10 +24,10 @@ import {
 import EmptyContent from './EmptyContent';
 
 export interface MetricChartsProps {
-  modelDetails: ReDataModelDetails,
-  showAnomalies: boolean,
-  showTitle?: boolean,
-  fullWidth?: boolean,
+  modelDetails: ReDataModelDetails;
+  showAnomalies: boolean;
+  showTitle?: boolean;
+  fullWidth?: boolean;
 }
 
 interface VisualPiece extends VisualOptionPiecewise {
