@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import { FaRegSmileBeam } from 'react-icons/all';
 import { generateSchemaChangeMessage } from '../utils/helpers';
 import { ReDataModelDetails } from '../contexts/redataOverviewContext';
@@ -10,11 +10,12 @@ export interface SchemaChangesProps {
   showTitle?: boolean;
 }
 
-const SchemaChanges: React.FC<SchemaChangesProps> = (
-  props: PropsWithChildren<SchemaChangesProps>,
-)
-  : ReactElement => {
-  const { modelDetails, showTitle = true } = props;
+function SchemaChanges(params: SchemaChangesProps): ReactElement {
+// const SchemaChanges: React.FC<SchemaChangesProps> = (
+//   props: PropsWithChildren<SchemaChangesProps>,
+// )
+  // : ReactElement => {
+  const { modelDetails, showTitle = true } = params;
   const { schemaChanges } = modelDetails;
 
   return (
@@ -73,6 +74,6 @@ const SchemaChanges: React.FC<SchemaChangesProps> = (
         )}
     </>
   );
-};
+}
 
 export default SchemaChanges;

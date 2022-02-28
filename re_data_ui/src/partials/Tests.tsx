@@ -75,7 +75,8 @@ const generateTestsData = (tests: ITestSchema[], modelName?: string | null) => {
   return { result, runAts };
 };
 
-function TestsPartial({ showModel, showRunAt, modelName = null }: TP): ReactElement {
+function TestsPartial(params: TP): ReactElement {
+  const { showModel, showRunAt, modelName = null } = params;
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { tests } = overview;
   const [backUpData, setBackUpData] = useState([]);
