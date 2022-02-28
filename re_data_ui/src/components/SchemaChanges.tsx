@@ -11,10 +11,6 @@ export interface SchemaChangesProps {
 }
 
 function SchemaChanges(params: SchemaChangesProps): ReactElement {
-// const SchemaChanges: React.FC<SchemaChangesProps> = (
-//   props: PropsWithChildren<SchemaChangesProps>,
-// )
-  // : ReactElement => {
   const { modelDetails, showTitle = true } = params;
   const { schemaChanges } = modelDetails;
 

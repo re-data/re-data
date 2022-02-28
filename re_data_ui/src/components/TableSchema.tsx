@@ -8,10 +8,6 @@ export interface TableSchemaProps {
 }
 
 function TableSchema(params: TableSchemaProps): ReactElement {
-// }
-// const TableSchema: React.FC<TableSchemaProps> = (
-//   props: PropsWithChildren<TableSchemaProps>,
-// ): ReactElement => {
   const { tableSchemas, showTitle } = params;
   const data = tableSchemas as unknown as Record<string, unknown>[];
 

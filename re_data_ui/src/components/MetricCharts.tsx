@@ -174,10 +174,6 @@ const generateMetricChartOption = (
 };
 
 function MetricCharts(params: MetricChartsProps): ReactElement {
-// }
-// const MetricCharts: React.FC<MetricChartsProps> = (
-//   props: PropsWithChildren<MetricChartsProps>,
-// ): ReactElement => {
   const {
     modelDetails, showAnomalies,
     showTitle = true, fullWidth = true,
