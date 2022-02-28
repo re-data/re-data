@@ -50,7 +50,6 @@ const formatOverviewData = (
     const details = result.get(model) as ReDataModelDetails;
     if (item.type === 'alert') {
       const alert = JSON.parse(item.data) as Alert;
-      // console.log(alert);
       alertsChanges.push(alert);
     } else if (item.type === 'metric') {
       const metric = JSON.parse(item.data) as Metric;

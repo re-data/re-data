@@ -1,4 +1,3 @@
-
 .layoutflow {
   height: 93%;
   position: relative;
@@ -11,7 +10,6 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  /* display: flex; */
   z-index: 100;
   box-shadow: 0 0 2px 1px rgb(0 0 0 / 8%);
 }
@@ -42,7 +40,6 @@
 .react-flow {
   padding-top: 10px;
 }
-
 
 .sd:checked ~ .dot {
   transform: translateX(100%);

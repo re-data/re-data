@@ -18,7 +18,6 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
       style={active ? {} : containerStyle}
       className={active ? 'container-active' : 'container'}
     >
-      {/* <div style={containerStyle}> */}
       <div className="node">
         <Handle type="target" position={Position.Left} />
         <div className="label">
