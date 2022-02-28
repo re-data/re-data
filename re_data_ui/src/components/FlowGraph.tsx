@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   MouseEvent as ReactMouseEvent, ReactElement, useCallback,
   useEffect, useRef, useState,
@@ -13,7 +12,7 @@ import '../graph.css';
 import { getLayoutElements } from '../utils';
 import CustomNode from './CustomNode';
 
-export interface Props {
+export interface FlowGraphProps {
   data: Elements;
   disableClick?: boolean;
 }
@@ -22,7 +21,7 @@ const nodeTypes = {
   'custom-node': CustomNode,
 };
 
-function FlowGraph(params: Props): ReactElement {
+function FlowGraph(params: FlowGraphProps): ReactElement {
   const { data, disableClick = false } = params;
   const instanceRef = useRef<OnLoadParams | null>(null);
   const [, setURLSearchParams] = useSearchParams();
@@ -37,24 +36,6 @@ function FlowGraph(params: Props): ReactElement {
   const onElementsRemove = (elementsToRemove: Elements) => {
     setElements((els) => removeElements(elementsToRemove, els));
   };
-
-  const getAllIncomer = (node: Node, el: Elements): Node[] => getIncomers(node, el).reduce(
-    (memo: any, incomer) => [
-      ...memo,
-      incomer,
-      ...getAllIncomer(incomer, elements),
-    ],
-    [],
-  );
-
-  const getAllOutgoer = (node: Node, el: Elements): Node[] => getOutgoers(node, el).reduce(
-    (memo: any, outgoer) => [
-      ...memo,
-      outgoer,
-      ...getAllOutgoer(outgoer, el),
-    ],
-    [],
-  );
 
   const removeHighlightPath = (): void => {
     const values = elements?.map((elem) => {
@@ -76,18 +57,18 @@ function FlowGraph(params: Props): ReactElement {
 
   const highlightPath = (node: Node, selection: boolean): void => {
     if (node && elements) {
-      const allIncomer: Node[] = getAllIncomer(node, elements);
-      const allOutgoer: Node[] = getAllOutgoer(node, elements);
+      const allIncomer: Node[] = getIncomers(node, elements);
+      const allOutgoer: Node[] = getOutgoers(node, elements);
 
       setElements((prevElements) => prevElements?.map((elem) => {
         const element = elem;
-        const incomerIds = allIncomer.map((i) => i.id);
-        const outgoerIds = allOutgoer.map((o) => o.id);
+        const incomerIds = new Set([...allIncomer.map((i) => i.id)]);
+        const outgoerIds = new Set([...allOutgoer.map((o) => o.id)]);
 
         if (isNode(element)) {
           const highlight = element.id === node.id
-              || incomerIds.includes(element.id)
-            || outgoerIds.includes(element.id);
+              || incomerIds.has(element.id)
+            || outgoerIds.has(element.id);
 
           if (node.id === element.id) {
             element.style = {
@@ -111,8 +92,8 @@ function FlowGraph(params: Props): ReactElement {
 
         if (isEdge(element)) {
           const highlight = element.source === node.id || element.target === node.id;
-          const animated = incomerIds.includes(element.source)
-              && (incomerIds.includes(element.target) || node.id === element.target);
+          const animated = incomerIds.has(element.source)
+              && (incomerIds.has(element.target) || node.id === element.target);
 
           if (selection && (animated || highlight)) {
             element.animated = true;
@@ -126,7 +107,7 @@ function FlowGraph(params: Props): ReactElement {
     }
   };
 
-  const onLoad = (reactFlowInstance: OnLoadParams<any> | null) => {
+  const onLoad = (reactFlowInstance: OnLoadParams<unknown> | null) => {
     instanceRef.current = reactFlowInstance;
     reactFlowInstance?.fitView();
   };
