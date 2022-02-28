@@ -8,7 +8,7 @@ import {
 export interface CellProps {
   value: string;
   column: Record<string, number>;
-  row:Record<string, string>;
+  row: Record<string, string>;
 }
 export interface ColumnsProps {
   Header: string;
@@ -65,9 +65,11 @@ const CustomFilter = memo(({
  * @param  {ReactElement | null} RightComponent - default: null
  * @returns JSX
  */
-const Table = ({
-  columns, data, showSearch = true, RightComponent = null,
-}: ITable): JSX.Element => {
+
+function Table(params: ITable): JSX.Element {
+  const {
+    columns, data, showSearch = true, RightComponent = null,
+  } = params;
   const {
     getTableProps,
     getTableBodyProps,
@@ -313,6 +315,6 @@ const Table = ({
       )}
     </>
   );
-};
+}
 
 export default Table;

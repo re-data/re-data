@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
-  FC, MouseEvent as ReactMouseEvent, ReactElement, useCallback,
+  MouseEvent as ReactMouseEvent, ReactElement, useCallback,
   useEffect, useRef, useState,
 } from 'react';
 import ReactFlow, {
@@ -22,7 +22,8 @@ const nodeTypes = {
   'custom-node': CustomNode,
 };
 
-const FlowGraph: FC<Props> = ({ data, disableClick = false }: Props): ReactElement => {
+function FlowGraph(params: Props): ReactElement {
+  const { data, disableClick = false } = params;
   const instanceRef = useRef<OnLoadParams | null>(null);
   const [, setURLSearchParams] = useSearchParams();
 
@@ -194,6 +195,6 @@ const FlowGraph: FC<Props> = ({ data, disableClick = false }: Props): ReactEleme
       </div>
     </>
   );
-};
+}
 
 export default FlowGraph;

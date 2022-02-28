@@ -75,7 +75,7 @@ const generateTestsData = (tests: ITestSchema[], modelName?: string | null) => {
   return { result, runAts };
 };
 
-const TestsPartial: React.FC<TP> = ({ showModel, showRunAt, modelName = null }): ReactElement => {
+function TestsPartial({ showModel, showRunAt, modelName = null }: TP): ReactElement {
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { tests } = overview;
   const [backUpData, setBackUpData] = useState([]);
@@ -171,6 +171,6 @@ const TestsPartial: React.FC<TP> = ({ showModel, showRunAt, modelName = null }):
         )}
     </>
   );
-};
+}
 
 export default TestsPartial;

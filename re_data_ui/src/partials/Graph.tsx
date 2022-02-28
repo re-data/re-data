@@ -214,11 +214,11 @@ export interface GraphViewProps {
   showModelDetails?: boolean;
 }
 
-const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElement => {
+function GraphView(params: GraphViewProps): ReactElement {
   const {
     modelName = null,
     showModelDetails = true,
-  } = props;
+  } = params;
   const [monitored, setMonitored] = useState(true);
 
   const overview: OverviewData = useContext(RedataOverviewContext);
@@ -349,6 +349,6 @@ const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElemen
       </div>
     </>
   );
-};
+}
 
 export default GraphView;

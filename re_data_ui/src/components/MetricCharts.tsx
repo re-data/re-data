@@ -12,7 +12,7 @@ import {
 import * as echarts from 'echarts/core';
 import { MarkArea1DDataItemOption, MarkArea2DDataItemOption } from 'echarts/types/src/component/marker/MarkAreaModel';
 import { VisualOptionPiecewise } from 'echarts/types/src/util/types';
-import React, { PropsWithChildren, ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import { FaRegSmileBeam, FaRegSmileWink } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
 import { Anomaly, Metric, ReDataModelDetails } from '../contexts/redataOverviewContext';
@@ -173,13 +173,15 @@ const generateMetricChartOption = (
   };
 };
 
-const MetricCharts: React.FC<MetricChartsProps> = (
-  props: PropsWithChildren<MetricChartsProps>,
-): ReactElement => {
+function MetricCharts(params: MetricChartsProps): ReactElement {
+// }
+// const MetricCharts: React.FC<MetricChartsProps> = (
+//   props: PropsWithChildren<MetricChartsProps>,
+// ): ReactElement => {
   const {
     modelDetails, showAnomalies,
     showTitle = true, fullWidth = true,
-  } = props;
+  } = params;
   const [searchParams] = useSearchParams();
   const model = searchParams.get('model') as string;
   const anomaliesMap = modelDetails.anomalies;
@@ -265,6 +267,6 @@ const MetricCharts: React.FC<MetricChartsProps> = (
         )}
     </>
   );
-};
+}
 
 export default MetricCharts;
