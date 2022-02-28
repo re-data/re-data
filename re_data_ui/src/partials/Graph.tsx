@@ -204,7 +204,9 @@ const generateGraph = (
   for (let index = 0; index < edgesArr.length; index++) {
     const { from, to } = edgesArr[index];
     const edge = generateEdge({ obj: elementObj, from, to });
-    elements.push(edge);
+    if (edge.source && edge.target) {
+      elements.push(edge);
+    }
   }
   return elements;
 };
@@ -304,6 +306,7 @@ function GraphView(params: GraphViewProps): ReactElement {
           </button>
           <button
             type="button"
+            disabled={!showModelDetails}
             title="Toggle Model Nodes"
             onClick={() => toggleAlerts('schema_change')}
             className={`flex items-center ml-1 mr-4 ${alerts === 'schema_change' && 'active-tab'}`}

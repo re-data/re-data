@@ -70,7 +70,7 @@ const generateNode = ({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: GenerateNodeProps): any => ({
   key: modelId,
-  id: index.toString(),
+  id: index?.toString(),
   type: 'custom-node',
   label: details.name,
   shape: 'box',

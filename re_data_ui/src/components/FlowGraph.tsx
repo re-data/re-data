@@ -4,8 +4,8 @@ import React, {
   useEffect, useRef, useState,
 } from 'react';
 import ReactFlow, {
-  ConnectionLineType, Controls, Elements, getIncomers, Edge,
-  getOutgoers, isEdge, isNode, Node, OnLoadParams, ReactFlowProvider,
+  ConnectionLineType, Controls, Edge, Elements, getIncomers, getOutgoers,
+  isEdge, isNode, Node, OnLoadParams, ReactFlowProvider,
   removeElements,
 } from 'react-flow-renderer';
 import { useSearchParams } from 'react-router-dom';
@@ -138,27 +138,29 @@ function FlowGraph(params: Props): ReactElement {
   // }, [instanceRef, elements]);
 
   const onPaneClick = useCallback(() => {
-    removeHighlightPath();
-    setURLSearchParams({});
-    const values = elements?.map((elem) => {
-      const element = elem;
-      if (isNode(element)) {
-        element.style = {
-          ...element.style,
-          opacity: 1,
-        };
-        element.data = {
-          ...element.data,
-          active: false,
-        };
-      }
-      if (isEdge(element)) {
-        element.animated = false;
-      }
-      return element;
-    });
+    if (!disableClick) {
+      removeHighlightPath();
+      setURLSearchParams({});
+      const values = elements?.map((elem) => {
+        const element = elem;
+        if (isNode(element)) {
+          element.style = {
+            ...element.style,
+            opacity: 1,
+          };
+          element.data = {
+            ...element.data,
+            active: false,
+          };
+        }
+        if (isEdge(element)) {
+          element.animated = false;
+        }
+        return element;
+      });
 
-    setElements(values);
+      setElements(values);
+    }
   }, []);
 
   return (
