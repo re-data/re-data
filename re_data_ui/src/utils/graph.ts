@@ -4,10 +4,6 @@ import {
 } from 'react-flow-renderer';
 import { DbtNode, DbtSource } from '../contexts/redataOverviewContext';
 
-type Dictionary = {
-  [key: string]: string
-};
-
 const DEFAULT_WIDTH = 172;
 const DEFAULT_HEIGHT = 36;
 
@@ -49,7 +45,7 @@ const getLayoutElements = (elements: Elements, direction = 'LR'): Elements => {
   });
 };
 
-const resourceTypeColors: Dictionary = {
+const resourceTypeColors: Record<string, string> = {
   source: 'hsl(97deg 66% 44%)',
   model: 'hsl(190deg 100% 35%)',
   seed: 'hsl(150deg 66% 44%)',
@@ -90,7 +86,7 @@ const generateNode = ({
 });
 
 type GenerateEdgeProps = {
-  obj: Dictionary,
+  obj: Record<string, string>,
   from: string;
   to: string
 }

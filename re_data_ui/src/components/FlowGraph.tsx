@@ -58,13 +58,11 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
   const highlightPath = (node: Node, selection: boolean): void => {
     if (node && elements) {
-      const allIncomer: Node[] = getIncomers(node, elements);
-      const allOutgoer: Node[] = getOutgoers(node, elements);
+      const incomerIds = new Set([...getIncomers(node, elements).map((i) => i.id)]);
+      const outgoerIds = new Set([...getOutgoers(node, elements).map((o) => o.id)]);
 
       setElements((prevElements) => prevElements?.map((elem) => {
         const element = elem;
-        const incomerIds = new Set([...allIncomer.map((i) => i.id)]);
-        const outgoerIds = new Set([...allOutgoer.map((o) => o.id)]);
 
         if (isNode(element)) {
           const highlight = element.id === node.id

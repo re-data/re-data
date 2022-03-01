@@ -10,10 +10,6 @@ import {
   generateEdge, generateModelId, generateNode, supportedResTypes,
 } from '../utils';
 
-type Dictionary = {
-  [key: string]: string
-}
-
 type AlertsType = 'anomaly' | 'schema_change' | null
 
 type GenerateGraphProps = {
@@ -41,8 +37,8 @@ const generateGraph = (
   }: GenerateGraphProps,
 ): Elements => {
   const elements: Elements = [];
-  const elementObj: Dictionary = {};
-  const edgesArr: Dictionary[] = [];
+  const elementObj: Record<string, string> = {};
+  const edgesArr: Record<string, string>[] = [];
 
   if (!overview.graph || !overview.modelNodes) {
     return elements;
