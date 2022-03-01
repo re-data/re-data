@@ -345,7 +345,13 @@ function GraphView(params: GraphViewProps): ReactElement {
         gap-4 bg-white border-2 border-solid border-gray-200 rounded-lg h-full"
       >
         <div className={showModelDetails ? 'col-span-8' : 'col-span-12'}>
-          {overviewDataLoaded && <FlowGraph data={elements} disableClick={!showModelDetails} />}
+          {overviewDataLoaded && (
+            <FlowGraph
+              data={elements}
+              disableClick={!showModelDetails}
+              modelName={modelName}
+            />
+          )}
         </div>
 
         {showModelDetails && <ModelDetails />}

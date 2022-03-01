@@ -15,6 +15,7 @@ import CustomNode from './CustomNode';
 export interface FlowGraphProps {
   data: Elements;
   disableClick?: boolean;
+  modelName?: string | null;
 }
 
 const nodeTypes = {
@@ -22,7 +23,7 @@ const nodeTypes = {
 };
 
 function FlowGraph(params: FlowGraphProps): ReactElement {
-  const { data, disableClick = false } = params;
+  const { data, disableClick = false, modelName = null } = params;
   const instanceRef = useRef<OnLoadParams | null>(null);
   const [, setURLSearchParams] = useSearchParams();
 
@@ -111,6 +112,12 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
     instanceRef.current = reactFlowInstance;
     reactFlowInstance?.fitView();
   };
+
+  useEffect(() => {
+    if (instanceRef.current && modelName) {
+      instanceRef.current.fitView();
+    }
+  }, [instanceRef, modelName]);
 
   // useEffect(() => {
   //   if (instanceRef.current) {
