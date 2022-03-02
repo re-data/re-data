@@ -152,7 +152,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
   return (
     <>
       <div
-        className="layoutflow"
+        className="layoutFlow"
         style={{
           width: '100%',
           marginTop: '2.5rem',
