@@ -1,113 +1,118 @@
-import React, { ReactElement, useContext } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { NodeOptions, Options } from 'vis';
-import LineageGraph from '../components/LineageGraph';
-import ModelDetails from '../components/ModelDetails';
+import React, {
+  ReactElement, useCallback, useContext, useState,
+} from 'react';
+import { Elements } from 'react-flow-renderer';
+import { FlowGraph, ModelDetails } from '../components';
 import {
-  DbtNode, DbtSource, OverviewData, RedataOverviewContext,
+  DbtNode, DbtSource, OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
-import { generateModelId, supportedResTypes } from '../utils';
+import {
+  generateEdge, generateModelId, generateNode, supportedResTypes,
+} from '../utils';
 
-export interface VisPointer {
-  x: number,
-  y: number
+type AlertsType = 'anomaly' | 'schema_change' | null
+
+type GenerateGraphProps = {
+  overview: OverviewData;
+  modelName?: string | null;
+  modelType?: string | null;
+  monitored?: boolean;
+  alerts?: AlertsType;
 }
 
-export interface VisNode extends NodeOptions {
-  id: string | number,
-  shape: string;
-}
+const getAlertData = (modelId: string, aggregatedModels: Map<string, ReDataModelDetails>) => {
+  const {
+    anomalies,
+    schemaChanges,
+  } = aggregatedModels.get(modelId) as ReDataModelDetails;
 
-export interface VisEdge {
-  from: string | number,
-  to: string | number;
-  arrows: string;
-  color?: string;
-}
-
-export interface VisNetworkEventParams {
-  edges?: Array<string>,
-  nodes?: Array<string>,
-  event?: Record<string, unknown>,
-  pointer?: {
-    DOM: VisPointer
-    canvas: VisPointer
-  }
-}
-
-export interface IGraph {
-  nodes: Array<VisNode>;
-  edges: Array<VisEdge>;
-}
-
-type ResourceTypeColorsProps = {
-  [key: string]: string;
-}
-
-const resourceTypeColors: ResourceTypeColorsProps = {
-  source: 'hsl(97deg 66% 44%)',
-  model: 'hsl(190deg 100% 35%)',
-  seed: 'hsl(150deg 66% 44%)',
+  return { anomalies, schemaChanges };
 };
 
-const generateGraph = (overview: OverviewData, modelName?: string | null) => {
-  const graph: IGraph = {
-    nodes: [],
-    edges: [],
-  };
+const generateGraph = (
+  {
+    overview, modelName,
+    modelType, monitored,
+    alerts,
+  }: GenerateGraphProps,
+): Elements => {
+  const elements: Elements = [];
+  const elementObj: Record<string, string> = {};
+  const edgesArr: Record<string, string>[] = [];
 
   if (!overview.graph || !overview.modelNodes) {
-    return graph;
+    return elements;
   }
 
-  const { dbtMapping } = overview;
-  const dbtNodes = overview.graph.nodes;
-  const dbtSources = overview.graph.sources;
-
+  const {
+    dbtMapping,
+    modelNodes,
+    aggregated_models: aggregatedModels,
+    graph: { nodes: dbtNodes, sources: dbtSources },
+  } = overview;
   const allNodes = { ...dbtNodes, ...dbtSources };
 
   if (modelName) {
-    const { parent_map: parentNodes, child_map: childNodes } = overview.graph;
+    const {
+      parent_map: parentNodes,
+      child_map: childNodes,
+    } = overview.graph;
     const modelTitle = dbtMapping[modelName];
 
     // get all the parents and the child nodes of the model name;
     const modelParentNodes = parentNodes[modelTitle] || [];
     const modelChildNodes = childNodes[modelTitle] || [];
 
-    // draw the model node
-    // draw the parent nodes and connect it to the node using an edge
-    // draw the child nodes and connect it to the node using an edge
-
     const details = allNodes[modelTitle];
     const modelId = generateModelId(details);
-    graph.nodes.push({
-      id: modelId,
-      label: details.name,
-      shape: 'box',
-      color: resourceTypeColors[details.resource_type],
-    });
 
-    modelParentNodes.forEach((parent) => {
+    const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
+
+    const n = generateNode({
+      index: '0',
+      modelId,
+      details,
+      anomalies: anomalies.size > 0,
+      schemaChanges: schemaChanges.length > 0,
+    });
+    elements.push(n);
+    elementObj[modelId] = '0';
+
+    const parentNodesLength = modelParentNodes.length;
+
+    for (let index = 0; index < parentNodesLength; index++) {
+      const parent = modelParentNodes[index];
       const parentDetails = allNodes[parent];
-      const { name, resource_type: resourceType } = parentDetails;
+      const { resource_type: resourceType } = parentDetails;
+
       if (supportedResTypes.has(resourceType)) {
         const parentModelId = generateModelId(parentDetails);
-        graph.nodes.push({
-          id: parentModelId,
-          label: name,
-          shape: 'box',
-          color: resourceTypeColors[resourceType],
-        });
+        const {
+          anomalies: parentAnomalies,
+          schemaChanges: parentSchemaChanges,
+        } = getAlertData(parentModelId, aggregatedModels);
 
-        const edge: VisEdge = {
+        const key = index + 1;
+        const parentNode = generateNode({
+          modelId: parentModelId,
+          index: key,
+          details: parentDetails,
+          anomalies: parentAnomalies.size > 0,
+          schemaChanges: parentSchemaChanges.length > 0,
+        });
+        elements.push(parentNode);
+        elementObj[parentModelId] = key?.toString();
+
+        edgesArr.push({
           from: parentModelId,
           to: modelId,
-          arrows: 'to',
-        };
-        graph.edges.push(edge);
+        });
       }
-    });
-    modelChildNodes.forEach((child) => {
+    }
+
+    for (let index = 0; index < modelChildNodes.length; index++) {
+      const child = modelChildNodes[index];
+
       const childDetails = allNodes[child];
       const {
         database, schema, name,
@@ -115,38 +120,63 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
       } = childDetails;
       if (supportedResTypes.has(resourceType)) {
         const childModelId = `${database}.${schema}.${name}`.toLowerCase();
-        graph.nodes.push({
-          id: childModelId,
-          label: name,
-          shape: 'box',
-          color: resourceTypeColors[resourceType],
-        });
+        const {
+          anomalies: childAnomalies,
+          schemaChanges: childSchemaChanges,
+        } = getAlertData(childModelId, aggregatedModels);
 
-        const edge: VisEdge = {
+        const key = index + 1 + parentNodesLength;
+        const childNode = generateNode({
+          modelId: childModelId,
+          index: key,
+          details: childDetails,
+          anomalies: childAnomalies.size > 0,
+          schemaChanges: childSchemaChanges.length > 0,
+        });
+        elements.push(childNode);
+        elementObj[childModelId] = key?.toString();
+
+        edgesArr.push({
           from: modelId,
           to: childModelId,
-          arrows: 'to',
-        };
-        graph.edges.push(edge);
+        });
       }
-    });
+    }
   } else {
-    const { modelNodes } = overview;
     for (let index = 0; index < modelNodes.length; index++) {
       const currentNode = modelNodes[index];
       const modelTitle = dbtMapping[currentNode.label];
       const details = allNodes[modelTitle];
       const modelId = generateModelId(details);
 
-      const node: VisNode = {
-        id: modelId,
-        label: details.name,
-        shape: 'box',
-        color: {
-          background: resourceTypeColors[details.resource_type],
-        },
-      };
-      graph.nodes.push(node);
+      // for monitored nodes
+      const config = details.config as Record<string, unknown>;
+      const isNodeMonitored = config?.re_data_monitored || false;
+      const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
+
+      if (alerts === 'anomaly' && anomalies.size < 1) {
+        continue;
+      } else if (alerts === 'schema_change' && schemaChanges.length < 1) {
+        continue;
+      }
+      if (monitored && !isNodeMonitored) {
+        continue;
+      }
+      // check if model type exists and this currentNode is of that type
+      if (modelType && modelType !== details.resource_type) {
+        continue;
+      }
+
+      const node = generateNode({
+        index,
+        modelId,
+        details,
+        anomalies: anomalies.size > 0,
+        schemaChanges: schemaChanges.length > 0,
+      });
+      elementObj[modelId] = index?.toString();
+
+      elements.push(node);
 
       if (details.resource_type !== 'source') {
         const d = details as DbtNode;
@@ -157,154 +187,173 @@ const generateGraph = (overview: OverviewData, modelName?: string | null) => {
             : dbtSources[parent];
           if (parentNode) {
             const parentModelId = generateModelId(parentNode);
-            const edge: VisEdge = {
+            edgesArr.push({
               from: parentModelId,
               to: modelId,
-              arrows: 'to',
-            };
-            graph.edges.push(edge);
+            });
           }
         });
       }
     }
   }
 
-  return graph;
+  for (let index = 0; index < edgesArr.length; index++) {
+    const { from, to } = edgesArr[index];
+    const edge = generateEdge({ obj: elementObj, from, to });
+    if (edge.source && edge.target) {
+      elements.push(edge);
+    }
+  }
+  return elements;
 };
 
 export interface GraphViewProps {
   modelName?: string | null;
-  showModelDetails?: boolean
+  showModelDetails?: boolean;
 }
 
-const GraphView: React.FC<GraphViewProps> = (props: GraphViewProps): ReactElement => {
+function GraphView(params: GraphViewProps): ReactElement {
   const {
     modelName = null,
     showModelDetails = true,
-  } = props;
+  } = params;
+  const [monitored, setMonitored] = useState(true);
+
   const overview: OverviewData = useContext(RedataOverviewContext);
   const overviewDataLoaded = !!overview.graph;
-  const [, setURLSearchParams] = useSearchParams();
+  const [modelType, setModelType] = useState<string | null>(null);
+  const [alerts, setAlerts] = useState<AlertsType>(null);
 
-  const graph = modelName
-    ? generateGraph(overview, modelName)
-    : generateGraph(overview);
+  const elements: Elements = generateGraph({
+    overview,
+    modelName,
+    modelType,
+    monitored,
+    alerts,
+  });
 
-  const events = {
-    selectNode: (params: VisNetworkEventParams) => {
-      if (showModelDetails) {
-        if (!params.nodes || params.nodes.length !== 1) {
-        // only select a single node
-          return;
-        }
-        const modelIdentifier = params.nodes[0];
-        setURLSearchParams({
-          model: modelIdentifier,
-        });
+  const toggleModelType = (type: string) => {
+    setModelType((prevType: string | null) => {
+      if (prevType === type) {
+        return null;
       }
-    },
-    deselectNode: () => {
-      if (showModelDetails) {
-        setURLSearchParams({});
-      }
-    },
+      return type;
+    });
+    setAlerts(null);
   };
 
-  const networkOptions: Options = {
-    height: '100%',
-    width: '100%',
-    edges: {
-      color: {
-        color: '#6F798B70',
-        highlight: '#6F798B70',
-        hover: '#6F798B70',
-        inherit: true,
-      },
-      dashes: false,
-      smooth: true,
-    },
-    nodes: {
-      color: {
-        border: 'transparent',
-        highlight: '#392396',
-        hover: {
-          border: 'transparent',
-          background: '#503d9d',
-        },
-      },
-      font: {
-        color: '#ffffff',
-        size: 22,
-      },
-      margin: {
-        top: 7,
-        left: 14,
-        right: 14,
-        bottom: 7,
-      },
-    },
-    layout: {
-      hierarchical: {
-        enabled: true,
-        levelSeparation: 485,
-        nodeSpacing: 50,
-        treeSpacing: 50,
-        blockShifting: false,
-        edgeMinimization: true,
-        parentCentralization: false,
-        direction: 'LR',
-        sortMethod: 'directed',
-      },
-    },
-    interaction: {
-      hover: true,
-      navigationButtons: false,
-      multiselect: false,
-      keyboard: {
-        enabled: false,
-      },
-      zoomView: !!showModelDetails,
-    },
-    physics: {
-      enabled: false,
-      hierarchicalRepulsion: { centralGravity: 0 },
-      minVelocity: 0.75,
-      solver: 'hierarchicalRepulsion',
-    },
+  const toggleAlerts = (name: AlertsType) => {
+    setAlerts((prevName: AlertsType) => {
+      if (prevName === name) {
+        return null;
+      }
+      return name;
+    });
+    setModelType(null);
   };
+
+  const toggleMonitored = useCallback(() => {
+    setMonitored(!monitored);
+  }, [monitored]);
 
   return (
     <>
-      <div className="flex items-center absolute mt-4 ml-4 z-20">
+      <div className="flex justify-between items-center absolute mt-4 ml-4 mr-20 z-20 w-2/3">
         <div className="flex items-center">
-          <div className="w-3 h-3 bg-source rounded-tooltip" />
-          <p className="text-sm font-medium ml-1 mr-4">Source node</p>
+          <button
+            type="button"
+            disabled={!showModelDetails}
+            title="Toggle Source Nodes"
+            onClick={() => toggleModelType('source')}
+            className={`flex items-center ml-1 mr-4 ${modelType === 'source' && 'active-tab'}`}
+          >
+            <div className="w-3 h-3 bg-source rounded-tooltip" />
+            <p className="text-sm font-medium ml-1">Source</p>
+          </button>
+          <button
+            type="button"
+            disabled={!showModelDetails}
+            title="Toggle Seed Nodes"
+            onClick={() => toggleModelType('seed')}
+            className={`flex items-center ml-1 mr-4 ${modelType === 'seed' && 'active-tab'}`}
+          >
+            <div className="w-3 h-3 bg-seed rounded-tooltip" />
+            <p className="text-sm font-medium ml-1">Seed</p>
+          </button>
+          <button
+            type="button"
+            disabled={!showModelDetails}
+            title="Toggle Model Nodes"
+            onClick={() => toggleModelType('model')}
+            className={`flex items-center ml-1 mr-4 ${modelType === 'model' && 'active-tab'}`}
+          >
+            <div className="w-3 h-3 bg-model rounded-tooltip" />
+            <p className="text-sm font-medium ml-1">Model</p>
+          </button>
+          <button
+            type="button"
+            disabled={!showModelDetails}
+            title="Toggle Model Nodes"
+            onClick={() => toggleAlerts('anomaly')}
+            className={`flex items-center ml-1 mr-4 ${alerts === 'anomaly' && 'active-tab'}`}
+          >
+            <div className="w-3 h-3 bg-red-600 rounded-full" />
+            <p className="text-sm font-medium ml-1">Anomaly</p>
+          </button>
+          <button
+            type="button"
+            disabled={!showModelDetails}
+            title="Toggle Model Nodes"
+            onClick={() => toggleAlerts('schema_change')}
+            className={`flex items-center ml-1 mr-4 ${alerts === 'schema_change' && 'active-tab'}`}
+          >
+            <div className="w-3 h-3 bg-yellow-300 rounded-full" />
+            <p className="text-sm font-medium ml-1">Schema Change</p>
+          </button>
         </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-seed rounded-tooltip" />
-          <p className="text-sm font-medium ml-1 mr-4">Seed node</p>
-        </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-model rounded-tooltip" />
-          <p className="text-sm font-medium ml-1 mr-4">Model node</p>
-        </div>
+        {showModelDetails && (
+          <div className="flex items-center mr-8">
+            <div className="flex items-center justify-center w-full">
+              <label htmlFor="toggleB" className="flex items-center cursor-pointer">
+                <div className="mr-3 text-gray-700 text-sm font-medium">
+                  Monitored
+                </div>
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    id="toggleB"
+                    className="sr-only sd"
+                    onChange={toggleMonitored}
+                  />
+                  <div className="block bg-gray-300 w-10 h-6 rounded-full" />
+                  <div className="dot absolute left-1 top-1 bg-primary w-4 h-4 rounded-full transition" />
+                </div>
+                <div className="ml-3 text-gray-700 text-sm font-medium">
+                  All Nodes
+                </div>
+              </label>
+            </div>
+          </div>
+        )}
       </div>
       <div
         className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-12
         gap-4 bg-white border-2 border-solid border-gray-200 rounded-lg h-full"
       >
-        <LineageGraph
-          data={graph}
-          events={events}
-          networkOptions={networkOptions}
-          overviewDataLoaded={overviewDataLoaded}
-          showModelDetails={showModelDetails}
-        />
+        <div className={showModelDetails ? 'col-span-8' : 'col-span-12'}>
+          {overviewDataLoaded && (
+            <FlowGraph
+              data={elements}
+              disableClick={!showModelDetails}
+              modelName={modelName}
+            />
+          )}
+        </div>
 
         {showModelDetails && <ModelDetails />}
       </div>
     </>
   );
-};
+}
 
 export default GraphView;

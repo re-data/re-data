@@ -79,7 +79,6 @@ const formatOverviewData = (
       const anomaly = JSON.parse(item.data) as Anomaly;
       anomaly.column_name = columnName;
       appendToMapKey(details.anomalies, columnName, anomaly);
-      // alertsChanges.push({ type: 'anomaly', model, value: anomaly });
     }
   });
   // loop through each table/model and sort by ascending order by

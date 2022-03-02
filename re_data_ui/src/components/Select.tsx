@@ -1,7 +1,7 @@
-import React, { memo } from 'react';
+import React, { ReactElement } from 'react';
 import Select from 'react-select';
 
-export type optionsProps = {
+interface optionsProps {
   value: string;
   label: string;
 }
@@ -13,10 +13,11 @@ export interface selectProps {
     handleChange: (option: optionsProps | null) => void;
 }
 
-const SelectInput = memo(
-  ({
+function SelectInput(params: selectProps): ReactElement {
+  const {
     options, placeholder, handleChange, value,
-  }: selectProps) => (
+  } = params;
+  return (
     <Select
       options={options}
       isClearable
@@ -25,7 +26,7 @@ const SelectInput = memo(
       onChange={handleChange}
       value={value}
     />
-  ),
-);
+  );
+}
 
 export default SelectInput;
