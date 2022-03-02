@@ -1,16 +1,14 @@
-import React, { useMemo, PropsWithChildren, ReactElement } from 'react';
+import React, { useMemo, ReactElement } from 'react';
 import { ITableSchema } from '../contexts/redataOverviewContext';
 import Table, { ColumnsProps } from './Table';
 
 export interface TableSchemaProps {
-  tableSchemas: ITableSchema[],
-  showTitle?: boolean
+  tableSchemas: ITableSchema[];
+  showTitle?: boolean;
 }
 
-const TableSchema: React.FC<TableSchemaProps> = (
-  props: PropsWithChildren<TableSchemaProps>,
-): ReactElement => {
-  const { tableSchemas, showTitle } = props;
+function TableSchema(params: TableSchemaProps): ReactElement {
+  const { tableSchemas, showTitle } = params;
   const data = tableSchemas as unknown as Record<string, unknown>[];
 
   const columns: ColumnsProps[] = useMemo(() => [
@@ -42,6 +40,6 @@ const TableSchema: React.FC<TableSchemaProps> = (
       </div>
     </>
   );
-};
+}
 
 export default TableSchema;

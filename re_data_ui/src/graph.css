@@ -1,0 +1,47 @@
+.layoutflow {
+  height: 93%;
+  position: relative;
+  width: 100%;
+  margin-top: 2.5rem;
+}
+  
+.controls {
+  display: none;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  box-shadow: 0 0 2px 1px rgb(0 0 0 / 8%);
+}
+
+.controls button {
+  align-items: center;
+  background: #fefefe;
+  border-right: 1px solid #eee;
+  box-sizing: content-box;
+  cursor: pointer;
+  display: flex;
+  height: 16px;
+  justify-content: center;
+  padding: 5px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 18px;
+}
+
+.controls svg {
+  height: 1rem;
+  width: 1rem;
+}
+
+/* https://reactflow.dev/docs/theming/ */
+.react-flow {
+  padding-top: 10px;
+}
+
+.sd:checked ~ .dot {
+  transform: translateX(100%);
+  background-color: #392396;
+}
