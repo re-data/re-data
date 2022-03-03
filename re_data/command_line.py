@@ -25,6 +25,7 @@ def add_options(options):
 def add_dbt_flags(command_list, flags):
     for key, value in flags.items():
         if value:
+            key = key.replace('_', '-')
             command_list.extend([f'--{key}', value])
     print(' '.join(command_list))
 
