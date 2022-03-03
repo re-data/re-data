@@ -150,38 +150,30 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
   }, []);
 
   return (
-    <>
-      <div
-        className="layoutFlow"
-        style={{
-          width: '100%',
-          marginTop: '2.5rem',
-        }}
-      >
-        <ReactFlowProvider>
-          <ReactFlow
-            elements={elements}
-            onLoad={onLoad}
-            snapToGrid
-            snapGrid={[15, 15]}
-            zoomOnScroll={false}
-            onPaneClick={onPaneClick}
-            onElementClick={(_: ReactMouseEvent, element: Node | Edge): void => {
-              if (!disableClick && isNode(element)) {
-                removeHighlightPath();
-                highlightPath(element, true);
-                setURLSearchParams({ model: element.data.id });
-              }
-            }}
-            onElementsRemove={onElementsRemove}
-            connectionLineType={ConnectionLineType.SmoothStep}
-            nodeTypes={nodeTypes}
-          >
-            <Controls />
-          </ReactFlow>
-        </ReactFlowProvider>
-      </div>
-    </>
+    <div className="layoutFlow">
+      <ReactFlowProvider>
+        <ReactFlow
+          elements={elements}
+          onLoad={onLoad}
+          snapToGrid
+          snapGrid={[15, 15]}
+          zoomOnScroll={false}
+          onPaneClick={onPaneClick}
+          onElementClick={(_: ReactMouseEvent, element: Node | Edge): void => {
+            if (!disableClick && isNode(element)) {
+              removeHighlightPath();
+              highlightPath(element, true);
+              setURLSearchParams({ model: element.data.id });
+            }
+          }}
+          onElementsRemove={onElementsRemove}
+          connectionLineType={ConnectionLineType.SmoothStep}
+          nodeTypes={nodeTypes}
+        >
+          <Controls />
+        </ReactFlow>
+      </ReactFlowProvider>
+    </div>
   );
 }
 
