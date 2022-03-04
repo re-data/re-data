@@ -22,6 +22,14 @@ const nodeTypes = {
   'custom-node': CustomNode,
 };
 
+const findNodeInElement = (modelName: string | null, elements: Elements): Node | null => {
+  if (modelName) {
+    const node = elements.find((element) => isNode(element) && element.data.id === modelName);
+    return node as Node;
+  }
+  return null;
+};
+
 function FlowGraph(params: FlowGraphProps): ReactElement {
   const { data, disableClick = false, modelName = null } = params;
   const instanceRef = useRef<OnLoadParams | null>(null);
@@ -29,6 +37,9 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
   const res = getLayoutElements(data);
   const [elements, setElements] = useState<Elements>(res);
+
+  const [searchParams] = useSearchParams();
+  const model = searchParams.get('model') as string;
 
   useEffect(() => {
     setElements(res);
@@ -38,30 +49,39 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
     setElements((els) => removeElements(elementsToRemove, els));
   };
 
-  const removeHighlightPath = (): void => {
-    const values = elements?.map((elem) => {
-      const element = elem;
-      if (isNode(element)) {
-        element.style = {
-          ...element.style,
-          opacity: 1,
-        };
-      }
-      if (isEdge(element)) {
-        element.animated = false;
-      }
-      return element;
-    });
+  const resetHighlight = (): void => {
+    const instanceElement = instanceRef?.current?.getElements();
+    if (instanceElement) {
+      const values = instanceElement.map((elem) => {
+        const element = elem;
+        if (isNode(element)) {
+          element.style = {
+            ...element.style,
+            opacity: 1,
+          };
+          element.data = {
+            ...element.data,
+            active: false,
+          };
+        }
+        if (isEdge(element)) {
+          element.animated = false;
+        }
+        return element;
+      });
 
-    setElements(values);
+      setElements(values);
+    }
   };
 
   const highlightPath = (node: Node, selection: boolean): void => {
-    if (node && elements) {
-      const incomerIds = new Set([...getIncomers(node, elements).map((i) => i.id)]);
-      const outgoerIds = new Set([...getOutgoers(node, elements).map((o) => o.id)]);
+    const instanceElement = instanceRef?.current?.getElements();
 
-      setElements((prevElements) => prevElements?.map((elem) => {
+    if (node && instanceElement) {
+      const incomerIds = new Set([...getIncomers(node, instanceElement).map((i) => i.id)]);
+      const outgoerIds = new Set([...getOutgoers(node, instanceElement).map((o) => o.id)]);
+
+      const values = instanceElement?.map((elem) => {
         const element = elem;
 
         if (isNode(element)) {
@@ -72,6 +92,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
           if (node.id === element.id) {
             element.style = {
               ...element.style,
+              opacity: highlight ? 1 : 0.25,
             };
             element.data = {
               ...element.data,
@@ -102,13 +123,22 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
         }
 
         return element;
-      }));
+      });
+      setElements(values);
     }
   };
 
   const onLoad = (reactFlowInstance: OnLoadParams<unknown> | null) => {
     instanceRef.current = reactFlowInstance;
     reactFlowInstance?.fitView();
+
+    if (model) {
+      const node = findNodeInElement(model, elements);
+      if (node) {
+        resetHighlight();
+        highlightPath(node, true);
+      }
+    }
   };
 
   useEffect(() => {
@@ -125,27 +155,10 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
   const onPaneClick = useCallback(() => {
     if (!disableClick) {
-      removeHighlightPath();
+      resetHighlight();
       setURLSearchParams({});
-      const values = elements?.map((elem) => {
-        const element = elem;
-        if (isNode(element)) {
-          element.style = {
-            ...element.style,
-            opacity: 1,
-          };
-          element.data = {
-            ...element.data,
-            active: false,
-          };
-        }
-        if (isEdge(element)) {
-          element.animated = false;
-        }
-        return element;
-      });
 
-      setElements(values);
+      resetHighlight();
     }
   }, []);
 
@@ -161,7 +174,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
           onPaneClick={onPaneClick}
           onElementClick={(_: ReactMouseEvent, element: Node | Edge): void => {
             if (!disableClick && isNode(element)) {
-              removeHighlightPath();
+              resetHighlight();
               highlightPath(element, true);
               setURLSearchParams({ model: element.data.id });
             }

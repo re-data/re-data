@@ -7,7 +7,7 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
   const navigate = useNavigate();
   const {
     data: {
-      label, otherName, active, id,
+      label, otherName, active = false, id,
       borderColor, anomalies, schemaChanges,
     },
   } = props;
