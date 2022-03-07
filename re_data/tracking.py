@@ -83,8 +83,6 @@ def anonymous_tracking(fun):
             'interval': kwargs.get('interval'),
             'profile': kwargs.get('profile'),
             'target': kwargs.get('target'),
-            'project_dir': kwargs.get('project_dir'),
-            'profiles_dir': kwargs.get('profiles_dir'),
         })
 
         event = "command_call"
