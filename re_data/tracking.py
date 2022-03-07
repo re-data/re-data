@@ -76,24 +76,37 @@ def anonymous_tracking(fun):
     @wraps(fun)
     def decorated(*args, **kwargs):
         ctx = anonymous_tracker.get_environment()
+        ctx.update({
+            'command': "{}".format(fun.__name__),
+            'start_date': kwargs.get('start_date'),
+            'end_date': kwargs.get('end_date'),
+            'interval': kwargs.get('interval'),
+            'profile': kwargs.get('profile'),
+            'target': kwargs.get('target'),
+            'project_dir': kwargs.get('project_dir'),
+            'profiles_dir': kwargs.get('profiles_dir'),
+        })
+
+        event = "command_call"
 
         try:
             if anonymous_tracker:
                 ctx.update({"status": "start"})
-                anonymous_tracker.track("{}".format(fun.__name__), ctx)
+                anonymous_tracker.track(event, ctx)
 
             fun(*args, **kwargs)
 
             if anonymous_tracker:
                 ctx.update({"status": "success"})
-                anonymous_tracker.track("{}".format(fun.__name__), ctx)
+                anonymous_tracker.track(event, ctx)
         except Exception as e:
             if anonymous_tracker:
-                
-                ctx.update({"error": str(e)})
-                ctx.update({"status": "exception"})
+                ctx.update({
+                    "error": str(type(e)),
+                    "status": "exception"
+                })
 
-                anonymous_tracker.track("{}".format(fun.__name__), ctx)
+                anonymous_tracker.track("command_exception", ctx)
             raise e
 
     return decorated
