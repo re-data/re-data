@@ -63,10 +63,10 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
             ...element.style,
             opacity: 1,
           },
-          data: {
-            ...element.data,
-            active: false,
-          },
+          // data: {
+          //   ...element.data,
+          //   active: false,
+          // },
         });
       }
       if (isEdge(element)) {
@@ -193,7 +193,6 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
           onPaneClick={onPaneClick}
           onElementClick={(_: ReactMouseEvent, element: Node | Edge): void => {
             if (!disableClick && isNode(element)) {
-              console.log('okay clicked');
               resetHighlight();
               highlightPath(element, false);
               setURLSearchParams({ model: element.data.id });

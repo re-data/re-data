@@ -26,12 +26,12 @@
     opacity: 1;
 }
 
-.node  {
+.node {
     padding: 4px 12px 7px;
     /* border-radius: 4px;
     overflow: hidden; */
-    /* display: flex;
-    align-items: center; */
+    display: flex;
+    align-items: center;
 }
 
 .schema-dot {

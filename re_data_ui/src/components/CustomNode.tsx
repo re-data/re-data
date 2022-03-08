@@ -18,10 +18,7 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
     border: `2px solid ${borderColor}`,
   };
 
-  const details = () => {
-    console.log('Unable');
-    navigate(`/tables?model=${id}`);
-  };
+  const details = () => navigate(`/tables?model=${id}`);
 
   return (
     <div
@@ -30,7 +27,7 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
     >
       <div className="node">
         <Handle type="target" position={Position.Left} />
-        <div className="border border-red-600">
+        <div>
           <div className="label">{label}</div>
           <div className="subtitles">
             {otherName}
@@ -42,9 +39,7 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
             {pathname === '/tables' ? null : (
               <button
                 type="button"
-                onClick={() => console.log('here')}
-                // onClick={details}
-                className="border border-red-600 flex items-center"
+                onClick={details}
                 style={{ height: '35px' }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2 pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
