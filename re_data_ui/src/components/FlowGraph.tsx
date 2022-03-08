@@ -41,6 +41,9 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
   const [searchParams] = useSearchParams();
   const model = searchParams.get('model') as string;
+  const tab = searchParams.get('tab') as string;
+
+  console.log('tab => ', tab);
 
   useEffect(() => {
     setElements(res);
@@ -145,7 +148,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
         highlightPath(node, !!modelName);
       }
     }
-  }, [model, modelName]);
+  }, [model, modelName, tab]);
 
   useEffect(() => {
     if (instanceRef.current && modelName) {
@@ -183,6 +186,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
   return (
     <div className="layoutFlow">
+      {console.log('elements => ', elements)}
       <ReactFlowProvider>
         <ReactFlow
           elements={elements}

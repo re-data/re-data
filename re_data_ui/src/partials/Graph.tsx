@@ -207,12 +207,12 @@ const generateGraph = (
   return elements;
 };
 
-export interface GraphViewProps {
+export interface GraphPartialProps {
   modelName?: string | null;
   showModelDetails?: boolean;
 }
 
-function GraphView(params: GraphViewProps): ReactElement {
+function GraphPartial(params: GraphPartialProps): ReactElement {
   const {
     modelName = null,
     showModelDetails = true,
@@ -356,4 +356,4 @@ function GraphView(params: GraphViewProps): ReactElement {
   );
 }
 
-export default GraphView;
+export default GraphPartial;
