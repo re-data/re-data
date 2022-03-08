@@ -40,10 +40,9 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
   const [elements, setElements] = useState<Elements>(res);
 
   const [searchParams] = useSearchParams();
+
   const model = searchParams.get('model') as string;
   const tab = searchParams.get('tab') as string;
-
-  console.log('tab => ', tab);
 
   useEffect(() => {
     setElements(res);
@@ -132,7 +131,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
   const fitElements = (): void => {
     setTimeout(() => {
       instanceRef?.current?.fitView();
-    }, 1);
+    }, 100);
   };
 
   const onLoad = (reactFlowInstance: OnLoadParams<unknown> | null) => {
@@ -151,11 +150,10 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
   }, [model, modelName, tab]);
 
   useEffect(() => {
-    if (instanceRef.current && modelName) {
-      // instanceRef.current.fitView();
+    if (instanceRef.current && (modelName || model || tab)) {
       fitElements();
     }
-  }, [instanceRef, modelName]);
+  }, [instanceRef, modelName, model, tab]);
 
   // useEffect(() => {
   //   if (instanceRef.current) {
@@ -186,7 +184,6 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
   return (
     <div className="layoutFlow">
-      {console.log('elements => ', elements)}
       <ReactFlowProvider>
         <ReactFlow
           elements={elements}
