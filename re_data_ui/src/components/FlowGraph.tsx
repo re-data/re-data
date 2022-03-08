@@ -7,7 +7,7 @@ import ReactFlow, {
   isEdge, isNode, Node, OnLoadParams, ReactFlowProvider,
   removeElements,
 } from 'react-flow-renderer';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import '../graph.css';
 import { getLayoutElements } from '../utils';
 import CustomNode from './CustomNode';
@@ -34,8 +34,9 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
   const { data, disableClick = false, modelName = null } = params;
   const instanceRef = useRef<OnLoadParams | null>(null);
   const [, setURLSearchParams] = useSearchParams();
+  const { pathname } = useLocation();
 
-  const res = getLayoutElements(data);
+  const { res, elementMapping } = getLayoutElements(data);
   const [elements, setElements] = useState<Elements>(res);
 
   const [searchParams] = useSearchParams();
@@ -50,106 +51,112 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
   };
 
   const resetHighlight = (): void => {
-    const instanceElement = instanceRef?.current?.getElements();
-    if (instanceElement) {
-      const values = instanceElement.map((elem) => {
-        const element = elem;
-        if (isNode(element)) {
-          element.style = {
+    const values: Elements = [];
+
+    for (let index = 0; index < elements.length; index++) {
+      const element = elements[index];
+
+      if (isNode(element)) {
+        values.push({
+          ...element,
+          style: {
             ...element.style,
             opacity: 1,
-          };
-          element.data = {
+          },
+          data: {
             ...element.data,
             active: false,
-          };
-        }
-        if (isEdge(element)) {
-          element.animated = false;
-        }
-        return element;
-      });
-
-      setElements(values);
+          },
+        });
+      }
+      if (isEdge(element)) {
+        values.push({
+          ...element,
+          animated: false,
+        });
+      }
     }
+
+    setElements(values);
   };
 
-  const highlightPath = (node: Node, selection: boolean): void => {
-    const instanceElement = instanceRef?.current?.getElements();
+  const highlightPath = (node: Node, check: boolean): void => {
+    const checkElements = check ? res : elements;
 
-    if (node && instanceElement) {
-      const incomerIds = new Set([...getIncomers(node, instanceElement).map((i) => i.id)]);
-      const outgoerIds = new Set([...getOutgoers(node, instanceElement).map((o) => o.id)]);
+    const incomerIds = new Set([...getIncomers(node, checkElements).map((i) => i.id)]);
+    const outgoerIds = new Set([...getOutgoers(node, checkElements).map((o) => o.id)]);
 
-      const values = instanceElement?.map((elem) => {
-        const element = elem;
+    const values: Elements = [];
+    for (let index = 0; index < checkElements.length; index++) {
+      const element = checkElements[index];
+      let highlight = false;
+      if (isNode(element)) {
+        highlight = element.id === node.id
+          || incomerIds.has(element.id)
+          || outgoerIds.has(element.id);
+      } else {
+        highlight = element.source === node.id || element.target === node.id;
+        const animated = incomerIds.has(element.source)
+        && (incomerIds.has(element.target) || node.id === element.target);
 
-        if (isNode(element)) {
-          const highlight = element.id === node.id
-              || incomerIds.has(element.id)
-            || outgoerIds.has(element.id);
+        highlight = highlight || animated;
+      }
 
-          if (node.id === element.id) {
-            element.style = {
-              ...element.style,
-              opacity: highlight ? 1 : 0.25,
-            };
-            element.data = {
-              ...element.data,
-              active: true,
-            };
-          } else {
-            element.style = {
-              ...element.style,
-              opacity: highlight ? 1 : 0.25,
-            };
-            element.data = {
-              ...element.data,
-              active: false,
-            };
-          }
-        }
-
-        if (isEdge(element)) {
-          const highlight = element.source === node.id || element.target === node.id;
-          const animated = incomerIds.has(element.source)
-              && (incomerIds.has(element.target) || node.id === element.target);
-
-          if (selection && (animated || highlight)) {
-            element.animated = true;
-          } else {
-            element.animated = false;
-          }
-        }
-
-        return element;
-      });
-      setElements(values);
+      if (isNode(element)) {
+        values.push({
+          ...element,
+          style: {
+            ...element.style,
+            opacity: highlight ? 1 : 0.25,
+          },
+          data: {
+            ...element.data,
+            active: element.id === node.id,
+          },
+        });
+      }
+      if (isEdge(element)) {
+        values.push({
+          ...element,
+          animated: highlight,
+        });
+      }
     }
+
+    setElements(values);
+  };
+
+  const fitElements = (): void => {
+    setTimeout(() => {
+      instanceRef?.current?.fitView();
+    }, 1);
   };
 
   const onLoad = (reactFlowInstance: OnLoadParams<unknown> | null) => {
     instanceRef.current = reactFlowInstance;
-    reactFlowInstance?.fitView();
-
-    if (model) {
-      const node = findNodeInElement(model, elements);
-      if (node) {
-        resetHighlight();
-        highlightPath(node, true);
-      }
-    }
+    fitElements();
   };
 
   useEffect(() => {
+    if (model) {
+      const node = findNodeInElement(model, res);
+      if (node) {
+        resetHighlight(); // new changes to the graph
+        highlightPath(node, !!modelName);
+      }
+    }
+  }, [model, modelName]);
+
+  useEffect(() => {
     if (instanceRef.current && modelName) {
-      instanceRef.current.fitView();
+      // instanceRef.current.fitView();
+      fitElements();
     }
   }, [instanceRef, modelName]);
 
   // useEffect(() => {
   //   if (instanceRef.current) {
-  //     instanceRef.current.fitView();
+  //     fitElements();
   //   }
   // }, [instanceRef, elements]);
 
@@ -157,10 +164,22 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
     if (!disableClick) {
       resetHighlight();
       setURLSearchParams({});
-
-      resetHighlight();
     }
   }, []);
+
+  const onNodeDragStop = (_: ReactMouseEvent, node: Node) => {
+    const nodePosition = elementMapping[node.data?.id];
+    const values: Elements = [
+      ...elements,
+    ];
+    values[nodePosition] = node;
+
+    setElements(values);
+  };
+
+  if (pathname === '/tables' && !modelName) {
+    return <div className="layoutFlow" />;
+  }
 
   return (
     <div className="layoutFlow">
@@ -175,10 +194,11 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
           onElementClick={(_: ReactMouseEvent, element: Node | Edge): void => {
             if (!disableClick && isNode(element)) {
               resetHighlight();
-              highlightPath(element, true);
+              highlightPath(element, false);
               setURLSearchParams({ model: element.data.id });
             }
           }}
+          onNodeDragStop={onNodeDragStop}
           onElementsRemove={onElementsRemove}
           connectionLineType={ConnectionLineType.SmoothStep}
           nodeTypes={nodeTypes}

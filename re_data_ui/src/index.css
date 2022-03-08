@@ -80,9 +80,10 @@ select {
 }
 
 .sticky-nav {
-    @apply z-10 sticky bg-gray-100 py-1 pl-2 flex;
+    @apply sticky bg-gray-100 py-1 pl-2 flex;
     height: 60px;
     top: -1.5rem;
+    z-index: 30;
 }
 
 .css-26l3qy-menu {
