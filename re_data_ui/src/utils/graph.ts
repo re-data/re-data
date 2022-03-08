@@ -7,17 +7,18 @@ import { DbtNode, DbtSource } from '../contexts/redataOverviewContext';
 const DEFAULT_WIDTH = 172;
 const DEFAULT_HEIGHT = 36;
 
-const dagreGraph = new dagre.graphlib.Graph();
-dagreGraph.setDefaultEdgeLabel(() => ({}));
-
 type getLayoutElementsRet = {
   res: Elements,
   elementMapping: Record<string, number>,
 };
 
 const getLayoutElements = (elements: Elements, direction = 'LR'): getLayoutElementsRet => {
-  const isHorizontal = direction === 'LR';
+  const dagreGraph = new dagre.graphlib.Graph();
+  dagreGraph.setDefaultEdgeLabel(() => ({}));
+
   dagreGraph.setGraph({ rankdir: direction });
+
+  const isHorizontal = direction === 'LR';
 
   for (let index = 0; index < elements.length; index++) {
     const element: Node | Edge = elements[index];

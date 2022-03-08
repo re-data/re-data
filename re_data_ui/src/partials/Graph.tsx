@@ -204,6 +204,7 @@ const generateGraph = (
       elements.push(edge);
     }
   }
+
   return elements;
 };
 
