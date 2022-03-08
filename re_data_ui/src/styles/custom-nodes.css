@@ -28,10 +28,10 @@
 
 .node  {
     padding: 4px 12px 7px;
-    border-radius: 4;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
+    /* border-radius: 4px;
+    overflow: hidden; */
+    /* display: flex;
+    align-items: center; */
 }
 
 .schema-dot {

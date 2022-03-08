@@ -193,6 +193,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
           onPaneClick={onPaneClick}
           onElementClick={(_: ReactMouseEvent, element: Node | Edge): void => {
             if (!disableClick && isNode(element)) {
+              console.log('okay clicked');
               resetHighlight();
               highlightPath(element, false);
               setURLSearchParams({ model: element.data.id });
