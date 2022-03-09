@@ -131,7 +131,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
   const fitElements = (): void => {
     setTimeout(() => {
       instanceRef?.current?.fitView();
-    }, 1000);
+    }, 1);
   };
 
   const onLoad = (reactFlowInstance: OnLoadParams<unknown> | null) => {
