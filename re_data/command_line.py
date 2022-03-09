@@ -30,6 +30,18 @@ def add_dbt_flags(command_list, flags):
             command_list.extend([f'--{key}', value])
     print(' '.join(command_list))
 
+def get_target_paths(kwargs, re_data_target_dir=None):
+    project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
+    partial = Project.partial_load(project_root)
+    dbt_target_path = os.path.abspath(partial.project_dict['target-path'])
+
+    if re_data_target_dir:
+        re_data_target_path = os.path.abspath(re_data_target_dir)
+    else:
+        re_data_target_path = os.path.join(dbt_target_path, 're_data')
+
+    return dbt_target_path, re_data_target_path
+
 
 dbt_profile_option = click.option(
     '--profile',
@@ -233,17 +245,8 @@ def notify():
 def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
-    
-    project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
-    partial = Project.partial_load(project_root)
-    dbt_target_path = os.path.abspath(partial.project_dict['target-path'])
-    overview_path = os.path.join(dbt_target_path, 're_data', 'overview.json')
-
-    if re_data_target_dir:
-        re_data_target_path = os.path.abspath(re_data_target_dir)
-        overview_path = os.path.join(re_data_target_path, 'overview.json')
-    else:
-        re_data_target_path = os.path.join(dbt_target_path, 're_data')
+    dbt_target_path, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
+    overview_path = os.path.join(re_data_target_path, 'overview.json')
 
     args = {
         'start_date': start_date,
@@ -285,14 +288,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
 @overview.command()
 @add_options([dbt_project_dir_option])
 def serve(port, re_data_target_dir, **kwargs):
-    project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
-    partial = Project.partial_load(project_root)
-    dbt_target_path = os.path.abspath(partial.project_dict['target-path'])
-    if re_data_target_dir:
-        re_data_target_path = os.path.abspath(re_data_target_dir)
-        serve_dir = re_data_target_path
-    else:
-        serve_dir = os.path.join(dbt_target_path, 're_data')
+    _, serve_dir = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     os.chdir(serve_dir)
 
     address = '0.0.0.0'
@@ -353,13 +349,9 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
     start_date = str(start_date.date())
     end_date = str(end_date.date())
 
-    project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
-    partial = Project.partial_load(project_root)
-    dbt_target_path = os.path.abspath(partial.project_dict['target-path'])
-    alerts_path = os.path.join(dbt_target_path, 're_data', 'alerts.json')
-    if re_data_target_dir:
-        re_data_target_path = os.path.abspath(re_data_target_dir)
-        alerts_path = os.path.join(re_data_target_path, 'alerts.json')
+    _, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
+    alerts_path = os.path.join(re_data_target_path, 'alerts.json')
+    
     args = {
         'start_date': start_date,
         'end_date': end_date,
