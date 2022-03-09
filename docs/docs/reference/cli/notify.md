@@ -22,3 +22,7 @@ Supported arguments:
 - end-date (default: today - 7 days) - end date of the period for which you want to generate alerts
 - webhook-url - [incoming webhook](https://api.slack.com/messaging/webhooks) gotten from a slack app.
 - subtitle (optional) - extra markdown text passed to the generated message. Often used to add some more context to the message generated.
+- profile - Which profile to load. Overrides setting in dbt_project.yml.
+- target - Which target to load for the given profile.
+- project-dir - Which directory to look in for the dbt_project.yml file. Default is the current working directory and its parents.
+- profiles-dir - Which directory to look in for the profiles.yml file. Default = ~/.dbt.
