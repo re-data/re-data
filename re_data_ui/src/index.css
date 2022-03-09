@@ -75,7 +75,7 @@ select {
     }
 }
 
-li.active-tab {
+.active-tab {
     border-bottom: 3px solid rgba(57,35,150, var(--tw-bg-opacity));
 }
 
