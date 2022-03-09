@@ -75,17 +75,17 @@ def anonymous_tracking(fun):
 
     @wraps(fun)
     def decorated(*args, **kwargs):
-        ctx = anonymous_tracker.get_environment()
-        ctx.update({
-            'command': "{}".format(fun.__name__),
-            'start_date': kwargs.get('start_date'),
-            'end_date': kwargs.get('end_date'),
-            'interval': kwargs.get('interval'),
-            'profile': kwargs.get('profile'),
-            'target': kwargs.get('target'),
-        })
-
-        event = "command_call"
+        if anonymous_tracker:
+            ctx = anonymous_tracker.get_environment()
+            ctx.update({
+                'command': "{}".format(fun.__name__),
+                'start_date': kwargs.get('start_date'),
+                'end_date': kwargs.get('end_date'),
+                'interval': kwargs.get('interval'),
+                'profile': kwargs.get('profile'),
+                'target': kwargs.get('target'),
+            })
+            event = "command_call"
 
         try:
             if anonymous_tracker:
