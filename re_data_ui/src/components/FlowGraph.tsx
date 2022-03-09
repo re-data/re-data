@@ -67,10 +67,6 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
             ...element.style,
             opacity: 1,
           },
-          // data: {
-          //   ...element.data,
-          //   active: false,
-          // },
         });
       }
       if (isEdge(element)) {
@@ -162,12 +158,6 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
     }
   }, [instanceRef, modelName, model, tab]);
 
-  // useEffect(() => {
-  //   if (instanceRef.current) {
-  //     fitElements();
-  //   }
-  // }, [instanceRef, elements]);
-
   const onPaneClick = useCallback(() => {
     if (!disableClick) {
       resetHighlight();
@@ -191,7 +181,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
   return (
     <div className="layoutFlow">
-      {loading ? (<span>loading...</span>) : (
+      {loading ? null : (
         <ReactFlowProvider>
           <ReactFlow
             elements={elements}
