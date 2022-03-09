@@ -28,6 +28,12 @@ code {
     background: #392396;
 }
 
+.navlink.active.disabled {
+    pointer-events: none;
+    color: currentColor;
+    cursor: not-allowed;
+}
+
 .details-cell {
     color: #1d39c4;
     background: #f0f5ff;

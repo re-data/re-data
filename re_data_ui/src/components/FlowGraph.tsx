@@ -41,6 +41,8 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
   const [searchParams] = useSearchParams();
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const model = searchParams.get('model') as string;
   const tab = searchParams.get('tab') as string;
 
@@ -132,6 +134,9 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
     setTimeout(() => {
       instanceRef?.current?.fitView();
     }, 1);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
   };
 
   const onLoad = (reactFlowInstance: OnLoadParams<unknown> | null) => {
@@ -151,6 +156,8 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
   useEffect(() => {
     if (instanceRef.current && (modelName || model || tab)) {
+      setLoading(true);
+
       fitElements();
     }
   }, [instanceRef, modelName, model, tab]);
@@ -184,29 +191,32 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
   return (
     <div className="layoutFlow">
-      <ReactFlowProvider>
-        <ReactFlow
-          elements={elements}
-          onLoad={onLoad}
-          snapToGrid
-          snapGrid={[15, 15]}
-          zoomOnScroll={false}
-          onPaneClick={onPaneClick}
-          onElementClick={(_: ReactMouseEvent, element: Node | Edge): void => {
-            if (!disableClick && isNode(element)) {
-              resetHighlight();
-              highlightPath(element, false);
-              setURLSearchParams({ model: element.data.id });
-            }
-          }}
-          onNodeDragStop={onNodeDragStop}
-          onElementsRemove={onElementsRemove}
-          connectionLineType={ConnectionLineType.SmoothStep}
-          nodeTypes={nodeTypes}
-        >
-          <Controls />
-        </ReactFlow>
-      </ReactFlowProvider>
+      {loading ? (<span>loading...</span>) : (
+        <ReactFlowProvider>
+          <ReactFlow
+            elements={elements}
+            onLoad={onLoad}
+            snapToGrid
+            snapGrid={[15, 15]}
+            zoomOnScroll={false}
+            onPaneClick={onPaneClick}
+            onElementClick={(_: ReactMouseEvent, element: Node | Edge): void => {
+              if (!disableClick && isNode(element)) {
+                resetHighlight();
+                highlightPath(element, false);
+                setURLSearchParams({ model: element.data.id });
+              }
+            }}
+            onNodeDragStop={onNodeDragStop}
+            onElementsRemove={onElementsRemove}
+            connectionLineType={ConnectionLineType.SmoothStep}
+            nodeTypes={nodeTypes}
+          >
+            <Controls />
+          </ReactFlow>
+        </ReactFlowProvider>
+      )}
+
     </div>
   );
 }
