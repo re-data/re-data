@@ -108,7 +108,7 @@ const Tables: React.FC = (): ReactElement => {
                 className={`mr-4 ${activeTab === 'graph' && 'active-tab'}`}
               >
                 <button type="button" onClick={() => handleScroll('graph')}>
-                  Graph
+                  Lineage
                 </button>
               </li>
               <li

@@ -50,7 +50,7 @@ const Sidebar: React.FC = (): ReactElement => (
           className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
         >
           <BiNetworkChart size="1.25em" />
-          <span>Graph</span>
+          <span>Lineage</span>
         </NavLink>
         <NavLink
           to="tests"
