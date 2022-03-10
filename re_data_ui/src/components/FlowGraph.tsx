@@ -132,7 +132,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
     }, 1);
     setTimeout(() => {
       setLoading(false);
-    }, 1500);
+    }, 1000);
   };
 
   const onLoad = (reactFlowInstance: OnLoadParams<unknown> | null) => {
@@ -151,12 +151,12 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
   }, [model, modelName, tab]);
 
   useEffect(() => {
-    if (instanceRef.current && (modelName || model || tab)) {
+    if (instanceRef.current && (modelName || tab)) {
       setLoading(true);
 
       fitElements();
     }
-  }, [instanceRef, modelName, model, tab]);
+  }, [instanceRef, modelName, tab]);
 
   const onPaneClick = useCallback(() => {
     if (!disableClick) {
