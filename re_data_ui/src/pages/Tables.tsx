@@ -135,7 +135,7 @@ const Tables: React.FC = (): ReactElement => {
           </section>
           <section id="metrics" className="pb-4 pt-16 -mt-16">
             <div className="bg-white rounded-md px-3 py-4">
-              <h3 className="mb-3 text-md font-medium">Metrics</h3>
+              <h3 className="mb-3 text-md font-medium">All metrics</h3>
               <div className="outlet">
                 <MetricCharts
                   modelDetails={modelDetails}
