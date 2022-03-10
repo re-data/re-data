@@ -3,7 +3,7 @@ sidebar_position: 6
 ---
 
 
-# Anonymous usage
+# Anonymous data collection
 
 In order to catch problems early, understand how users are using `re_data` and improve our product `re_data` captures anonymous information about command-line usage. We track only the most important information and don't track any table names, metric names, etc. Here are a sample requests we are getting to our systems.
 
