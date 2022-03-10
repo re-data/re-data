@@ -62,7 +62,7 @@ const Sidebar: React.FC = (): ReactElement => (
 
         <NavLink
           to="tables"
-          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+          className={({ isActive }) => (isActive ? 'navlink active disabled' : 'navlink')}
         >
           <VscTable size="1.25em" />
           <span>Tables</span>
