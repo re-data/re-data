@@ -297,7 +297,7 @@ function GraphView(params: GraphViewProps): ReactElement {
             onClick={() => toggleAlerts('anomaly')}
             className={`flex items-center ml-1 mr-4 ${alerts === 'anomaly' && 'active-tab'}`}
           >
-            <div className="w-3 h-3 bg-red-600 rounded-full" />
+            <div className="w-3 h-3 bg-red-500 rounded-full" />
             <p className="text-sm font-medium ml-1">Anomaly</p>
           </button>
           <button
