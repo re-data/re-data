@@ -204,15 +204,16 @@ const generateGraph = (
       elements.push(edge);
     }
   }
+
   return elements;
 };
 
-export interface GraphViewProps {
+export interface GraphPartialProps {
   modelName?: string | null;
   showModelDetails?: boolean;
 }
 
-function GraphView(params: GraphViewProps): ReactElement {
+function GraphPartial(params: GraphPartialProps): ReactElement {
   const {
     modelName = null,
     showModelDetails = true,
@@ -297,7 +298,7 @@ function GraphView(params: GraphViewProps): ReactElement {
             onClick={() => toggleAlerts('anomaly')}
             className={`flex items-center ml-1 mr-4 ${alerts === 'anomaly' && 'active-tab'}`}
           >
-            <div className="w-3 h-3 bg-red-600 rounded-full" />
+            <div className="w-3 h-3 bg-red-500 rounded-full" />
             <p className="text-sm font-medium ml-1">Anomaly</p>
           </button>
           <button
@@ -356,4 +357,4 @@ function GraphView(params: GraphViewProps): ReactElement {
   );
 }
 
-export default GraphView;
+export default GraphPartial;
