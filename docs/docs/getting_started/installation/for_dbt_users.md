@@ -109,6 +109,4 @@ re_data overview generate
 re_data overview serve
 ```
 
-More detailed instrutions on running re_data are described on the toy_shop example in our tutorial.
-
-Follow them - **[here 😊](/reference/tests/history.md)** 
+More detailed instrutions on running re_data are described on the toy_shop **[example toyshop tutorial 😊]getting_started/toy_shop/toy_shop_data)** 
