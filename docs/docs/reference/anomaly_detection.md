@@ -10,7 +10,13 @@ sidebar_position: 1
 >
 > -- Wikipedia
 
-re_data supports three types on anomaly detection for monitoring data.
+re_data supports three types on anomaly detection for monitoring data. There is no one-size-fits-all choice for anomaly dectection. Usually it depends on the nature of your dataset, so it's worth exploring the methods available.
+A good rule of thumb when choosing a method is:
+- When the data is normally distributed and the sample size is substantial, use Z Score.
+- When the sample size of the data is small or the data is not normally distributed, use Modified Z Score.
+- Boxplot helps characterize variation in many different ways. This is a good measure to use when you need a method that considers robust indication of variation and doesn't emphasize high or low values.
+
+
 
 ### Z Score
 - In a statistical distribution, Z-score tells you how far is a given data point from the rest of the crowd. Technically speaking, Z-score measures how many standard deviations away a given observation is from the mean   
