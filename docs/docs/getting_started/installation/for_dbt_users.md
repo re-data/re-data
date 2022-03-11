@@ -96,9 +96,9 @@ re_data python library should be installed in the same python environment where 
 ## python package functionality
 
 Python package add enabled you to use this functionality:
- - **[re_data overview UI](/reference/models.md)** - for geneating & displaying re_data UI
- - **[re_data notify](/reference/metrics/overview_metric.md)** - for notifying external services about alerts (currently Slack)
- - **[re_data run](/reference/metrics/overview_metric.md)** - for easily backfilling re_data dbt data
+ - **[re_data overview UI](/reference/cli/overview.md)** - for geneating & displaying re_data UI
+ - **[re_data notify](reference/cli/notify.md)** - for notifying external services about alerts (currently Slack)
+ - **[re_data run](reference/cli/run.md)** - for easily backfilling re_data dbt data
 
 ## Generate & Serve UI
 
