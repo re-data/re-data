@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Installation for starters
+# Quickstart - new to dbt
 
 You are not using dbt in your company but would like to try to re_data.
 
@@ -18,7 +18,7 @@ For the new users we recommend starting with installing re_data package in your 
 pip install re_data
 ```
 
-re_data includes dbt-core in dependencies so after this step you will already have it installed in your system. But in order to use dbt for your specific db you need to install dbt-postgres, dbt-snowflake, dbt-redshift, dbt-bigquery python package.
+re_data includes dbt-core in dependencies so after this step you will already have it installed in your system. But in order to use dbt for your specific db you need to install dbt-postgres, dbt-snowflake, dbt-redshift, dbt-bigquery python package depending on what data warehouse you are planning to use.
 
 ## Init your dbt project
 
@@ -47,7 +47,7 @@ project_name:
       threads: 4
 ```
 
-More details on how to set up a profile file for your DB can be found in [dbt docs](https://docs.getdbt.com/dbt-cli/configure-your-profile)
+More details on how to set up a profile file for your DB can be found in [dbt profile docs](https://docs.getdbt.com/reference/profiles.yml)
 
 ## Adding tables to your dbt project
 
@@ -87,4 +87,6 @@ sources:
 
 After creating this configuration, you should be ready to compute re_data models containing metrics & anomalies of your tables. 
 
-We still recommend to follow introduction for **[dbt users](getting_started/toy_shop/toy_shop_data)** and our **[example toyshop tutorial 😊](getting_started/toy_shop/toy_shop_data)** for more details on 
+## Learning more
+
+We still recommend to follow introduction for **[dbt users](getting_started/installation/for_dbt_users.md)** and our **[example toyshop tutorial 😊](getting_started/toy_shop/toy_shop_data.md)** for more details.
