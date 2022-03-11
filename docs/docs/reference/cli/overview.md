@@ -11,7 +11,7 @@ sidebar_position: 0
 re_data overview generate --start-date 2021-01-01 --end-date 2021-01-30 --interval days:1
 ```
 
-Generates overview as HTML and JSON files and saves them in `target/re_data` folder of your dbt project. 
+Generates overview as HTML and JSON files and saves by default in the target folder specified in the dbt project. 
 
 Supported arguments:
 - start-date (*default: today - 7 days*) - start date of period for which you generate overview
