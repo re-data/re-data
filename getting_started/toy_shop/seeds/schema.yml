@@ -18,7 +18,7 @@ seeds:
         - status
       re_data_anomaly_detector:
         name: boxplot
-        whisker_boundary_multiplier: 1.8
+        whisker_boundary_multiplier: 2.0
 
     columns:
       - name: customer_id
