@@ -11,13 +11,13 @@ You are not using dbt (yet?) in your company but would like to try to re_data
 
 ## Install re_data package
 
-For new users we recommend installing re_data package:
+For new users we recommend starting with installing re_data package in your python environment
 
 ```bash
 pip install re_data
 ```
 
-re_data includes dbt in dependencies so after this step you will already have it installed in your system.
+re_data includes dbt-core in dependencies so after this step you will already have it installed in your system. But in order to use dbt for your specific db you need to install dbt-postgres, dbt-snowflake, dbt-redshift, dbt-bigquery.
 
 ## Init your dbt project
 
