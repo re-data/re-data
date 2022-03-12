@@ -6,8 +6,8 @@ sidebar_position: 1
 
 This introduction assumes you are already using dbt in your company and tables you would like to monitor are managed by dbt.
 To fully use re_data you would need to install both:
-  -  **[re_data dbt package](#install-re_data-dbt-package)**
-  -  **[re_data python package](#install-re_data-python-package)**
+  -  **[re_data dbt package](#installing-re_data-dbt-package)**
+  -  **[re_data python package](#installing-re_data-python-package)**
 
 We'll go over the steps required to do that & explain what possibilities those packages create for you.
 
