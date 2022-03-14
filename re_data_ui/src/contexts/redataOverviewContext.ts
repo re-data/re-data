@@ -174,6 +174,7 @@ export interface OverviewData {
   loading: boolean;
   dbtMapping: Record<string, string>;
   modelNodes: SelectOptionProps[];
+  testsObject: Record<string, []>;
 }
 
 export interface SelectOptionProps {
@@ -198,4 +199,5 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   loading: true,
   dbtMapping: {},
   modelNodes: [],
+  testsObject: {},
 });

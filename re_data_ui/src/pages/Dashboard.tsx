@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
@@ -15,21 +17,25 @@ import {
 
 interface RawOverviewData {
   type: 'alert' | 'metric' | 'schema_change' | 'schema' | 'test' | 'anomaly';
-  // eslint-disable-next-line camelcase
   table_name: string;
-  // eslint-disable-next-line camelcase
   column_name: string;
-  // eslint-disable-next-line camelcase
   computed_on: string;
   data: string;
 }
 
 const formatOverviewData = (
   data: Array<RawOverviewData>,
-): [Map<string, ReDataModelDetails>, ITestSchema[], Alert[]] => {
+): [Map<string, ReDataModelDetails>, ITestSchema[], Record<string, []>, Alert[]] => {
   const result = new Map<string, ReDataModelDetails>();
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
+
+  const testsObject: any = {};
+  const anomaliesObject: any = {};
+  const schemaChangesObject: any = {};
+
+  const modelObjects: any = {};
+  // const testsObject: Record<string, []> = {};
   data.forEach((item: RawOverviewData) => {
     if (!item.table_name) return;
     const model = stripQuotes(item.table_name).toLowerCase();
@@ -68,17 +74,26 @@ const formatOverviewData = (
       const schema = JSON.parse(item.data) as ITableSchema;
       schema.column_name = columnName;
       details.tableSchema.push(schema);
+
+      schemaChangesObject[model] = [...(schemaChangesObject[model] || []), schema];
     } else if (item.type === 'test') {
       const schema = JSON.parse(item.data) as ITestSchema;
+
       schema.column_name = columnName;
       schema.model = model;
       schema.run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss');
+
       details.testSchema.push(schema);
+      testsObject[model] = [...(testsObject[model] || []), schema];
       tests.push(schema);
     } else if (item.type === 'anomaly') {
       const anomaly = JSON.parse(item.data) as Anomaly;
       anomaly.column_name = columnName;
       appendToMapKey(details.anomalies, columnName, anomaly);
+
+      anomaliesObject[model] = [...(anomaliesObject[model] || []), anomaly];
+      // console.log('anomaly -> ', anomaly, columnName, model);
+      // console.log('anomaly -> ', anomaly, details);
     }
   });
   // loop through each table/model and sort by ascending order by
@@ -99,7 +114,17 @@ const formatOverviewData = (
   }
   alertsChanges.sort((a, b) => dayjs(b.time_window_end).diff(a.time_window_end));
 
-  return [result, tests, alertsChanges];
+  // const xy = toObject(tests, 'test_name');
+  modelObjects.tests = testsObject;
+  modelObjects.anomalies = anomaliesObject;
+  modelObjects.schema_changes = schemaChangesObject;
+  // console.log('testsObject', testsObject, modelObjects);
+  console.log('modelObjects', modelObjects);
+  // console.log('details', details);
+
+  // console.log(xy, Object.keys(xy).length);
+  // console.log(xy, Object.keys(xy).length, tests);
+  return [result, tests, testsObject, alertsChanges];
 };
 
 const formatDbtData = (graphData: DbtGraph) => {
@@ -131,6 +156,7 @@ const Dashboard: React.FC = (): ReactElement => {
     loading: true,
     dbtMapping: {},
     modelNodes: [],
+    testsObject: {},
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -155,15 +181,17 @@ const Dashboard: React.FC = (): ReactElement => {
         loading: false,
         dbtMapping: {},
         modelNodes: [],
+        testsObject: {},
       };
-      const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData);
+      const [aggregatedModels, tests, testsObject, alerts] = formatOverviewData(overviewData);
 
       const { dbtMapping, modelNodes } = formatDbtData(graphData);
 
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
-      overview.graph = graphData;
-      overview.tests = tests;
+      overview.graph = graphData; // []
+      overview.tests = tests; // []
+      overview.testsObject = testsObject;
       overview.dbtMapping = dbtMapping;
       overview.modelNodes = modelNodes;
 

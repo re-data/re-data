@@ -51,24 +51,24 @@ const RightComponent = ({ options, value, handleChange }: RightComponentProps) =
   </select>
 );
 
-const generateTestsData = (tests: ITestSchema[], modelName?: string | null) => {
-  const result = [];
+type generateTestsDataProps = {
+  tests: ITestSchema[]
+  modelName?: string | null
+  testsObject: Record<string, []>
+}
+
+const generateTestsData = ({ tests, testsObject, modelName } : generateTestsDataProps) => {
+  let result = [];
   const runAts = new Set<string>();
 
-  for (let index = 0; index < tests.length; index++) {
-    const test = tests[index];
-    runAts.add(test.run_at);
+  if (modelName) {
+    result = testsObject[modelName] || [];
+  } else {
+    for (let index = 0; index < tests.length; index++) {
+      const test = tests[index];
+      runAts.add(test.run_at);
 
-    if (modelName && test.model !== modelName) {
-      continue;
-    } else {
-      result.push({
-        column_name: test.column_name,
-        status: test.status,
-        test_name: test.test_name,
-        model: test.model,
-        run_at: test.run_at,
-      });
+      result.push({ ...test });
     }
   }
 
@@ -78,7 +78,7 @@ const generateTestsData = (tests: ITestSchema[], modelName?: string | null) => {
 function TestsPartial(params: TP): ReactElement {
   const { showModel, showRunAt, modelName = null } = params;
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { tests } = overview;
+  const { tests, testsObject } = overview;
   const [backUpData, setBackUpData] = useState([]);
   const [data, setData] = useState([]);
   const [options, setOptions] = useState([]);
@@ -142,7 +142,9 @@ function TestsPartial(params: TP): ReactElement {
   };
 
   useMemo(() => {
-    const initialTests = generateTestsData(tests, modelName);
+    const initialTests = generateTestsData({
+      tests, modelName, testsObject,
+    });
     const { result, runAts } = initialTests;
 
     setOptions(Array.from(runAts) as []);

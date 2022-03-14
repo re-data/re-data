@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import dayjs from 'dayjs';
 import {
   Anomaly, DbtNode, DbtSource, Metric, SchemaChange,
@@ -114,3 +115,28 @@ export const generateModelId = (details: DbtNode | DbtSource): string => {
   }
   return `${database}.${schema}.${identifier}`.toLowerCase();
 };
+
+// eslint-disable-next-line max-len
+// export const toObject = (arr: any[], key: string | number) => arr.reduce((a, b) => {
+//   const x = ({ ...a, [b[key]]: [a, b] });
+//   // console.log(a, b);
+//   console.log(x);
+//   // console.log(x, a);
+//   return x;
+//   // return ({ ...a, [b[key]]: b });
+// }, {});
+// export const toObject =
+// (arr: Record<string, Record<string, string>>[], key: string | number) =>
+// arr.reduce((a, b) => ({ ...a, [b[key]]: b }), {});
+
+// export const toObject = (arr: any[], key: string | number): Record<string, any> => {
+//   const result = [];
+//   for (let i = 0; i < arr.length; i++) {
+//     const item = arr[i];
+//     const keyValue = item[key];
+//     result[keyValue] = item;
+//   }
+
+//   console.log('result', result);
+//   return result;
+// };

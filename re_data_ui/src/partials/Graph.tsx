@@ -10,7 +10,7 @@ import {
   generateEdge, generateModelId, generateNode, supportedResTypes,
 } from '../utils';
 
-type AlertsType = 'anomaly' | 'schema_change' | null
+type AlertsType = 'anomaly' | 'schema_change' | 'failed_test' | null
 
 type GenerateGraphProps = {
   overview: OverviewData;
@@ -49,6 +49,7 @@ const generateGraph = (
     modelNodes,
     aggregated_models: aggregatedModels,
     graph: { nodes: dbtNodes, sources: dbtSources },
+    tests,
   } = overview;
   const allNodes = { ...dbtNodes, ...dbtSources };
 
@@ -149,6 +150,8 @@ const generateGraph = (
       const details = allNodes[modelTitle];
       const modelId = generateModelId(details);
 
+      // console.log('tests ', tests);
+
       // for monitored nodes
       const config = details.config as Record<string, unknown>;
       const isNodeMonitored = config?.re_data_monitored || false;
@@ -157,6 +160,8 @@ const generateGraph = (
       if (alerts === 'anomaly' && anomalies.size < 1) {
         continue;
       } else if (alerts === 'schema_change' && schemaChanges.length < 1) {
+        continue;
+      } else if (alerts === 'failed_test' && schemaChanges.length < 1) {
         continue;
       }
       if (monitored && !isNodeMonitored) {
@@ -233,6 +238,8 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
     alerts,
   });
 
+  // console.log('overview test ', overview.tests);
+
   const toggleModelType = (type: string) => {
     setModelType((prevType: string | null) => {
       if (prevType === type) {
@@ -266,7 +273,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
             disabled={!showModelDetails}
             title="Toggle Source Nodes"
             onClick={() => toggleModelType('source')}
-            className={`flex items-center ml-1 mr-4 ${modelType === 'source' && 'active-tab'}`}
+            className={`flex items-center mr-4 ${modelType === 'source' && 'active-tab'}`}
           >
             <div className="w-3 h-3 bg-source rounded-tooltip" />
             <p className="text-sm font-medium ml-1">Source</p>
@@ -276,7 +283,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
             disabled={!showModelDetails}
             title="Toggle Seed Nodes"
             onClick={() => toggleModelType('seed')}
-            className={`flex items-center ml-1 mr-4 ${modelType === 'seed' && 'active-tab'}`}
+            className={`flex items-center mr-4 ${modelType === 'seed' && 'active-tab'}`}
           >
             <div className="w-3 h-3 bg-seed rounded-tooltip" />
             <p className="text-sm font-medium ml-1">Seed</p>
@@ -286,7 +293,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
             disabled={!showModelDetails}
             title="Toggle Model Nodes"
             onClick={() => toggleModelType('model')}
-            className={`flex items-center ml-1 mr-4 ${modelType === 'model' && 'active-tab'}`}
+            className={`flex items-center mr-4 ${modelType === 'model' && 'active-tab'}`}
           >
             <div className="w-3 h-3 bg-model rounded-tooltip" />
             <p className="text-sm font-medium ml-1">Model</p>
@@ -294,9 +301,19 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
           <button
             type="button"
             disabled={!showModelDetails}
+            title="Toggle Failed Test"
+            onClick={() => toggleAlerts('failed_test')}
+            className={`flex items-center mr-4 ${alerts === 'failed_test' && 'active-tab'}`}
+          >
+            <div className="w-3 h-3 bg-red-600 rounded-full" />
+            <p className="text-sm font-medium ml-1">Failed Test</p>
+          </button>
+          <button
+            type="button"
+            disabled={!showModelDetails}
             title="Toggle Model Nodes"
             onClick={() => toggleAlerts('anomaly')}
-            className={`flex items-center ml-1 mr-4 ${alerts === 'anomaly' && 'active-tab'}`}
+            className={`flex items-center mr-4 ${alerts === 'anomaly' && 'active-tab'}`}
           >
             <div className="w-3 h-3 bg-red-600 rounded-full" />
             <p className="text-sm font-medium ml-1">Anomaly</p>
@@ -306,7 +323,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
             disabled={!showModelDetails}
             title="Toggle Model Nodes"
             onClick={() => toggleAlerts('schema_change')}
-            className={`flex items-center ml-1 mr-4 ${alerts === 'schema_change' && 'active-tab'}`}
+            className={`flex items-center mr-4 ${alerts === 'schema_change' && 'active-tab'}`}
           >
             <div className="w-3 h-3 bg-yellow-300 rounded-full" />
             <p className="text-sm font-medium ml-1">Schema Change</p>
