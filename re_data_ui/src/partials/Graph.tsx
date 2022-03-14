@@ -49,7 +49,6 @@ const generateGraph = (
     modelNodes,
     aggregated_models: aggregatedModels,
     graph: { nodes: dbtNodes, sources: dbtSources },
-    tests,
   } = overview;
   const allNodes = { ...dbtNodes, ...dbtSources };
 
