@@ -9,14 +9,13 @@ import TabItem from '@theme/TabItem';
 
 To run re_data you would need to configure what tables should be monitored and set up some properties of this monitoring. You may also want/need to update some of the defaults vars use by re_data to run it for specific time windows or compute types of metrics you need.
 
-## Monitoring config
+## Model level config
 
-Currently re_data supports dbt native configuration (by leveraging dbt models & sources configs)as well as configuration by `re_data:monitored` var.
+Currently re_data supports dbt native configuration, by leveraging dbt models & sources configs.
 
 If you are not familiar with dbt models & sources configuration we encourage to check the dbt: [model-configs](https://docs.getdbt.com/reference/model-configs) and [source-configs](https://docs.getdbt.com/reference/source-configs) documentation.
 
 re_data dbt native cofiguration follows the same rules as dbt configuration, config block inside model will have the most priority and configuration in `dbt_project.yml` will have the least priority.
-Additionaly `re_data` gives the least prority to vars configuration in `re_data:monitored` variable.
 
 <Tabs
   defaultValue="config_block"
@@ -24,7 +23,6 @@ Additionaly `re_data` gives the least prority to vars configuration in `re_data:
     {label: 'Config block', value: 'config_block'},
     {label: 'Property file', value: 'property_file'},
     {label: 'Project file', value: 'project_file'},
-    {label: 'Vars variable', value: 'vars_variable'},
   ]}>
 
   <TabItem value="config_block">
@@ -102,42 +100,10 @@ seeds:
 
   </TabItem>
 
-
-<TabItem value="vars_variable">
-
-```yml title="dbt_project.yml"
-vars:
-  re_data:monitored:
-    - tables:
-        - name: toy_shop_customers
-          schema: toy_shop_sources
-          time_filter: joined_at
-          columns:
-            - first_name
-            - last_name
-            - age
-
-        - name: order_items
-          time_filter: added_at
-          columns:
-            - name
-            - amount
-
-        - name: orders
-          schema: toy_shop
-          database: sample_database
-          time_filter: created_at
-
-```
-</TabItem>
 </Tabs>
 
 :::info
 Notice that you can only apply the `Config block` and `Property file` configuration to models. Sources need to be configured in the `dbt_project.yml` file. Currently, dbt doesn't accept config for them, as stated in [dbt docs](https://docs.getdbt.com/reference/source-configs).
-:::
-
-:::caution
-`re_data:monitored` vars configuration was the first method introduced by us, we are currently considering removing this way of configuring monitoring. If you are already using this configuration method, loving it and don't want to migrate, let us know on [Slack](https://www.getre.io/slack)!
 :::
 
 You can define configuration on many levels; it's common to enable re_data for a group of tables (for example, all sources). It's also common to override some of the properties for specific groups.
@@ -158,8 +124,6 @@ SQL expression (for example, column name) to filter records of the table to a sp
 
 Set of columns for which re_data should compute metrics. If not specified, re_data will compute stats for all columns with either numeric or text types.
 
-
-
 ### re_data_metrics (optional)
 
 Additional metrics to be computed for a given table (set of tables). Those can be either whole `table` level or `column` level. (Check out **[metrics](/docs/reference/metrics/overview_metric)** section to learn distinction between the two)
@@ -167,9 +131,10 @@ Additional metrics to be computed for a given table (set of tables). Those can b
 You can be pass any number of already defined or your custom metrics to be computed. Check out **[extra metrics](/docs/reference/metrics/extra_metrics)** section for available metrics and **[custom metrics](/docs/reference/metrics/your_own_metric)** for ways to define your own metrics.
 
 
-## Other re_data config vars (optional)
+## Global config vars
 
-Sample configuration for other parameters can look like that:
+Apart from model specific config re_data enables you to edit global configuration for some of the parameters.
+All of them are optional so we start with sensible defaults and let you override if there is a need.
 
 ```yaml title="Parameters of re_data configuration"
 vars:

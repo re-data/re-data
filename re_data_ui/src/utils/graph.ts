@@ -7,15 +7,21 @@ import { DbtNode, DbtSource } from '../contexts/redataOverviewContext';
 const DEFAULT_WIDTH = 172;
 const DEFAULT_HEIGHT = 36;
 
-const dagreGraph = new dagre.graphlib.Graph();
-dagreGraph.setDefaultEdgeLabel(() => ({}));
+type getLayoutElementsRet = {
+  res: Elements,
+  elementMapping: Record<string, number>,
+};
 
-const getLayoutElements = (elements: Elements, direction = 'LR'): Elements => {
-  const isHorizontal = direction === 'LR';
+const getLayoutElements = (elements: Elements, direction = 'LR'): getLayoutElementsRet => {
+  const dagreGraph = new dagre.graphlib.Graph();
+  dagreGraph.setDefaultEdgeLabel(() => ({}));
+
   dagreGraph.setGraph({ rankdir: direction });
 
-  elements.forEach((el) => {
-    const element = el as Node | Edge;
+  const isHorizontal = direction === 'LR';
+
+  for (let index = 0; index < elements.length; index++) {
+    const element: Node | Edge = elements[index];
     if (isNode(element)) {
       dagreGraph.setNode(element.id, {
         width: DEFAULT_WIDTH,
@@ -24,13 +30,19 @@ const getLayoutElements = (elements: Elements, direction = 'LR'): Elements => {
     } else {
       dagreGraph.setEdge(element.source, element.target);
     }
-  });
+  }
 
   dagre.layout(dagreGraph);
 
-  return elements.map((el) => {
-    const element = el as Node;
+  const newElements = [];
+  const elementsObj: Record<string, number> = {};
+
+  for (let index = 0; index < elements.length; index++) {
+    const element = elements[index] as Node;
+
     if (isNode(element)) {
+      elementsObj[element.data?.id] = index;
+
       const nodeWithPosition = dagreGraph.node(element.id);
       element.targetPosition = isHorizontal ? Position.Left : Position.Top;
       element.sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
@@ -41,8 +53,13 @@ const getLayoutElements = (elements: Elements, direction = 'LR'): Elements => {
       };
     }
 
-    return element;
-  });
+    newElements.push(element);
+  }
+
+  return {
+    res: newElements,
+    elementMapping: elementsObj,
+  };
 };
 
 const resourceTypeColors: Record<string, string> = {

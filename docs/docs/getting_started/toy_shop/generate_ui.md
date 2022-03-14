@@ -26,11 +26,11 @@ re_data compares past & current metric computed using **[z_score](https://en.wik
 
 From the alerts view, you can go to learn more details about specific alerts in the graph view.
 
-## Graph
+## Lineage
 
 ![GraphExample](/screenshots/ui/graph.png)
 
-Graph view lets you investigate anomalies, metrics & schema changes on top of the dbt lineage graph.
+Lineage view lets you investigate anomalies, metrics & schema changes on top of the dbt lineage graph.
 
 
 ## Tests
