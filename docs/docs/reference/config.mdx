@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 To run re_data you would need to configure what tables should be monitored and set up some properties of this monitoring. You may also want/need to update some of the defaults vars use by re_data to run it for specific time windows or compute types of metrics you need.
 
-## Monitoring config
+## Model level config
 
 Currently re_data supports dbt native configuration, by leveraging dbt models & sources configs.
 
@@ -134,8 +134,6 @@ SQL expression (for example, column name) to filter records of the table to a sp
 
 Set of columns for which re_data should compute metrics. If not specified, re_data will compute stats for all columns with either numeric or text types.
 
-
-
 ### re_data_metrics (optional)
 
 Additional metrics to be computed for a given table (set of tables). Those can be either whole `table` level or `column` level. (Check out **[metrics](/docs/reference/metrics/overview_metric)** section to learn distinction between the two)
@@ -147,9 +145,10 @@ You can be pass any number of already defined or your custom metrics to be compu
 See [Anomaly Detection](anomaly_detection)
 
 
-## Other re_data config vars (optional)
+## Global config vars
 
-Sample configuration for other parameters can look like that:
+Apart from model specific config re_data enables you to edit global configuration for some of the parameters.
+All of them are optional so we start with sensible defaults and let you override if there is a need.
 
 ```yaml title="Parameters of re_data configuration"
 vars:
