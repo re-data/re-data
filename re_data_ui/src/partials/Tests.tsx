@@ -5,7 +5,10 @@ import { FaRegSmileWink } from 'react-icons/all';
 import { Link } from 'react-router-dom';
 import { EmptyContent, Table } from '../components';
 import { CellProps, ColumnsProps } from '../components/Table';
-import { ITestSchema, OverviewData, RedataOverviewContext } from '../contexts/redataOverviewContext';
+import {
+  ITestSchema, OverviewData,
+  ReDataModelDetails, RedataOverviewContext,
+} from '../contexts/redataOverviewContext';
 
 export interface TP {
   showRunAt: boolean;
@@ -54,15 +57,19 @@ const RightComponent = ({ options, value, handleChange }: RightComponentProps) =
 type generateTestsDataProps = {
   tests: ITestSchema[]
   modelName?: string | null
-  testsObject: Record<string, []>
+  aggregatedModels: Map<string, ReDataModelDetails>;
 }
 
-const generateTestsData = ({ tests, testsObject, modelName } : generateTestsDataProps) => {
-  let result = [];
+const generateTestsData = ({ tests, aggregatedModels, modelName } : generateTestsDataProps) => {
+  let result: Array<ITestSchema> = [];
   const runAts = new Set<string>();
 
   if (modelName) {
-    result = testsObject[modelName] || [];
+    if (aggregatedModels.has(modelName)) {
+      const aggregate = aggregatedModels.get(modelName);
+      result = aggregate?.tests || [];
+      // runAts.add(aggregate?.runAt || '');
+    }
   } else {
     for (let index = 0; index < tests.length; index++) {
       const test = tests[index];
@@ -78,7 +85,7 @@ const generateTestsData = ({ tests, testsObject, modelName } : generateTestsData
 function TestsPartial(params: TP): ReactElement {
   const { showModel, showRunAt, modelName = null } = params;
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { tests, testsObject } = overview;
+  const { tests, aggregated_models: aggregatedModels } = overview;
   const [backUpData, setBackUpData] = useState([]);
   const [data, setData] = useState([]);
   const [options, setOptions] = useState([]);
@@ -143,7 +150,9 @@ function TestsPartial(params: TP): ReactElement {
 
   useMemo(() => {
     const initialTests = generateTestsData({
-      tests, modelName, testsObject,
+      tests,
+      modelName,
+      aggregatedModels,
     });
     const { result, runAts } = initialTests;
 

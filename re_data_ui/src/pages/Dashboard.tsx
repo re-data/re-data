@@ -25,7 +25,7 @@ interface RawOverviewData {
 
 const formatOverviewData = (
   data: Array<RawOverviewData>,
-): [Map<string, ReDataModelDetails>, ITestSchema[], Record<string, []>, Alert[]] => {
+): [Map<string, ReDataModelDetails>, ITestSchema[], Alert[]] => {
   const result = new Map<string, ReDataModelDetails>();
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
@@ -48,7 +48,7 @@ const formatOverviewData = (
           columnMetrics: new Map<string, Array<Metric>>(),
         },
         tableSchema: [],
-        testSchema: [],
+        tests: [],
       };
       result.set(model, obj);
     }
@@ -83,7 +83,7 @@ const formatOverviewData = (
       schema.model = model;
       schema.run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss');
 
-      details.testSchema.push(schema);
+      details.tests.push(schema);
       testsObject[model] = [...(testsObject[model] || []), schema];
       tests.push(schema);
     } else if (item.type === 'anomaly') {
@@ -124,7 +124,7 @@ const formatOverviewData = (
 
   // console.log(xy, Object.keys(xy).length);
   // console.log(xy, Object.keys(xy).length, tests);
-  return [result, tests, testsObject, alertsChanges];
+  return [result, tests, alertsChanges];
 };
 
 const formatDbtData = (graphData: DbtGraph) => {
@@ -156,7 +156,11 @@ const Dashboard: React.FC = (): ReactElement => {
     loading: true,
     dbtMapping: {},
     modelNodes: [],
-    testsObject: {},
+    // modelObjects: {
+    //   tests: {},
+    //   anomalies: {},
+    //   schema_changes: {},
+    // },
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -181,9 +185,8 @@ const Dashboard: React.FC = (): ReactElement => {
         loading: false,
         dbtMapping: {},
         modelNodes: [],
-        testsObject: {},
       };
-      const [aggregatedModels, tests, testsObject, alerts] = formatOverviewData(overviewData);
+      const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData);
 
       const { dbtMapping, modelNodes } = formatDbtData(graphData);
 
@@ -191,7 +194,6 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.alerts = alerts;
       overview.graph = graphData; // []
       overview.tests = tests; // []
-      overview.testsObject = testsObject;
       overview.dbtMapping = dbtMapping;
       overview.modelNodes = modelNodes;
 
