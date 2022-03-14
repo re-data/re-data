@@ -8,6 +8,10 @@
 .subtitles {
     font-size: 9px;
     font-style: italic;
+    text-overflow: ellipsis;
+    width: 25ch;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .container {

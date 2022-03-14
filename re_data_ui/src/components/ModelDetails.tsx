@@ -43,6 +43,31 @@ enum ModelTabs {
   METRICS = 'metrics'
 }
 
+const arrow = (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const Information = () => (
+  <section>
+    <p className="font-medium p-3 text-center">Click on node to show metrics, anomalies or schema changes</p>
+    <ul className="list-disc ml-4">
+      <li className="text-sm">
+        You can click on the graph legend (source, seed, anomaly..)
+        to toggle showing only specific nodes.
+      </li>
+      <li className="text-sm mt-1">
+        Once you select a node you can click on
+        {' '}
+        {arrow}
+        {' '}
+        to show the model table information
+      </li>
+    </ul>
+  </section>
+);
+
 const ModelDetails: React.FC = (): ReactElement => {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(ModelTabs.ANOMALIES);
@@ -56,6 +81,8 @@ const ModelDetails: React.FC = (): ReactElement => {
     if (fullTableName && overview && !overview.loading) {
       const details = init(overview, fullTableName) as ReDataModelDetails;
       setModelDetails(details);
+    } else {
+      setModelDetails(undefined);
     }
   }, [fullTableName, overview.loading]);
 
@@ -119,7 +146,7 @@ const ModelDetails: React.FC = (): ReactElement => {
           <div className="outlet">
             {modelDetails
               ? renderTab(activeTab)
-              : <p className="font-medium p-3 text-center">Click on node to show metrics, anomalies or schema changes</p>}
+              : <Information />}
           </div>
         </div>
       </div>
