@@ -23,14 +23,14 @@ select o.id, o.amount ...
 
 ```
 
-This configuration marks `pending_orders_per_customers` model to be monitored and uses column named: `time_created` as timestamp column when computing stats.
+This configuration makes the` pending_orders_per_customers` model monitored by re_data and uses column named: `time_created` as timestamp column when computing re_data stats.
 
-Apart from that we also optionally configured an anomaly detector to be used when checking for anomalies for this table. Apart from the anomaly detector, you can configure:
+We also optionally configured an anomaly detector to check for anomalies for this table. Other additional things we can configure are:
 
 - `re_data_columns` - to specify for what table columns re_data metrics should be computed
 - `re_data_metrics` - to add additional metrics to be computed for the table
 
-For re_data seed files, let's look into `toy_shop/seeds/schema.yml` file:
+For re_data seed files, let's look into the `toy_shop/seeds/schema.yml` file:
 
 ```yml title=toy_shop/seeds/schema.yml
 version: 2
@@ -57,11 +57,11 @@ seeds:
   ...
 ```
 
-We do see `re_data_monitored` set for both of those tables, for one `customers` as data there doesn't havy any timestamp column we set `re_data_time_filter` to null to compute stats globally for the whole table, for `orders` table similarly to pending orders model we set it to `time_created` column. 
+We do see the `re_data_monitored` set for both of those tables. For the `customers` table as data, there doesn't have any timestamp column we set `re_data_time_filter` to null to compute stats globally for the whole table. For the `orders` table similarly to the pending orders table we set it to the `time_created` column. 
 
-Additinally for the `orders` table we also configure `re_data_anomaly_detector` method and setup specific threshold to be used when looking for anomalies in this table.
+Additionally for the `orders` table, we configure the `re_data_anomaly_detector` method and set up a specific threshold to be used when looking for anomalies in this table.
 
-Apart from configuration specific to some of the tables (or table groups) re_data also has possibility to define global configuration which will apply to all data computed. This is defined in the `vars` section of `dbt_project.yml`. 
+Apart from configuration specific to some of the tables (or table groups) re_data also has a possibility to define global configuration which will apply to all data computed. This is defined in the `vars` section of `dbt_project.yml`.
 
 ```yml title=toy_shop/dbt_project.yml
 vars:
@@ -70,9 +70,9 @@ vars:
     threshold: 3
 ```
 
-Here we set anomaly_detector method for re_data globally. This will have **less** priority then model defined configurations. In general re_data configuration follows the rule that the more specific configuration, the more important it is.
+Here we set the anomaly_detector method for re_data globally. This will have **less** priority than model defined configurations. In general re_data configuration follows the rule that the more specific configuration, the more important it is.
 
-Now with this explained we can compute re_data models for the first time:
+Now with this explained, we can compute re_data models for the first time:
 
 ## First re_data run
 
@@ -87,7 +87,7 @@ dbt run --models package:re_data --vars \
 ```
 
 :::info
-Notice that `re_data:time_window_start` and `re_data:time_window_end` are another global configuration parameters. They can be defined also in `dbt_project.yml` vars file, but here we want them to be more dynamic and we use dbt `--vars` option to pass them. If we don't pass time window parameters re_data will compute stats for the previous day. (from yesterday's 00:00 AM up until today 00:00 AM)
+Notice that `re_data:time_window_start` and `re_data:time_window_end` are another global configuration parameters. They can be defined also in the `dbt_project.yml` vars file, but here we want them to be more dynamic and we use a dbt `--vars` option to pass them. If we don't pass time window parameters re_data will compute stats for the previous day. (from yesterday's 00:00 AM up until today 00:00 AM)
 :::
 
 Anytime re_data computes its models, it detects tables being monitored, their configuration and that inside your database as a re_data model.
