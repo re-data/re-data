@@ -25,12 +25,13 @@ interface RawOverviewData {
 
 const formatOverviewData = (
   data: Array<RawOverviewData>,
-): [Map<string, ReDataModelDetails>, ITestSchema[], Alert[]] => {
+): [Map<string, ReDataModelDetails>, ITestSchema[], Record<string, []>, Alert[]] => {
   const result = new Map<string, ReDataModelDetails>();
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
 
   const testsObject: any = {};
+  const failedTestsObject: any = {};
   const anomaliesObject: any = {};
   const schemaChangesObject: any = {};
 
@@ -49,6 +50,7 @@ const formatOverviewData = (
         },
         tableSchema: [],
         tests: [],
+        failedTests: {},
       };
       result.set(model, obj);
     }
@@ -84,6 +86,11 @@ const formatOverviewData = (
       schema.run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss');
 
       details.tests.push(schema);
+      if (schema.status?.toLowerCase() === 'fail') {
+        // console.log('shema ', schema);
+        failedTestsObject[model] = [...(failedTestsObject[model] || []), schema];
+      }
+
       testsObject[model] = [...(testsObject[model] || []), schema];
       tests.push(schema);
     } else if (item.type === 'anomaly') {
@@ -118,13 +125,15 @@ const formatOverviewData = (
   modelObjects.tests = testsObject;
   modelObjects.anomalies = anomaliesObject;
   modelObjects.schema_changes = schemaChangesObject;
+  modelObjects.failedTestsObject = failedTestsObject;
   // console.log('testsObject', testsObject, modelObjects);
   console.log('modelObjects', modelObjects);
   // console.log('details', details);
+  // result.failedTests = modelObjects.failedTestsObject;
 
   // console.log(xy, Object.keys(xy).length);
   // console.log(xy, Object.keys(xy).length, tests);
-  return [result, tests, alertsChanges];
+  return [result, tests, failedTestsObject, alertsChanges];
 };
 
 const formatDbtData = (graphData: DbtGraph) => {
@@ -156,11 +165,7 @@ const Dashboard: React.FC = (): ReactElement => {
     loading: true,
     dbtMapping: {},
     modelNodes: [],
-    // modelObjects: {
-    //   tests: {},
-    //   anomalies: {},
-    //   schema_changes: {},
-    // },
+    failedTests: {},
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -185,8 +190,9 @@ const Dashboard: React.FC = (): ReactElement => {
         loading: false,
         dbtMapping: {},
         modelNodes: [],
+        failedTests: {},
       };
-      const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData);
+      const [aggregatedModels, tests, failedTests, alerts] = formatOverviewData(overviewData);
 
       const { dbtMapping, modelNodes } = formatDbtData(graphData);
 
@@ -196,6 +202,7 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.tests = tests; // []
       overview.dbtMapping = dbtMapping;
       overview.modelNodes = modelNodes;
+      overview.failedTests = failedTests;
 
       console.log('overview -> ', overview);
       setReDataOverview(overview);

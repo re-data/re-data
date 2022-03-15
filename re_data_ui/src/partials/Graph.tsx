@@ -49,8 +49,14 @@ const generateGraph = (
     modelNodes,
     aggregated_models: aggregatedModels,
     graph: { nodes: dbtNodes, sources: dbtSources },
+    failedTests,
   } = overview;
   const allNodes = { ...dbtNodes, ...dbtSources };
+
+  const failedKeys = failedTests ? Object.keys(failedTests) : [];
+  const failedTestKeys = new Set([...failedKeys]);
+
+  console.log('failedTestKeys', failedTestKeys);
 
   if (modelName) {
     const {
@@ -72,6 +78,7 @@ const generateGraph = (
       index: '0',
       modelId,
       details,
+      failedTests: failedTestKeys.has(modelId),
       anomalies: anomalies.size > 0,
       schemaChanges: schemaChanges.length > 0,
     });
@@ -97,6 +104,7 @@ const generateGraph = (
           modelId: parentModelId,
           index: key,
           details: parentDetails,
+          failedTests: failedTestKeys.has(parentModelId),
           anomalies: parentAnomalies.size > 0,
           schemaChanges: parentSchemaChanges.length > 0,
         });
@@ -131,6 +139,7 @@ const generateGraph = (
           index: key,
           details: childDetails,
           anomalies: childAnomalies.size > 0,
+          failedTests: failedTestKeys.has(childModelId),
           schemaChanges: childSchemaChanges.length > 0,
         });
         elements.push(childNode);
@@ -149,8 +158,6 @@ const generateGraph = (
       const details = allNodes[modelTitle];
       const modelId = generateModelId(details);
 
-      // console.log('tests ', tests);
-
       // for monitored nodes
       const config = details.config as Record<string, unknown>;
       const isNodeMonitored = config?.re_data_monitored || false;
@@ -160,7 +167,7 @@ const generateGraph = (
         continue;
       } else if (alerts === 'schema_change' && schemaChanges.length < 1) {
         continue;
-      } else if (alerts === 'failed_test' && schemaChanges.length < 1) {
+      } else if (alerts === 'failed_test' && !failedTestKeys.has(modelId)) {
         continue;
       }
       if (monitored && !isNodeMonitored) {
@@ -175,6 +182,7 @@ const generateGraph = (
         index,
         modelId,
         details,
+        failedTests: failedTestKeys.has(modelId),
         anomalies: anomalies.size > 0,
         schemaChanges: schemaChanges.length > 0,
       });

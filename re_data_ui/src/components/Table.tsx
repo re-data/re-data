@@ -59,6 +59,7 @@ const CustomFilter = memo(({
 });
 
 /**
+ * This is a simple table component that uses react-table to display data.
  * @param  {array of objects} columns
  * @param  {array of objects} data
  * @param  {boolean} showSearch - default: true
@@ -117,7 +118,7 @@ function Table(params: ITable): JSX.Element {
 
       <table
         {...getTableProps()}
-        className="min-w-full divide-y divide-gray-200"
+        className="min-w-full w-full table-fixed divide-y divide-gray-200"
       >
         <thead className="bg-gray-50">
           {headerGroups.map((headerGroup) => (
@@ -164,7 +165,7 @@ function Table(params: ITable): JSX.Element {
                 {row.cells.map((cell) => (
                   <td
                     {...cell.getCellProps()}
-                    className="px-6 py-4 text-sm whitespace-nowrap"
+                    className="px-6 py-4 text-sm whitespace-nowrap truncate"
                     role="cell"
                   >
                     {cell.render('Cell')}

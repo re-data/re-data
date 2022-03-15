@@ -21,6 +21,7 @@ import MetricCharts from './MetricCharts';
 import './ModelDetails.css';
 import SchemaChanges from './SchemaChanges';
 import TableSchema from './TableSchema';
+import { TestsPartial } from '../partials';
 
 echarts.use(
   [
@@ -40,7 +41,8 @@ echarts.use(
 enum ModelTabs {
   ANOMALIES = 'anomalies',
   SCHEMA_CHANGES = 'schema_changes',
-  METRICS = 'metrics'
+  METRICS = 'metrics',
+  TESTS = 'tests',
 }
 
 const arrow = (
@@ -89,6 +91,7 @@ const ModelDetails: React.FC = (): ReactElement => {
   const showAnomalies = (): void => setActiveTab(ModelTabs.ANOMALIES);
   const showSchema = (): void => setActiveTab(ModelTabs.SCHEMA_CHANGES);
   const showMetrics = (): void => setActiveTab(ModelTabs.METRICS);
+  const showTests = (): void => setActiveTab(ModelTabs.TESTS);
 
   const renderTab = (tab: ModelTabs): ReactElement => {
     if (modelDetails) {
@@ -96,6 +99,17 @@ const ModelDetails: React.FC = (): ReactElement => {
         return <MetricCharts modelDetails={modelDetails} showAnomalies={false} />;
       } if (tab === ModelTabs.ANOMALIES) {
         return <MetricCharts modelDetails={modelDetails} showAnomalies />;
+      } if (tab === ModelTabs.TESTS) {
+        console.log('tab view');
+        return (
+          <TestsPartial
+            showRunAt
+            showSearch={false}
+            showFilter={false}
+            showModel={false}
+            modelName={fullTableName}
+          />
+        );
       }
       return (
         <>
@@ -133,6 +147,13 @@ const ModelDetails: React.FC = (): ReactElement => {
                 onClick={showSchema}
               >
                 Schema
+              </li>
+              <li
+                className={activeTab === ModelTabs.TESTS ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showTests}
+              >
+                Tests
               </li>
             </ul>
           </nav>

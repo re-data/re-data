@@ -36,24 +36,35 @@
     align-items: center;
 }
 
+.dot-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 100%;
+    height: 8px;
+    position: absolute;
+    top: -5px;
+    margin-left: 6px;
+}
+
+.dot-active-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 100%;
+    height: 8px;
+    position: absolute;
+    top: -4px;
+    margin-left: 6px;
+}
+
 .schema-dot {
     width: 8px;
     height: 8px;
     border-radius: 8px;
     background-color: rgba(252, 211, 77, 1);
-    position: absolute;
-    top: -5px;
-    margin-left: 18px;
-}
-
-.schema-dot-active {
-    width: 8px;
-    height: 8px;
-    border-radius: 8px;
-    background-color: rgba(252, 211, 77, 1);
-    position: absolute;
-    top: -4px;
-    margin-left: 18px;
 }
 
 .anomalies-dot {
@@ -61,18 +72,11 @@
     height: 8px;
     border-radius: 8px;
     background-color: rgba(239, 68, 68, 1);
-    position: absolute;
-    top: -5px;
-    margin-left: 6px;
 }
-
-.anomalies-dot-active {
+  
+.failed-dot {
     width: 8px;
     height: 8px;
     border-radius: 8px;
-    background-color: rgba(239, 68, 68, 1);
-    position: absolute;
-    top: -3px;
-    margin-left: 6px;
+    background-color: rgba(220, 38, 38, 1);
 }
-  

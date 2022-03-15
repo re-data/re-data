@@ -128,6 +128,7 @@ export interface ReDataModelDetails {
   metrics: AggregatedMetrics;
   tableSchema: Array<ITableSchema>
   tests: Array<ITestSchema>
+  failedTests?: Record<string, unknown>;
 }
 
 export interface SchemaChange {
@@ -174,7 +175,7 @@ export interface OverviewData {
   loading: boolean;
   dbtMapping: Record<string, string>;
   modelNodes: SelectOptionProps[];
-  // modelObjects: modelObjectTypes;
+  failedTests?: Record<string, []>;
 }
 
 export interface SelectOptionProps {

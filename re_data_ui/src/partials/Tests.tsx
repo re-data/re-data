@@ -14,6 +14,8 @@ export interface TP {
   showRunAt: boolean;
   showModel: boolean;
   modelName?: string | null;
+  showFilter?: boolean;
+  showSearch?: boolean;
 }
 
 type RightComponentProps = {
@@ -83,7 +85,11 @@ const generateTestsData = ({ tests, aggregatedModels, modelName } : generateTest
 };
 
 function TestsPartial(params: TP): ReactElement {
-  const { showModel, showRunAt, modelName = null } = params;
+  const {
+    showModel, showFilter = true,
+    showRunAt, modelName = null,
+    showSearch = true,
+  } = params;
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { tests, aggregated_models: aggregatedModels } = overview;
   const [backUpData, setBackUpData] = useState([]);
@@ -168,12 +174,17 @@ function TestsPartial(params: TP): ReactElement {
           <Table
             columns={columns}
             data={data}
+            showSearch={showSearch}
             RightComponent={() => (
-              <RightComponent
-                value={selectedOption}
-                options={options}
-                handleChange={handleChange}
-              />
+              <>
+                {showFilter && (
+                  <RightComponent
+                    value={selectedOption}
+                    options={options}
+                    handleChange={handleChange}
+                  />
+                )}
+              </>
             )}
           />
         ) : (
