@@ -2,6 +2,9 @@
 sidebar_position: 1
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Welcome to toy shop!
 
 Welcome to a re_data getting started tutorial. We will prepare, analyze and monitor toy shop data here. The toy shop is a fictional e-commerce shop 🙂
@@ -23,12 +26,16 @@ cd toy_shop/
 ```
 
 ## Toy shop data
-You would observe that the project has two seed files included and we are going to use re_data to monitor these tables
+You would observe that the project has two seed files included:
   - toy_shop/seeds/customers.csv
   - toy_shop/seeds/orders.csv
 
-The project also contains a model which can be monitored with re_data as well
+And it also contains one model:
 - toy_shop/models/pending_orders_per_customer.sql
+
+:::info
+Both seeds & model are already configured to be monitored by re_data, we will describe this configuration later on during the tutorial
+:::
 
 :::info
 We use seeds instead of sources much more often than you would normally do in dbt. This is due to the convenient setup dbt offers for seeds
@@ -36,7 +43,71 @@ We use seeds instead of sources much more often than you would normally do in db
 
 ## Profile setup
 
-For re_data to work you will need dbt connection with name `toy_shop` to some test DB. Here is example of how it would look like for postgres, if need more details on that check out dbt **[docs.](https://docs.getdbt.com/reference/profiles.yml)**
+For re_data to work you will need dbt connection with the name `toy_shop` (project name we used) Here are examples of how it could look like in dbs supported by re_data, you can also check more details on connection configuration in  **[dbt profiles docs](https://docs.getdbt.com/reference/profiles.yml)**.
+
+
+<Tabs
+  defaultValue="bigquery"
+  values={[
+    {label: 'BigQuery', value: 'bigquery'},
+    {label: 'Snowflake', value: 'snowflake'},
+    {label: 'Redshift', value: 'redshift'},
+    {label: 'Postgres', value: 'postgres'}
+  ]}>
+
+  <TabItem value="snowflake">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: xxx
+      user: xxx
+      password: xxx
+      database: database
+      warehouse: warehouse
+      schema: toy_shop
+```
+
+</TabItem>
+
+<TabItem value="bigquery">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: xxx
+      schema: toy_shop
+      location: US
+      threads: 4
+```
+</TabItem>
+
+<TabItem value="redshift">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: redshift
+      host: xxx
+      user: xxx
+      password: xxx
+      port: 5439
+      dbname: xxx
+      schema: toy_shop
+      threads: 4
+```
+</TabItem>
+
+<TabItem value="postgres">
 
 ```yml title=~/.dbt/profiles.yml
 toy_shop:
@@ -52,17 +123,22 @@ toy_shop:
       schema: toy_shop
       threads: 4
 ```
+</TabItem>
+
+</Tabs>
 
 ## Loading data & creating models
 
-Now you are ready to load toy_shop seed data & create project models. Notice we exclude re_data from being run now, as we will want to run it in a separate process.
+Now you are ready to load toy_shop seed data & create project models.
 
 ```yaml
 # load seed files into the database
 dbt seed
-# Set up the models of toy_shop only, pending_orders_per_customer in this case.
-dbt run --exclude package:re_data
+# Compute models for toy_shop project, only pending_orders_per_customer table in this case.
+dbt run --select package:toy_shop
 ```
+
+After this step 3 tables should be available in the data warehouse of your choice:
 
 ```sql title="Loaded data"
 toy_shop=> SELECT * FROM toy_shop.orders;

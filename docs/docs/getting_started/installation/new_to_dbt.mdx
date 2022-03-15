@@ -2,6 +2,9 @@
 sidebar_position: 2
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Quickstart - new to dbt
 
 You are not using dbt in your company but would like to try to re_data.
@@ -30,10 +33,73 @@ re_data init project_name
 
 ## Setup you db connection
 
-dbt stores connection details for your db in `~/.dbt/profiles.yml`. Example setup for postgres below:
+dbt stores connection details for your db in `~/.dbt/profiles.yml`. Example setup for dbs supported by re_data here:
+
+<Tabs
+  defaultValue="bigquery"
+  values={[
+    {label: 'BigQuery', value: 'bigquery'},
+    {label: 'Snowflake', value: 'snowflake'},
+    {label: 'Redshift', value: 'redshift'},
+    {label: 'Postgres', value: 'postgres'}
+  ]}>
+
+  <TabItem value="snowflake">
 
 ```yml title=~/.dbt/profiles.yml
-project_name:
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: xxx
+      user: xxx
+      password: xxx
+      database: database
+      warehouse: warehouse
+      schema: toy_shop
+```
+
+</TabItem>
+
+<TabItem value="bigquery">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: xxx
+      schema: toy_shop
+      location: US
+      threads: 4
+```
+</TabItem>
+
+<TabItem value="redshift">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: redshift
+      host: xxx
+      user: xxx
+      password: xxx
+      port: 5439
+      dbname: xxx
+      schema: toy_shop
+      threads: 4
+```
+</TabItem>
+
+<TabItem value="postgres">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
   target: dev
   outputs:
     dev:
@@ -43,11 +109,14 @@ project_name:
       password: xxx
       port: 5432
       dbname: xxx
-      schema: project_name
+      schema: toy_shop
       threads: 4
 ```
+</TabItem>
 
-More details on how to set up a profile file for your DB can be found in [dbt profile docs](https://docs.getdbt.com/reference/profiles.yml)
+</Tabs>
+
+More details on how to set up a profile file for your DB can be found in **[dbt profile docs](https://docs.getdbt.com/reference/profiles.yml)**
 
 ## Adding tables to your dbt project
 
@@ -57,7 +126,8 @@ The easiest way to do that, assuming you don't want to add additional tables or 
 
 Assuming you have tables in your `schema_name` schema, this would be the configuration you would need to set up in dbt.
 
-```title=sources/schema.yml
+```yml title="sources/schema.yml"
+version: 2
 sources:
   - name: schema_name
     tables:
@@ -73,7 +143,7 @@ Once you add these tables and make them visible in the dbt project (the one crea
 re_data dbt source configuration needs to be your into your `dbt_project.yml`. Here is example of sources configuration in re_data.
 
 
-```title=dbt_project.yml
+```yml title="dbt_project.yml"
 sources:
   project_name:
     db_schema:
@@ -89,4 +159,4 @@ After creating this configuration, you should be ready to compute re_data models
 
 ## Learning more
 
-We still recommend to follow introduction for **[dbt users](getting_started/installation/for_dbt_users.md)** and our **[example toyshop tutorial 😊](getting_started/toy_shop/toy_shop_data.md)** for more details.
+We still recommend to follow introduction for **[dbt users](getting_started/installation/for_dbt_users.md)** and our **[example toyshop tutorial 😊](getting_started/toy_shop/toy_shop_data.mdx)** for more details.

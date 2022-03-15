@@ -4,11 +4,79 @@ sidebar_position: 2
 
 # Reliability data
 
-Now, let's compute the first health data. We will use the re_data configuration already defined in the project.
+Now, let's compute the first health data. The toy shop sample project already has re_data configuration defined, but let's go over it and see what we needed to configure.
+## re_data configuration
+
+For re_data pending orders models, we do have in file configuration defined:
+
+```sql title=toy_shop/models/pending_orders_per_customers.sql
+
+{{
+    config(
+        re_data_monitored=true,
+        re_data_time_filter='time_created',
+        re_data_anomaly_detector={'name': 'z_score', 'threshold': 2.2},
+    )
+}}
+
+select o.id, o.amount ...
+
+```
+
+This configuration marks `pending_orders_per_customers` model to be monitored and uses column named: `time_created` as timestamp column when computing stats.
+
+Apart from that we also optionally configured an anomaly detector to be used when checking for anomalies for this table. Apart from the anomaly detector, you can configure:
+
+- `re_data_columns` - to specify for what table columns re_data metrics should be computed
+- `re_data_metrics` - to add additional metrics to be computed for the table
+
+For re_data seed files, let's look into `toy_shop/seeds/schema.yml` file:
+
+```yml title=toy_shop/seeds/schema.yml
+version: 2
+
+seeds:
+  - name: customers
+    config:
+      re_data_monitored: true
+      re_data_time_filter: null
+
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+
+  - name: orders
+    config:
+      re_data_monitored: true
+      re_data_time_filter: time_created
+      re_data_anomaly_detector:
+        name: modified_z_score
+        threshold: 3.5
+  ...
+```
+
+We do see `re_data_monitored` set for both of those tables, for one `customers` as data there doesn't havy any timestamp column we set `re_data_time_filter` to null to compute stats globally for the whole table, for `orders` table similarly to pending orders model we set it to `time_created` column. 
+
+Additinally for the `orders` table we also configure `re_data_anomaly_detector` method and setup specific threshold to be used when looking for anomalies in this table.
+
+Apart from configuration specific to some of the tables (or table groups) re_data also has possibility to define global configuration which will apply to all data computed. This is defined in the `vars` section of `dbt_project.yml`. 
+
+```yml title=toy_shop/dbt_project.yml
+vars:
+  re_data:anomaly_detector:
+    name: modified_z_score
+    threshold: 3
+```
+
+Here we set anomaly_detector method for re_data globally. This will have **less** priority then model defined configurations. In general re_data configuration follows the rule that the more specific configuration, the more important it is.
+
+Now with this explained we can compute re_data models for the first time:
 
 ## First re_data run
 
-We choose to run re_data for the first day of 2021:
+We choose to run re_data for the first day of 2021.
 
 ```bash
 dbt run --models package:re_data --vars \
@@ -19,11 +87,14 @@ dbt run --models package:re_data --vars \
 ```
 
 :::info
-Note, if we don't pass time window parameters re_data will compute stats for the previous day.
+Notice that `re_data:time_window_start` and `re_data:time_window_end` are another global configuration parameters. They can be defined also in `dbt_project.yml` vars file, but here we want them to be more dynamic and we use dbt `--vars` option to pass them. If we don't pass time window parameters re_data will compute stats for the previous day. (from yesterday's 00:00 AM up until today 00:00 AM)
 :::
 
+Anytime re_data computes its models, it detects tables being monitored, their configuration and that inside your database as a re_data model.
+
+
+
 ```sql
-# Anytime re_data computes its models, it detects tables being monitored and their configuration and stores them
 postgres=> SELECT * FROM toy_shop_re.re_data_monitored;
 
             name             |  schema  | database | time_filter  | metrics | columns |                anomaly_detector
@@ -33,33 +104,23 @@ postgres=> SELECT * FROM toy_shop_re.re_data_monitored;
  orders                      | toy_shop | postgres | time_created | {}      | []      | {"name": "modified_z_score", "threshold": 3.5}
 ```
 
-You would notice the anomaly_detector is specified at different [configuration](/docs/reference/config) levels
-```yaml
-# toy_shop/seeds/schema.yml
-- name: orders
-  config:
-    re_data_monitored: true
-    re_data_time_filter: time_created
-    re_data_anomaly_detector:
-      name: modified_z_score
-      threshold: 3.5
+You would notice that here we will also see *final* configuration applied when actually computing models (taking into account priorties from different configuration levels). More information on configuration can be found [here](/docs/reference/config).
 
-# toy_shop/models/pending_orders_per_customer.sql
-{{
-    config(
-        re_data_monitored=true,
-        re_data_time_filter='time_created',
-        re_data_anomaly_detector={'name': 'z_score', 'threshold': 2.2},
-    )
-}}
-
-# customers table has no specified anomaly configuaration so it defaults to the re_data provided configuration.
-```
-Metrics have been computed for the window between 2021-01-01 and 2021-01-02, let us see how many rows we have for the tables being monitored. The `row_count` metric gives us that.
 :::info
-Note, if a model being monitored has no time filter specified, re_data will compute the metric over the whole table.
-A `global__` prefix would be added to the metric.
+Notice that table was created inside `toy_shop_re` schema. re_data tables are by default created with this schema suffix, *except `toy_shop_re_internal`* tables which are internal tables not be used directly by you. You can change this behaviour however you want, we use following dbt config for our models. (which can be overwritten)
+```yml title=dbt_project.yml
+models:
+  re_data:
+    +schema: re
+    internal:
+      +schema: re_internal
+```
 :::
+
+
+Metrics have been computed for the window between 2021-01-01 and 2021-01-02, let us see how many rows we have for the tables being monitored. The `row_count` metric gives us that.
+
+
 ```sql title="Viewing computed metrics"
 postgres=> SELECT table_name, metric, value, time_window_start, time_window_end from toy_shop_re.re_data_metrics where metric in( 'row_count', 'global__row_count');
 
@@ -69,6 +130,11 @@ postgres=> SELECT table_name, metric, value, time_window_start, time_window_end 
  "postgres"."toy_shop"."orders"                      | row_count         |    20 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
  "postgres"."toy_shop"."pending_orders_per_customer" | row_count         |     5 | 2021-01-01 00:00:00 | 2021-01-02 00:00:00
 ```
+
+:::info
+Note, if a model being monitored has no time filter specified, re_data will compute the metric over the whole table. A `global__` prefix would be added to that metric.
+
+:::
 
 ## re_data run for ten first days of January
 
@@ -146,7 +212,4 @@ $ dbt test --select package:toy_shop
 
 ```
 
-
-Ok, so some of the tests are failing. At least they should fail for you ... 😊
-
-Let's move to the next chapter and investigate what's going on.
+Ok, so all of the tests are actually passing. Let's move to the next chapter and investigate what's going on.
