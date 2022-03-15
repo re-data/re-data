@@ -31,6 +31,10 @@ After intallation you can initialize your project.
 re_data init project_name
 ```
 
+:::info
+Note, that project which re_data initializes already contains 2 seed files (customers, orders) and pending_orders_per_customer model. Those are example tables added together with their re_data configuration. You are free to delete them, also you can follow up tutorial on running monitoring for them: **[toy shop tutorial 😊](/docs/getting_started/toy_shop/toy_shop_data)**
+:::
+
 ## Setup you db connection
 
 dbt stores connection details for your db in `~/.dbt/profiles.yml`. Example setup for dbs supported by re_data here:
