@@ -7,7 +7,7 @@ import { EmptyContent, Table } from '../components';
 import { CellProps, ColumnsProps } from '../components/Table';
 import { ITestSchema, OverviewData, RedataOverviewContext } from '../contexts/redataOverviewContext';
 
-export type TP = {
+export interface TP {
   showRunAt: boolean;
   showModel: boolean;
   modelName?: string | null;
@@ -60,7 +60,6 @@ const generateTestsData = (tests: ITestSchema[], modelName?: string | null) => {
     runAts.add(test.run_at);
 
     if (modelName && test.model !== modelName) {
-      // eslint-disable-next-line no-continue
       continue;
     } else {
       result.push({
@@ -76,7 +75,8 @@ const generateTestsData = (tests: ITestSchema[], modelName?: string | null) => {
   return { result, runAts };
 };
 
-const TestsPartial: React.FC<TP> = ({ showModel, showRunAt, modelName = null }): ReactElement => {
+function TestsPartial(params: TP): ReactElement {
+  const { showModel, showRunAt, modelName = null } = params;
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { tests } = overview;
   const [backUpData, setBackUpData] = useState([]);
@@ -172,6 +172,6 @@ const TestsPartial: React.FC<TP> = ({ showModel, showRunAt, modelName = null }):
         )}
     </>
   );
-};
+}
 
 export default TestsPartial;

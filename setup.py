@@ -5,12 +5,12 @@ from setuptools import find_packages, setup
 HERE = pathlib.Path(__file__).parent
 
 # The text of the README file
-README = (HERE / "README.md").read_text()
+README = (HERE / "README.md").read_text(encoding='utf-8')
 
 
 setup(
     name="re_data",
-    version="0.6.1",
+    version="0.7.0",
     author="redata-team",
     author_email="mateusz@getre.io",
     description="re_data - data quality framework",
@@ -29,6 +29,8 @@ setup(
         "dbt-core>=0.20.0,<1.1.0",
         "yachalk>=0.1.0,<0.2.0",
         "tabulate==0.8.9",
+        "analytics-python",
+        
     ],
     extras_require={"dev": ["isort", "black", "pre-commit"]},
     entry_points={

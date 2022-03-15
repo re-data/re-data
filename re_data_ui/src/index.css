@@ -28,6 +28,12 @@ code {
     background: #392396;
 }
 
+.navlink.active.disabled {
+    pointer-events: none;
+    color: currentColor;
+    cursor: not-allowed;
+}
+
 .details-cell {
     color: #1d39c4;
     background: #f0f5ff;
@@ -75,14 +81,15 @@ select {
     }
 }
 
-li.active-tab {
+.active-tab {
     border-bottom: 3px solid rgba(57,35,150, var(--tw-bg-opacity));
 }
 
 .sticky-nav {
-    @apply z-10 sticky bg-gray-100 py-1 pl-2 flex;
+    @apply sticky bg-gray-100 py-1 pl-2 flex;
     height: 60px;
     top: -1.5rem;
+    z-index: 30;
 }
 
 .css-26l3qy-menu {

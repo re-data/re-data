@@ -17,8 +17,13 @@ re_data notify slack \
 
 Running this command would generate a slack message from the alerts re_data detected.
 
-Supported arguments:
-- start-date (default: today - 7 days) - start date of the period for which you want to generate alerts
-- end-date (default: today - 7 days) - end date of the period for which you want to generate alerts
-- webhook-url - [incoming webhook](https://api.slack.com/messaging/webhooks) gotten from a slack app.
-- subtitle (optional) - extra markdown text passed to the generated message. Often used to add some more context to the message generated.
+- Supported arguments:
+    - start-date (default: today - 7 days) - start date of the period for which you want to generate alerts
+    - end-date (default: today - 7 days) - end date of the period for which you want to generate alerts
+    - webhook-url - [incoming webhook](https://api.slack.com/messaging/webhooks) gotten from a slack app.
+    - subtitle (optional) - extra markdown text passed to the generated message. Often used to add some more context to the message generated.
+- Dbt supported arguments:
+  - profile - Which profile to load. Overrides setting in dbt_project.yml.
+  - target - Which target to load for the given profile.
+  - project-dir - Which directory to look in for the dbt_project.yml file. Default is the current working directory and its parents.
+  - profiles-dir - Which directory to look in for the profiles.yml file. Default = ~/.dbt.

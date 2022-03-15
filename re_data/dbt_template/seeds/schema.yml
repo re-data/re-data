@@ -1,0 +1,38 @@
+version: 2
+
+seeds:
+  - name: customers
+    config:
+      re_data_monitored: true
+      re_data_time_filter: null
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+
+  - name: orders
+    config:
+      re_data_monitored: true
+      re_data_time_filter: time_created
+      re_data_anomaly_detector:
+        name: modified_z_score
+        threshold: 3.5
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: [PENDING_PAYMENT, PAID, SHIPPED, DELIVERED]
+
+      - name: time_created
+        tests:
+          - not_null
+
+      - name: amount
+        tests:
+          - not_null

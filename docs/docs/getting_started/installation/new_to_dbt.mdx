@@ -1,0 +1,166 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Quickstart - new to dbt
+
+You are not using dbt in your company but would like to try to re_data.
+
+**Excellent choice!** re_data can help you with data quality and is a good way to start using dbt in your organization, even if you are:
+ - not yet ready to switch,
+ - happy with the current way of transforming data. 
+
+## Install re_data package
+
+For the new users we recommend starting with installing re_data package in your python environment
+
+```bash
+pip install re_data
+```
+
+re_data includes dbt-core in dependencies so after this step you will already have it installed in your system. But in order to use dbt for your specific db you need to install dbt-postgres, dbt-snowflake, dbt-redshift, dbt-bigquery python package depending on what data warehouse you are planning to use.
+
+## Init your dbt project
+
+After intallation you can initialize your project.
+
+```bash
+re_data init project_name
+```
+
+:::info
+Note, that project which re_data initializes already contains 2 seed files (customers, orders) and pending_orders_per_customer model. Those are example tables added together with their re_data configuration. You are free to delete them, also you can follow up tutorial on running monitoring for them: **[toy shop tutorial 😊](/docs/getting_started/toy_shop/toy_shop_data)**
+:::
+
+## Setup you db connection
+
+dbt stores connection details for your db in `~/.dbt/profiles.yml`. Example setup for dbs supported by re_data here:
+
+<Tabs
+  defaultValue="bigquery"
+  values={[
+    {label: 'BigQuery', value: 'bigquery'},
+    {label: 'Snowflake', value: 'snowflake'},
+    {label: 'Redshift', value: 'redshift'},
+    {label: 'Postgres', value: 'postgres'}
+  ]}>
+
+  <TabItem value="snowflake">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: xxx
+      user: xxx
+      password: xxx
+      database: database
+      warehouse: warehouse
+      schema: toy_shop
+```
+
+</TabItem>
+
+<TabItem value="bigquery">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: xxx
+      schema: toy_shop
+      location: US
+      threads: 4
+```
+</TabItem>
+
+<TabItem value="redshift">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: redshift
+      host: xxx
+      user: xxx
+      password: xxx
+      port: 5439
+      dbname: xxx
+      schema: toy_shop
+      threads: 4
+```
+</TabItem>
+
+<TabItem value="postgres">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: xxx
+      user: xxx
+      password: xxx
+      port: 5432
+      dbname: xxx
+      schema: toy_shop
+      threads: 4
+```
+</TabItem>
+
+</Tabs>
+
+More details on how to set up a profile file for your DB can be found in **[dbt profile docs](https://docs.getdbt.com/reference/profiles.yml)**
+
+## Adding tables to your dbt project
+
+Once you have the dbt project setup and a working connection with the data warehouse, you will need to add your current tables to your dbt project.
+
+The easiest way to do that, assuming you don't want to add additional tables or views in your database, is to add tables you would like to monitor as dbt sources.
+
+Assuming you have tables in your `schema_name` schema, this would be the configuration you would need to set up in dbt.
+
+```yml title="sources/schema.yml"
+version: 2
+sources:
+  - name: schema_name
+    tables:
+      - name: table_name1
+      - name: table_name2
+      - name: table_name3
+```
+
+More details on configuring sources can be found in dbt documentation [here](https://docs.getdbt.com/docs/building-a-dbt-project/using-sources)
+
+Once you add these tables and make them visible in the dbt project (the one created by re_data), you can start monitoring your tables in re_data.
+
+re_data dbt source configuration needs to be your into your `dbt_project.yml`. Here is example of sources configuration in re_data.
+
+
+```yml title="dbt_project.yml"
+sources:
+  project_name:
+    db_schema:
+      table_name1:
+        +re_data_monitored: true
+        +re_data_time_filter: joined_at
+      table_name1:
+        +re_data_monitored: true
+        +re_data_time_filter: joined_at
+```
+
+After creating this configuration, you should be ready to compute re_data models containing metrics & anomalies of your tables. 
+
+## Learning more
+
+We still recommend to follow introduction for **[dbt users](getting_started/installation/for_dbt_users.md)** and our **[example toyshop tutorial 😊](getting_started/toy_shop/toy_shop_data.mdx)** for more details.
