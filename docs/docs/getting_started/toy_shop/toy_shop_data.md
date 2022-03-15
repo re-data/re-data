@@ -2,39 +2,36 @@
 sidebar_position: 1
 ---
 
-# Welcome to a toy shop!
+# Welcome to toy shop!
 
 Welcome to a re_data getting started tutorial. We will prepare, analyze and monitor toy shop data here. The toy shop is a fictional e-commerce shop 🙂
 
 It's an example of how a re_data project can work and help you improve data in your data warehouse
 
 
-## Checking out the toy shop
+## Setting up toy shop project
+Install re_data if you don't have it already
+```bash
+pip install re_data
+```
 
-To run re_data for toy_shop yourself, clone our repo: https://github.com/re-data/re-data and `cd` to toy shop project.
+Set up a dbt project containing the toy shop data using the re_data CLI.
 
 ```bash
-git clone https://github.com/re-data/re-data
-cd re-data/getting_started/toy_shop/
+re_data init toy_shop
+cd toy_shop/
 ```
 
 ## Toy shop data
-Toy shop DB has 4 source & seed tables which we would like to observe:
-  - customers
-  - orders
-  - order_items
-  - companies
+You would observe that the project has two seed files included and we are going to use re_data to monitor these tables
+  - toy_shop/seeds/customers.csv
+  - toy_shop/seeds/orders.csv
 
-And some other dbt models we would like to observe too:
-
-- pending_orders
-- orders_per_age
-- revenue_per_age
-
-You can check them in `models` and `seeds` folders for more details.
+The project also contains a model which can be monitored with re_data as well
+- toy_shop/models/pending_orders_per_customer.sql
 
 :::info
-We use seeds instead of sources much more often than you would normally do in dbt. We do just out of easiness of setup which dbt gives for them.
+We use seeds instead of sources much more often than you would normally do in dbt. This is due to the convenient setup dbt offers for seeds
 :::
 
 ## Profile setup
@@ -60,8 +57,47 @@ toy_shop:
 
 Now you are ready to load toy_shop seed data & create project models. Notice we exclude re_data from being run now, as we will want to run it in a separate process.
 
-```
+```yaml
+# load seed files into the database
 dbt seed
-dbt run-operation create_toy_shop_source_tables
+# Set up the models of toy_shop only, pending_orders_per_customer in this case.
 dbt run --exclude package:re_data
+```
+
+```sql title="Loaded data"
+toy_shop=> SELECT * FROM toy_shop.orders;
+ id  | customer_id |     status      | amount |    time_created
+-----+-------------+-----------------+--------+---------------------
+   1 |           2 | PAID            |  20000 | 2021-01-02 14:10:54
+   2 |           3 | SHIPPED         |  20000 | 2021-01-06 06:39:15
+   3 |           4 | DELIVERED       |  40000 | 2021-01-10 20:46:55
+   4 |           5 | PENDING_PAYMENT |  20000 | 2021-01-10 12:15:55
+   5 |           6 | PAID            |  25000 | 2021-01-09 21:38:54
+   ..
+   ..
+   ..
+toy_shop=> SELECT * FROM toy_shop.customers;
+ id | age |       name
+----+-----+-------------------
+  1 |  25 | Matias Douglas
+  2 |  38 | Raelyn Harrison
+  3 |  34 | Anaya Reed
+  4 |  46 | Mario Harris
+  5 |  28 | John Roberts
+  ..
+  ..
+  ..
+toy_shop=> SELECT * FROM toy_shop.pending_orders_per_customer;
+ id  | amount |     status      |    time_created     | customer_id | age
+-----+--------+-----------------+---------------------+-------------+-----
+   4 |  20000 | PENDING_PAYMENT | 2021-01-10 12:15:55 |           5 |  28
+   8 |   5000 | PENDING_PAYMENT | 2021-01-05 11:41:49 |           9 |  60
+  12 |  20000 | PENDING_PAYMENT | 2021-01-08 13:10:48 |          13 |  38
+  16 |  30000 | PENDING_PAYMENT | 2021-01-05 13:57:46 |           2 |  38
+  20 |  30000 | PENDING_PAYMENT | 2021-01-09 20:07:28 |           6 |  39
+  24 |  10000 | PENDING_PAYMENT | 2021-01-06 06:42:35 |          10 |  29
+  28 |  45000 | PENDING_PAYMENT | 2021-01-02 10:03:27 |          14 |  20
+  ..
+  ..
+  ..
 ```

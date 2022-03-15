@@ -1,25 +1,23 @@
 version: 2
 
 seeds:
-  - name: order_items
-  - name: companies
+  - name: customers
     config:
       re_data_monitored: true
       re_data_time_filter: null
-      re_data_columns:
-        - brand_name
-        - show
-        - year
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
 
   - name: orders
     config:
-      re_data_columns:
-        - amount
-        - status
+      re_data_monitored: true
+      re_data_time_filter: time_created
       re_data_anomaly_detector:
-        name: boxplot
-        whisker_boundary_multiplier: 2.0
-
+        name: modified_z_score
+        threshold: 3.5
     columns:
       - name: customer_id
         tests:
@@ -29,9 +27,9 @@ seeds:
         tests:
           - not_null
           - accepted_values:
-              values: [pending, shipped, delivered, not paid, paid]
+              values: [PENDING_PAYMENT, PAID, SHIPPED, DELIVERED]
 
-      - name: created_at
+      - name: time_created
         tests:
           - not_null
 

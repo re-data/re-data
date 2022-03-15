@@ -22,9 +22,27 @@ After running these commands you should be able to see views similar to those:
 ![GraphExample](/screenshots/ui/alerts.png)
 
 Alerts view lets you see if there are any problems currently detected in your data.
-re_data compares past & current metric computed using **[z_score](https://en.wikipedia.org/wiki/Standard_score)** to determinate if value is suspicious. It also shows any schema changes detected here.
+re_data compares past & current metric computed using **[z_score](https://en.wikipedia.org/wiki/Standard_score)** to determinate if value is suspicious.
 
 From the alerts view, you can go to learn more details about specific alerts in the graph view.
+
+## Schema Changes
+The alerts view also shows any schema changes detected. These schema changes include detecting when columns were added, removed or had its type changed. For tutorial purposes, we modify using the schema of the orders table using macros included in the default template.
+
+```bash
+# this operation adds a column to the orders table
+dbt run-operation schema_change_add_orders_column
+# run re_data models to detect the column added schema change
+re_data run
+# this operation drops the column added earlier
+dbt run-operation schema_change_drop_orders_column
+# re-run re_data models to detect the removed column
+re_data run
+```
+
+Regenerating the user interface shows:
+
+![AlertsWithSchemaChanges](/screenshots/ui/alerts_with_schema_changes.png)
 
 ## Lineage
 
