@@ -1,5 +1,5 @@
 import React, {
-  ReactElement, useContext, useEffect, useMemo, useState,
+  ReactElement, useContext, useMemo, useState,
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
 import { Link } from 'react-router-dom';
@@ -96,53 +96,38 @@ function TestsPartial(params: TP): ReactElement {
   const [data, setData] = useState([]);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState('');
-  const [columns, setColumns] = useState<ColumnsProps[]>([]);
 
-  useEffect(() => {
+  const columns = useMemo(() => {
+    const cols: ColumnsProps[] = [{
+      Header: 'Test Name',
+      accessor: 'test_name',
+    },
+    {
+      Header: 'Status',
+      accessor: 'status',
+      Cell: StatusCell,
+    },
+    {
+      Header: 'Column',
+      accessor: 'column_name',
+    }];
     if (showModel) {
-      setColumns([
-        {
-          Header: 'Test Name',
-          accessor: 'test_name',
-        },
-        {
-          Header: 'Status',
-          accessor: 'status',
-          Cell: StatusCell,
-        },
-        {
-          Header: 'Column',
-          accessor: 'column_name',
-        },
-        {
-          Header: 'Model',
-          accessor: 'model',
-          Cell: ModelCell,
-          type: 'type',
-        },
-      ]);
-    } else if (showRunAt) {
-      setColumns([
-        {
-          Header: 'Test Name',
-          accessor: 'test_name',
-        },
-        {
-          Header: 'Status',
-          accessor: 'status',
-          Cell: StatusCell,
-        },
-        {
-          Header: 'Column',
-          accessor: 'column_name',
-        },
-        {
-          Header: 'Run At',
-          accessor: 'run_at',
-        },
-      ]);
+      cols.push({
+        Header: 'Model',
+        accessor: 'model',
+        Cell: ModelCell,
+        type: 'type',
+      });
     }
-  }, []);
+    if (showRunAt) {
+      cols.push({
+        Header: 'Run At',
+        accessor: 'run_at',
+      });
+    }
+
+    return cols;
+  }, [showModel, showModel]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const option = e.target.value;

@@ -103,7 +103,7 @@ const ModelDetails: React.FC = (): ReactElement => {
         console.log('tab view');
         return (
           <TestsPartial
-            showRunAt
+            showRunAt={false}
             showSearch={false}
             showFilter={false}
             showModel={false}

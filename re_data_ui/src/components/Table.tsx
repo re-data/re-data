@@ -167,6 +167,8 @@ function Table(params: ITable): JSX.Element {
                     {...cell.getCellProps()}
                     className="px-6 py-4 text-sm whitespace-nowrap truncate"
                     role="cell"
+                    title={cell.value}
+                    // title={cell?.column?.id === 'test_name' ? cell.value : undefined}
                   >
                     {cell.render('Cell')}
                   </td>
