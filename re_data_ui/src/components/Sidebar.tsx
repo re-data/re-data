@@ -102,7 +102,7 @@ const Sidebar: React.FC = (): ReactElement => (
       <div
         className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
       >
-        <span className="italic">version 0.6.0</span>
+        <span className="italic">version 0.7.0</span>
       </div>
     </nav>
   </aside>

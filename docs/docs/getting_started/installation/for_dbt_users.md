@@ -40,7 +40,7 @@ On production, you most likely are already running `dbt deps` as part of dbt mod
 
 ### Configuring tables
 
-Computing metrics & anomalies for your dbt models & sources requires configuring them to be observed by re_data. You can do it in a couple of ways, all of them described in **[re_data configuration](reference/config.mdx)** reference part. A simple configuration for a single model contains just information that the model should be monitored & timestamp expression (usually column name) to be used when computing re_data time-based stats.
+Computing metrics & anomalies for your dbt models & sources requires configuring them to be observed by re_data. You can do it in a couple of ways, all of them described in **[re_data configuration](/docs/reference/config)** reference part. A simple configuration for a single model contains just information that the model should be monitored & timestamp expression (usually column name) to be used when computing re_data time-based stats.
 
 ```sql title="<model_name>.sql"
 {{
@@ -57,10 +57,10 @@ select ...
 Let's go over some of the things you alrady can use with re_data dbt package.
 
 For specifics look into reference section:
- - **[re_data dbt models](/reference/models.md)**
- - **[re_data metrics](/reference/metrics/overview_metric.md)**
- - **[re_data tests history & custom tests](/reference/tests/history.md)**
- - **[re_data data cleaning, filtering, normalization, validation macros](/reference/macros/data_cleaning.md)**
+ - **[re_data dbt models](/docs/reference/models)**
+ - **[re_data metrics](/docs/reference/metrics/overview_metric)**
+ - **[re_data tests history & custom tests](/docs/reference/tests/history)**
+ - **[re_data data cleaning, filtering, normalization, validation macros](/docs/reference/macros/data_cleaning)**
 
 dbt auto generated documentation, together with our models graph is also available: **[here](https://re-data.github.io/dbt-re-data/#!/model/model.re_data.re_data_monitored)**
 
@@ -76,7 +76,7 @@ To compute re_data models containing metrics & anomalies you can just run standa
 dbt run --models package:re_data
 ```
 :::info
-single re_data run produces single data points about your tables for a time window. The default time window when you run re_data without parameters is yesterday. (from yesterday's 00:00 AM to up until today 00:00 AM) To compare tables over time you would need to run the re_data dbt package multiple times (by some scheduler, re_data python package or manually).
+single re_data run produces single data points about your tables for a time window. The default time window when you run re_data without parameters is yesterday. (from yesterday's 00:00 AM up until today 00:00 AM) To compare tables over time you would need to run the re_data dbt package multiple times (by some scheduler, re_data python package or manually).
 :::
 
 The following would create tables inside your `{default_schema}_re` schema of your database. This is configured in dbt and can be overwritten in your `dbt_project.yml`.
@@ -96,13 +96,13 @@ re_data python library should be installed in the same python environment where 
 ### Python package functionality
 
 Python package add enabled you to use this functionality:
- - **[re_data overview UI](/reference/cli/overview.md)** - for geneating & displaying re_data UI
- - **[re_data notify](reference/cli/notify.md)** - for notifying external services about alerts (currently Slack)
- - **[re_data run](reference/cli/run.md)** - for easily backfilling re_data dbt data
+ - **[re_data overview UI](/docs/reference/cli/overview)** - for geneating & displaying re_data UI
+ - **[re_data notify](/docs/reference/cli/notify)** - for notifying external services about alerts (currently Slack)
+ - **[re_data run](/docs/reference/cli/run)** - for easily backfilling re_data dbt data
 
 ### Generate & Serve UI
 
-Let's go over 2 commands for generating & serving UI. It works quite similarly to dbt docs. First you create files by calling `re_data overview generate` and then serving already existing files by `re_data overview serve`. For more details on paramters accepted by this & other re_data commands check **[re_data CLI reference](/reference/cli/overview.md)**
+Let's go over 2 commands for generating & serving UI. It works quite similarly to dbt docs. First you create files by calling `re_data overview generate` and then serving already existing files by `re_data overview serve`. For more details on paramters accepted by this & other re_data commands check **[re_data CLI reference](/docs/reference/cli/overview)**
 
 ```
 re_data overview generate
@@ -111,4 +111,4 @@ re_data overview serve
 
 ## Learning more
 
-More detailed instrutions on running re_data are described in out toy_shop **[example tutorial 😊](getting_started/toy_shop/toy_shop_data.md)** 
+More detailed instrutions on running re_data are described in out toy_shop **[example tutorial 😊](/docs/getting_started/toy_shop/toy_shop_data)** 
