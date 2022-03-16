@@ -164,7 +164,7 @@ const generateMetricChartOption = (
       dimension: 0,
       pieces,
       inRange: {
-        color: pieces.length ? '#ee2828' : '#8884d8', // if no anomaly exists, everything is in range hence don't color red
+        color: pieces.length ? '#fb5089' : '#8884d8', // if no anomaly exists, everything is in range hence don't color red
       },
       outOfRange: {
         color: '#8884d8',

@@ -71,12 +71,12 @@
     width: 8px;
     height: 8px;
     border-radius: 8px;
-    background-color: rgba(239, 68, 68, 1);
+    @apply bg-secondary
 }
   
 .failed-dot {
     width: 8px;
     height: 8px;
     border-radius: 8px;
-    background-color: rgba(220, 38, 38, 1);
+    background-color: rgba(239, 68, 68, 1);
 }

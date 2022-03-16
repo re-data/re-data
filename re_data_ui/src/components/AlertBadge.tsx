@@ -10,7 +10,7 @@ const AlertBadge: React.FC<AlertBadgeProps> = (
   const { error } = props;
   let classNames = 'badge rounded-full px-2.5 pt-1 pb-1.5 text-center object-right-top text-white text-xs mr-3';
   if (error) {
-    classNames += ' bg-red-500';
+    classNames += ' bg-secondary';
   } else {
     classNames += ' bg-yellow-300';
   }

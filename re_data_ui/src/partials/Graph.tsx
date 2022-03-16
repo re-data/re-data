@@ -310,7 +310,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
             onClick={() => toggleAlerts('failed_test')}
             className={`flex items-center mr-4 ${alerts === 'failed_test' && 'active-tab'}`}
           >
-            <div className="w-3 h-3 bg-red-600 rounded-full" />
+            <div className="w-3 h-3 bg-red-500 rounded-full" />
             <p className="text-sm font-medium ml-1">Failed Test</p>
           </button>
           <button
@@ -320,7 +320,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
             onClick={() => toggleAlerts('anomaly')}
             className={`flex items-center mr-4 ${alerts === 'anomaly' && 'active-tab'}`}
           >
-            <div className="w-3 h-3 bg-red-500 rounded-full" />
+            <div className="w-3 h-3 bg-secondary rounded-full" />
             <p className="text-sm font-medium ml-1">Anomaly</p>
           </button>
           <button
