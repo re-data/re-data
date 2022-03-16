@@ -60,17 +60,30 @@ type generateTestsDataProps = {
   tests: ITestSchema[]
   modelName?: string | null
   aggregatedModels: Map<string, ReDataModelDetails>;
+  runAtsData?: Record<string, []>;
 }
 
-const generateTestsData = ({ tests, aggregatedModels, modelName } : generateTestsDataProps) => {
-  let result: Array<ITestSchema> = [];
+const generateTestsData = (props: generateTestsDataProps) => {
+  const {
+    tests, aggregatedModels, runAtsData, modelName,
+  } = props;
+  const result: Array<ITestSchema> = [];
   const runAts = new Set<string>();
 
   if (modelName) {
-    if (aggregatedModels.has(modelName)) {
+    if (aggregatedModels.has(modelName) && runAtsData) {
       const aggregate = aggregatedModels.get(modelName);
-      result = aggregate?.tests || [];
-      // runAts.add(aggregate?.runAt || '');
+      const x = Object.keys(runAtsData).sort().pop();
+
+      const aggregateTests = aggregate?.tests || [];
+      if (x) {
+        for (let index = 0; index < aggregateTests.length; index++) {
+          const test = aggregateTests[index];
+          if (x === test.run_at) {
+            result.push({ ...test });
+          }
+        }
+      }
     }
   } else {
     for (let index = 0; index < tests.length; index++) {
@@ -91,7 +104,7 @@ function TestsPartial(params: TP): ReactElement {
     showSearch = true,
   } = params;
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { tests, aggregated_models: aggregatedModels } = overview;
+  const { tests, aggregated_models: aggregatedModels, runAts: runAtsData } = overview;
   const [backUpData, setBackUpData] = useState([]);
   const [data, setData] = useState([]);
   const [options, setOptions] = useState([]);
@@ -144,6 +157,7 @@ function TestsPartial(params: TP): ReactElement {
       tests,
       modelName,
       aggregatedModels,
+      runAtsData,
     });
     const { result, runAts } = initialTests;
 

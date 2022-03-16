@@ -56,8 +56,6 @@ const generateGraph = (
   const failedKeys = failedTests ? Object.keys(failedTests) : [];
   const failedTestKeys = new Set([...failedKeys]);
 
-  console.log('failedTestKeys', failedTestKeys);
-
   if (modelName) {
     const {
       parent_map: parentNodes,

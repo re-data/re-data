@@ -100,7 +100,6 @@ const ModelDetails: React.FC = (): ReactElement => {
       } if (tab === ModelTabs.ANOMALIES) {
         return <MetricCharts modelDetails={modelDetails} showAnomalies />;
       } if (tab === ModelTabs.TESTS) {
-        console.log('tab view');
         return (
           <TestsPartial
             showRunAt={false}

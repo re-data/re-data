@@ -23,9 +23,17 @@ interface RawOverviewData {
   data: string;
 }
 
+type formatOverviewDataReturnType = {
+  aggregatedModels: Map <string, ReDataModelDetails>,
+  tests: ITestSchema[],
+  failedTests: Record <string, []>,
+  runAts: Record <string, []>,
+  alerts: Alert[],
+};
+
 const formatOverviewData = (
   data: Array<RawOverviewData>,
-): [Map<string, ReDataModelDetails>, ITestSchema[], Record<string, []>, Alert[]] => {
+): formatOverviewDataReturnType => {
   const result = new Map<string, ReDataModelDetails>();
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
@@ -34,6 +42,7 @@ const formatOverviewData = (
   const failedTestsObject: any = {};
   const anomaliesObject: any = {};
   const schemaChangesObject: any = {};
+  const runAtObject: any = {};
 
   const modelObjects: any = {};
   // const testsObject: Record<string, []> = {};
@@ -86,8 +95,10 @@ const formatOverviewData = (
       schema.run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss');
 
       details.tests.push(schema);
+      // console.log('schema: ', schema);
+      runAtObject[schema.run_at] = [...(runAtObject[schema.run_at] || []), schema];
+      // runAtObject[model] = [...(runAtObject[model] || []), schema];
       if (schema.status?.toLowerCase() === 'fail') {
-        // console.log('shema ', schema);
         failedTestsObject[model] = [...(failedTestsObject[model] || []), schema];
       }
 
@@ -127,13 +138,17 @@ const formatOverviewData = (
   modelObjects.schema_changes = schemaChangesObject;
   modelObjects.failedTestsObject = failedTestsObject;
   // console.log('testsObject', testsObject, modelObjects);
-  console.log('modelObjects', modelObjects);
-  // console.log('details', details);
-  // result.failedTests = modelObjects.failedTestsObject;
+  // console.log('modelObjects', modelObjects);
+  console.log('runAts', runAtObject);
 
-  // console.log(xy, Object.keys(xy).length);
-  // console.log(xy, Object.keys(xy).length, tests);
-  return [result, tests, failedTestsObject, alertsChanges];
+  return {
+    aggregatedModels: result,
+    tests,
+    failedTests: failedTestsObject,
+    runAts: runAtObject,
+    alerts: alertsChanges,
+  };
+  // return [result, tests, failedTestsObject, alertsChanges];
 };
 
 const formatDbtData = (graphData: DbtGraph) => {
@@ -166,6 +181,7 @@ const Dashboard: React.FC = (): ReactElement => {
     dbtMapping: {},
     modelNodes: [],
     failedTests: {},
+    runAts: {},
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -191,8 +207,15 @@ const Dashboard: React.FC = (): ReactElement => {
         dbtMapping: {},
         modelNodes: [],
         failedTests: {},
+        runAts: {},
       };
-      const [aggregatedModels, tests, failedTests, alerts] = formatOverviewData(overviewData);
+      const {
+        aggregatedModels,
+        tests,
+        failedTests,
+        runAts,
+        alerts,
+      } = formatOverviewData(overviewData);
 
       const { dbtMapping, modelNodes } = formatDbtData(graphData);
 
@@ -203,6 +226,7 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.dbtMapping = dbtMapping;
       overview.modelNodes = modelNodes;
       overview.failedTests = failedTests;
+      overview.runAts = runAts;
 
       console.log('overview -> ', overview);
       setReDataOverview(overview);
