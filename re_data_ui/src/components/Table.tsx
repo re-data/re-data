@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, memo } from 'react';
 import {
@@ -71,6 +72,7 @@ function Table(params: ITable): JSX.Element {
   const {
     columns, data, showSearch = true, RightComponent = null,
   } = params;
+  console.log('columns', columns);
   const {
     getTableProps,
     getTableBodyProps,
@@ -120,16 +122,15 @@ function Table(params: ITable): JSX.Element {
 
       <table
         {...getTableProps()}
-        className="w-full table-auto divide-y divide-gray-200"
-        // className="min-w-full w-full table-fixed divide-y divide-gray-200"
+        className="w-full flex flex-col divide-y divide-gray-200"
       >
         <thead className="bg-gray-50">
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr className="flex-1 flex" {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th
                   scope="col"
-                  className={`${check ? 'px-2' : 'px-6'} py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider`}
+                  className={`${check ? 'px-2' : 'px-6'} ${column?.id === 'test_name' ? ' w-3/5 max-w-3/5' : column?.id === 'model' ? ' w-2/5' : ' w-1/5'}  py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider`}
                   {...column.getHeaderProps(
                     column.getSortByToggleProps(),
                   )}
@@ -164,16 +165,13 @@ function Table(params: ITable): JSX.Element {
           {page.map((row) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()} key={row?.id}>
+              <tr className="flex-1 flex" {...row.getRowProps()} key={row?.id}>
                 {row.cells.map((cell) => (
                   <td
                     {...cell.getCellProps()}
-                    className={`${check ? 'px-2' : 'px-6'} ${cell?.column?.id === 'test_name' ? 'w-100 max-w-200' : ''} py-4 text-sm truncate`}
-                    // className={`${check ? 'px-2' : 'px-6'} py-4
-                    // text-sm whitespace-nowrap`}
+                    className={`${check ? 'px-2' : 'px-6'} ${cell?.column?.id === 'test_name' ? ' w-3/5 max-w-3/5' : cell?.column?.id === 'model' ? ' w-2/5' : ' w-1/5'} truncate py-4 text-sm`}
                     role="cell"
                     title={cell.value}
-                    // title={cell?.column?.id === 'test_name' ? cell.value : undefined}
                   >
                     {cell.render('Cell')}
                   </td>

@@ -101,13 +101,16 @@ const ModelDetails: React.FC = (): ReactElement => {
         return <MetricCharts modelDetails={modelDetails} showAnomalies />;
       } if (tab === ModelTabs.TESTS) {
         return (
-          <TestsPartial
-            showRunAt={false}
-            showSearch={false}
-            showFilter={false}
-            showModel={false}
-            modelName={fullTableName}
-          />
+          <>
+            <p className="text-center text-xs font-bold mb-2">(last test run)</p>
+            <TestsPartial
+              showRunAt={false}
+              showSearch={false}
+              showFilter={false}
+              showModel={false}
+              modelName={fullTableName}
+            />
+          </>
         );
       }
       return (
@@ -125,14 +128,7 @@ const ModelDetails: React.FC = (): ReactElement => {
 
         <div>
           <nav className="side-nav transition ease-in-out delay-150 sticky top-0 bg-white z-10">
-            <ul className="">
-              <li
-                className={activeTab === ModelTabs.METRICS ? 'active-tab' : ''}
-                role="presentation"
-                onClick={showMetrics}
-              >
-                Metrics
-              </li>
+            <ul>
               <li
                 className={activeTab === ModelTabs.ANOMALIES ? 'active-tab' : ''}
                 role="presentation"
@@ -141,18 +137,25 @@ const ModelDetails: React.FC = (): ReactElement => {
                 Anomalies
               </li>
               <li
-                className={activeTab === ModelTabs.SCHEMA_CHANGES ? 'active-tab' : ''}
-                role="presentation"
-                onClick={showSchema}
-              >
-                Schema
-              </li>
-              <li
                 className={activeTab === ModelTabs.TESTS ? 'active-tab' : ''}
                 role="presentation"
                 onClick={showTests}
               >
                 Tests
+              </li>
+              <li
+                className={activeTab === ModelTabs.METRICS ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showMetrics}
+              >
+                Metrics
+              </li>
+              <li
+                className={activeTab === ModelTabs.SCHEMA_CHANGES ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showSchema}
+              >
+                Schema
               </li>
             </ul>
           </nav>

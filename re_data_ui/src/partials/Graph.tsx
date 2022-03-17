@@ -243,8 +243,6 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
     alerts,
   });
 
-  // console.log('overview test ', overview.tests);
-
   const toggleModelType = (type: string) => {
     setModelType((prevType: string | null) => {
       if (prevType === type) {
