@@ -9,6 +9,7 @@ import {
   ITestSchema, OverviewData,
   ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
+import colors from '../utils/colors.js';
 
 export interface TP {
   showRunAt: boolean;
@@ -188,7 +189,7 @@ function TestsPartial(params: TP): ReactElement {
           />
         ) : (
           <EmptyContent text={modelName ? `No test for '${modelName}' model` : 'No Test'}>
-            <FaRegSmileWink size={80} color="#392396" />
+            <FaRegSmileWink size={80} color={colors.primary} />
           </EmptyContent>
         )}
     </>

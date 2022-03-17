@@ -11,6 +11,7 @@ import {
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
 import { GraphPartial, TestsPartial } from '../partials';
+import colors from '../utils/colors.js';
 
 const showA = true;
 
@@ -185,7 +186,7 @@ const Tables: React.FC = (): ReactElement => {
       ) : (
         <div className="bg-white my-4 py-6 rounded-md">
           <EmptyContent text="Please type a table name in the input above">
-            <FaRegSmileWink size={80} color="#392396" />
+            <FaRegSmileWink size={80} color={colors.primary} />
           </EmptyContent>
         </div>
       )}

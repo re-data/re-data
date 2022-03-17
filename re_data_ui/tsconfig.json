@@ -25,7 +25,7 @@
     "downlevelIteration": true,
   },
   "include": [
-    "src",
+    "src", "src/utils/colors.js",
   ],
   "exclude": [
     "node_modules",
