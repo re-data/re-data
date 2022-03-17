@@ -98,6 +98,8 @@ function Table(params: ITable): JSX.Element {
     usePagination,
   );
 
+  const check = (showSearch === false) && (RightComponent === null);
+
   return (
     <>
       {(showSearch || RightComponent) && (
@@ -118,7 +120,8 @@ function Table(params: ITable): JSX.Element {
 
       <table
         {...getTableProps()}
-        className="min-w-full w-full table-fixed divide-y divide-gray-200"
+        className="w-full table-auto divide-y divide-gray-200"
+        // className="min-w-full w-full table-fixed divide-y divide-gray-200"
       >
         <thead className="bg-gray-50">
           {headerGroups.map((headerGroup) => (
@@ -126,7 +129,7 @@ function Table(params: ITable): JSX.Element {
               {headerGroup.headers.map((column) => (
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className={`${check ? 'px-2' : 'px-6'} py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider`}
                   {...column.getHeaderProps(
                     column.getSortByToggleProps(),
                   )}
@@ -165,7 +168,9 @@ function Table(params: ITable): JSX.Element {
                 {row.cells.map((cell) => (
                   <td
                     {...cell.getCellProps()}
-                    className="px-6 py-4 text-sm whitespace-nowrap truncate"
+                    className={`${check ? 'px-2' : 'px-6'} ${cell?.column?.id === 'test_name' ? 'w-100 max-w-200' : ''} py-4 text-sm truncate`}
+                    // className={`${check ? 'px-2' : 'px-6'} py-4
+                    // text-sm whitespace-nowrap`}
                     role="cell"
                     title={cell.value}
                     // title={cell?.column?.id === 'test_name' ? cell.value : undefined}

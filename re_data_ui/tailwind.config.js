@@ -6,6 +6,12 @@ module.exports = {
   theme: {
     extend: {
       colors,
+      width: {
+        100: '100px',
+      },
+      maxWidth: {
+        200: '200px',
+      },
     },
   },
   variants: {

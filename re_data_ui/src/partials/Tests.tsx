@@ -167,6 +167,14 @@ function TestsPartial(params: TP): ReactElement {
     setData(result as []);
   }, [tests, modelName]);
 
+  const check = !showFilter ? null : () => (
+    <RightComponent
+      options={options}
+      value={selectedOption}
+      handleChange={handleChange}
+    />
+  );
+
   return (
     <>
       {(data.length)
@@ -175,17 +183,7 @@ function TestsPartial(params: TP): ReactElement {
             columns={columns}
             data={data}
             showSearch={showSearch}
-            RightComponent={() => (
-              <>
-                {showFilter && (
-                  <RightComponent
-                    value={selectedOption}
-                    options={options}
-                    handleChange={handleChange}
-                  />
-                )}
-              </>
-            )}
+            RightComponent={check}
           />
         ) : (
           <EmptyContent text={modelName ? `No test for '${modelName}' model` : 'No Test'}>
