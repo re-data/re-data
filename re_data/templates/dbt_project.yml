@@ -8,10 +8,10 @@ profile: '{{project_name}}'
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
 # found in the "models/" directory. You probably won't need to change these!
-source-paths: ["models"]
+model-paths: ["models"]
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
-data-paths: ["data"]
+seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
@@ -19,6 +19,8 @@ target-path: "target"  # directory which will store compiled SQL files
 clean-targets: ["target", "dbt_modules", "dbt_packages"]
 
 vars:
-  re_data:alerting_z_score: 3
+  re_data:anomaly_detector:
+    name: modified_z_score
+    threshold: 3
   re_data:schemas:
     - example_schema # this schemas will be monitored
