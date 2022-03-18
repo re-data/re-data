@@ -76,9 +76,9 @@ const generateGraph = (
       index: '0',
       modelId,
       details,
-      failedTests: failedTestKeys.has(modelId),
-      anomalies: anomalies.size > 0,
-      schemaChanges: schemaChanges.length > 0,
+      failedTests: failedTestKeys?.has(modelId),
+      anomalies: anomalies?.size > 0,
+      schemaChanges: schemaChanges?.length > 0,
     });
     elements.push(n);
     elementObj[modelId] = '0';
@@ -86,11 +86,11 @@ const generateGraph = (
     const parentNodesLength = modelParentNodes.length;
 
     for (let index = 0; index < parentNodesLength; index++) {
-      const parent = modelParentNodes[index];
-      const parentDetails = allNodes[parent];
+      const parent = modelParentNodes?.[index];
+      const parentDetails = allNodes?.[parent];
       const { resource_type: resourceType } = parentDetails;
 
-      if (supportedResTypes.has(resourceType)) {
+      if (supportedResTypes?.has(resourceType)) {
         const parentModelId = generateModelId(parentDetails);
         const {
           anomalies: parentAnomalies,
@@ -102,9 +102,9 @@ const generateGraph = (
           modelId: parentModelId,
           index: key,
           details: parentDetails,
-          failedTests: failedTestKeys.has(parentModelId),
-          anomalies: parentAnomalies.size > 0,
-          schemaChanges: parentSchemaChanges.length > 0,
+          failedTests: failedTestKeys?.has(parentModelId),
+          anomalies: parentAnomalies?.size > 0,
+          schemaChanges: parentSchemaChanges?.length > 0,
         });
         elements.push(parentNode);
         elementObj[parentModelId] = key?.toString();
@@ -117,14 +117,14 @@ const generateGraph = (
     }
 
     for (let index = 0; index < modelChildNodes.length; index++) {
-      const child = modelChildNodes[index];
+      const child = modelChildNodes?.[index];
 
-      const childDetails = allNodes[child];
+      const childDetails = allNodes?.[child];
       const {
         database, schema, name,
         resource_type: resourceType,
       } = childDetails;
-      if (supportedResTypes.has(resourceType)) {
+      if (supportedResTypes?.has(resourceType)) {
         const childModelId = `${database}.${schema}.${name}`.toLowerCase();
         const {
           anomalies: childAnomalies,
@@ -136,9 +136,9 @@ const generateGraph = (
           modelId: childModelId,
           index: key,
           details: childDetails,
-          anomalies: childAnomalies.size > 0,
-          failedTests: failedTestKeys.has(childModelId),
-          schemaChanges: childSchemaChanges.length > 0,
+          anomalies: childAnomalies?.size > 0,
+          failedTests: failedTestKeys?.has(childModelId),
+          schemaChanges: childSchemaChanges?.length > 0,
         });
         elements.push(childNode);
         elementObj[childModelId] = key?.toString();
@@ -151,9 +151,9 @@ const generateGraph = (
     }
   } else {
     for (let index = 0; index < modelNodes.length; index++) {
-      const currentNode = modelNodes[index];
-      const modelTitle = dbtMapping[currentNode.label];
-      const details = allNodes[modelTitle];
+      const currentNode = modelNodes?.[index];
+      const modelTitle = dbtMapping?.[currentNode.label];
+      const details = allNodes?.[modelTitle];
       const modelId = generateModelId(details);
 
       // for monitored nodes
@@ -161,18 +161,18 @@ const generateGraph = (
       const isNodeMonitored = config?.re_data_monitored || false;
       const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
 
-      if (alerts === 'anomaly' && anomalies.size < 1) {
+      if (alerts === 'anomaly' && anomalies?.size < 1) {
         continue;
-      } else if (alerts === 'schema_change' && schemaChanges.length < 1) {
+      } else if (alerts === 'schema_change' && schemaChanges?.length < 1) {
         continue;
-      } else if (alerts === 'failed_test' && !failedTestKeys.has(modelId)) {
+      } else if (alerts === 'failed_test' && !failedTestKeys?.has(modelId)) {
         continue;
       }
       if (monitored && !isNodeMonitored) {
         continue;
       }
       // check if model type exists and this currentNode is of that type
-      if (modelType && modelType !== details.resource_type) {
+      if (modelType && modelType !== details?.resource_type) {
         continue;
       }
 
@@ -180,9 +180,9 @@ const generateGraph = (
         index,
         modelId,
         details,
-        failedTests: failedTestKeys.has(modelId),
-        anomalies: anomalies.size > 0,
-        schemaChanges: schemaChanges.length > 0,
+        failedTests: failedTestKeys?.has(modelId),
+        anomalies: anomalies?.size > 0,
+        schemaChanges: schemaChanges?.length > 0,
       });
       elementObj[modelId] = index?.toString();
 
@@ -190,11 +190,11 @@ const generateGraph = (
 
       if (details.resource_type !== 'source') {
         const d = details as DbtNode;
-        const parentNodes = new Set(d.depends_on.nodes);
+        const parentNodes = new Set(d?.depends_on.nodes);
         parentNodes.forEach((parent) => {
-          const parentNode: DbtNode | DbtSource = dbtNodes[parent]
-            ? dbtNodes[parent]
-            : dbtSources[parent];
+          const parentNode: DbtNode | DbtSource = dbtNodes?.[parent]
+            ? dbtNodes?.[parent]
+            : dbtSources?.[parent];
           if (parentNode) {
             const parentModelId = generateModelId(parentNode);
             edgesArr.push({
@@ -207,10 +207,10 @@ const generateGraph = (
     }
   }
 
-  for (let index = 0; index < edgesArr.length; index++) {
-    const { from, to } = edgesArr[index];
+  for (let index = 0; index < edgesArr?.length; index++) {
+    const { from, to } = edgesArr?.[index];
     const edge = generateEdge({ obj: elementObj, from, to });
-    if (edge.source && edge.target) {
+    if (edge?.source && edge?.target) {
       elements.push(edge);
     }
   }
