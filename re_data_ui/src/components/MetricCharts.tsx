@@ -24,8 +24,6 @@ import {
 import colors from '../utils/colors.js';
 import EmptyContent from './EmptyContent';
 
-console.log('colors => ', colors);
-
 export interface MetricChartsProps {
   modelDetails: ReDataModelDetails;
   showAnomalies: boolean;

@@ -72,7 +72,7 @@ function Table(params: ITable): JSX.Element {
   const {
     columns, data, showSearch = true, RightComponent = null,
   } = params;
-  console.log('columns', columns);
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -102,6 +102,8 @@ function Table(params: ITable): JSX.Element {
 
   const check = (showSearch === false) && (RightComponent === null);
 
+  const styledPadding = check ? 'px-2' : 'px-6';
+
   return (
     <>
       {(showSearch || RightComponent) && (
@@ -130,7 +132,7 @@ function Table(params: ITable): JSX.Element {
               {headerGroup.headers.map((column) => (
                 <th
                   scope="col"
-                  className={`${check ? 'px-2' : 'px-6'} ${column?.id === 'test_name' ? ' w-3/5 max-w-3/5' : column?.id === 'model' ? ' w-2/5' : ' w-1/5 flex-auto '}  py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider`}
+                  className={`${styledPadding} ${column?.id === 'test_name' ? ' w-3/5 max-w-3/5' : column?.id === 'model' ? ' w-2/5' : ' w-1/5 flex-auto '} py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider`}
                   {...column.getHeaderProps(
                     column.getSortByToggleProps(),
                   )}
@@ -169,7 +171,7 @@ function Table(params: ITable): JSX.Element {
                 {row.cells.map((cell) => (
                   <td
                     {...cell.getCellProps()}
-                    className={`${check ? 'px-2' : 'px-6'} ${cell?.column?.id === 'test_name' ? ' w-3/5 max-w-3/5' : cell?.column?.id === 'model' ? ' w-2/5' : ' w-1/5 flex-auto '} truncate py-4 text-sm`}
+                    className={`${styledPadding} ${cell?.column?.id === 'test_name' ? ' w-3/5 max-w-3/5' : cell?.column?.id === 'model' ? ' w-2/5' : ' w-1/5 flex-auto '} truncate py-4 text-sm`}
                     role="cell"
                     title={cell.value}
                   >

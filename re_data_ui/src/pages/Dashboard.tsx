@@ -1,5 +1,5 @@
-/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable camelcase */
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
@@ -38,14 +38,8 @@ const formatOverviewData = (
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
 
-  const testsObject: any = {};
   const failedTestsObject: any = {};
-  const anomaliesObject: any = {};
-  const schemaChangesObject: any = {};
   const runAtObject: any = {};
-
-  const modelObjects: any = {};
-  // const testsObject: Record<string, []> = {};
   data.forEach((item: RawOverviewData) => {
     if (!item.table_name) return;
     const model = stripQuotes(item.table_name).toLowerCase();
@@ -85,33 +79,24 @@ const formatOverviewData = (
       const schema = JSON.parse(item.data) as ITableSchema;
       schema.column_name = columnName;
       details.tableSchema.push(schema);
-
-      schemaChangesObject[model] = [...(schemaChangesObject[model] || []), schema];
     } else if (item.type === 'test') {
       const schema = JSON.parse(item.data) as ITestSchema;
+      const run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss') as string;
 
       schema.column_name = columnName;
       schema.model = model;
-      schema.run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss');
+      schema.run_at = run_at;
 
       details.tests.push(schema);
-      // console.log('schema: ', schema);
-      runAtObject[schema.run_at] = [...(runAtObject[schema.run_at] || []), schema];
-      // runAtObject[model] = [...(runAtObject[model] || []), schema];
+      runAtObject[run_at] = [...(runAtObject[run_at] || []), schema];
       if (schema.status?.toLowerCase() === 'fail') {
         failedTestsObject[model] = [...(failedTestsObject[model] || []), schema];
       }
-
-      testsObject[model] = [...(testsObject[model] || []), schema];
       tests.push(schema);
     } else if (item.type === 'anomaly') {
       const anomaly = JSON.parse(item.data) as Anomaly;
       anomaly.column_name = columnName;
       appendToMapKey(details.anomalies, columnName, anomaly);
-
-      anomaliesObject[model] = [...(anomaliesObject[model] || []), anomaly];
-      // console.log('anomaly -> ', anomaly, columnName, model);
-      // console.log('anomaly -> ', anomaly, details);
     }
   });
   // loop through each table/model and sort by ascending order by
@@ -132,15 +117,6 @@ const formatOverviewData = (
   }
   alertsChanges.sort((a, b) => dayjs(b.time_window_end).diff(a.time_window_end));
 
-  // const xy = toObject(tests, 'test_name');
-  modelObjects.tests = testsObject;
-  modelObjects.anomalies = anomaliesObject;
-  modelObjects.schema_changes = schemaChangesObject;
-  modelObjects.failedTestsObject = failedTestsObject;
-  // console.log('testsObject', testsObject, modelObjects);
-  // console.log('modelObjects', modelObjects);
-  console.log('runAts', runAtObject);
-
   return {
     aggregatedModels: result,
     tests,
@@ -148,7 +124,6 @@ const formatOverviewData = (
     runAts: runAtObject,
     alerts: alertsChanges,
   };
-  // return [result, tests, failedTestsObject, alertsChanges];
 };
 
 const formatDbtData = (graphData: DbtGraph) => {
@@ -221,8 +196,8 @@ const Dashboard: React.FC = (): ReactElement => {
 
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
-      overview.graph = graphData; // []
-      overview.tests = tests; // []
+      overview.graph = graphData;
+      overview.tests = tests;
       overview.dbtMapping = dbtMapping;
       overview.modelNodes = modelNodes;
       overview.failedTests = failedTests;
