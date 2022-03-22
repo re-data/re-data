@@ -112,3 +112,7 @@ re_data overview serve
 ## Learning more
 
 More detailed instrutions on running re_data are described in out toy_shop **[example tutorial 😊](/docs/getting_started/toy_shop/toy_shop_data)** 
+
+:::info
+### Got stuck anywhere?
+If you have more questions, got stuck anywhere, or something is not working as expected, please let us know on **[Slack! 😊](https://www.getre.io/slack)**, we will help you asap, and it will help us improve this quick start guide.
