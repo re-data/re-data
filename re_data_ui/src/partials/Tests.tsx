@@ -61,7 +61,7 @@ type generateTestsDataProps = {
   tests: ITestSchema[]
   modelName?: string | null
   aggregatedModels: Map<string, ReDataModelDetails>;
-  runAtsData?: Record<string, []>;
+  runAtsData?: Record<string, ITestSchema[]>;
 }
 
 const generateTestsData = (props: generateTestsDataProps) => {

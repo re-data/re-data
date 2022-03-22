@@ -176,8 +176,8 @@ export interface OverviewData {
   loading: boolean;
   dbtMapping: Record<string, string>;
   modelNodes: SelectOptionProps[];
-  failedTests?: Record<string, []>;
-  runAts?: Record<string, []>;
+  failedTests?: Record<string, ITestSchema[]>;
+  runAts?: Record<string, ITestSchema[]>;
 }
 
 export interface SelectOptionProps {

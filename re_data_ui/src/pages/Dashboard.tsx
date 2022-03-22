@@ -26,8 +26,8 @@ interface RawOverviewData {
 type formatOverviewDataReturnType = {
   aggregatedModels: Map <string, ReDataModelDetails>,
   tests: ITestSchema[],
-  failedTests: Record <string, []>,
-  runAts: Record <string, []>,
+  failedTests: Record <string, ITestSchema[]>,
+  runAts: Record <string, ITestSchema[]>,
   alerts: Alert[],
 };
 
@@ -38,8 +38,8 @@ const formatOverviewData = (
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
 
-  const failedTestsObject: any = {};
-  const runAtObject: any = {};
+  const failedTestsObject: Record <string, ITestSchema[]> = {};
+  const runAtObject: Record <string, ITestSchema[]> = {};
   data.forEach((item: RawOverviewData) => {
     if (!item.table_name) return;
     const model = stripQuotes(item.table_name).toLowerCase();
