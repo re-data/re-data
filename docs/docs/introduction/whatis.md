@@ -6,7 +6,7 @@ sidebar_position: 1
 
 re_data is an open-source data reliability framework for modern data stack. 😊
 
-Currently, re_data focuses on observing the dbt project (together with underlaying data warehouse - Postgres, BigQuery, Snowflake, Redshift).
+Currently, re_data focuses on observing the dbt project (together with underlying data warehouse - Postgres, BigQuery, Snowflake, Redshift).
 
 # Live demo
 
@@ -38,9 +38,12 @@ re_data sends notifications about suspicious data patterns, schema changes to yo
 
 # Getting started
 
-re_data is very easy to add to existing dbt projects. Check out **[installation](/docs/getting_started/installation/for_dbt_users)** instructions and follow **[toy shop](/docs/getting_started/toy_shop/toy_shop_data)** tutorial to see how you can generate re_data reliability data & UI for your data warehouse.
+re_data is very easy to add to existing dbt projects. Check out **[quickstart](/docs/getting_started/installation/for_dbt_users)** instructions and follow **[toy shop](/docs/getting_started/toy_shop/toy_shop_data)** tutorial to see how you can generate re_data reliability data & UI for your data warehouse.
 
 If you are not using dbt, re_data can still be a great option to start monitoring your existing tables. Check out installation for new users: **[new to dbt](/docs/getting_started/installation/new_to_dbt)** in this case.
 
 
-Have more questions? Check out the rest of re_data docs, or ask as on **[Slack! 😊](https://www.getre.io/slack)** (we are very responsive there)
+:::info
+### More questions?
+Ask as on **[Slack! 😊](https://www.getre.io/slack)**. We will help you asap and you will help us improve our documentation
+:::
