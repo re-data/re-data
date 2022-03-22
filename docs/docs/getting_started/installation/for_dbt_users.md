@@ -54,7 +54,7 @@ select ...
 
 ### dbt package functionality
 
-Let's go over some of the things you alrady can use with re_data dbt package.
+Let's go over some of the things you already can use with re_data dbt package.
 
 For specifics look into reference section:
  - **[re_data dbt models](/docs/reference/models)**
@@ -96,7 +96,7 @@ re_data python library should be installed in the same python environment where 
 ### Python package functionality
 
 Python package add enabled you to use this functionality:
- - **[re_data overview UI](/docs/reference/cli/overview)** - for geneating & displaying re_data UI
+ - **[re_data overview UI](/docs/reference/cli/overview)** - for generating & displaying re_data UI
  - **[re_data notify](/docs/reference/cli/notify)** - for notifying external services about alerts (currently Slack)
  - **[re_data run](/docs/reference/cli/run)** - for easily backfilling re_data dbt data
 
@@ -112,3 +112,7 @@ re_data overview serve
 ## Learning more
 
 More detailed instrutions on running re_data are described in out toy_shop **[example tutorial 😊](/docs/getting_started/toy_shop/toy_shop_data)** 
+
+:::info
+### Got stuck anywhere?
+If you have more questions, got stuck anywhere, or something is not working as expected, please let us know on **[Slack! 😊](https://www.getre.io/slack)**, we will help you asap, and it will help us improve this quick start guide.

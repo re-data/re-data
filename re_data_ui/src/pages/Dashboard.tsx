@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable camelcase */
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
@@ -33,8 +32,8 @@ type formatOverviewDataReturnType = {
 
 const formatOverviewData = (
   data: Array<RawOverviewData>,
+  result: Map<string, ReDataModelDetails>,
 ): formatOverviewDataReturnType => {
-  const result = new Map<string, ReDataModelDetails>();
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
 
@@ -184,6 +183,21 @@ const Dashboard: React.FC = (): ReactElement => {
         failedTests: {},
         runAts: {},
       };
+      const { dbtMapping, modelNodes } = formatDbtData(graphData);
+      const result = new Map<string, ReDataModelDetails>();
+      for (const node of modelNodes) {
+        const obj: ReDataModelDetails = {
+          anomalies: new Map<string, Array<Anomaly>>(),
+          schemaChanges: [],
+          metrics: {
+            tableMetrics: new Map<string, Array<Metric>>(),
+            columnMetrics: new Map<string, Array<Metric>>(),
+          },
+          tableSchema: [],
+          testSchema: [],
+        };
+        result.set(node.value, obj);
+      }
       const {
         aggregatedModels,
         tests,
@@ -192,7 +206,7 @@ const Dashboard: React.FC = (): ReactElement => {
         alerts,
       } = formatOverviewData(overviewData);
 
-      const { dbtMapping, modelNodes } = formatDbtData(graphData);
+      // const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData, result);
 
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;

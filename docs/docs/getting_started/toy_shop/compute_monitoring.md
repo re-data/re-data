@@ -213,3 +213,8 @@ $ dbt test --select package:toy_shop
 ```
 
 Ok, so all of the tests are actually passing. Let's move to the next chapter and investigate what's going on.
+
+:::info
+### Is something not clear?
+If you have more questions, got stuck anywhere, or something is not working as expected, please let us know on **[Slack! 😊](https://www.getre.io/slack)**, we will help you asap, and it will help us improve this quick start guide.
+:::
