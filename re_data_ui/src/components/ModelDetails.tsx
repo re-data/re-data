@@ -95,6 +95,17 @@ const ModelDetails = ({ activeTab, toggleTabs }: ModelDetailsTypes): ReactElemen
         return <MetricCharts modelDetails={modelDetails} showAnomalies={false} />;
       } if (tab === ModelTabs.ANOMALIES) {
         return <MetricCharts modelDetails={modelDetails} showAnomalies />;
+      } if (tab === ModelTabs.TESTS) {
+        return (
+          <>
+            <p className="text-center text-xs font-bold mb-2">(last test run)</p>
+            <TestsPartial
+              showRunAt={false}
+              showModel={false}
+              modelName={fullTableName}
+            />
+          </>
+        );
       }
       return (
         <>
@@ -111,20 +122,27 @@ const ModelDetails = ({ activeTab, toggleTabs }: ModelDetailsTypes): ReactElemen
 
         <div>
           <nav className="side-nav transition ease-in-out delay-150 sticky top-0 bg-white z-10">
-            <ul className="">
-              <li
-                className={activeTab === ModelTabs.METRICS ? 'active-tab' : ''}
-                role="presentation"
-                onClick={showMetrics}
-              >
-                Metrics
-              </li>
+            <ul>
               <li
                 className={activeTab === ModelTabs.ANOMALIES ? 'active-tab' : ''}
                 role="presentation"
                 onClick={showAnomalies}
               >
                 Anomalies
+              </li>
+              <li
+                className={activeTab === ModelTabs.TESTS ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showTests}
+              >
+                Tests
+              </li>
+              <li
+                className={activeTab === ModelTabs.METRICS ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showMetrics}
+              >
+                Metrics
               </li>
               <li
                 className={activeTab === ModelTabs.SCHEMA_CHANGES ? 'active-tab' : ''}
@@ -145,7 +163,7 @@ const ModelDetails = ({ activeTab, toggleTabs }: ModelDetailsTypes): ReactElemen
           <div className="outlet">
             {modelDetails
               ? renderTab(activeTab)
-              : <p className="font-medium p-3 text-center">Click on node to show metrics, anomalies or schema changes</p>}
+              : <Information />}
           </div>
         </div>
       </div>

@@ -49,8 +49,12 @@ const Alerts: React.FC = (): ReactElement => {
     {
       Header: 'Model',
       accessor: 'model',
+      Cell: ModelCell,
+    },
+    {
+      Header: 'Alert',
+      accessor: 'type',
       Cell: AlertCell,
-      type: 'type',
     },
     {
       Header: 'Message',
@@ -61,7 +65,7 @@ const Alerts: React.FC = (): ReactElement => {
       accessor: 'value',
     },
     {
-      Header: 'Time Window',
+      Header: 'Time',
       accessor: 'date',
     },
   ], []);
