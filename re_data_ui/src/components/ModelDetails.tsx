@@ -81,6 +81,8 @@ const ModelDetails = ({ activeTab, toggleTabs }: ModelDetailsTypes): ReactElemen
     if (fullTableName && overview && !overview.loading) {
       const details = init(overview, fullTableName) as ReDataModelDetails;
       setModelDetails(details);
+    } else {
+      setModelDetails(undefined);
     }
   }, [fullTableName, overview.loading]);
 

@@ -13,8 +13,10 @@ from socketserver import TCPServer
 from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
-from re_data.utils import format_alerts_to_table
+from re_data.utils import format_alerts_to_table, parse_dbt_vars
 from dbt.config.project import Project
+from re_data.tracking import anonymous_tracking
+
 
 def add_options(options):
     def _add_options(func):
@@ -25,7 +27,8 @@ def add_options(options):
 
 def add_dbt_flags(command_list, flags):
     for key, value in flags.items():
-        if value:
+        # exclude the --dbt-vars flag, as it's not a valid dbt flag
+        if value and key != 'dbt_vars':
             key = key.replace('_', '-')
             command_list.extend([f'--{key}', value])
     print(' '.join(command_list))
@@ -74,11 +77,22 @@ dbt_project_dir_option = click.option(
         parents
     """
 )
+dbt_vars_option = click.option(
+    '--dbt-vars',
+    type=click.STRING,
+    help="""
+        Supply variables to the project. This argument
+        overrides variables defined in your dbt_project.yml
+        file. This argument should be a YAML string, eg.
+        {my_var: my_val}'
+    """
+)
 dbt_flags = [
     dbt_profile_option,
     dbt_target_option,
     dbt_project_dir_option,
     dbt_profiles_dir_option,
+    dbt_vars_option
 ]
 
 
@@ -91,6 +105,7 @@ def main():
 @click.argument(
     'project_name'
 )
+@anonymous_tracking
 def init(project_name):
     print(f"Creating {project_name} template project")
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -115,10 +130,13 @@ def init(project_name):
 
 @main.command()
 @add_options(dbt_flags)
+@anonymous_tracking
 def detect(**kwargs):
     print(f"Detecting tables", "RUN")
 
+    dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     run_list = ['dbt', 'run', '--models', 're_data_columns', 're_data_monitored']
+    if dbt_vars: run_list.extend(['--vars', yaml.dump(dbt_vars)])
     add_dbt_flags(run_list, kwargs)
     completed_process = subprocess.run(run_list)
     completed_process.check_returncode()
@@ -156,11 +174,13 @@ def detect(**kwargs):
     help='Warning! If specified re_data runs first dbt run with --full-refresh option cleaning all previously gathered profiling information'
 )
 @add_options(dbt_flags)
+@anonymous_tracking
 def run(start_date, end_date, interval, full_refresh, **kwargs):
     for_date = start_date
 
     time_grain, num_str = interval.split(':')
     num = int(num_str)
+    dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
 
     if time_grain == 'days':
         delta = timedelta(days=num)
@@ -175,11 +195,12 @@ def run(start_date, end_date, interval, full_refresh, **kwargs):
         end_str = (for_date + delta).strftime("%Y-%m-%d %H:%M")
         print(f"Running for time interval: {start_str} - {end_str}", "RUN")
 
-        dbt_vars = {
+        re_data_dbt_vars = {
             're_data:time_window_start': str(for_date),
             're_data:time_window_end': str(for_date + delta),
             're_data:anomaly_detection_window_start': str(for_date - timedelta(days=30))
         }
+        dbt_vars.update(re_data_dbt_vars)
 
         run_list = ['dbt'] + ['run'] + ['--models'] + ['package:re_data'] + ['--vars'] + [json.dumps(dbt_vars)]
         if for_date == start_date and full_refresh:
@@ -242,11 +263,13 @@ def notify():
     """
 )
 @add_options(dbt_flags)
+@anonymous_tracking
 def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     dbt_target_path, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     overview_path = os.path.join(re_data_target_path, 'overview.json')
+    dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
 
     args = {
         'start_date': start_date,
@@ -255,6 +278,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
         'overview_path': overview_path
     }
     command_list = ['dbt', 'run-operation', 'generate_overview', '--args', yaml.dump(args)]
+    if dbt_vars: command_list.extend(['--vars', yaml.dump(dbt_vars)])
     add_dbt_flags(command_list, kwargs)
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
@@ -286,6 +310,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     """
 )
 @overview.command()
+@anonymous_tracking
 @add_options([dbt_project_dir_option])
 def serve(port, re_data_target_dir, **kwargs):
     _, serve_dir = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
@@ -345,12 +370,14 @@ def serve(port, re_data_target_dir, **kwargs):
     """
 )
 @add_options(dbt_flags)
+@anonymous_tracking
 def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwargs):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
 
     _, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     alerts_path = os.path.join(re_data_target_path, 'alerts.json')
+    dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     
     args = {
         'start_date': start_date,
@@ -359,6 +386,7 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
     }
 
     command_list = ['dbt', 'run-operation', 'export_alerts', '--args', yaml.dump(args)]
+    if dbt_vars: command_list.extend(['--vars', yaml.dump(dbt_vars)])
     add_dbt_flags(command_list, kwargs)
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()

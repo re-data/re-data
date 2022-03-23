@@ -8,6 +8,10 @@
 .subtitles {
     font-size: 9px;
     font-style: italic;
+    text-overflow: ellipsis;
+    max-width: 135px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .container {
@@ -56,7 +60,7 @@
     width: 8px;
     height: 8px;
     border-radius: 8px;
-    background-color: rgba(220, 38, 38, 1);
+    background-color: rgba(239, 68, 68, 1);
     position: absolute;
     top: -5px;
     margin-left: 6px;
@@ -66,7 +70,7 @@
     width: 8px;
     height: 8px;
     border-radius: 8px;
-    background-color: rgba(220, 38, 38, 1);
+    background-color: rgba(239, 68, 68, 1);
     position: absolute;
     top: -3px;
     margin-left: 6px;
