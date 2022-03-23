@@ -238,7 +238,6 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
 
   const tab = searchParams.get('tab') as unknown;
 
-  console.log('tab ', tab);
   // todo: change this
   useEffect(() => {
     if (tab === 'test_failure') {
