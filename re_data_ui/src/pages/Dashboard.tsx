@@ -194,7 +194,9 @@ const Dashboard: React.FC = (): ReactElement => {
             columnMetrics: new Map<string, Array<Metric>>(),
           },
           tableSchema: [],
-          testSchema: [],
+          tests: [],
+          failedTests: {},
+          runAts: {},
         };
         result.set(node.value, obj);
       }
@@ -204,9 +206,7 @@ const Dashboard: React.FC = (): ReactElement => {
         failedTests,
         runAts,
         alerts,
-      } = formatOverviewData(overviewData);
-
-      // const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData, result);
+      } = formatOverviewData(overviewData, result);
 
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
