@@ -87,9 +87,17 @@ const formatOverviewData = (
       schema.run_at = run_at;
 
       details.tests.push(schema);
-      runAtObject[run_at] = [...(runAtObject[run_at] || []), schema];
-      if (schema.status?.toLowerCase() === 'fail') {
-        failedTestsObject[model] = [...(failedTestsObject[model] || []), schema];
+      if (Object.prototype.hasOwnProperty.call(runAtObject, run_at)) {
+        runAtObject[run_at].push(schema);
+      } else {
+        runAtObject[run_at] = [schema];
+      }
+      if (schema.status?.toLowerCase() === 'fail' || schema.status?.toLowerCase() === 'error') {
+        if (Object.prototype.hasOwnProperty.call(failedTestsObject, model)) {
+          failedTestsObject[model].push(schema);
+        } else {
+          failedTestsObject[model] = [schema];
+        }
       }
       tests.push(schema);
     } else if (item.type === 'anomaly') {
