@@ -46,7 +46,8 @@ code {
     width: 60px;
 }
 
-.fail {
+.fail,
+.error {
     @apply bg-red-600 text-white;
     width: 60px;
 }

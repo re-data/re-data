@@ -1,24 +1,25 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
 
 interface AlertBadgeProps {
-  error: boolean
+  label: string;
 }
 
 const AlertBadge: React.FC<AlertBadgeProps> = (
   props: PropsWithChildren<AlertBadgeProps>,
 ): ReactElement => {
-  const { error } = props;
-  let classNames = 'badge mb-3 rounded-full px-2.5 py-1 text-center object-right-top text-white text-sm mr-3';
-  if (error) {
-    classNames += ' bg-red-600';
-  } else {
+  const { label } = props;
+  let classNames = 'badge rounded-full px-2.5 pt-1 pb-1.5 text-center object-right-top text-white text-xs mr-3';
+  if (label === 'anomalies') {
+    classNames += ' bg-secondary';
+  } else if (label === 'schema_changes') {
     classNames += ' bg-yellow-300';
+  } else if (label === 'test_failure') {
+    // TODO: change this
+    classNames += ' bg-red-500';
   }
   return (
-    <span
-      className={classNames}
-    >
-      !
+    <span className={classNames}>
+      {label?.split('_')?.join(' ')}
     </span>
   );
 };

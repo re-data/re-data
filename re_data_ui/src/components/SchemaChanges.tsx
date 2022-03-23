@@ -46,7 +46,7 @@ function SchemaChanges(params: SchemaChangesProps): ReactElement {
                               <div
                                 className="text-gray-900"
                               >
-                                <AlertBadge error={false} />
+                                <AlertBadge label="schema_changes" />
                                 {generateSchemaChangeMessage(change)}
                               </div>
                             </td>

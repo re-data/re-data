@@ -21,6 +21,8 @@ import MetricCharts from './MetricCharts';
 import './ModelDetails.css';
 import SchemaChanges from './SchemaChanges';
 import TableSchema from './TableSchema';
+import { TestsPartial } from '../partials';
+import { ModelTabs } from '../partials/Graph';
 
 echarts.use(
   [
@@ -37,15 +39,38 @@ echarts.use(
   ],
 );
 
-enum ModelTabs {
-  ANOMALIES = 'anomalies',
-  SCHEMA_CHANGES = 'schema_changes',
-  METRICS = 'metrics'
+const arrow = (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const Information = () => (
+  <section>
+    <p className="font-medium p-3 text-center">Click on node to show metrics, anomalies or schema changes</p>
+    <ul className="list-disc ml-4">
+      <li className="text-sm">
+        You can click on the graph legend (source, seed, anomaly..)
+        to toggle showing only specific nodes.
+      </li>
+      <li className="text-sm mt-1">
+        Once you select a node you can click on
+        {' '}
+        {arrow}
+        {' '}
+        to show the model table information
+      </li>
+    </ul>
+  </section>
+);
+
+type ModelDetailsTypes = {
+  activeTab: ModelTabs;
+  toggleTabs: (x: ModelTabs) => void;
 }
 
-const ModelDetails: React.FC = (): ReactElement => {
+const ModelDetails = ({ activeTab, toggleTabs }: ModelDetailsTypes): ReactElement => {
   const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState(ModelTabs.ANOMALIES);
   const { init } = useModel();
   const [modelDetails, setModelDetails] = useState<ReDataModelDetails>();
 
@@ -59,9 +84,10 @@ const ModelDetails: React.FC = (): ReactElement => {
     }
   }, [fullTableName, overview.loading]);
 
-  const showAnomalies = (): void => setActiveTab(ModelTabs.ANOMALIES);
-  const showSchema = (): void => setActiveTab(ModelTabs.SCHEMA_CHANGES);
-  const showMetrics = (): void => setActiveTab(ModelTabs.METRICS);
+  const showAnomalies = (): void => toggleTabs(ModelTabs.ANOMALIES);
+  const showSchema = (): void => toggleTabs(ModelTabs.SCHEMA_CHANGES);
+  const showMetrics = (): void => toggleTabs(ModelTabs.METRICS);
+  const showTests = (): void => toggleTabs(ModelTabs.TESTS);
 
   const renderTab = (tab: ModelTabs): ReactElement => {
     if (modelDetails) {

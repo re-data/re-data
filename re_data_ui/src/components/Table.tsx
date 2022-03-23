@@ -1,14 +1,16 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, memo } from 'react';
 import {
+  CellValue,
+  ColumnInstance,
   Row, TableInstance, useAsyncDebounce,
   useGlobalFilter, usePagination, useSortBy, useTable,
 } from 'react-table';
 
 export interface CellProps {
-  value: string;
-  column: Record<string, number>;
-  row: Record<string, string>;
+  column: ColumnInstance<Record<string, string>>;
+  row: Row<Record<string, string>>;
+  value: CellValue<string>;
 }
 export interface ColumnsProps {
   Header: string;
