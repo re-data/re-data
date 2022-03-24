@@ -49,7 +49,7 @@ function useModel() {
       },
       schemaChanges: [],
       tableSchema: [],
-      testSchema: [],
+      tests: [],
     };
 
     if (overview.aggregated_models.has(fullTableName)) {

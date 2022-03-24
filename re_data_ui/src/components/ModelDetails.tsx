@@ -103,6 +103,8 @@ const ModelDetails = ({ activeTab, toggleTabs }: ModelDetailsTypes): ReactElemen
             <p className="text-center text-xs font-bold mb-2">(last test run)</p>
             <TestsPartial
               showRunAt={false}
+              showSearch={false}
+              showFilter={false}
               showModel={false}
               modelName={fullTableName}
             />

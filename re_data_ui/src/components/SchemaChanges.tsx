@@ -4,6 +4,7 @@ import { generateSchemaChangeMessage } from '../utils/helpers';
 import { ReDataModelDetails } from '../contexts/redataOverviewContext';
 import AlertBadge from './AlertBadge';
 import EmptyContent from './EmptyContent';
+import colors from '../utils/colors.js';
 
 export interface SchemaChangesProps {
   modelDetails: ReDataModelDetails;
@@ -64,7 +65,7 @@ function SchemaChanges(params: SchemaChangesProps): ReactElement {
         : (
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg p-4 mt-3 mb-3">
             <EmptyContent text="No Schema Changes!">
-              <FaRegSmileBeam size={50} color="#392396" />
+              <FaRegSmileBeam size={50} color={colors.primary} />
             </EmptyContent>
           </div>
         )}

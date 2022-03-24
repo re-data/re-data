@@ -43,5 +43,5 @@
 
 .sd:checked ~ .dot {
   transform: translateX(100%);
-  background-color: #392396;
+  @apply bg-primary;
 }

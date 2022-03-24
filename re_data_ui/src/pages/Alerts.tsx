@@ -8,6 +8,7 @@ import { CellProps, ColumnsProps } from '../components/Table';
 import {
   Alert, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
+import colors from '../utils/colors.js';
 
 const generateAlertData = (alerts: Alert[]) => {
   const result = [];
@@ -85,7 +86,7 @@ const Alerts: React.FC = (): ReactElement => {
         )
         : (
           <EmptyContent text="No Alerts!">
-            <FaRegSmileBeam size={80} color="#392396" />
+            <FaRegSmileBeam size={80} color={colors.primary} />
           </EmptyContent>
         )}
     </>

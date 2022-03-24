@@ -127,7 +127,9 @@ export interface ReDataModelDetails {
   schemaChanges: Array<SchemaChange>;
   metrics: AggregatedMetrics;
   tableSchema: Array<ITableSchema>
-  testSchema: Array<ITestSchema>
+  tests: Array<ITestSchema>
+  failedTests?: Record<string, unknown>;
+  runAts?: Record<string, []>;
 }
 
 export interface SchemaChange {
@@ -174,6 +176,8 @@ export interface OverviewData {
   loading: boolean;
   dbtMapping: Record<string, string>;
   modelNodes: SelectOptionProps[];
+  failedTests?: Record<string, ITestSchema[]>;
+  runAts?: Record<string, ITestSchema[]>;
 }
 
 export interface SelectOptionProps {
@@ -198,4 +202,5 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   loading: true,
   dbtMapping: {},
   modelNodes: [],
+  runAts: {},
 });
