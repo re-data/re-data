@@ -1,5 +1,6 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useMemo } from 'react';
 import {
   Row, TableInstance, useAsyncDebounce,
   useGlobalFilter, usePagination, useSortBy, useTable,
@@ -59,6 +60,7 @@ const CustomFilter = memo(({
 });
 
 /**
+ * This is a simple table component that uses react-table to display data.
  * @param  {array of objects} columns
  * @param  {array of objects} data
  * @param  {boolean} showSearch - default: true
@@ -70,6 +72,7 @@ function Table(params: ITable): JSX.Element {
   const {
     columns, data, showSearch = true, RightComponent = null,
   } = params;
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -97,6 +100,11 @@ function Table(params: ITable): JSX.Element {
     usePagination,
   );
 
+  // eslint-disable-next-line max-len
+  const check = useMemo(() => (showSearch === false) && (RightComponent === null), [showSearch, RightComponent]);
+
+  const styledPadding = check ? 'px-2' : 'px-6';
+
   return (
     <>
       {(showSearch || RightComponent) && (
@@ -117,15 +125,18 @@ function Table(params: ITable): JSX.Element {
 
       <table
         {...getTableProps()}
-        className="min-w-full divide-y divide-gray-200"
+        className={`w-full table-auto ${columns.length === 3 ? 'flex flex-col' : ''} divide-y divide-gray-200`}
       >
         <thead className="bg-gray-50">
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr
+              className={columns.length === 3 ? 'flex-1 flex' : ''}
+              {...headerGroup.getHeaderGroupProps()}
+            >
               {headerGroup.headers.map((column) => (
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className={`${styledPadding} ${column?.id === 'test_name' ? 'w-3/5' : 'w-1/5'} py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider`}
                   {...column.getHeaderProps(
                     column.getSortByToggleProps(),
                   )}
@@ -160,12 +171,17 @@ function Table(params: ITable): JSX.Element {
           {page.map((row) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()} key={row?.id}>
+              <tr
+                className={columns.length === 3 ? 'flex-1 flex' : ''}
+                {...row.getRowProps()}
+                key={row?.id}
+              >
                 {row.cells.map((cell) => (
                   <td
                     {...cell.getCellProps()}
-                    className="px-6 py-4 text-sm whitespace-nowrap"
+                    className={`${styledPadding} ${cell?.column?.id === 'test_name' ? 'w-3/5 truncate' : 'w-1/5 truncate'} py-4 text-sm`}
                     role="cell"
+                    title={cell.value}
                   >
                     {cell.render('Cell')}
                   </td>

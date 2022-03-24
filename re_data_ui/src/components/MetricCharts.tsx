@@ -21,6 +21,7 @@ import {
   getFormatter,
   metricValue,
 } from '../utils';
+import colors from '../utils/colors.js';
 import EmptyContent from './EmptyContent';
 
 export interface MetricChartsProps {
@@ -143,7 +144,7 @@ const generateMetricChartOption = (
         name: title,
         data: metrics.map(metricValue),
         type: 'line',
-        color: '#8884d8',
+        color: colors.chat_line,
         smooth: true,
         markArea: {
           itemStyle: {
@@ -164,10 +165,11 @@ const generateMetricChartOption = (
       dimension: 0,
       pieces,
       inRange: {
-        color: pieces.length ? '#ee2828' : '#8884d8', // if no anomaly exists, everything is in range hence don't color red
+        // if no anomaly exists, everything is in range hence don't color red
+        color: pieces.length ? colors.secondary : colors.chat_line,
       },
       outOfRange: {
-        color: '#8884d8',
+        color: colors.chat_line,
       },
     },
   };
@@ -227,7 +229,7 @@ function MetricCharts(params: MetricChartsProps): ReactElement {
             >
               {alertMetricCharts.length ? alertMetricCharts : (
                 <EmptyContent text="No Anomalies!">
-                  <FaRegSmileBeam size={50} color="#392396" />
+                  <FaRegSmileBeam size={50} color={colors.primary} />
                 </EmptyContent>
               )}
             </div>
@@ -243,7 +245,7 @@ function MetricCharts(params: MetricChartsProps): ReactElement {
             >
               {tableMetricCharts.length ? tableMetricCharts : (
                 <EmptyContent text="Add this table to re_data config, to generate metrics">
-                  <FaRegSmileWink size={50} color="#392396" />
+                  <FaRegSmileWink size={50} color={colors.primary} />
                 </EmptyContent>
               )}
             </div>
@@ -255,7 +257,7 @@ function MetricCharts(params: MetricChartsProps): ReactElement {
             >
               {columnMetricCharts.length ? columnMetricCharts : (
                 <EmptyContent text="Add this table to re_data config, to generate metrics">
-                  <FaRegSmileWink size={50} color="#392396" />
+                  <FaRegSmileWink size={50} color={colors.primary} />
                 </EmptyContent>
               )}
             </div>
