@@ -247,8 +247,8 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
   const [activeTab, setActiveTab] = useState(ModelTabs.ANOMALIES);
 
   const tab = searchParams.get('tab') as unknown;
+  const model = searchParams.get('model') as string;
 
-  // todo: change this
   useEffect(() => {
     if (tab === 'test_failure') {
       setActiveTab(ModelTabs.TESTS);
@@ -291,7 +291,11 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
 
   const toggleTabs = (tabName: ModelTabs) => {
     setActiveTab(tabName);
-    setURLSearchParams({ tab: tabName });
+    if (model) {
+      setURLSearchParams({ model, tab: tabName });
+    } else {
+      setURLSearchParams({ tab: tabName });
+    }
   };
 
   return (
