@@ -79,7 +79,6 @@ const formatOverviewData = (
       schema.column_name = columnName;
       details.tableSchema.push(schema);
     } else if (item.type === 'test') {
-      // TODO: does not contain column name
       const schema = JSON.parse(item.data) as ITestSchema;
       const run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss') as string;
 

@@ -18,7 +18,7 @@ const AlertBadge: React.FC<AlertBadgeProps> = (
   }
   return (
     <span className={classNames}>
-      {label?.split('_')?.join(' ')?.toString()}
+      {label?.split('_')?.join(' ')}
     </span>
   );
 };
