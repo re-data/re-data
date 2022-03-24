@@ -21,6 +21,7 @@ import MetricCharts from './MetricCharts';
 import './ModelDetails.css';
 import SchemaChanges from './SchemaChanges';
 import TableSchema from './TableSchema';
+import { TestsPartial } from '../partials';
 
 echarts.use(
   [
@@ -40,7 +41,8 @@ echarts.use(
 enum ModelTabs {
   ANOMALIES = 'anomalies',
   SCHEMA_CHANGES = 'schema_changes',
-  METRICS = 'metrics'
+  METRICS = 'metrics',
+  TESTS = 'tests',
 }
 
 const arrow = (
@@ -89,6 +91,7 @@ const ModelDetails: React.FC = (): ReactElement => {
   const showAnomalies = (): void => setActiveTab(ModelTabs.ANOMALIES);
   const showSchema = (): void => setActiveTab(ModelTabs.SCHEMA_CHANGES);
   const showMetrics = (): void => setActiveTab(ModelTabs.METRICS);
+  const showTests = (): void => setActiveTab(ModelTabs.TESTS);
 
   const renderTab = (tab: ModelTabs): ReactElement => {
     if (modelDetails) {
@@ -96,6 +99,19 @@ const ModelDetails: React.FC = (): ReactElement => {
         return <MetricCharts modelDetails={modelDetails} showAnomalies={false} />;
       } if (tab === ModelTabs.ANOMALIES) {
         return <MetricCharts modelDetails={modelDetails} showAnomalies />;
+      } if (tab === ModelTabs.TESTS) {
+        return (
+          <>
+            <p className="text-center text-xs font-bold mb-2">(last test run)</p>
+            <TestsPartial
+              showRunAt={false}
+              showSearch={false}
+              showFilter={false}
+              showModel={false}
+              modelName={fullTableName}
+            />
+          </>
+        );
       }
       return (
         <>
@@ -112,20 +128,27 @@ const ModelDetails: React.FC = (): ReactElement => {
 
         <div>
           <nav className="side-nav transition ease-in-out delay-150 sticky top-0 bg-white z-10">
-            <ul className="">
-              <li
-                className={activeTab === ModelTabs.METRICS ? 'active-tab' : ''}
-                role="presentation"
-                onClick={showMetrics}
-              >
-                Metrics
-              </li>
+            <ul>
               <li
                 className={activeTab === ModelTabs.ANOMALIES ? 'active-tab' : ''}
                 role="presentation"
                 onClick={showAnomalies}
               >
                 Anomalies
+              </li>
+              <li
+                className={activeTab === ModelTabs.TESTS ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showTests}
+              >
+                Tests
+              </li>
+              <li
+                className={activeTab === ModelTabs.METRICS ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showMetrics}
+              >
+                Metrics
               </li>
               <li
                 className={activeTab === ModelTabs.SCHEMA_CHANGES ? 'active-tab' : ''}

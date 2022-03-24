@@ -74,12 +74,13 @@ type GenerateNodeProps = {
   details: DbtNode | DbtSource,
   anomalies: boolean,
   schemaChanges: boolean,
+  failedTests: boolean,
 }
 
 const generateNode = ({
   modelId, index,
   details, anomalies,
-  schemaChanges,
+  schemaChanges, failedTests,
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: GenerateNodeProps): any => ({
   key: modelId,
@@ -89,6 +90,7 @@ const generateNode = ({
   shape: 'box',
   anomalies,
   schemaChanges,
+  failedTests,
   color: {
     background: resourceTypeColors[details.resource_type],
   },
@@ -98,6 +100,7 @@ const generateNode = ({
     otherName: modelId.replace(`.${details.name}`, ''),
     anomalies,
     schemaChanges,
+    failedTests,
     borderColor: resourceTypeColors[details.resource_type],
   },
 });

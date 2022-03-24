@@ -1,7 +1,7 @@
 import React, { FC, memo } from 'react';
 import { Handle, NodeProps, Position } from 'react-flow-renderer';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/custom-nodes.css';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 const CustomNode: FC<NodeProps> = (props: NodeProps) => {
   const { pathname } = useLocation();
@@ -9,7 +9,7 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
   const navigate = useNavigate();
   const {
     data: {
-      label, otherName, active, id,
+      label, otherName, active, id, failedTests,
       borderColor, anomalies, schemaChanges,
     },
   } = props;
@@ -53,8 +53,11 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
         <Handle type="source" position={Position.Right} />
       </div>
 
-      {anomalies && <div className={active ? 'anomalies-dot-active' : 'anomalies-dot'} />}
-      {schemaChanges && <div className={active ? 'schema-dot-active' : 'schema-dot'} />}
+      <div className={active ? 'dot-active-container' : 'dot-container'}>
+        {anomalies && <div className="anomalies-dot" />}
+        {schemaChanges && <div className="schema-dot" />}
+        {failedTests && <div className="failed-dot" />}
+      </div>
     </div>
   );
 };

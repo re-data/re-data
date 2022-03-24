@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
@@ -15,21 +16,29 @@ import {
 
 interface RawOverviewData {
   type: 'alert' | 'metric' | 'schema_change' | 'schema' | 'test' | 'anomaly';
-  // eslint-disable-next-line camelcase
   table_name: string;
-  // eslint-disable-next-line camelcase
   column_name: string;
-  // eslint-disable-next-line camelcase
   computed_on: string;
   data: string;
 }
 
+type formatOverviewDataReturnType = {
+  aggregatedModels: Map <string, ReDataModelDetails>,
+  tests: ITestSchema[],
+  failedTests: Record <string, ITestSchema[]>,
+  runAts: Record <string, ITestSchema[]>,
+  alerts: Alert[],
+};
+
 const formatOverviewData = (
   data: Array<RawOverviewData>,
   result: Map<string, ReDataModelDetails>,
-): [Map<string, ReDataModelDetails>, ITestSchema[], Alert[]] => {
+): formatOverviewDataReturnType => {
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
+
+  const failedTestsObject: Record <string, ITestSchema[]> = {};
+  const runAtObject: Record <string, ITestSchema[]> = {};
   data.forEach((item: RawOverviewData) => {
     if (!item.table_name) return;
     const model = stripQuotes(item.table_name).toLowerCase();
@@ -42,7 +51,8 @@ const formatOverviewData = (
           columnMetrics: new Map<string, Array<Metric>>(),
         },
         tableSchema: [],
-        testSchema: [],
+        tests: [],
+        failedTests: {},
       };
       result.set(model, obj);
     }
@@ -70,10 +80,25 @@ const formatOverviewData = (
       details.tableSchema.push(schema);
     } else if (item.type === 'test') {
       const schema = JSON.parse(item.data) as ITestSchema;
+      const run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss') as string;
+
       schema.column_name = columnName;
       schema.model = model;
-      schema.run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss');
-      details.testSchema.push(schema);
+      schema.run_at = run_at;
+
+      details.tests.push(schema);
+      if (Object.prototype.hasOwnProperty.call(runAtObject, run_at)) {
+        runAtObject[run_at].push(schema);
+      } else {
+        runAtObject[run_at] = [schema];
+      }
+      if (schema.status?.toLowerCase() === 'fail' || schema.status?.toLowerCase() === 'error') {
+        if (Object.prototype.hasOwnProperty.call(failedTestsObject, model)) {
+          failedTestsObject[model].push(schema);
+        } else {
+          failedTestsObject[model] = [schema];
+        }
+      }
       tests.push(schema);
     } else if (item.type === 'anomaly') {
       const anomaly = JSON.parse(item.data) as Anomaly;
@@ -99,7 +124,13 @@ const formatOverviewData = (
   }
   alertsChanges.sort((a, b) => dayjs(b.time_window_end).diff(a.time_window_end));
 
-  return [result, tests, alertsChanges];
+  return {
+    aggregatedModels: result,
+    tests,
+    failedTests: failedTestsObject,
+    runAts: runAtObject,
+    alerts: alertsChanges,
+  };
 };
 
 const formatDbtData = (graphData: DbtGraph) => {
@@ -131,6 +162,8 @@ const Dashboard: React.FC = (): ReactElement => {
     loading: true,
     dbtMapping: {},
     modelNodes: [],
+    failedTests: {},
+    runAts: {},
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -155,6 +188,8 @@ const Dashboard: React.FC = (): ReactElement => {
         loading: false,
         dbtMapping: {},
         modelNodes: [],
+        failedTests: {},
+        runAts: {},
       };
       const { dbtMapping, modelNodes } = formatDbtData(graphData);
       const result = new Map<string, ReDataModelDetails>();
@@ -167,11 +202,19 @@ const Dashboard: React.FC = (): ReactElement => {
             columnMetrics: new Map<string, Array<Metric>>(),
           },
           tableSchema: [],
-          testSchema: [],
+          tests: [],
+          failedTests: {},
+          runAts: {},
         };
         result.set(node.value, obj);
       }
-      const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData, result);
+      const {
+        aggregatedModels,
+        tests,
+        failedTests,
+        runAts,
+        alerts,
+      } = formatOverviewData(overviewData, result);
 
       overview.aggregated_models = aggregatedModels;
       overview.alerts = alerts;
@@ -179,6 +222,8 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.tests = tests;
       overview.dbtMapping = dbtMapping;
       overview.modelNodes = modelNodes;
+      overview.failedTests = failedTests;
+      overview.runAts = runAts;
 
       console.log('overview -> ', overview);
       setReDataOverview(overview);
