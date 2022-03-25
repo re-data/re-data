@@ -13,7 +13,8 @@ from socketserver import TCPServer
 from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
-from re_data.utils import format_alerts_to_table, parse_dbt_vars
+from re_data.utils import format_alerts_to_table, parse_dbt_vars, prepare_exported_alerts_per_model, \
+    generate_slack_message
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 
@@ -393,21 +394,11 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
 
     with open(alerts_path) as f:
         alerts = json.load(f)
-    if len(alerts) > 0:
-        tabulated_alerts = format_alerts_to_table(alerts[:20])
-        message = f"""
-:red_circle: {len(alerts)} alerts found between {start_date} and {end_date}.
-{subtitle}
-
-_Showing most recent 20 alerts._
-<https://docs.getre.io/latest/docs/reference/cli/overview|Generate Observability UI> to show more details.
-
-```{tabulated_alerts}```
-"""
-    else:
-        message = f""":white_check_mark: No alerts found between {start_date} and {end_date}.
-{subtitle}"""
-    slack_notify(webhook_url, message)
+    
+    alerts_per_model = prepare_exported_alerts_per_model(alerts)
+    for model, details in alerts_per_model.items():
+        slack_message = generate_slack_message(model, details, None)
+        slack_notify(webhook_url, slack_message)
     print(
         f"Notification sent", chalk.green("SUCCESS")
     )
