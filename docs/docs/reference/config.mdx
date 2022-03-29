@@ -126,7 +126,7 @@ Now let's go over the configuration you can set on models
 
 Set to `true` to enable monitoring for a given table or set of tables.
 
-### re_data_time_filter
+### re_data_time_filter (optional)
 
 SQL expression (for example, column name) to filter records of the table to a specific time range. It can be set to `null` if you wish to compute metrics on the whole table. This expression will be compared to `re_data:time_window_start` and `re_data:time_window_end` vars during the run. (described below)
 
