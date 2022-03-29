@@ -1,7 +1,9 @@
 from tabulate import tabulate
 from typing import Any, Dict, Optional
 from datetime import datetime
+from collections import defaultdict
 import yaml
+import json
 try:
     from yaml import (
         CSafeLoader as SafeLoader
@@ -61,6 +63,24 @@ def prepare_exported_alerts_per_model(alerts: list) -> dict:
             alerts_per_model[model]['schema_changes'].append(alert)
     return alerts_per_model
 
+def prepare_slack_member_ids_per_model(monitored_list: list) -> dict:
+    """
+    Prepares slack member ids per model for slack message generation.
+    params:
+        monitored_list: list
+            List of models to monitor.
+    return: dict
+        Slack member ids per model.
+    """
+    obj = defaultdict(list)
+    for monitored in monitored_list:
+        model = monitored['model'].replace('"', '')
+        members = json.loads(monitored.get('slack_owners')) or {}
+        for member_id in members.values():
+            slack_mention = '<@{}>'.format(member_id)
+            obj[model].append(slack_mention)
+    return obj
+
 
 
 def generate_slack_message(model, details, owners) -> dict:
@@ -86,7 +106,7 @@ def generate_slack_message(model, details, owners) -> dict:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "Owners: <@U02FHBSTW0H>"
+                    "text": "Owners: {}".format(', '.join(owners))
                 }
             },
             {

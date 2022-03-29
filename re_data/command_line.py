@@ -14,7 +14,7 @@ from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import format_alerts_to_table, parse_dbt_vars, prepare_exported_alerts_per_model, \
-    generate_slack_message
+    generate_slack_message, prepare_slack_member_ids_per_model
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 
@@ -378,12 +378,14 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
 
     _, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     alerts_path = os.path.join(re_data_target_path, 'alerts.json')
+    monitored_path = os.path.join(re_data_target_path, 'monitored.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     
     args = {
         'start_date': start_date,
         'end_date': end_date,
         'alerts_path': alerts_path,
+        'monitored_path': monitored_path,
     }
 
     command_list = ['dbt', 'run-operation', 'export_alerts', '--args', yaml.dump(args)]
@@ -394,10 +396,16 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
 
     with open(alerts_path) as f:
         alerts = json.load(f)
-    
+    with open(monitored_path) as f:
+        monitored = json.load(f)
+
+    slack_model_members = prepare_slack_member_ids_per_model(monitored_list=monitored)
+
+
     alerts_per_model = prepare_exported_alerts_per_model(alerts)
     for model, details in alerts_per_model.items():
-        slack_message = generate_slack_message(model, details, None)
+        owners = slack_model_members.get(model, '')
+        slack_message = generate_slack_message(model, details, owners)
         slack_notify(webhook_url, slack_message)
     print(
         f"Notification sent", chalk.green("SUCCESS")

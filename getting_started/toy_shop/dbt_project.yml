@@ -63,6 +63,12 @@ vars:
   re_data:anomaly_detector:
     name: modified_z_score
     threshold: 3
+  re_data:slack_config:
+    deji: U02FHBSTW0H
+    mateusz: U01F80NJW23
+    emmanuel: U02RD3S3WP8
+    backend: [deji, mateusz]
+    frontend: [deji, emmanuel]
   re_data:metrics_base:
     table:
       - row_count
