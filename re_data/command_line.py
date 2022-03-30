@@ -309,10 +309,14 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
         Defaults to the 'target-path' used in dbt_project.yml
     """
 )
+@click.option(
+    "--no-browser",
+    is_flag=True,
+)
 @overview.command()
 @anonymous_tracking
 @add_options([dbt_project_dir_option])
-def serve(port, re_data_target_dir, **kwargs):
+def serve(port, re_data_target_dir, no_browser, **kwargs):
     _, serve_dir = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     os.chdir(serve_dir)
 
@@ -320,7 +324,7 @@ def serve(port, re_data_target_dir, **kwargs):
 
     httpd = TCPServer((address, port), SimpleHTTPRequestHandler)
 
-    if True:
+    if not no_browser:
         try:
             webbrowser.open_new_tab(f'http://127.0.0.1:{port}/#/alerts')
         except webbrowser.Error:
