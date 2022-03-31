@@ -22,15 +22,33 @@ After running these commands you should be able to see views similar to those:
 ![GraphExample](/screenshots/ui/alerts.png)
 
 Alerts view lets you see if there are any problems currently detected in your data.
-re_data compares past & current metric computed using **[z_score](https://en.wikipedia.org/wiki/Standard_score)** to determinate if value is suspicious. It also shows any schema changes detected here.
+re_data compares past & current metric computed using **[z_score](https://en.wikipedia.org/wiki/Standard_score)** to determinate if value is suspicious.
 
 From the alerts view, you can go to learn more details about specific alerts in the graph view.
 
-## Graph
+## Schema Changes
+The alerts view also shows any schema changes detected. These schema changes include detecting when columns were added, removed or had its type changed. For tutorial purposes, we modify using the schema of the orders table using macros included in the default template.
+
+```bash
+# this operation adds a column to the orders table
+dbt run-operation schema_change_add_orders_column
+# run re_data models to detect the column added schema change
+re_data run
+# this operation drops the column added earlier
+dbt run-operation schema_change_drop_orders_column
+# re-run re_data models to detect the removed column
+re_data run
+```
+
+Regenerating the user interface shows:
+
+![AlertsWithSchemaChanges](/screenshots/ui/alerts_with_schema_changes.png)
+
+## Lineage
 
 ![GraphExample](/screenshots/ui/graph.png)
 
-Graph view lets you investigate anomalies, metrics & schema changes on top of the dbt lineage graph.
+Lineage view lets you investigate anomalies, metrics & schema changes on top of the dbt lineage graph.
 
 
 ## Tests
@@ -47,3 +65,9 @@ Tests view lets you see history of all dbt tests run. (re_data comes with a `sav
 Tables view lets you investigate any table easily. Check out for anomalies, metrics, tests related to it.
 
 In the next section, let's see how we can notify ourselves about problems in the data
+
+:::info
+### Something didn't worked as expected?
+If you have more questions, got stuck anywhere, or something is not working as expected, please let us know on **[Slack! 😊](https://www.getre.io/slack)**, we will help you asap, and it will help us improve this quick start guide.
+:::
+

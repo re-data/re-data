@@ -8,6 +8,7 @@ import { ColumnsProps, CellProps } from '../components/Table';
 import {
   Alert, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
+import colors from '../utils/colors.js';
 
 const generateAlertData = (alerts: Alert[]) => {
   const result = [];
@@ -28,18 +29,19 @@ const generateAlertData = (alerts: Alert[]) => {
   return result;
 };
 
-const AlertCell = ({ value, column, row }: CellProps) => (
-  <>
-    <AlertBadge
-      error={row.original[column.type] === 'anomaly'}
-    />
-    <Link
-      to={`/graph?model=${value?.toLowerCase()}`}
-      className="text-sm text-blue-700 font-semibold"
-    >
-      {value}
-    </Link>
-  </>
+const ModelCell = ({ value }: CellProps) => (
+  <Link
+    to={`/graph?model=${value?.toLowerCase()}`}
+    className="text-sm text-blue-700 font-semibold"
+  >
+    {value}
+  </Link>
+);
+
+const AlertCell = ({ value }: CellProps) => (
+  <AlertBadge
+    error={value === 'anomaly'}
+  />
 );
 
 const Alerts: React.FC = (): ReactElement => {
@@ -50,8 +52,12 @@ const Alerts: React.FC = (): ReactElement => {
     {
       Header: 'Model',
       accessor: 'model',
+      Cell: ModelCell,
+    },
+    {
+      Header: 'Alert',
+      accessor: 'type',
       Cell: AlertCell,
-      type: 'type',
     },
     {
       Header: 'Message',
@@ -62,7 +68,7 @@ const Alerts: React.FC = (): ReactElement => {
       accessor: 'value',
     },
     {
-      Header: 'Time Window',
+      Header: 'Time',
       accessor: 'date',
     },
   ], []);
@@ -82,7 +88,7 @@ const Alerts: React.FC = (): ReactElement => {
         )
         : (
           <EmptyContent text="No Alerts!">
-            <FaRegSmileBeam size={80} color="#392396" />
+            <FaRegSmileBeam size={80} color={colors.primary} />
           </EmptyContent>
         )}
     </>

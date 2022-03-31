@@ -1,35 +1,47 @@
 .label {
-    display: flex;
-    align-items: center;
-    font-weight: bold;
+    @apply flex items-center font-bold;
     font-size: 13px;
 }
 
 .subtitles {
     font-size: 9px;
     font-style: italic;
+    text-overflow: ellipsis;
+    max-width: 135px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .container {
-    cursor: pointer;
-    position: relative;
-    background-color: white;
-    border-radius: 4px;
+    @apply rounded bg-white relative cursor-pointer;
+
 }
 
 .container-active {
-    background-color: #392396;
-    border: 2px solid #392396;
-    color: white;
-    border-radius: 4px;
-    overflow: hidden;
-    opacity: 1;
+    @apply rounded opacity-100 bg-primary overflow-hidden border-2 border-solid border-primary text-white;
 }
 
 .node {
+    @apply flex items-center;
     padding: 4px 12px 7px;
-    display: flex;
-    align-items: center;
+}
+
+.dot-container {
+    @apply flex items-center justify-start w-full absolute;
+
+    gap: 6px;
+    height: 8px;
+    top: -5px;
+    margin-left: 6px;
+}
+
+.dot-active-container {
+    @apply flex items-center justify-start w-full absolute;
+    gap: 6px;
+    width: 100%;
+    height: 8px;
+    top: -4px;
+    margin-left: 6px;
 }
 
 .schema-dot {
@@ -37,38 +49,18 @@
     height: 8px;
     border-radius: 8px;
     background-color: rgba(252, 211, 77, 1);
-    position: absolute;
-    top: -5px;
-    margin-left: 18px;
-}
-
-.schema-dot-active {
-    width: 8px;
-    height: 8px;
-    border-radius: 8px;
-    background-color: rgba(252, 211, 77, 1);
-    position: absolute;
-    top: -4px;
-    margin-left: 18px;
 }
 
 .anomalies-dot {
     width: 8px;
     height: 8px;
     border-radius: 8px;
-    background-color: rgba(220, 38, 38, 1);
-    position: absolute;
-    top: -5px;
-    margin-left: 6px;
+    @apply bg-secondary
 }
-
-.anomalies-dot-active {
+  
+.failed-dot {
     width: 8px;
     height: 8px;
     border-radius: 8px;
-    background-color: rgba(220, 38, 38, 1);
-    position: absolute;
-    top: -3px;
-    margin-left: 6px;
+    background-color: rgba(239, 68, 68, 1);
 }
-  

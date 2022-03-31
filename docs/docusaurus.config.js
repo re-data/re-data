@@ -1,5 +1,7 @@
 const lightCodeTheme = require('prism-react-renderer/themes/vsDark');
 const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
+const math = require('remark-math');
+const katex = require('rehype-katex');
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -12,13 +14,16 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 're-data', // Usually your GitHub org/user name.
   projectName: 're-data', // Usually your repo name.
-  themeConfig: {
-    gtag: {
-      // You can also use your "G-" Measurement ID here.
-      trackingID: 'G-ETVVXXQ387',
-      // Optional fields.
-      anonymizeIP: true, // Should IPs be anonymized?
+  stylesheets: [
+    {
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
+      type: 'text/css',
+      integrity:
+        'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
+      crossorigin: 'anonymous',
     },
+  ],
+  themeConfig: {
     navbar: {
       title: 're_data',
       logo: {
@@ -74,7 +79,15 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/re-data/re-data/edit/master/docs/'
+            'https://github.com/re-data/re-data/edit/master/docs/',
+          remarkPlugins: [math],
+          rehypePlugins: [katex],
+        },
+        gtag: {
+          // You can also use your "G-" Measurement ID here.
+          trackingID: 'G-ETVVXXQ387',
+          // Optional fields.
+          anonymizeIP: true, // Should IPs be anonymized?
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

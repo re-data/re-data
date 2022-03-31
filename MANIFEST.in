@@ -1,8 +1,12 @@
 include re_data/dbt_template/analysis/.gitkeep
-include re_data/dbt_template/data/.gitkeep
 include re_data/dbt_template/macros/.gitkeep
 include re_data/dbt_template/models/.gitkeep
+include re_data/dbt_template/models/pending_orders_per_customer.sql
 include re_data/dbt_template/tests/.gitkeep
+include re_data/dbt_template/seeds/.gitkeep
+include re_data/dbt_template/seeds/customers.csv
+include re_data/dbt_template/seeds/orders.csv
+include re_data/dbt_template/seeds/schema.yml
 include re_data/dbt_template/.gitignore
 include re_data/dbt_template/packages.yml
 include re_data/dbt_template/README.md

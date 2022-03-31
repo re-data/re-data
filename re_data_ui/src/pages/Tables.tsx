@@ -11,6 +11,7 @@ import {
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
 import { GraphPartial, TestsPartial } from '../partials';
+import colors from '../utils/colors.js';
 
 const showA = true;
 
@@ -108,7 +109,7 @@ const Tables: React.FC = (): ReactElement => {
                 className={`mr-4 ${activeTab === 'graph' && 'active-tab'}`}
               >
                 <button type="button" onClick={() => handleScroll('graph')}>
-                  Graph
+                  Lineage
                 </button>
               </li>
               <li
@@ -135,7 +136,7 @@ const Tables: React.FC = (): ReactElement => {
           </section>
           <section id="metrics" className="pb-4 pt-16 -mt-16">
             <div className="bg-white rounded-md px-3 py-4">
-              <h3 className="mb-3 text-md font-medium">Metrics</h3>
+              <h3 className="mb-3 text-md font-medium">All metrics</h3>
               <div className="outlet">
                 <MetricCharts
                   modelDetails={modelDetails}
@@ -185,7 +186,7 @@ const Tables: React.FC = (): ReactElement => {
       ) : (
         <div className="bg-white my-4 py-6 rounded-md">
           <EmptyContent text="Please type a table name in the input above">
-            <FaRegSmileWink size={80} color="#392396" />
+            <FaRegSmileWink size={80} color={colors.primary} />
           </EmptyContent>
         </div>
       )}

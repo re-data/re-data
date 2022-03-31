@@ -21,6 +21,7 @@ import MetricCharts from './MetricCharts';
 import './ModelDetails.css';
 import SchemaChanges from './SchemaChanges';
 import TableSchema from './TableSchema';
+import { TestsPartial } from '../partials';
 
 echarts.use(
   [
@@ -40,8 +41,34 @@ echarts.use(
 enum ModelTabs {
   ANOMALIES = 'anomalies',
   SCHEMA_CHANGES = 'schema_changes',
-  METRICS = 'metrics'
+  METRICS = 'metrics',
+  TESTS = 'tests',
 }
+
+const arrow = (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const Information = () => (
+  <section>
+    <p className="font-medium p-3 text-center">Click on node to show metrics, anomalies or schema changes</p>
+    <ul className="list-disc ml-4">
+      <li className="text-sm">
+        You can click on the graph legend (source, seed, anomaly..)
+        to toggle showing only specific nodes.
+      </li>
+      <li className="text-sm mt-1">
+        Once you select a node you can click on
+        {' '}
+        {arrow}
+        {' '}
+        to show the model table information
+      </li>
+    </ul>
+  </section>
+);
 
 const ModelDetails: React.FC = (): ReactElement => {
   const [searchParams] = useSearchParams();
@@ -56,12 +83,15 @@ const ModelDetails: React.FC = (): ReactElement => {
     if (fullTableName && overview && !overview.loading) {
       const details = init(overview, fullTableName) as ReDataModelDetails;
       setModelDetails(details);
+    } else {
+      setModelDetails(undefined);
     }
   }, [fullTableName, overview.loading]);
 
   const showAnomalies = (): void => setActiveTab(ModelTabs.ANOMALIES);
   const showSchema = (): void => setActiveTab(ModelTabs.SCHEMA_CHANGES);
   const showMetrics = (): void => setActiveTab(ModelTabs.METRICS);
+  const showTests = (): void => setActiveTab(ModelTabs.TESTS);
 
   const renderTab = (tab: ModelTabs): ReactElement => {
     if (modelDetails) {
@@ -69,6 +99,19 @@ const ModelDetails: React.FC = (): ReactElement => {
         return <MetricCharts modelDetails={modelDetails} showAnomalies={false} />;
       } if (tab === ModelTabs.ANOMALIES) {
         return <MetricCharts modelDetails={modelDetails} showAnomalies />;
+      } if (tab === ModelTabs.TESTS) {
+        return (
+          <>
+            <p className="text-center text-xs font-bold mb-2">(last test run)</p>
+            <TestsPartial
+              showRunAt={false}
+              showSearch={false}
+              showFilter={false}
+              showModel={false}
+              modelName={fullTableName}
+            />
+          </>
+        );
       }
       return (
         <>
@@ -85,20 +128,27 @@ const ModelDetails: React.FC = (): ReactElement => {
 
         <div>
           <nav className="side-nav transition ease-in-out delay-150 sticky top-0 bg-white z-10">
-            <ul className="">
-              <li
-                className={activeTab === ModelTabs.METRICS ? 'active-tab' : ''}
-                role="presentation"
-                onClick={showMetrics}
-              >
-                Metrics
-              </li>
+            <ul>
               <li
                 className={activeTab === ModelTabs.ANOMALIES ? 'active-tab' : ''}
                 role="presentation"
                 onClick={showAnomalies}
               >
                 Anomalies
+              </li>
+              <li
+                className={activeTab === ModelTabs.TESTS ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showTests}
+              >
+                Tests
+              </li>
+              <li
+                className={activeTab === ModelTabs.METRICS ? 'active-tab' : ''}
+                role="presentation"
+                onClick={showMetrics}
+              >
+                Metrics
               </li>
               <li
                 className={activeTab === ModelTabs.SCHEMA_CHANGES ? 'active-tab' : ''}
@@ -119,7 +169,7 @@ const ModelDetails: React.FC = (): ReactElement => {
           <div className="outlet">
             {modelDetails
               ? renderTab(activeTab)
-              : <p className="font-medium p-3 text-center">Click on node to show metrics, anomalies or schema changes</p>}
+              : <Information />}
           </div>
         </div>
       </div>

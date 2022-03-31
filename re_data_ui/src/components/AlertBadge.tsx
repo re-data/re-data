@@ -8,17 +8,15 @@ const AlertBadge: React.FC<AlertBadgeProps> = (
   props: PropsWithChildren<AlertBadgeProps>,
 ): ReactElement => {
   const { error } = props;
-  let classNames = 'badge mb-3 rounded-full px-2.5 py-1 text-center object-right-top text-white text-sm mr-3';
+  let classNames = 'badge rounded-full px-2.5 pt-1 pb-1.5 text-center object-right-top text-white text-xs mr-3';
   if (error) {
-    classNames += ' bg-red-600';
+    classNames += ' bg-secondary';
   } else {
     classNames += ' bg-yellow-300';
   }
   return (
-    <span
-      className={classNames}
-    >
-      !
+    <span className={classNames}>
+      {error ? 'anomaly' : 'schema change'}
     </span>
   );
 };

@@ -1,0 +1,185 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Welcome to toy shop!
+
+Welcome to a re_data getting started tutorial. We will prepare, analyze and monitor toy shop data here. The toy shop is a fictional e-commerce shop 🙂
+
+It's an example of how a re_data project can work and help you improve data in your data warehouse
+
+
+## Setting up toy shop project
+Install re_data if you don't have it already
+```bash
+pip install re_data
+```
+
+Set up a dbt project containing the toy shop data using the re_data CLI.
+
+```bash
+re_data init toy_shop
+cd toy_shop/
+```
+
+## Toy shop data
+You would observe that the project has two seed files included:
+  - toy_shop/seeds/customers.csv
+  - toy_shop/seeds/orders.csv
+
+And it also contains one model:
+- toy_shop/models/pending_orders_per_customer.sql
+
+:::info
+Both seeds & model are already configured to be monitored by re_data, we will describe this configuration later on during the tutorial
+:::
+
+:::info
+We use seeds instead of sources much more often than you would normally do in dbt. This is due to the convenient setup dbt offers for seeds
+:::
+
+## Profile setup
+
+For re_data to work you will need dbt connection with the name `toy_shop` (project name we used) Here are examples of how it could look like in dbs supported by re_data, you can also check more details on connection configuration in  **[dbt profiles docs](https://docs.getdbt.com/reference/profiles.yml)**.
+
+
+<Tabs
+  defaultValue="bigquery"
+  values={[
+    {label: 'BigQuery', value: 'bigquery'},
+    {label: 'Snowflake', value: 'snowflake'},
+    {label: 'Redshift', value: 'redshift'},
+    {label: 'Postgres', value: 'postgres'}
+  ]}>
+
+  <TabItem value="snowflake">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: xxx
+      user: xxx
+      password: xxx
+      database: database
+      warehouse: warehouse
+      schema: toy_shop
+```
+
+</TabItem>
+
+<TabItem value="bigquery">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: xxx
+      schema: toy_shop
+      location: US
+      threads: 4
+```
+</TabItem>
+
+<TabItem value="redshift">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: redshift
+      host: xxx
+      user: xxx
+      password: xxx
+      port: 5439
+      dbname: xxx
+      schema: toy_shop
+      threads: 4
+```
+</TabItem>
+
+<TabItem value="postgres">
+
+```yml title=~/.dbt/profiles.yml
+toy_shop:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: xxx
+      user: xxx
+      password: xxx
+      port: 5432
+      dbname: xxx
+      schema: toy_shop
+      threads: 4
+```
+</TabItem>
+
+</Tabs>
+
+## Loading data & creating models
+
+Now you are ready to load toy_shop seed data & create project models.
+
+```yaml
+# load seed files into the database
+dbt seed
+# Compute models for toy_shop project, only pending_orders_per_customer table in this case.
+dbt run --select package:toy_shop
+```
+
+After this step 3 tables should be available in the data warehouse of your choice:
+
+```sql title="Loaded data"
+toy_shop=> SELECT * FROM toy_shop.orders;
+ id  | customer_id |     status      | amount |    time_created
+-----+-------------+-----------------+--------+---------------------
+   1 |           2 | PAID            |  20000 | 2021-01-02 14:10:54
+   2 |           3 | SHIPPED         |  20000 | 2021-01-06 06:39:15
+   3 |           4 | DELIVERED       |  40000 | 2021-01-10 20:46:55
+   4 |           5 | PENDING_PAYMENT |  20000 | 2021-01-10 12:15:55
+   5 |           6 | PAID            |  25000 | 2021-01-09 21:38:54
+   ..
+   ..
+   ..
+toy_shop=> SELECT * FROM toy_shop.customers;
+ id | age |       name
+----+-----+-------------------
+  1 |  25 | Matias Douglas
+  2 |  38 | Raelyn Harrison
+  3 |  34 | Anaya Reed
+  4 |  46 | Mario Harris
+  5 |  28 | John Roberts
+  ..
+  ..
+  ..
+toy_shop=> SELECT * FROM toy_shop.pending_orders_per_customer;
+ id  | amount |     status      |    time_created     | customer_id | age
+-----+--------+-----------------+---------------------+-------------+-----
+   4 |  20000 | PENDING_PAYMENT | 2021-01-10 12:15:55 |           5 |  28
+   8 |   5000 | PENDING_PAYMENT | 2021-01-05 11:41:49 |           9 |  60
+  12 |  20000 | PENDING_PAYMENT | 2021-01-08 13:10:48 |          13 |  38
+  16 |  30000 | PENDING_PAYMENT | 2021-01-05 13:57:46 |           2 |  38
+  20 |  30000 | PENDING_PAYMENT | 2021-01-09 20:07:28 |           6 |  39
+  24 |  10000 | PENDING_PAYMENT | 2021-01-06 06:42:35 |          10 |  29
+  28 |  45000 | PENDING_PAYMENT | 2021-01-02 10:03:27 |          14 |  20
+  ..
+  ..
+  ..
+```
+
+
+:::info
+### More questions?
+If you have more questions, got stuck anywhere or something is not working as expected please let us know on **[Slack! 😊](https://www.getre.io/slack)**, we will help you asap and it will help us improve this tutorial.
+:::

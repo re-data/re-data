@@ -156,7 +156,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
       fitElements();
     }
-  }, [instanceRef, modelName, tab]);
+  }, [instanceRef, modelName]);
 
   const onPaneClick = useCallback(() => {
     if (!disableClick) {
