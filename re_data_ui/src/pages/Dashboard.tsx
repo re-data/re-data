@@ -26,9 +26,13 @@ type formatOverviewDataReturnType = {
   aggregatedModels: Map <string, ReDataModelDetails>,
   tests: ITestSchema[],
   failedTests: Record <string, ITestSchema[]>,
-  runAts: Record <string, ITestSchema[]>,
+  runAts: Record<string, ITestSchema[]>,
+  testsObject: Record<string, ITestSchema[]>,
+  modelTestMapping: Record<string, ITestSchema[]>,
   alerts: Alert[],
 };
+
+// const pushToObj = (obj, check) => {};
 
 const formatOverviewData = (
   data: Array<RawOverviewData>,
@@ -36,9 +40,10 @@ const formatOverviewData = (
 ): formatOverviewDataReturnType => {
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
-
+  const testsObject: Record <string, ITestSchema[]> = {};
   const failedTestsObject: Record <string, ITestSchema[]> = {};
   const runAtObject: Record <string, ITestSchema[]> = {};
+  const modelTestMapping: Record <string, ITestSchema[]> = {};
   data.forEach((item: RawOverviewData) => {
     if (!item.table_name) return;
     const model = stripQuotes(item.table_name).toLowerCase();
@@ -87,10 +92,25 @@ const formatOverviewData = (
       schema.run_at = run_at;
 
       details.tests.push(schema);
+      // console.log('model ', model, schema);
+      if (
+        Object.prototype.hasOwnProperty.call(
+          modelTestMapping, schema?.test_name?.toLocaleLowerCase(),
+        )
+      ) {
+        modelTestMapping[schema?.test_name?.toLocaleLowerCase()].push(schema);
+      } else {
+        modelTestMapping[schema?.test_name?.toLocaleLowerCase()] = [schema];
+      }
       if (Object.prototype.hasOwnProperty.call(runAtObject, run_at)) {
         runAtObject[run_at].push(schema);
       } else {
         runAtObject[run_at] = [schema];
+      }
+      if (Object.prototype.hasOwnProperty.call(testsObject, model)) {
+        testsObject[model].push(schema);
+      } else {
+        testsObject[model] = [schema];
       }
       if (schema.status?.toLowerCase() === 'fail' || schema.status?.toLowerCase() === 'error') {
         if (Object.prototype.hasOwnProperty.call(failedTestsObject, model)) {
@@ -99,6 +119,8 @@ const formatOverviewData = (
           failedTestsObject[model] = [schema];
         }
       }
+
+      // console.log('schema', schema);
       tests.push(schema);
     } else if (item.type === 'anomaly') {
       const anomaly = JSON.parse(item.data) as Anomaly;
@@ -127,9 +149,11 @@ const formatOverviewData = (
   return {
     aggregatedModels: result,
     tests,
+    testsObject,
     failedTests: failedTestsObject,
     runAts: runAtObject,
     alerts: alertsChanges,
+    modelTestMapping,
   };
 };
 
@@ -164,6 +188,8 @@ const Dashboard: React.FC = (): ReactElement => {
     modelNodes: [],
     failedTests: {},
     runAts: {},
+    testsObject: {},
+    modelTestMapping: {},
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -190,6 +216,8 @@ const Dashboard: React.FC = (): ReactElement => {
         modelNodes: [],
         failedTests: {},
         runAts: {},
+        testsObject: {},
+        modelTestMapping: {},
       };
       const { dbtMapping, modelNodes } = formatDbtData(graphData);
       const result = new Map<string, ReDataModelDetails>();
@@ -212,11 +240,14 @@ const Dashboard: React.FC = (): ReactElement => {
         aggregatedModels,
         tests,
         failedTests,
+        testsObject,
         runAts,
         alerts,
+        modelTestMapping,
       } = formatOverviewData(overviewData, result);
 
       overview.aggregated_models = aggregatedModels;
+      overview.testsObject = testsObject;
       overview.alerts = alerts;
       overview.graph = graphData;
       overview.tests = tests;
@@ -224,6 +255,7 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.modelNodes = modelNodes;
       overview.failedTests = failedTests;
       overview.runAts = runAts;
+      overview.modelTestMapping = modelTestMapping;
 
       console.log('overview -> ', overview);
       setReDataOverview(overview);

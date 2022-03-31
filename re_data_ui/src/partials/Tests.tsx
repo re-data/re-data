@@ -34,7 +34,16 @@ const ModelCell = ({ value }: CellProps) => (
   </Link>
 );
 
-const StatusCell = ({ value }: CellProps) => (
+const LinkCell = ({ value }: CellProps) => (
+  <Link
+    to={`/tests/${value.toLowerCase()}`}
+    className="text-sm text-blue-700 font-semibold"
+  >
+    {value}
+  </Link>
+);
+
+export const StatusCell = ({ value }: CellProps): JSX.Element => (
   <div
     className={`${value?.toLowerCase()} text-xs font-medium text-center py-1 rounded-full`}
   >
@@ -42,7 +51,9 @@ const StatusCell = ({ value }: CellProps) => (
   </div>
 );
 
-const RightComponent = ({ options, value, handleChange }: RightComponentProps) => (
+export const RightComponent = (
+  { options, value, handleChange }: RightComponentProps,
+): JSX.Element => (
   <select
     className="px-2 py-1 rounded-md w-1/4 right-component border border-gray-300"
     onChange={handleChange}
@@ -115,6 +126,7 @@ function TestsPartial(params: TP): ReactElement {
     const cols: ColumnsProps[] = [{
       Header: 'Test Name',
       accessor: 'test_name',
+      Cell: LinkCell,
     },
     {
       Header: 'Status',

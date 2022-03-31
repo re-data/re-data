@@ -9,7 +9,7 @@ import {
 export interface CellProps {
   value: string;
   column: Record<string, number>;
-  row: Record<string, string>;
+  row: Record<string, Record<string, string>>;
 }
 export interface ColumnsProps {
   Header: string;
