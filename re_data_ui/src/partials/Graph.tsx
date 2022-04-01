@@ -250,7 +250,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
   const model = searchParams.get('model') as string;
 
   useEffect(() => {
-    if (tab === 'test_failure') {
+    if (tab === 'test') {
       setActiveTab(ModelTabs.TESTS);
     } else {
       setActiveTab(tab as ModelTabs);

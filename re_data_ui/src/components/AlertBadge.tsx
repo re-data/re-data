@@ -13,7 +13,7 @@ const AlertBadge: React.FC<AlertBadgeProps> = (
     classNames += ' bg-secondary';
   } else if (label === 'schema_changes') {
     classNames += ' bg-yellow-300';
-  } else if (label === 'test_failure') {
+  } else if (label === 'test') {
     classNames += ' bg-red-500';
   }
   return (
