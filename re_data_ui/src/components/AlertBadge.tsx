@@ -11,7 +11,7 @@ const AlertBadge: React.FC<AlertBadgeProps> = (
   let classNames = 'badge rounded-full px-2.5 pt-1 pb-1.5 text-center object-right-top text-white text-xs mr-3';
   if (label === 'anomalies' || label === 'anomaly') {
     classNames += ' bg-secondary';
-  } else if (label === 'schema_changes') {
+  } else if (label === 'schema_change' || label === 'schema_changes') {
     classNames += ' bg-yellow-300';
   } else if (label === 'test') {
     classNames += ' bg-red-500';

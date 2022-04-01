@@ -199,10 +199,16 @@ const Tables: React.FC = (): ReactElement => {
             <div className="bg-white rounded-md px-3 py-4">
               <h3 className="mb-3 text-md font-medium">Raw SQL</h3>
               <div className="grid grid-cols-1 gap-4">
-                <CodeFormatter
-                  code={rawSql}
-                  language="sql"
-                />
+                {rawSql ? (
+                  <CodeFormatter
+                    code={rawSql}
+                    language="sql"
+                  />
+                ) : (
+                  <div className="text-center font-semibold">
+                    <p>No raw SQL available</p>
+                  </div>
+                )}
               </div>
             </div>
           </section>
