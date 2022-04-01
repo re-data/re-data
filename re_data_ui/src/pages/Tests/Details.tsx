@@ -2,11 +2,9 @@ import EChartsReactCore from 'echarts-for-react/lib/core';
 import { ToolboxComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import React, {
-  FC, ReactElement, ReactNode, useContext, useEffect, useMemo, useState,
+  FC, ReactElement, useContext, useEffect, useMemo, useState,
 } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Select, Table } from '../../components';
 import { ColumnsProps } from '../../components/Table';
 import {
@@ -14,12 +12,14 @@ import {
   OverviewData, RedataOverviewContext, SelectOptionProps,
 } from '../../contexts/redataOverviewContext';
 import { RightComponent, StatusCell } from '../../partials/Tests';
+import { CodeFormatter } from '../../partials';
 
 echarts.use([ToolboxComponent]);
 
 type valuesProps = {
   timelineData?: Record<string, string>;
 }
+
 const values = ({ timelineData }: valuesProps) => {
   if (timelineData) {
     const data = Object.values(timelineData);
@@ -79,17 +79,6 @@ const values = ({ timelineData }: valuesProps) => {
   }
   return {};
 };
-
-type CodeProps = {
-  code: ReactNode
-  language: string
-}
-
-const Code = ({ code, language }: CodeProps): JSX.Element => (
-  <SyntaxHighlighter language={language} style={dark}>
-    {code}
-  </SyntaxHighlighter>
-);
 
 type generateDetailsDataProps = {
   modelName?: string | null
@@ -288,7 +277,7 @@ const TestDetails: FC = (): ReactElement => {
           <div className="mt-5">
             <h6 className="font-semibold">Failures Json</h6>
             <div className="flex flex-col mt-2">
-              <Code
+              <CodeFormatter
                 code={JSON.stringify(JSON.parse(results.failures_json.trim()), null, 2)}
                 language="json"
               />
@@ -300,7 +289,7 @@ const TestDetails: FC = (): ReactElement => {
           <div className="mt-5">
             <h6 className="font-semibold">Compiled SQL</h6>
             <div className="flex flex-col mt-2">
-              <Code code={results.compiled_sql.trim()} language="sql" />
+              <CodeFormatter code={results.compiled_sql.trim()} language="sql" />
             </div>
           </div>
         )}

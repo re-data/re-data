@@ -160,6 +160,7 @@ const formatOverviewData = (
 const formatDbtData = (graphData: DbtGraph) => {
   const dbtMapping: Record<string, string> = {};
   const modelNodes: SelectOptionProps[] = [];
+
   Object.entries({ ...graphData.sources, ...graphData.nodes })
     .forEach(([key, value]) => {
       const { resource_type: resourceType, package_name: packageName } = value;
@@ -173,6 +174,7 @@ const formatDbtData = (graphData: DbtGraph) => {
         });
       }
     });
+
   return { dbtMapping, modelNodes };
 };
 

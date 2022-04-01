@@ -1,5 +1,5 @@
 import React, {
-  ReactElement, useContext, useEffect, useState,
+  ReactElement, useContext, useEffect, useState, useMemo,
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
@@ -10,14 +10,14 @@ import {
   SelectOptionProps, OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
-import { GraphPartial, TestsPartial } from '../partials';
+import { GraphPartial, TestsPartial, CodeFormatter } from '../partials';
 import colors from '../utils/colors.js';
 
 const showA = true;
 
 const Tables: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { modelNodes } = overview;
+  const { modelNodes, dbtMapping, graph } = overview;
   const [activeTab, setActiveTab] = useState('');
   const [callApi, setCallApi] = useState(true);
   const [optionValue, setOptionValue] = useState<SelectOptionProps | null>();
@@ -29,6 +29,12 @@ const Tables: React.FC = (): ReactElement => {
 
   const [modelDetails, setModelDetails] = useState<ReDataModelDetails>();
 
+  const rawSql = useMemo(() => {
+    const result = graph?.nodes?.[dbtMapping?.[model]]?.raw_sql;
+    return result || '';
+  }, [graph, dbtMapping, model]);
+
+  console.log('graph ', graph?.nodes?.[dbtMapping?.[model]]?.raw_sql);
   const { init } = useModel();
 
   const handleChange = (option: SelectOptionProps | null) => {
@@ -119,6 +125,13 @@ const Tables: React.FC = (): ReactElement => {
                   Tests
                 </button>
               </li>
+              <li
+                className={`mr-4 ${activeTab === 'sql' && 'active-tab'}`}
+              >
+                <button type="button" onClick={() => handleScroll('sql')}>
+                  Compiled Sql
+                </button>
+              </li>
             </ul>
           </nav>
           <section id="anomalies" className="pb-4 pt-16 -mt-12">
@@ -178,6 +191,17 @@ const Tables: React.FC = (): ReactElement => {
                   showRunAt
                   showModel={false}
                   modelName={model}
+                />
+              </div>
+            </div>
+          </section>
+          <section id="sql" className="pb-4 pt-4">
+            <div className="bg-white rounded-md px-3 py-4">
+              <h3 className="mb-3 text-md font-medium">Compiled SQL</h3>
+              <div className="grid grid-cols-1 gap-4">
+                <CodeFormatter
+                  code={rawSql}
+                  language="sql"
                 />
               </div>
             </div>
