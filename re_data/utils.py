@@ -75,10 +75,11 @@ def prepare_slack_member_ids_per_model(monitored_list: list) -> dict:
     obj = defaultdict(list)
     for monitored in monitored_list:
         model = monitored['model'].replace('"', '')
-        members = json.loads(monitored.get('slack_owners')) or {}
-        for member_id in members.values():
-            slack_mention = '<@{}>'.format(member_id)
-            obj[model].append(slack_mention)
+        members = json.loads(monitored.get('owners')) or {}
+        for identifier, details in members.items():
+            if details.get('notify_channel') == 'slack':
+                slack_mention = '<@{}>'.format(identifier)
+                obj[model].append(slack_mention)
     return obj
 
 

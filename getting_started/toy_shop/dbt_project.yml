@@ -63,12 +63,31 @@ vars:
   re_data:anomaly_detector:
     name: modified_z_score
     threshold: 3
-  re_data:slack_config:
-    deji: U02FHBSTW0H
-    mateusz: U01F80NJW23
-    emmanuel: U02RD3S3WP8
-    backend: [deji, mateusz]
-    frontend: [deji, emmanuel]
+  re_data:owners_config:
+    deji:
+      - type: slack
+        identifier: U02FHBSTW0H
+        name: deji
+    backend:
+      - type: email
+        identifier: mateusz@getre.io
+        name: mateusz
+
+      - type: slack
+        identifier: U01F80NJW23
+        name: mateusz
+
+      - type: slack
+        identifier: U02FHBSTW0H
+        name: deji  
+    frontend:
+      - type: slack
+        identifier: U02RD3S3WP8
+        name: emma
+
+      - type: slack
+        identifier: U02FHBSTW0H
+        name: deji      
   re_data:metrics_base:
     table:
       - row_count

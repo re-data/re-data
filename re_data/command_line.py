@@ -401,7 +401,6 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
 
     slack_model_members = prepare_slack_member_ids_per_model(monitored_list=monitored)
 
-
     alerts_per_model = prepare_exported_alerts_per_model(alerts)
     for model, details in alerts_per_model.items():
         owners = slack_model_members.get(model, '')
