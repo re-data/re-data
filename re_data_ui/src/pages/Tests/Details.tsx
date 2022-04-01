@@ -267,6 +267,7 @@ const TestDetails: FC = (): ReactElement => {
         <div className="flex items-center justify-between mt-2">
           <h4 className="font-bold text-xl">By Run</h4>
           <RightComponent
+            showOptionLabel={false}
             options={Array.from(runAtOptions) as []}
             value={selectedOption || Array.from(runAtOptions)?.[0]}
             handleChange={handleRunAtChange}

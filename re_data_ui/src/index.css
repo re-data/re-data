@@ -120,3 +120,8 @@ select {
 .graph-view {
     min-height: 30rem;
 }
+
+.w-480 {
+    width: 480px;
+    max-width: 480px;
+}

@@ -19,10 +19,11 @@ export interface TP {
   showSearch?: boolean;
 }
 
-type RightComponentProps = {
+export type RightComponentProps = {
   options: string[];
   value: string;
   handleChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  showOptionLabel?: boolean;
 }
 
 const ModelCell = ({ value }: CellProps) => (
@@ -52,14 +53,17 @@ export const StatusCell = ({ value }: CellProps): JSX.Element => (
 );
 
 export const RightComponent = (
-  { options, value, handleChange }: RightComponentProps,
+  {
+    options, value, handleChange,
+    showOptionLabel = true,
+  }: RightComponentProps,
 ): JSX.Element => (
   <select
     className="px-2 py-1 rounded-md w-1/4 right-component border border-gray-300"
     onChange={handleChange}
     value={value}
   >
-    <option value="">All sorted by run time (new firsts)</option>
+    {showOptionLabel && <option value="">All sorted by run time (new firsts)</option>}
     {options.map((option: string) => (
       <option key={option} value={option}>
         {option}

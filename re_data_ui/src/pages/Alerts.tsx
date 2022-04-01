@@ -42,6 +42,12 @@ const AlertCell = ({ value }: CellProps) => (
   <AlertBadge label={value} />
 );
 
+const MessageCell = ({ value }: CellProps) => (
+  <div className="truncate w-480">
+    {value}
+  </div>
+);
+
 const Alerts: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { alerts, graph } = overview;
@@ -60,6 +66,7 @@ const Alerts: React.FC = (): ReactElement => {
     {
       Header: 'Message',
       accessor: 'message',
+      Cell: MessageCell,
     },
     {
       Header: 'Value',

@@ -8,7 +8,7 @@ const AlertBadge: React.FC<AlertBadgeProps> = (
   props: PropsWithChildren<AlertBadgeProps>,
 ): ReactElement => {
   const { label } = props;
-  let classNames = 'badge rounded-full px-2.5 pt-1 pb-1.5 text-center object-right-top text-white text-xs mr-3';
+  let classNames = 'badge rounded-full px-4 pt-1 pb-1.5 text-center object-right-top text-white text-xs mr-3';
   if (label === 'anomalies' || label === 'anomaly') {
     classNames += ' bg-secondary';
   } else if (label === 'schema_change' || label === 'schema_changes') {
