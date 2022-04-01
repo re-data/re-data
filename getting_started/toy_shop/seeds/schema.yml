@@ -19,7 +19,7 @@ seeds:
       re_data_anomaly_detector:
         name: boxplot
         whisker_boundary_multiplier: 2.0
-      re_data_slack_owners:
+      re_data_owners:
         - backend
 
     columns:
