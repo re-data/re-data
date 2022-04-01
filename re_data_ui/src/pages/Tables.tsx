@@ -126,10 +126,10 @@ const Tables: React.FC = (): ReactElement => {
                 </button>
               </li>
               <li
-                className={`mr-4 ${activeTab === 'sql' && 'active-tab'}`}
+                className={`mr-4 ${activeTab === 'metadata' && 'active-tab'}`}
               >
-                <button type="button" onClick={() => handleScroll('sql')}>
-                  Compiled Sql
+                <button type="button" onClick={() => handleScroll('metadata')}>
+                  Metadata
                 </button>
               </li>
             </ul>
@@ -195,9 +195,9 @@ const Tables: React.FC = (): ReactElement => {
               </div>
             </div>
           </section>
-          <section id="sql" className="pb-4 pt-4">
+          <section id="metadata" className="pb-4 pt-4">
             <div className="bg-white rounded-md px-3 py-4">
-              <h3 className="mb-3 text-md font-medium">Compiled SQL</h3>
+              <h3 className="mb-3 text-md font-medium">Raw SQL</h3>
               <div className="grid grid-cols-1 gap-4">
                 <CodeFormatter
                   code={rawSql}
