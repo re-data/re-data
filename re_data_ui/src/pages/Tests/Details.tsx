@@ -26,10 +26,10 @@ const values = ({ timelineData }: valuesProps) => {
     const runAt = Object.keys(timelineData);
 
     return {
-      title: {
-        left: 'center',
-        text: 'Timeline',
-      },
+      // title: {
+      //   left: 'center',
+      //   text: 'Timeline',
+      // },
       grid: {
         top: '20%', right: '5%', bottom: '12%', left: '15%',
       },
@@ -117,14 +117,14 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
   // console.log('check ', check, modelName);
   if (modelTestMapping && testName) {
     result = modelTestMapping?.[testName?.toLowerCase()] as unknown as Record<string, unknown>[];
-    console.log('result--> ', result, modelTestMapping, testName);
+    // console.log('result--> ', result, modelTestMapping, testName);
   }
 
   if (check) {
     const arr = testsObject[modelName];
     const valSet = new Set();
 
-    console.log('result > ', result);
+    // console.log('result > ', result);
     for (let index = 0; index < arr?.length; index++) {
       const element = arr[index];
 
@@ -147,7 +147,7 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
 
   // console.log('options ', val);
   // console.log('timelineData ', timelineData);
-  console.log('result ', result);
+  // console.log('result ', result);
 
   return {
     options: val,
@@ -265,7 +265,7 @@ const TestDetails: FC = (): ReactElement => {
       </section>
 
       <section className="mb-6">
-        <h4 className="font-bold">Timeline</h4>
+        <h4 className="font-bold text-xl">Failures timeline</h4>
 
         <div className="mt-2 rounded-md h-96 w-full">
           {timelineData && (
