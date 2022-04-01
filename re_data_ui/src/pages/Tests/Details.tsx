@@ -113,41 +113,41 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
 
   const check = !loading && modelTestMapping && modelName && testsObject && testName;
 
+  // console.log(!loading, modelTestMapping, modelName, testsObject, testName);
+  // console.log('check ', check, modelName);
+  if (modelTestMapping && testName) {
+    result = modelTestMapping?.[testName?.toLowerCase()] as unknown as Record<string, unknown>[];
+    console.log('result--> ', result, modelTestMapping, testName);
+  }
+
   if (check) {
     const arr = testsObject[modelName];
     const valSet = new Set();
-    result = modelTestMapping?.[testName] as unknown as Record<string, unknown>[];
 
-    console.log('arr', arr, '==================', result);
+    console.log('result > ', result);
     for (let index = 0; index < arr?.length; index++) {
       const element = arr[index];
 
       if (testName?.toLowerCase() === element.test_name?.toLowerCase()) {
-        console.log(`${index}`);
-        // console.log('here ', index);
         // console.log('here ', element);
         runAts.add(element.run_at); // still do this
         timelineData[element.run_at] = element.failures_count || ''; // still do this
         testDetailsObject[element.run_at] = element;
       }
       if (!valSet.has(element.test_name)) {
-        // console.log(`${index}`);
-        // console.log(`${element.run_at}`);
         valSet.add(element.test_name);
-
-        // console.log('check -> ', valSet.has(element.test_name), element.test_name);
 
         val.push({
           label: element.test_name,
-          value: element.test_name,
+          value: element.test_name?.toLowerCase(),
         });
       }
     }
   }
 
   // console.log('options ', val);
-  console.log('timelineData ', timelineData);
-  // console.log('result ', result);
+  // console.log('timelineData ', timelineData);
+  console.log('result ', result);
 
   return {
     options: val,
@@ -165,7 +165,9 @@ const TestDetails: FC = (): ReactElement => {
 
   const navigate = useNavigate();
 
-  const { testName } = useParams();
+  let { testName } = useParams();
+  testName = testName?.toLowerCase();
+
   const columns: ColumnsProps[] = useMemo(() => [
     {
       Header: 'Test Name',
@@ -197,8 +199,10 @@ const TestDetails: FC = (): ReactElement => {
 
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { testsObject, modelTestMapping, loading } = overview;
+  console.log('modelTestMapping ', modelTestMapping);
 
   const modelName = modelTestMapping?.[testName || '']?.[0]?.model;
+  console.log('modelName', modelName);
 
   const {
     options, result, timelineData,
@@ -218,8 +222,8 @@ const TestDetails: FC = (): ReactElement => {
 
   const handleChange = (option: SelectOptionProps | null) => {
     if (option && modelName) {
-      console.log('option ', option);
-      console.log('result => ', testsObject[option.value], testsObject[modelName]);
+      // console.log('option ', option);
+      // console.log('result => ', testsObject[option.value], testsObject[modelName]);
       setOptionValue(option);
       // setResult(testsObject[option.value] as never[]);
       navigate(`/tests/${option.value}`);
@@ -228,7 +232,7 @@ const TestDetails: FC = (): ReactElement => {
 
   const results: ITestSchema = useMemo(() => {
     const key = selectedOption || Array.from(runAtOptions)?.[0];
-    return testDetailsObject?.[key] as ITestSchema;
+    return testDetailsObject?.[key] as ITestSchema || {};
   }, [runAtOptions, testDetailsObject, selectedOption]);
 
   const handleRunAtChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -242,7 +246,8 @@ const TestDetails: FC = (): ReactElement => {
     }
   };
 
-  console.log('options[0] ', options[0]);
+  console.log('results', results);
+
   return (
     <>
       <section className="mb-6">
@@ -280,19 +285,22 @@ const TestDetails: FC = (): ReactElement => {
         </div>
 
         {results?.failures_json && (
-          <div className="my-5">
+          <div className="mt-5">
             <h6 className="font-semibold">Failures Json</h6>
             <div className="flex flex-col mt-2">
-              <Code code={JSON.stringify(JSON.parse(results.failures_json), null, 2)} language="json" />
+              <Code
+                code={JSON.stringify(JSON.parse(results.failures_json.trim()), null, 2)}
+                language="json"
+              />
             </div>
           </div>
         )}
 
         {results?.compiled_sql && (
-          <div>
+          <div className="mt-5">
             <h6 className="font-semibold">Compiled SQL</h6>
             <div className="flex flex-col mt-2">
-              <Code code={results.compiled_sql} language="sql" />
+              <Code code={results.compiled_sql.trim()} language="sql" />
             </div>
           </div>
         )}
