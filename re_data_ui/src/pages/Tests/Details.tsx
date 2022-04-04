@@ -102,25 +102,20 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
 
   const check = !loading && modelTestMapping && modelName && testsObject && testName;
 
-  // console.log(!loading, modelTestMapping, modelName, testsObject, testName);
-  // console.log('check ', check, modelName);
   if (modelTestMapping && testName) {
     result = modelTestMapping?.[testName?.toLowerCase()] as unknown as Record<string, unknown>[];
-    // console.log('result--> ', result, modelTestMapping, testName);
   }
 
   if (check) {
     const arr = testsObject[modelName];
     const valSet = new Set();
 
-    // console.log('result > ', result);
     for (let index = 0; index < arr?.length; index++) {
       const element = arr[index];
 
       if (testName?.toLowerCase() === element.test_name?.toLowerCase()) {
-        // console.log('here ', element);
-        runAts.add(element.run_at); // still do this
-        timelineData[element.run_at] = element.failures_count || ''; // still do this
+        runAts.add(element.run_at);
+        timelineData[element.run_at] = element.failures_count || '';
         testDetailsObject[element.run_at] = element;
       }
       if (!valSet.has(element.test_name)) {
@@ -133,10 +128,6 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
       }
     }
   }
-
-  // console.log('options ', val);
-  // console.log('timelineData ', timelineData);
-  // console.log('result ', result);
 
   return {
     options: val,
@@ -188,10 +179,8 @@ const TestDetails: FC = (): ReactElement => {
 
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { testsObject, modelTestMapping, loading } = overview;
-  console.log('modelTestMapping ', modelTestMapping);
 
   const modelName = modelTestMapping?.[testName || '']?.[0]?.model;
-  console.log('modelName', modelName);
 
   const {
     options, result, timelineData,
@@ -205,14 +194,17 @@ const TestDetails: FC = (): ReactElement => {
   });
 
   useEffect(() => {
-    setData(result as [] || []);
+    const firstRunAt = Array.from(runAtOptions)?.[0];
+    let res = result as [] || [];
+    if (firstRunAt) {
+      res = result.filter((row) => row.run_at === firstRunAt) as [];
+    }
+    setData(res);
     setBackUpData(result as [] || []);
   }, [result]);
 
   const handleChange = (option: SelectOptionProps | null) => {
     if (option && modelName) {
-      // console.log('option ', option);
-      // console.log('result => ', testsObject[option.value], testsObject[modelName]);
       setOptionValue(option);
       // setResult(testsObject[option.value] as never[]);
       navigate(`/tests/${option.value}`);
@@ -226,16 +218,12 @@ const TestDetails: FC = (): ReactElement => {
 
   const handleRunAtChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const option = e.target.value;
-    console.log(option);
+
     setSelectedOption(option);
-    if (option) {
-      setData(backUpData.filter((row: ITestSchema) => row.run_at === option));
-    } else {
-      setData(backUpData);
-    }
+    setData(option ? backUpData.filter((row: ITestSchema) => row.run_at === option) : backUpData);
   };
 
-  console.log('results', results);
+  console.log('results => ', results, 'data => ', data);
 
   return (
     <>

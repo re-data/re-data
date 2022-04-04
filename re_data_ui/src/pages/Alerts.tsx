@@ -31,10 +31,9 @@ const generateAlertData = (alerts: Alert[]) => {
 
 const ModelCell = ({ value, row }: CellProps) => {
   const val = value?.split('.');
-  const val3 = val?.splice(0, val?.length - 1)?.join('.');
+  const other = val?.splice(0, val?.length - 1)?.join('.');
 
   const table = val?.pop();
-  // console.log('table ', val, val3);
   return (
     <Link
       to={`/graph?model=${value?.toLowerCase()}&tab=${row?.values?.type?.toLowerCase()}`}
@@ -42,7 +41,7 @@ const ModelCell = ({ value, row }: CellProps) => {
     >
       <span className="text-base font-semibold">{table}</span>
       <br />
-      <em className="text-xs">{val3}</em>
+      <em className="text-xs">{other}</em>
     </Link>
   );
 };
