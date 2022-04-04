@@ -32,12 +32,11 @@ type formatOverviewDataReturnType = {
   alerts: Alert[],
 };
 
-// const pushToObj = (obj, check) => {};
-
 const formatOverviewData = (
   data: Array<RawOverviewData>,
   result: Map<string, ReDataModelDetails>,
 ): formatOverviewDataReturnType => {
+  // console.log('data -> ', data);
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
   const testsObject: Record <string, ITestSchema[]> = {};
@@ -64,6 +63,7 @@ const formatOverviewData = (
     const columnName = item.column_name ? item.column_name : '';
     const details = result.get(model) as ReDataModelDetails;
     if (item.type === 'alert') {
+      // console.log('alert', item);
       const alert = JSON.parse(item.data) as Alert;
       alertsChanges.push(alert);
     } else if (item.type === 'metric') {
