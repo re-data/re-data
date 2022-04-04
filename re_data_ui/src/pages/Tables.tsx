@@ -198,7 +198,7 @@ const Tables: React.FC = (): ReactElement => {
           <section id="metadata" className="pb-4 pt-4">
             <div className="bg-white rounded-md px-3 py-4">
               <h3 className="mb-3 text-md font-medium">Raw SQL</h3>
-              <div className="grid grid-cols-1 gap-4">
+              <div className="flex flex-col mt-2 rounded-sm overflow-hidden">
                 {rawSql ? (
                   <CodeFormatter
                     code={rawSql}

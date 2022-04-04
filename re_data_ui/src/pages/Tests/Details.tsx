@@ -265,7 +265,7 @@ const TestDetails: FC = (): ReactElement => {
         {results?.failures_json && (
           <div className="mt-5">
             <h6 className="font-semibold">Failures Json</h6>
-            <div className="flex flex-col mt-2">
+            <div className="flex flex-col mt-2 rounded-sm overflow-hidden">
               <CodeFormatter
                 code={JSON.stringify(JSON.parse(results.failures_json.trim()), null, 2)}
                 language="json"
@@ -277,7 +277,7 @@ const TestDetails: FC = (): ReactElement => {
         {results?.compiled_sql && (
           <div className="mt-5">
             <h6 className="font-semibold">Compiled SQL</h6>
-            <div className="flex flex-col mt-2">
+            <div className="flex flex-col mt-2 rounded-sm overflow-hidden">
               <CodeFormatter code={results.compiled_sql.trim()} language="sql" />
             </div>
           </div>
