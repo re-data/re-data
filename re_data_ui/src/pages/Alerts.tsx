@@ -19,7 +19,7 @@ const generateAlertData = (alerts: Alert[]) => {
 
     result.push({
       model: alert.model,
-      type: alert.type,
+      type: alert.type === 'schema_changes' ? 'schema' : alert.type,
       message: alert.message,
       value: alert.value,
       date: dayjs(alert.time_window_end).format(dateTimeFormat),

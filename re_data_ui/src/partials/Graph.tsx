@@ -225,8 +225,8 @@ export interface GraphPartialProps {
 }
 
 export enum ModelTabs {
-  ANOMALIES = 'anomalies',
-  SCHEMA_CHANGES = 'schema_changes',
+  ANOMALIES = 'anomaly',
+  SCHEMA_CHANGES = 'schema',
   METRICS = 'metrics',
   TESTS = 'tests',
 }

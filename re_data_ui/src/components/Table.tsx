@@ -72,7 +72,8 @@ const CustomFilter = memo(({
 
 function Table(params: ITable): JSX.Element {
   const {
-    columns, data, showSearch = true, RightComponent = null,
+    columns, data, showSearch = true,
+    RightComponent = null,
   } = params;
 
   const {
@@ -96,6 +97,7 @@ function Table(params: ITable): JSX.Element {
     {
       columns,
       data,
+      initialState: { pageSize: 20 },
     },
     useGlobalFilter,
     useSortBy,
@@ -226,9 +228,7 @@ function Table(params: ITable): JSX.Element {
                     >
                       {[5, 10, 20, 50, 100].map((size: number) => (
                         <option key={size} value={size}>
-                          Show
-                          {' '}
-                          {size}
+                          {`Show ${size}`}
                         </option>
                       ))}
                     </select>
