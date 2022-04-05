@@ -3,6 +3,7 @@ import subprocess
 import json
 from datetime import date, timedelta
 import shutil
+import logging
 
 import os
 from re_data.templating import render
@@ -13,10 +14,12 @@ from socketserver import TCPServer
 from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
-from re_data.utils import format_alerts_to_table, parse_dbt_vars, prepare_exported_alerts_per_model, \
-    generate_slack_message, prepare_slack_member_ids_per_model
+from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
+    generate_slack_message, build_notification_identifiers_per_model, generate_html_content_for_email, send_mime_email
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
+
+logger = logging.getLogger(__name__)
 
 
 def add_options(options):
@@ -32,7 +35,7 @@ def add_dbt_flags(command_list, flags):
         if value and key != 'dbt_vars':
             key = key.replace('_', '-')
             command_list.extend([f'--{key}', value])
-    print(' '.join(command_list))
+    logging.info(' '.join(command_list))
 
 def get_target_paths(kwargs, re_data_target_dir=None):
     project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
@@ -108,7 +111,7 @@ def main():
 )
 @anonymous_tracking
 def init(project_name):
-    print(f"Creating {project_name} template project")
+    logging.info(f"Creating {project_name} template project")
     dir_path = os.path.dirname(os.path.realpath(__file__))
     shutil.copytree(os.path.join(dir_path, 'dbt_template'), project_name)
 
@@ -123,17 +126,17 @@ def init(project_name):
     else:
         info = chalk.red("FAILURE")
 
-    print(f"Creating {project_name} template project", info)
+    logging.info(f"Creating {project_name} template project", info)
 
     if not response:
-        print(f"Setup profile & re_data:schemas var in dbt_project.yml", "INFO")
+        logging.info(f"Setup profile & re_data:schemas var in dbt_project.yml", "INFO")
 
 
 @main.command()
 @add_options(dbt_flags)
 @anonymous_tracking
 def detect(**kwargs):
-    print(f"Detecting tables", "RUN")
+    logging.info(f"Detecting tables", "RUN")
 
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     run_list = ['dbt', 'run', '--models', 're_data_columns', 're_data_monitored']
@@ -142,7 +145,7 @@ def detect(**kwargs):
     completed_process = subprocess.run(run_list)
     completed_process.check_returncode()
 
-    print(f"Detecting tables", "SUCCESS")
+    logging.info(f"Detecting tables", "SUCCESS")
 
 
 @main.command()
@@ -194,7 +197,7 @@ def run(start_date, end_date, interval, full_refresh, **kwargs):
 
         start_str = for_date.strftime("%Y-%m-%d %H:%M")
         end_str = (for_date + delta).strftime("%Y-%m-%d %H:%M")
-        print(f"Running for time interval: {start_str} - {end_str}", "RUN")
+        logging.info(f"Running for time interval: {start_str} - {end_str}", "RUN")
 
         re_data_dbt_vars = {
             're_data:time_window_start': str(for_date),
@@ -214,7 +217,7 @@ def run(start_date, end_date, interval, full_refresh, **kwargs):
 
         for_date += delta
 
-        print(
+        logging.info(
             f"Running for date: {for_date.date()}",
             chalk.green("SUCCESS"),
         )
@@ -291,7 +294,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     target_file_path = os.path.join(re_data_target_path, 'index.html')
     shutil.copyfile(OVERVIEW_INDEX_FILE_PATH, target_file_path)
 
-    print(
+    logging.info(
         f"Generating overview page", chalk.green("SUCCESS")
     )
 
@@ -399,14 +402,102 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
     with open(monitored_path) as f:
         monitored = json.load(f)
 
-    slack_model_members = prepare_slack_member_ids_per_model(monitored_list=monitored)
+    slack_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='slack')
 
     alerts_per_model = prepare_exported_alerts_per_model(alerts)
     for model, details in alerts_per_model.items():
-        owners = slack_model_members.get(model, '')
+        owners = slack_members.get(model, '')
         slack_message = generate_slack_message(model, details, owners)
         slack_notify(webhook_url, slack_message)
-    print(
+    logging.info(
+        f"Notification sent", chalk.green("SUCCESS")
+    )
+
+@notify.command()
+@click.option(
+    '--start-date',
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str((date.today() - timedelta(days=7)).strftime("%Y-%m-%d")),
+    help="Specify starting date to generate alert data, by default re_data will use 7 days ago for that value"
+)
+@click.option(
+    '--end-date',
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str(date.today().strftime("%Y-%m-%d")),
+    help="""
+        Specify end date used in generating alert data, by default re_data will use current date for that.
+    """
+)
+@click.option(
+    '--re-data-target-dir',
+    type=click.STRING,
+    help="""
+        Which directory to store artefacts generated by re_data
+        Defaults to the 'target-path' used in dbt_project.yml
+    """
+)
+@add_options(dbt_flags)
+@anonymous_tracking
+def email(start_date, end_date, re_data_target_dir, **kwargs):
+    start_date = str(start_date.date())
+    end_date = str(end_date.date())
+
+    smtp_host = os.getenv('SMTP_HOST')
+    smtp_port = os.getenv('SMTP_PORT')
+    smtp_user = os.getenv('SMTP_USER')
+    smtp_password = os.getenv('SMTP_PASSWORD')
+
+    mail_from = 'abdul00385@gmail.com'
+
+    _, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
+    alerts_path = os.path.join(re_data_target_path, 'alerts.json')
+    monitored_path = os.path.join(re_data_target_path, 'monitored.json')
+    dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
+    
+    args = {
+        'start_date': start_date,
+        'end_date': end_date,
+        'alerts_path': alerts_path,
+        'monitored_path': monitored_path,
+    }
+    
+
+    command_list = ['dbt', 'run-operation', 'export_alerts', '--args', yaml.dump(args)]
+    if dbt_vars: command_list.extend(['--vars', yaml.dump(dbt_vars)])
+    add_dbt_flags(command_list, kwargs)
+    completed_process = subprocess.run(command_list)
+    completed_process.check_returncode()
+
+    with open(alerts_path) as f:
+        alerts = json.load(f)
+    with open(monitored_path) as f:
+        monitored = json.load(f)
+
+    email_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='email')
+    alerts_per_model = prepare_exported_alerts_per_model(alerts)
+    for model, details in alerts_per_model.items():
+        owners = email_members.get(model, '')
+        html_content = generate_html_content_for_email(details)
+
+        for mail_to in owners:
+            mime_msg = build_mime_message(
+                mail_from=mail_from,
+                mail_to=mail_to,
+                subject='Test',
+                html_content=html_content,
+            )
+
+            send_mime_email(
+                mime_msg=mime_msg,
+                mail_from=mail_from,
+                mail_to=mail_to,
+                smtp_host=smtp_host,
+                smtp_port=smtp_port,
+                smtp_user=smtp_user,
+                smtp_password=smtp_password,
+            )
+    
+    logging.info(
         f"Notification sent", chalk.green("SUCCESS")
     )
 
