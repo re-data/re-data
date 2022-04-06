@@ -286,7 +286,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     # run dbt docs generate to generate the a full manifest that contains compiled_path etc
     dbt_docs = ['dbt', 'docs', 'generate']
     if dbt_vars: dbt_docs.extend(['--vars', yaml.dump(dbt_vars)])
-    add_dbt_flags(dbt_docs)
+    add_dbt_flags(dbt_docs, kwargs)
     dbt_docs_process = subprocess.run(dbt_docs)
     dbt_docs_process.check_returncode()
 
