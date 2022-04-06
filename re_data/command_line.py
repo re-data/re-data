@@ -283,6 +283,12 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
 
+    # run dbt docs generate to generate the a full manifest that contains compiled_path etc
+    dbt_docs = ['dbt', 'docs', 'generate']
+    dbt_docs_process = subprocess.run(dbt_docs)
+    dbt_docs_process.check_returncode()
+
+
     dbt_manifest_path = os.path.join(dbt_target_path, 'manifest.json')
     re_data_manifest = os.path.join(re_data_target_path, 'dbt_manifest.json')
     shutil.copyfile(dbt_manifest_path, re_data_manifest)
