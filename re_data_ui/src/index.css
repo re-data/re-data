@@ -121,6 +121,11 @@ select {
     min-height: 30rem;
 }
 
+.w-80 {
+    width: 80px;
+    max-width: 80px;
+}
+
 .w-400 {
     width: 400px;
     max-width: 450px;
