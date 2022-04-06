@@ -52,7 +52,8 @@ export interface DbtNode {
   build_path: string | null;
   deferred: boolean;
   unrendered_config: Record<string, unknown>;
-  created_at: number
+  created_at: number,
+  test_metadata: Record<string, unknown>;
 }
 
 export interface Anomaly {
@@ -107,6 +108,7 @@ export interface DbtSource {
   tags: [];
   unique_id: string;
   unrendered_config: Record<string, unknown>;
+  test_metadata: Record<string, unknown>;
 }
 
 export interface DbtGraph {
@@ -188,6 +190,7 @@ export interface OverviewData {
   runAts?: Record<string, ITestSchema[]>;
   testsObject: Record<string, ITestSchema[]>;
   modelTestMapping: Record<string, ITestSchema[]>;
+  testNameMapping: Record<string, string>;
 }
 
 export interface SelectOptionProps {
@@ -215,4 +218,5 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   runAts: {},
   testsObject: {},
   modelTestMapping: {},
+  testNameMapping: {},
 });

@@ -11,8 +11,8 @@ import {
   ITestSchema,
   OverviewData, RedataOverviewContext, SelectOptionProps,
 } from '../../contexts/redataOverviewContext';
-import { RightComponent, StatusCell } from '../../partials/Tests';
-import { CodeFormatter } from '../../partials';
+import { CodeFormatter, StatusCell } from '../../partials';
+import { RightComponent } from '../../partials/Tests';
 
 echarts.use([ToolboxComponent]);
 

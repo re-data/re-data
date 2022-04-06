@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import React, { ReactElement, useContext, useMemo } from 'react';
 import { FaRegSmileBeam } from 'react-icons/all';
-import { Link } from 'react-router-dom';
 import { EmptyContent, Table } from '../components';
 import AlertBadge from '../components/AlertBadge';
 import { CellProps, ColumnsProps } from '../components/Table';
@@ -9,6 +8,7 @@ import {
   Alert, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import colors from '../utils/colors.js';
+import { ModelCell } from '../partials';
 
 const generateAlertData = (alerts: Alert[]) => {
   const result = [];
@@ -19,7 +19,7 @@ const generateAlertData = (alerts: Alert[]) => {
 
     result.push({
       model: alert.model,
-      type: alert.type === 'schema_changes' ? 'schema' : alert.type,
+      type: alert.type === 'schema_change' ? 'schema' : alert.type,
       message: alert.message,
       value: alert.value,
       date: dayjs(alert.time_window_end).format(dateTimeFormat),
@@ -29,29 +29,12 @@ const generateAlertData = (alerts: Alert[]) => {
   return result;
 };
 
-const ModelCell = ({ value, row }: CellProps) => {
-  const val = value?.split('.');
-  const other = val?.splice(0, val?.length - 1)?.join('.');
-
-  const table = val?.pop();
-  return (
-    <Link
-      to={`/graph?model=${value?.toLowerCase()}&tab=${row?.values?.type?.toLowerCase()}`}
-      className="text-blue-700"
-    >
-      <span className="text-base font-semibold">{table}</span>
-      <br />
-      <em className="text-xs">{other}</em>
-    </Link>
-  );
-};
-
 const AlertCell = ({ value }: CellProps) => (
   <AlertBadge label={value} />
 );
 
 const MessageCell = ({ value }: CellProps) => (
-  <div className="truncate w-480">
+  <div className="truncate w-400">
     {value}
   </div>
 );

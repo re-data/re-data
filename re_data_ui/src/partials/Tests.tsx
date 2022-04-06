@@ -10,6 +10,8 @@ import {
   ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import colors from '../utils/colors.js';
+import ModelCell from './ModelCell';
+import StatusCell from './StatusCell';
 
 export interface TP {
   showRunAt: boolean;
@@ -26,31 +28,21 @@ export type RightComponentProps = {
   showOptionLabel?: boolean;
 }
 
-const ModelCell = ({ value }: CellProps) => (
-  <Link
-    to={`/graph?model=${value.toLowerCase()}`}
-    className="text-sm text-blue-700 font-semibold"
-  >
-    {value}
-  </Link>
-);
-
-const LinkCell = ({ value }: CellProps) => (
-  <Link
-    to={`/tests/${value.toLowerCase()}`}
-    className="text-sm text-blue-700 font-semibold"
-  >
-    {value}
-  </Link>
-);
-
-export const StatusCell = ({ value }: CellProps): JSX.Element => (
-  <div
-    className={`${value?.toLowerCase()} text-xs font-medium text-center py-1 rounded-full`}
-  >
-    {value}
-  </div>
-);
+const LinkCell = ({ value }: CellProps) => {
+  const overview: OverviewData = useContext(RedataOverviewContext);
+  const { testNameMapping } = overview;
+  const testName = testNameMapping[value];
+  console.log('testName', testName);
+  return (
+    <Link
+      to={`/tests/${value.toLowerCase()}`}
+      className="text-sm text-blue-700 font-semibold inline-flex flex-col"
+    >
+      {testName}
+      {/* {value} */}
+    </Link>
+  );
+};
 
 export const RightComponent = (
   {
@@ -120,7 +112,10 @@ function TestsPartial(params: TP): ReactElement {
     showSearch = true,
   } = params;
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { tests, aggregated_models: aggregatedModels, runAts: runAtsData } = overview;
+  const {
+    tests, aggregated_models: aggregatedModels,
+    runAts: runAtsData, testNameMapping,
+  } = overview;
   const [backUpData, setBackUpData] = useState([]);
   const [data, setData] = useState([]);
   const [options, setOptions] = useState([]);

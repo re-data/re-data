@@ -92,7 +92,6 @@ const formatOverviewData = (
       schema.run_at = run_at;
 
       details.tests.push(schema);
-      // console.log('model ', model, schema);
       if (
         Object.prototype.hasOwnProperty.call(
           modelTestMapping, schema?.test_name?.toLocaleLowerCase(),
@@ -159,11 +158,22 @@ const formatOverviewData = (
 
 const formatDbtData = (graphData: DbtGraph) => {
   const dbtMapping: Record<string, string> = {};
+  const testNameMapping: Record<string, string> = {};
   const modelNodes: SelectOptionProps[] = [];
 
   Object.entries({ ...graphData.sources, ...graphData.nodes })
     .forEach(([key, value]) => {
-      const { resource_type: resourceType, package_name: packageName } = value;
+      const {
+        resource_type: resourceType,
+        package_name: packageName,
+        test_metadata: testMetadata,
+        name,
+      } = value;
+      const testMetadataName = testMetadata?.name as string;
+
+      if (resourceType === 'test' && packageName !== 're_data') {
+        testNameMapping[name] = testMetadataName || name;
+      }
 
       if (supportedResTypes.has(resourceType) && packageName !== 're_data') {
         const modelId = generateModelId(value);
@@ -175,7 +185,7 @@ const formatDbtData = (graphData: DbtGraph) => {
       }
     });
 
-  return { dbtMapping, modelNodes };
+  return { dbtMapping, modelNodes, testNameMapping };
 };
 
 const Dashboard: React.FC = (): ReactElement => {
@@ -192,6 +202,7 @@ const Dashboard: React.FC = (): ReactElement => {
     runAts: {},
     testsObject: {},
     modelTestMapping: {},
+    testNameMapping: {},
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -220,8 +231,9 @@ const Dashboard: React.FC = (): ReactElement => {
         runAts: {},
         testsObject: {},
         modelTestMapping: {},
+        testNameMapping: {},
       };
-      const { dbtMapping, modelNodes } = formatDbtData(graphData);
+      const { dbtMapping, modelNodes, testNameMapping } = formatDbtData(graphData);
       const result = new Map<string, ReDataModelDetails>();
       for (const node of modelNodes) {
         const obj: ReDataModelDetails = {
@@ -254,6 +266,7 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.graph = graphData;
       overview.tests = tests;
       overview.dbtMapping = dbtMapping;
+      overview.testNameMapping = testNameMapping;
       overview.modelNodes = modelNodes;
       overview.failedTests = failedTests;
       overview.runAts = runAts;

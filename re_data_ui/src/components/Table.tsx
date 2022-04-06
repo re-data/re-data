@@ -140,7 +140,7 @@ function Table(params: ITable): JSX.Element {
               {headerGroup.headers.map((column) => (
                 <th
                   scope="col"
-                  className={`${styledPadding} ${column?.id === 'test_name' ? 'w-3/5' : 'w-1/5'} py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider`}
+                  className={`${styledPadding} ${columns.length === 3 ? 'w-1/3' : column?.id === 'test_name' ? 'w-2/5' : 'w-1/5'} py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider`}
                   {...column.getHeaderProps(
                     column.getSortByToggleProps(),
                   )}
@@ -183,7 +183,7 @@ function Table(params: ITable): JSX.Element {
                 {row.cells.map((cell) => (
                   <td
                     {...cell.getCellProps()}
-                    className={`${styledPadding} ${cell?.column?.id === 'test_name' ? 'w-3/5 truncate' : 'w-1/5 truncate'} py-4 text-sm`}
+                    className={`${styledPadding} ${columns.length === 3 ? 'w-1/3' : cell?.column?.id === 'test_name' ? 'w-2/5 truncate' : 'w-1/5 truncate'} py-4 text-sm`}
                     role="cell"
                     title={cell.value}
                   >
