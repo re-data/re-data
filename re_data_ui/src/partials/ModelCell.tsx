@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { CellProps } from '../components/Table';
 
-const ModelCell = ({ value, row }: CellProps) => {
+const ModelCell = ({ value, row }: CellProps): JSX.Element => {
   const val = value?.split('.');
   const other = val?.splice(0, val?.length - 1)?.join('.');
 

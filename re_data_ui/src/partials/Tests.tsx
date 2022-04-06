@@ -113,8 +113,9 @@ function TestsPartial(params: TP): ReactElement {
   } = params;
   const overview: OverviewData = useContext(RedataOverviewContext);
   const {
-    tests, aggregated_models: aggregatedModels,
-    runAts: runAtsData, testNameMapping,
+    tests,
+    aggregated_models: aggregatedModels,
+    runAts: runAtsData,
   } = overview;
   const [backUpData, setBackUpData] = useState([]);
   const [data, setData] = useState([]);
