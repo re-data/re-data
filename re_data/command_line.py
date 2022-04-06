@@ -18,6 +18,7 @@ from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_a
     generate_slack_message, build_notification_identifiers_per_model, generate_html_content_for_email, send_mime_email
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
+from re_data.config.utils import read_re_data_config
 
 logger = logging.getLogger(__name__)
 
@@ -439,6 +440,9 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
 @add_options(dbt_flags)
 @anonymous_tracking
 def email(start_date, end_date, re_data_target_dir, **kwargs):
+    re_data_dir = os.getcwd()
+    config = read_re_data_config(re_data_dir=re_data_dir)
+    print(config)
     start_date = str(start_date.date())
     end_date = str(end_date.date())
 
@@ -468,12 +472,15 @@ def email(start_date, end_date, re_data_target_dir, **kwargs):
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
 
+    return
+
     with open(alerts_path) as f:
         alerts = json.load(f)
     with open(monitored_path) as f:
         monitored = json.load(f)
 
     email_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='email')
+    logging.info(email_members)
     alerts_per_model = prepare_exported_alerts_per_model(alerts)
     for model, details in alerts_per_model.items():
         owners = email_members.get(model, '')
