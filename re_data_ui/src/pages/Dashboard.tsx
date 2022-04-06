@@ -172,7 +172,7 @@ const formatDbtData = (graphData: DbtGraph) => {
       const testMetadataName = testMetadata?.name as string;
 
       if (resourceType === 'test' && packageName !== 're_data') {
-        testNameMapping[name] = testMetadataName || name;
+        testNameMapping[name?.toLowerCase()] = testMetadataName || name;
       }
 
       if (supportedResTypes.has(resourceType) && packageName !== 're_data') {

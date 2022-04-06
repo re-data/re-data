@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import EChartsReactCore from 'echarts-for-react/lib/core';
 import { ToolboxComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
@@ -236,17 +237,28 @@ const TestDetails: FC = (): ReactElement => {
         <h1 className="text-2xl font-semibold mb-1">
           Test Details
         </h1>
-        <div className="md:w-1/3 w-full ml-1">
-          <Select
-            value={optionValue}
-            options={options}
-            handleChange={handleChange}
-            placeholder="Please enter a test name to check details"
-          />
+        <div>
+          <div className="md:w-1/3 w-full ml-1">
+            <Select
+              value={optionValue}
+              options={options}
+              handleChange={handleChange}
+              placeholder="Please enter a test name to check details"
+            />
+          </div>
         </div>
-        <h2 className="text-md font-medium mt-2 mb-1 ml-2">
-          {modelName && testNameMapping && `${modelName} (${testName && testNameMapping?.[testName]})`}
+      </section>
+
+      <section className="mb-6 bg-white rounded-md px-3 py-4">
+        <h2 className="text-md font-medium">
+          {modelName && `Model: ${modelName}`}
         </h2>
+        <p className="text-sm mt-1">
+          {testName && testNameMapping && `Test: ${testNameMapping?.[testName]}`}
+        </p>
+        <p className="text-sm mt-1">
+          {results?.column_name ? `Column: ${results?.column_name || ''} ` : ''}
+        </p>
       </section>
 
       <section className="mb-6 bg-white rounded-md px-3 py-4">
@@ -290,10 +302,8 @@ const TestDetails: FC = (): ReactElement => {
             </div>
           </div>
         )}
-      </section>
 
-      <section className="mt-8">
-        <div className="flex flex-col mt-2">
+        <div className="flex flex-col mt-5">
           {!loading && testName && (
             <Table
               showSearch={false}
@@ -303,7 +313,6 @@ const TestDetails: FC = (): ReactElement => {
           )}
         </div>
       </section>
-
       <div className="h-10" />
     </>
   );
