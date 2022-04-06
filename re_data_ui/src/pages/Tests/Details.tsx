@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Select, Table } from '../../components';
-import { ColumnsProps } from '../../components/Table';
+import { CellProps, ColumnsProps } from '../../components/Table';
 import {
   ITestSchema,
   OverviewData, RedataOverviewContext, SelectOptionProps,
@@ -152,6 +152,7 @@ const TestDetails: FC = (): ReactElement => {
     {
       Header: 'Test Name',
       accessor: 'test_name',
+      Cell: ({ value }: CellProps) => <span className="text-x">{value}</span>,
     },
     {
       Header: 'Status',
@@ -178,7 +179,10 @@ const TestDetails: FC = (): ReactElement => {
   });
 
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { testsObject, modelTestMapping, loading } = overview;
+  const {
+    testsObject, modelTestMapping,
+    testNameMapping, loading,
+  } = overview;
 
   const modelName = modelTestMapping?.[testName || '']?.[0]?.model;
 
@@ -223,13 +227,14 @@ const TestDetails: FC = (): ReactElement => {
     setData(option ? backUpData.filter((row: ITestSchema) => row.run_at === option) : backUpData);
   };
 
-  console.log('results => ', results, 'data => ', data);
+  // console.log('results => ', results, 'data => ', data);
+  console.log(testNameMapping, testName);
 
   return (
     <>
       <section className="mb-6">
         <h1 className="text-2xl font-semibold mb-1">
-          {`Test for: ${modelName}`}
+          Test Details
         </h1>
         <div className="md:w-1/3 w-full ml-1">
           <Select
@@ -239,9 +244,12 @@ const TestDetails: FC = (): ReactElement => {
             placeholder="Please enter a test name to check details"
           />
         </div>
+        <h2 className="text-md font-medium mt-2 mb-1 ml-2">
+          {modelName && testNameMapping && `${modelName} (${testName && testNameMapping?.[testName]})`}
+        </h2>
       </section>
 
-      <section className="mb-6">
+      <section className="mb-6 bg-white rounded-md px-3 py-4">
         <h4 className="font-bold text-xl">Failures timeline</h4>
 
         <div className="mt-2 rounded-md h-96 w-full">
@@ -251,7 +259,7 @@ const TestDetails: FC = (): ReactElement => {
         </div>
       </section>
 
-      <section className="mb-6">
+      <section className="mb-6 bg-white rounded-md px-3 py-4">
         <div className="flex items-center justify-between mt-2">
           <h4 className="font-bold text-xl">By Run</h4>
           <RightComponent
@@ -265,7 +273,7 @@ const TestDetails: FC = (): ReactElement => {
         {results?.failures_json && (
           <div className="mt-5">
             <h6 className="font-semibold">Failures Json</h6>
-            <div className="flex flex-col mt-2 rounded-sm overflow-hidden">
+            <div className="flex flex-col mt-2 rounded-md overflow-hidden">
               <CodeFormatter
                 code={JSON.stringify(JSON.parse(results.failures_json.trim()), null, 2)}
                 language="json"
@@ -277,7 +285,7 @@ const TestDetails: FC = (): ReactElement => {
         {results?.compiled_sql && (
           <div className="mt-5">
             <h6 className="font-semibold">Compiled SQL</h6>
-            <div className="flex flex-col mt-2 rounded-sm overflow-hidden">
+            <div className="flex flex-col mt-2 rounded-md overflow-hidden">
               <CodeFormatter code={results.compiled_sql.trim()} language="sql" />
             </div>
           </div>

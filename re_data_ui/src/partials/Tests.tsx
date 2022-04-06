@@ -32,14 +32,13 @@ const LinkCell = ({ value }: CellProps) => {
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { testNameMapping } = overview;
   const testName = testNameMapping[value];
-  console.log('testName', testName);
+
   return (
     <Link
       to={`/tests/${value.toLowerCase()}`}
       className="text-sm text-blue-700 font-semibold inline-flex flex-col"
     >
       {testName}
-      {/* {value} */}
     </Link>
   );
 };
@@ -129,16 +128,16 @@ function TestsPartial(params: TP): ReactElement {
       Cell: LinkCell,
     },
     {
+      Header: 'Column',
+      accessor: 'column_name',
+    },
+    {
       Header: 'Status',
       accessor: 'status',
       Cell: StatusCell,
-    },
-    {
-      Header: 'Column',
-      accessor: 'column_name',
     }];
     if (showModel) {
-      cols.push({
+      cols.unshift({
         Header: 'Model',
         accessor: 'model',
         Cell: ModelCell,
