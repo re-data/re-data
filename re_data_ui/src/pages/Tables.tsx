@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
+import { format } from 'sql-formatter';
 import {
   EmptyContent, MetricCharts, SchemaChanges, Select, TableSchema,
 } from '../components';
@@ -34,7 +35,7 @@ const Tables: React.FC = (): ReactElement => {
     return result || '';
   }, [graph, dbtMapping, model]);
 
-  console.log('graph ', graph?.nodes?.[dbtMapping?.[model]]?.raw_sql);
+  console.log('graph ', graph?.nodes?.[dbtMapping?.[model]]);
   const { init } = useModel();
 
   const handleChange = (option: SelectOptionProps | null) => {
@@ -201,7 +202,7 @@ const Tables: React.FC = (): ReactElement => {
               <div className="flex flex-col mt-2 rounded-md overflow-hidden">
                 {rawSql ? (
                   <CodeFormatter
-                    code={rawSql}
+                    code={format(rawSql)}
                     language="sql"
                   />
                 ) : (
