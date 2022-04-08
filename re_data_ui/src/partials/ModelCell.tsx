@@ -2,12 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { CellProps } from '../components/Table';
 
-const ModelCell = ({ value, row }: CellProps): JSX.Element => {
+const ModelCell = ({ value, row, column }: CellProps): JSX.Element => {
   const val = value?.split('.');
   const other = val?.splice(0, val?.length - 1)?.join('.');
 
   const table = val?.pop();
-  const tab = row?.values?.type?.toLowerCase() || 'anomaly';
+  const tab = row?.values?.type?.toLowerCase() || column?.type || 'anomaly';
 
   return (
     <Link
