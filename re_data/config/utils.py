@@ -2,12 +2,13 @@ import os
 from typing import Dict, Any
 from re_data.config.system import load_file_contents_as_string
 from re_data.config.yaml_utils import load_yaml_from_text
+from re_data.flags import RE_DATA_CONFIG_DIR
 
-def read_re_data_config(re_data_dir) -> Dict[str, Any]:
+def read_re_data_config() -> Dict[str, Any]:
     """
     Parses the ReData config file and returns the details.
     """
-    config_file = os.path.join(re_data_dir, 're_data.yml')
+    config_file = os.path.join(RE_DATA_CONFIG_DIR, 're_data.yml')
     if not os.path.isfile(config_file):
         return {}
 

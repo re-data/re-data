@@ -19,6 +19,7 @@ from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_a
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 from re_data.config.utils import read_re_data_config
+from re_data.config.validate import validate_config_section
 
 logger = logging.getLogger(__name__)
 
@@ -440,18 +441,18 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
 @add_options(dbt_flags)
 @anonymous_tracking
 def email(start_date, end_date, re_data_target_dir, **kwargs):
-    re_data_dir = os.getcwd()
-    config = read_re_data_config(re_data_dir=re_data_dir)
-    print(config)
+    config = read_re_data_config()
+    validate_config_section(config, 'email')
+    email_config = config.get('notifications').get('email')
+    use_ssl = email_config.get('use_ssl', False)
     start_date = str(start_date.date())
     end_date = str(end_date.date())
 
-    smtp_host = os.getenv('SMTP_HOST')
-    smtp_port = os.getenv('SMTP_PORT')
-    smtp_user = os.getenv('SMTP_USER')
-    smtp_password = os.getenv('SMTP_PASSWORD')
-
-    mail_from = 'abdul00385@gmail.com'
+    mail_from = email_config.get('mail_from')
+    smtp_host = email_config.get('smtp_host')
+    smtp_port = email_config.get('smtp_port')
+    smtp_user = email_config.get('smtp_user')
+    smtp_password = email_config.get('smtp_password')
 
     _, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     alerts_path = os.path.join(re_data_target_path, 'alerts.json')
@@ -472,8 +473,6 @@ def email(start_date, end_date, re_data_target_dir, **kwargs):
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
 
-    return
-
     with open(alerts_path) as f:
         alerts = json.load(f)
     with open(monitored_path) as f:
@@ -490,7 +489,7 @@ def email(start_date, end_date, re_data_target_dir, **kwargs):
             mime_msg = build_mime_message(
                 mail_from=mail_from,
                 mail_to=mail_to,
-                subject='Test',
+                subject='[Alerts] {}'.format(model),
                 html_content=html_content,
             )
 
@@ -502,6 +501,7 @@ def email(start_date, end_date, re_data_target_dir, **kwargs):
                 smtp_port=smtp_port,
                 smtp_user=smtp_user,
                 smtp_password=smtp_password,
+                use_ssl=use_ssl,
             )
     
     logging.info(

@@ -32,7 +32,7 @@ def _win_prepare_path(path: str) -> str:
 
     return path
 
-def convert_path(path):
+def convert_path(path: str) -> str:
     """
         Convert a path which might be >260 characters long, to one that will be writable/readable on Windows.
         On other platforms, this is a no-op.

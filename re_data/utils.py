@@ -59,11 +59,14 @@ def prepare_exported_alerts_per_model(alerts: list) -> dict:
             alerts_per_model[model] = {
                 'anomalies': [],
                 'schema_changes': [],
+                'tests': [],
             }
         if alert['type'] == 'anomaly':
             alerts_per_model[model]['anomalies'].append(alert)
         elif alert['type'] == 'schema_change':
             alerts_per_model[model]['schema_changes'].append(alert)
+        elif alert['type'] == 'test':
+            alerts_per_model[model]['tests'].append(alert)
     return alerts_per_model
 
 def build_notification_identifiers_per_model(monitored_list: list, channel) -> dict:
@@ -171,52 +174,47 @@ def generate_slack_message(model, details, owners) -> dict:
     )
     return message_obj
     
-def generate_html_content_for_email(details):
+def generate_html_content_for_email(details) -> str:
     """
     Generates the HTML content for the email.
     """
 
     anomalies = details.get('anomalies') or []
     schema_changes = details.get('schema_changes') or []
-    return """
+    tests = details.get('tests') or []
+    all_alerts = anomalies + schema_changes + tests
+    table_content = []
+    for alert in all_alerts:
+        txt = f"""
+            <tr>
+                <td>{alert.get('model')}</td>
+                <td>{alert.get('message')}</td>
+                <td>{alert.get('value')}</td>
+                <td>{alert.get('time_window_end')}</td>
+            </tr>
+        """
+        table_content.append(txt)
+    return f"""
     <html>
         <head>
             <title>ReData Alerts</title>
         </head>
         <body>
-            <h1>ReData Alerts</h1>
+            <h6> {len(anomalies)} anomalies </h6>
+            <h6> {len(schema_changes)} schema changes </h6>
+            <h6> {len(tests)} failed tests </h6>
             <p>
-                <b>Anomalies:</b>
+                <b>Alerts:</b>
                 <br>
                 <br>
                 <table>
                     <tr>
                         <th>Model</th>
-                        <th>Time Window</th>
+                        <th>Message</th>
                         <th>Value</th>
-                    </tr>
-                    <tr>
-                        <td>test_model</td>
-                        <td>2018-01-01 00:00:00 - 2018-01-01 00:00:00</td>
-                        <td>0.0</td>
-                    </tr>
-                </table>
-            </p>
-            <p>
-                <b>Schema Changes:</b>
-                <br>
-                <br>
-                <table>
-                    <tr>
-                        <th>Model</th>
                         <th>Time Window</th>
-                        <th>Value</th>
                     </tr>
-                    <tr>
-                        <td>test_model</td>
-                        <td>2018-01-01 00:00:00 - 2018-01-01 00:00:00</td>
-                        <td>0.0</td>
-                    </tr>
+                    {''.join(table_content)}
                 </table>
             </p>
         </body>
@@ -259,7 +257,8 @@ def send_mime_email(
         smtp_host: str,
         smtp_port: int,
         smtp_user: str,
-        smtp_password: str
+        smtp_password: str,
+        use_ssl: bool = True
     ):
     """
     Send an email using the provided MIME message.
@@ -271,14 +270,14 @@ def send_mime_email(
     :param smtp_port: SMTP port to use
     :param smtp_user: SMTP user to use
     :param smtp_password: SMTP password to use
+    :param use_ssl: Use SSL to connect to SMTP server
     """
-    smtp_host = smtp_host or 'localhost'
-    smtp_port = smtp_port or 25
-    smtp_user = smtp_user or None
-    smtp_password = smtp_password or None
 
-    s = smtplib.SMTP_SSL(smtp_host, smtp_port)
+    if use_ssl:
+        server = smtplib.SMTP_SSL(smtp_host, smtp_port)
+    else:
+        server = smtplib.SMTP(smtp_host, smtp_port)
     if smtp_user and smtp_password:
-        s.login(smtp_user, smtp_password)
-    s.sendmail(mail_from, mail_to, mime_msg.as_string())
-    s.quit()
+        server.login(smtp_user, smtp_password)
+    server.sendmail(mail_from, mail_to, mime_msg.as_string())
+    server.quit()
