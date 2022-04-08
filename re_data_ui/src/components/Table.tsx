@@ -8,8 +8,9 @@ import {
   useGlobalFilter, usePagination, useSortBy, useTable,
 } from 'react-table';
 
+type ColumnType = ColumnInstance<Record<string, string>> & { type: string };
 export interface CellProps {
-  column: ColumnInstance<Record<string, string>>;
+  column: ColumnType;
   row: Row<Record<string, string>>;
   value: CellValue<string>;
 }

@@ -137,11 +137,11 @@ function TestsPartial(params: TP): ReactElement {
       Cell: StatusCell,
     }];
     if (showModel) {
-      cols.unshift({
+      cols.splice(1, 0, {
         Header: 'Model',
         accessor: 'model',
         Cell: ModelCell,
-        type: 'type',
+        type: 'test',
       });
     }
     if (showRunAt) {
