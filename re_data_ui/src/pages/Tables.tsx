@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
-import { format } from 'sql-formatter';
 import {
   EmptyContent, MetricCharts, SchemaChanges, Select, TableSchema,
 } from '../components';
@@ -202,7 +201,7 @@ const Tables: React.FC = (): ReactElement => {
               <div className="flex flex-col mt-2 rounded-md overflow-hidden">
                 {rawSql ? (
                   <CodeFormatter
-                    code={format(rawSql)}
+                    code={rawSql}
                     language="sql"
                   />
                 ) : (
