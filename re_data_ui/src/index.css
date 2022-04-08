@@ -130,3 +130,13 @@ select {
     width: 400px;
     max-width: 450px;
 }
+
+.copy-icon {
+    outline: none;
+    transition: 0.2s all;
+}
+
+.copy-icon:active {
+    transform: scale(0.8);
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+}

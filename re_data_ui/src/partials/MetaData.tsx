@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { format } from 'sql-formatter';
+import { FaRegClipboard } from 'react-icons/all';
 import CodeFormatter from './CodeFormatter';
 
 type MetaDataType = {
@@ -9,6 +10,11 @@ type MetaDataType = {
 
 const MetaData = ({ failuresJson, compiledSql }: MetaDataType): JSX.Element => {
   const [activeTab, setActiveTab] = useState(failuresJson ? 'failures_json' : 'compiled_sql');
+
+  const failuresJsonCode = failuresJson && JSON.stringify(JSON.parse(failuresJson.trim()), null, 2);
+  const compiledSqlCode = compiledSql && format(compiledSql.trim());
+
+  const copyToClipboard = (text?: string) => navigator.clipboard.writeText(text || '');
 
   return (
     <section>
@@ -45,8 +51,15 @@ const MetaData = ({ failuresJson, compiledSql }: MetaDataType): JSX.Element => {
             <h6 className="font-semibold">Failures Json</h6>
             <div className="flex flex-col mt-2 rounded-md overflow-hidden">
               <CodeFormatter
-                code={JSON.stringify(JSON.parse(failuresJson.trim()), null, 2)}
+                code={failuresJsonCode}
                 language="json"
+              />
+
+              <FaRegClipboard
+                size={16}
+                color="white"
+                onClick={() => copyToClipboard(failuresJsonCode)}
+                className="absolute right-2 bottom-2 cursor-pointer copy-icon"
               />
             </div>
           </div>
@@ -55,10 +68,16 @@ const MetaData = ({ failuresJson, compiledSql }: MetaDataType): JSX.Element => {
           {activeTab === 'compiled_sql' && compiledSql && (
           <div className="mt-5">
             <h6 className="font-semibold">Compiled SQL</h6>
-            <div className="flex flex-col mt-2 rounded-md overflow-hidden">
+            <div className="flex flex-col mt-2 rounded-md overflow-hidden relative">
               <CodeFormatter
-                code={format(compiledSql.trim())}
+                code={compiledSqlCode}
                 language="sql"
+              />
+              <FaRegClipboard
+                size={16}
+                color="white"
+                onClick={() => copyToClipboard(compiledSqlCode)}
+                className="absolute right-2 bottom-2 cursor-pointer copy-icon"
               />
             </div>
           </div>
