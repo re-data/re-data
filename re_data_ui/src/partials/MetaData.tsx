@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { format } from 'sql-formatter';
+import { FaRegClipboard } from 'react-icons/all';
 import CodeFormatter from './CodeFormatter';
 
 type MetaDataType = {
@@ -52,8 +53,15 @@ const MetaData = ({ failuresJson, compiledSql }: MetaDataType): JSX.Element => {
                   activeTab === 'failures_json' ? failuresJsonCode : compiledSqlCode,
                 )}
                 type="button"
-                className="inline-block p-4 rounded-t-lg text-black copy-icon font-semibold"
+                className="inline-flex items-center p-4 rounded-t-lg text-black copy-icon font-semibold"
               >
+                <FaRegClipboard
+                  size={16}
+                  onClick={() => copyToClipboard(
+                    activeTab === 'failures_json' ? failuresJsonCode : compiledSqlCode,
+                  )}
+                  className="mr-2 text-black "
+                />
                 Copy to clipboard
               </button>
             </li>
