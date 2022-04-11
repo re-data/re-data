@@ -1,9 +1,11 @@
 from tabulate import tabulate
-from typing import Any, Dict, Optional, Iterable, List, Union
+from typing import Any, Dict, Optional, Iterable, List, Tuple, Union
 from datetime import datetime
 from collections import defaultdict
 import yaml
 import json
+
+
 try:
     from yaml import (
         CSafeLoader as SafeLoader
@@ -48,7 +50,7 @@ def parse_dbt_vars(dbt_vars_string) -> Dict[str, Any]:
     return dbt_vars
 
 
-def prepare_exported_alerts_per_model(alerts: list) -> dict:
+def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str, Tuple[str, str]]) -> dict:
     """
     Prepares alerts per model for slack message generation.
     """
@@ -60,6 +62,7 @@ def prepare_exported_alerts_per_model(alerts: list) -> dict:
                 'anomalies': [],
                 'schema_changes': [],
                 'tests': [],
+                'owners': [k[0] for k in members_per_model.get(model, [])] or ['allUsers', 'allGroups'],
             }
         if alert['type'] == 'anomaly':
             alerts_per_model[model]['anomalies'].append(alert)
@@ -69,7 +72,7 @@ def prepare_exported_alerts_per_model(alerts: list) -> dict:
             alerts_per_model[model]['tests'].append(alert)
     return alerts_per_model
 
-def build_notification_identifiers_per_model(monitored_list: list, channel) -> dict:
+def build_notification_identifiers_per_model(monitored_list: list, channel) -> Dict[str, Tuple[str, str]]:
     """
     Builds a list of identifiers per model to notify.
     params:
@@ -84,12 +87,13 @@ def build_notification_identifiers_per_model(monitored_list: list, channel) -> d
         members = json.loads(monitored.get('owners')) or {}
         for identifier, details in members.items():
             notify_channel = details.get('notify_channel')
+            group_name = details.get('owner')
             if notify_channel == channel:
                 if notify_channel == 'slack':
                     slack_mention = '<@{}>'.format(identifier)
-                    obj[model].append(slack_mention)
+                    obj[model].append((slack_mention, group_name))
                 elif notify_channel == 'email':
-                    obj[model].append(identifier)
+                    obj[model].append((identifier, group_name))
     return obj
 
 
@@ -100,6 +104,8 @@ def generate_slack_message(model, details, owners) -> dict:
     """
     anomalies = details['anomalies']
     schema_changes = details['schema_changes']
+    tests = details['tests']
+    slack_owners = [k[0] for k in owners]
     message_obj = {
         'blocks': [
             {
@@ -117,7 +123,7 @@ def generate_slack_message(model, details, owners) -> dict:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "Owners: {}".format(', '.join(owners))
+                    "text": "Owners: {}".format(', '.join(slack_owners))
                 }
             },
             {
@@ -138,7 +144,7 @@ def generate_slack_message(model, details, owners) -> dict:
                     },
                     {
                         "type": "plain_text",
-                        "text": ":bangbang: x failed tests",
+                        "text": ":bangbang: {} failed tests".format(len(tests)),
                         "emoji": True
                     }
                 ]

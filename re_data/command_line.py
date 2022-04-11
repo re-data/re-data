@@ -1,7 +1,7 @@
 import click
 import subprocess
 import json
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import shutil
 import logging
 
@@ -406,9 +406,9 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
 
     slack_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='slack')
 
-    alerts_per_model = prepare_exported_alerts_per_model(alerts)
+    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members)
     for model, details in alerts_per_model.items():
-        owners = slack_members.get(model, '')
+        owners = slack_members.get(model, [])
         slack_message = generate_slack_message(model, details, owners)
         slack_notify(webhook_url, slack_message)
     logging.info(
@@ -444,7 +444,6 @@ def email(start_date, end_date, re_data_target_dir, **kwargs):
     config = read_re_data_config()
     validate_config_section(config, 'email')
     email_config = config.get('notifications').get('email')
-    use_ssl = email_config.get('use_ssl', False)
     start_date = str(start_date.date())
     end_date = str(end_date.date())
 
@@ -453,6 +452,7 @@ def email(start_date, end_date, re_data_target_dir, **kwargs):
     smtp_port = email_config.get('smtp_port')
     smtp_user = email_config.get('smtp_user')
     smtp_password = email_config.get('smtp_password')
+    use_ssl = email_config.get('use_ssl', False)
 
     _, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     alerts_path = os.path.join(re_data_target_path, 'alerts.json')
@@ -479,18 +479,16 @@ def email(start_date, end_date, re_data_target_dir, **kwargs):
         monitored = json.load(f)
 
     email_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='email')
-    logging.info(email_members)
-    alerts_per_model = prepare_exported_alerts_per_model(alerts)
-    for model, details in alerts_per_model.items():
-        owners = email_members.get(model, '')
-        html_content = generate_html_content_for_email(details)
-
-        for mail_to in owners:
+    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=email_members)
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    for model in alerts_per_model:
+        owners = email_members.get(model, [])
+        for mail_to, group_name in owners:
             mime_msg = build_mime_message(
                 mail_from=mail_from,
                 mail_to=mail_to,
-                subject='[Alerts] {}'.format(model),
-                html_content=html_content,
+                subject='ReData Alerts [{}]'.format(current_time),
+                html_content=render.render_email_alert(alerts=alerts_per_model, owner=mail_to, group_name=group_name),
             )
 
             send_mime_email(
