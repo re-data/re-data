@@ -184,6 +184,12 @@ vars:
 
   # (optional) tells how much hisory you want to consider when looking for anomalies
   re_data:anomaly_detection_look_back_days: 30
+
+  # (optional) configuring storing tests history
+  re_data:save_test_history: true
+  re_data:test_history_failures: true
+  re_data:test_history_failures_limit: 10
+
 ```
 
 ### re_data:time_window_start, re_data:time_window_end
@@ -213,3 +219,15 @@ See [Anomaly Detection](anomaly_detection)
 ### re_data:anomaly_detection_look_back_days
 
 The period which `re_data` considers when looking for anomalies. (By default, it's 30 days)
+
+### re_data:save_test_history
+
+Variable to enable storing test history. See [re_data tests history](/docs/reference/tests/history) for more details.
+
+### re_data:test_history_failures
+
+Variable to enable/disable storing test failures. See [re_data tests history](/docs/reference/tests/history) for more details.
+
+### re_data:test_history_failures_limit
+
+Variable to configure failures stored per test. See [re_data tests history](/docs/reference/tests/history) for more details.

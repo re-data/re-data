@@ -1,23 +1,50 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 # Tests history
 
-re_data adds dbt macros which make it possible to save test history to your data warehouse & later on investigate them with our reliability UI.
+re_data can store dbt tests history into your data warehouse and visualize details of it in re_data UI.
 
-## on-run-end
-To start saving tests you just need to call re_data `save_test_history` macro in `on-run-end` hook. You can do it by adding the code below into your `dbt_project.yml`. In case of having some other hooks existing already you just need to add this as an item into the list.
+## Config
+
+re_data comes with 3 config options to configure:
+#### `re_data:save_test_history` (default false) 
+by default re_data doesn't store tests history to enable this you would need to set this var to `true`
+
+#### `re_data:test_history_failures` (default true) 
+tells re_data if it should query for test failures and store them in db. It's enable by default
+
+#### `test_history_failures_limit` (default 10)
+since failures can be quite big and often similar to each other we don't advise to store all of them in db but to add some limit on number of them stored.
+
+Example test history configuration:
 
 ```yml dbt_project.yml
-
-on-run-end:
-  - "{{ re_data.save_test_history(results) }}"
-
+vars:
+  re_data:save_test_history: true
+  re_data:test_history_failures: true
+  re_data:test_history_failures_limit: 10
 ```
 
 :::caution
-on-run-end hooks are called for dbt tests since dbt 1.0.0, so this re_data feature is only available with the new dbt version.
+re_data uses on-run-end hooks for dbt tests to save the tests data. This is only available in dbt versions 1.0.0 or newer.
+:::
+
+## Tests view
+
+Tests view lets you see the history of all dbt tests run. You can filter on the table, time, etc.
+
+![GraphExample](/screenshots/ui/tests.png)
+
+## Test details
+
+Tests detail view lets you see the history of a single tests over time. It shows number of failures, SQL code run and failure rows.
+
+![GraphExample](/screenshots/ui/tests.png)
+
+:::info
+To see failing rows from tests you would need to run dbt test with `--store-failures` config option.
 :::
 
 
@@ -36,11 +63,3 @@ select * from toy_shop_re.re_data_test_history
  postgres.toy_shop.orders | created_at  | not_null_orders_created_at                                                 | Pass   | 2022-01-13 08:49:39
  postgres.toy_shop.orders | status      | not_null_orders_status                                                     | Pass   | 2022-01-13 08:49:39
 ```
-
-## Tests view
-
-Tests view lets you see the history of all dbt tests run. You can filter on the table, time, etc.
-
-![GraphExample](/screenshots/ui/tests.png)
-
-

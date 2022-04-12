@@ -7,6 +7,8 @@ sidebar_position: 2
 ## Data warehouses & engines
 We support most of the main data warehouses supported by dbt. We plan to add support for Spark/Databricks.
 
+<div class="redata_table">
+
 |      | Integration | Status     |
 | :---        |    :----:   |          ---: |
 | <img height="40" width="30%" src="https://miro.medium.com/max/1024/0*eDEy4S8zFfYnRt1X.png" />      | BigQuery       | Supported |
@@ -16,6 +18,10 @@ We support most of the main data warehouses supported by dbt. We plan to add sup
 | <img height="40" width="30%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Apache_Spark_logo.svg/1200px-Apache_Spark_logo.svg.png" />  | Apache Spark        | Planned      |
 | <img height="30" width="30%" src="https://credentials.databricks.com/assets/themes/credentials.databricks.com/images/databricks-logo.png" />  | Databricks        | Planned      |
 
+</div>
+
+<div class="redata_table">
+
 ## Notifications
 
 |      | Integration | Status     |
@@ -24,3 +30,5 @@ We support most of the main data warehouses supported by dbt. We plan to add sup
 
 
 Let us know on **[Slack! 😊](https://www.getre.io/slack)** if you would like to add supported for other tools!
+
+</div>
