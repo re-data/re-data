@@ -27,7 +27,7 @@ Monitor predefined and custom metrics about your data. All metrics are stored in
 re_data contains asserts library which enable you to test computed metrics using standard dbt tests for models. This is additonal step you *can* do to make sure data is correct.
 
 ## Test history
-re_data stores dbt tests history and let's you investigate details like code run or failures for each runned test.
+re_data stores dbt tests history and let's you investigate test details like SQL which was run or failed rows for each runned test.
 
 ## Lineage
 re_data shows data lineage for your data warehouse. (This is imported from the dbt graph). You can navigate your data & investigate alerts & metrics related to each node in the graph.
