@@ -126,10 +126,10 @@ const Tables: React.FC = (): ReactElement => {
                 </button>
               </li>
               <li
-                className={`mr-4 ${activeTab === 'metadata' && 'active-tab'}`}
+                className={`mr-4 ${activeTab === 'codes' && 'active-tab'}`}
               >
-                <button type="button" onClick={() => handleScroll('metadata')}>
-                  Metadata
+                <button type="button" onClick={() => handleScroll('codes')}>
+                  Code
                 </button>
               </li>
             </ul>
@@ -195,7 +195,7 @@ const Tables: React.FC = (): ReactElement => {
               </div>
             </div>
           </section>
-          <section id="metadata" className="pb-4 pt-4">
+          <section id="codes" className="pb-4 pt-4">
             <div className="bg-white rounded-md px-3 py-4">
               <h3 className="mb-3 text-md font-medium">Raw SQL</h3>
               <div className="flex flex-col mt-2 rounded-md overflow-hidden">
