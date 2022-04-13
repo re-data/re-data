@@ -52,6 +52,7 @@ const Sidebar: React.FC = (): ReactElement => (
           <BiNetworkChart size="1.25em" />
           <span>Lineage</span>
         </NavLink>
+
         <NavLink
           to="tests"
           className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
@@ -66,6 +67,14 @@ const Sidebar: React.FC = (): ReactElement => (
         >
           <VscTable size="1.25em" />
           <span>Tables</span>
+        </NavLink>
+
+        <NavLink
+          to="macros"
+          className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+        >
+          <SiSpeedtest size="1.25em" />
+          <span>Macros</span>
         </NavLink>
       </nav>
     </div>

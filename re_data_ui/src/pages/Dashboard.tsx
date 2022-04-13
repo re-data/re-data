@@ -138,9 +138,14 @@ const formatDbtData = (graphData: DbtGraph) => {
   const modelNodes: SelectOptionProps[] = [];
   Object.entries({ ...graphData.sources, ...graphData.nodes })
     .forEach(([key, value]) => {
-      const { resource_type: resourceType, package_name: packageName } = value;
+      const {
+        resource_type: resourceType,
+        package_name: packageName,
+        depends_on: dependsOn,
+      } = value;
 
       if (supportedResTypes.has(resourceType) && packageName !== 're_data') {
+        console.log('depends_on => ', dependsOn);
         const modelId = generateModelId(value);
         dbtMapping[modelId] = key;
         modelNodes.push({
@@ -164,6 +169,7 @@ const Dashboard: React.FC = (): ReactElement => {
     modelNodes: [],
     failedTests: {},
     runAts: {},
+    macros: {},
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -190,6 +196,7 @@ const Dashboard: React.FC = (): ReactElement => {
         modelNodes: [],
         failedTests: {},
         runAts: {},
+        macros: {},
       };
       const { dbtMapping, modelNodes } = formatDbtData(graphData);
       const result = new Map<string, ReDataModelDetails>();
@@ -205,6 +212,7 @@ const Dashboard: React.FC = (): ReactElement => {
           tests: [],
           failedTests: {},
           runAts: {},
+          macros: {},
         };
         result.set(node.value, obj);
       }

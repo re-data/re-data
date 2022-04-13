@@ -88,6 +88,10 @@ export interface DbtSource {
   loaded_at_field: null;
   loader: string;
   meta: Record<string, unknown>;
+  depends_on: {
+    macros: string[];
+    nodes: string[];
+  };
   name: string;
   original_file_path: string;
   package_name: string;
@@ -130,6 +134,7 @@ export interface ReDataModelDetails {
   tests: Array<ITestSchema>
   failedTests?: Record<string, unknown>;
   runAts?: Record<string, []>;
+  macros?: Record<string, []>;
 }
 
 export interface SchemaChange {
@@ -178,6 +183,7 @@ export interface OverviewData {
   modelNodes: SelectOptionProps[];
   failedTests?: Record<string, ITestSchema[]>;
   runAts?: Record<string, ITestSchema[]>;
+  macros?: Record<string, []>;
 }
 
 export interface SelectOptionProps {
@@ -203,4 +209,5 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   dbtMapping: {},
   modelNodes: [],
   runAts: {},
+  macros: {},
 });

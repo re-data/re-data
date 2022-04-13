@@ -6,6 +6,7 @@ import './index.css';
 import Alerts from './pages/Alerts';
 import Tests from './pages/Tests';
 import Tables from './pages/Tables';
+import Macros from './pages/Macros';
 import Dashboard from './pages/Dashboard';
 import GraphView from './pages/GraphView';
 import reportWebVitals from './reportWebVitals';
@@ -20,6 +21,7 @@ ReactDOM.render(
           <Route path="graph" element={<GraphView />} />
           <Route path="tests" element={<Tests />} />
           <Route path="tables" element={<Tables />} />
+          <Route path="macros" element={<Macros />} />
         </Route>
       </Route>
     </Routes>
