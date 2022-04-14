@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { format } from 'sql-formatter';
 import { FaRegClipboard } from 'react-icons/all';
 import CodeFormatter from './CodeFormatter';
+import { copyToClipboard } from '../utils';
 
 type MetaDataType = {
     failuresJson: string | undefined;
@@ -14,13 +15,11 @@ const MetaData = ({ failuresJson, compiledSql }: MetaDataType): JSX.Element => {
   const failuresJsonCode = failuresJson && JSON.stringify(JSON.parse(failuresJson.trim()), null, 2);
   const compiledSqlCode = compiledSql && format(compiledSql.trim());
 
-  const copyToClipboard = (text?: string) => navigator.clipboard.writeText(text || '');
-
   return (
     <section>
       {(failuresJson || compiledSql) && (
         <>
-          <ul className="flex justify-between flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 mt-4">
+          <ul className="flex justify-between items-center flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 mt-4">
             <Fragment key="left">
               {failuresJson && (
               <li className="mr-2">
@@ -57,9 +56,6 @@ const MetaData = ({ failuresJson, compiledSql }: MetaDataType): JSX.Element => {
               >
                 <FaRegClipboard
                   size={16}
-                  onClick={() => copyToClipboard(
-                    activeTab === 'failures_json' ? failuresJsonCode : compiledSqlCode,
-                  )}
                   className="mr-2 text-black "
                 />
                 Copy to clipboard

@@ -1,13 +1,16 @@
 import React, {
-  FC, ReactElement, useContext, useEffect, useMemo, useState,
+  FC, ReactElement, useContext, useEffect, useMemo, useState, Fragment,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { FaRegClipboard } from 'react-icons/all';
 import { Select } from '../components';
 import {
   OverviewData, RedataOverviewContext, SelectOptionProps,
 } from '../contexts/redataOverviewContext';
+import { CodeFormatter } from '../partials';
+import { copyToClipboard } from '../utils';
 
-const packageName = 'simple_project';
+const packageName = 'toy_shop';
 
 const Macros: FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
@@ -86,15 +89,50 @@ const Macros: FC = (): ReactElement => {
             </div>
           </section>
 
-          <section className="bg-white rounded-md px-3 pt-4 pb-10">
-            <div className="flex items-center justify-between mt-2">
-              <h4 className="font-bold text-xl">Code</h4>
-              <div className="flex items-center">
-                {macroDetails?.macro_sql}
+          {macroDetails?.macro_sql && (
+            <section className="bg-white rounded-md px-3 pt-4 pb-10 mb-6">
+              <ul className="flex justify-between items-center flex-wrap text-sm font-medium border-b border-gray-200">
+                <li>
+                  <h4 className="font-bold text-xl">Code</h4>
+                </li>
+
+                <li className="flex-end">
+                  <button
+                    onClick={() => copyToClipboard(macroDetails.macro_sql)}
+                    type="button"
+                    className="inline-flex items-center p-4 rounded-t-lg text-black copy-icon font-semibold"
+                  >
+                    <FaRegClipboard
+                      size={16}
+                      className="mr-2 text-black "
+                    />
+                    Copy to clipboard
+                  </button>
+                </li>
+              </ul>
+
+              <div className="mt-3">
+                <div className="flex flex-col mt-2 rounded-md overflow-hidden">
+                  <CodeFormatter
+                    code={macroDetails.macro_sql}
+                    language="sql"
+                  />
+                </div>
+              </div>
+            </section>
+          )}
+
+          {macroDetails?.macro_sql && (
+          <section className="bg-white rounded-md px-3 pt-4 pb-10 mb-6">
+            <h4 className="font-bold text-xl">Used in</h4>
+            <div className="mt-3">
+              <div className="flex flex-col mt-2 rounded-md overflow-hidden">
+                <span>table 1</span>
               </div>
             </div>
-
           </section>
+          )}
+
         </>
       )}
 
