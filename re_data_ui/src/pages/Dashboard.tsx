@@ -136,6 +136,7 @@ const formatOverviewData = (
 const formatDbtData = (graphData: DbtGraph) => {
   const dbtMapping: Record<string, string> = {};
   const modelNodes: SelectOptionProps[] = [];
+  let count = 0;
   Object.entries({ ...graphData.sources, ...graphData.nodes })
     .forEach(([key, value]) => {
       const {
@@ -143,9 +144,10 @@ const formatDbtData = (graphData: DbtGraph) => {
         package_name: packageName,
         depends_on: dependsOn,
       } = value;
+      count += 1;
+      console.log('depends_on => ', dependsOn, count);
 
       if (supportedResTypes.has(resourceType) && packageName !== 're_data') {
-        console.log('depends_on => ', dependsOn);
         const modelId = generateModelId(value);
         dbtMapping[modelId] = key;
         modelNodes.push({
