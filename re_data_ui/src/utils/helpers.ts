@@ -115,4 +115,4 @@ export const generateModelId = (details: DbtNode | DbtSource): string => {
   return `${database}.${schema}.${identifier}`.toLowerCase();
 };
 
-export const copyToClipboard = (text?: string) => navigator.clipboard.writeText(text || '');
+export const copyToClipboard = (text?: string): Promise<void> => navigator.clipboard.writeText(text || '');
