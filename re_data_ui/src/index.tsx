@@ -4,7 +4,8 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import Alerts from './pages/Alerts';
-import Tests from './pages/Tests';
+import Tests from './pages/Tests/index';
+import TestDetails from './pages/Tests/Details';
 import Tables from './pages/Tables';
 import Macros from './pages/Macros';
 import Dashboard from './pages/Dashboard';
@@ -20,6 +21,7 @@ ReactDOM.render(
           <Route path="alerts" element={<Alerts />} />
           <Route path="graph" element={<GraphView />} />
           <Route path="tests" element={<Tests />} />
+          <Route path="tests/:testName" element={<TestDetails />} />
           <Route path="tables" element={<Tables />} />
           <Route path="macros" element={<Macros />} />
         </Route>

@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { TestsPartial } from '../partials';
+import { TestsPartial } from '../../partials';
 
 const Tests: React.FC = (): ReactElement => (
   <>

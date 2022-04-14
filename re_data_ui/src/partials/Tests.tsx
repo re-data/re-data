@@ -10,6 +10,8 @@ import {
   ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import colors from '../utils/colors.js';
+import ModelCell from './ModelCell';
+import StatusCell from './StatusCell';
 
 export interface TP {
   showRunAt: boolean;
@@ -19,36 +21,40 @@ export interface TP {
   showSearch?: boolean;
 }
 
-type RightComponentProps = {
+export type RightComponentProps = {
   options: string[];
   value: string;
   handleChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  showOptionLabel?: boolean;
 }
 
-const ModelCell = ({ value }: CellProps) => (
-  <Link
-    to={`/graph?model=${value.toLowerCase()}`}
-    className="text-sm text-blue-700 font-semibold"
-  >
-    {value}
-  </Link>
-);
+const LinkCell = ({ value }: CellProps) => {
+  const overview: OverviewData = useContext(RedataOverviewContext);
+  const { testNameMapping } = overview;
+  const testName = testNameMapping[value];
 
-const StatusCell = ({ value }: CellProps) => (
-  <div
-    className={`${value?.toLowerCase()} text-xs font-medium text-center py-1 rounded-full`}
-  >
-    {value}
-  </div>
-);
+  return (
+    <Link
+      to={`/tests/${value.toLowerCase()}`}
+      className="text-sm text-blue-700 font-semibold inline-flex flex-col"
+    >
+      {testName}
+    </Link>
+  );
+};
 
-const RightComponent = ({ options, value, handleChange }: RightComponentProps) => (
+export const RightComponent = (
+  {
+    options, value, handleChange,
+    showOptionLabel = true,
+  }: RightComponentProps,
+): JSX.Element => (
   <select
     className="px-2 py-1 rounded-md w-1/4 right-component border border-gray-300"
     onChange={handleChange}
     value={value}
   >
-    <option value="">All sorted by run time (new firsts)</option>
+    {showOptionLabel && <option value="">All sorted by run time (new firsts)</option>}
     {options.map((option: string) => (
       <option key={option} value={option}>
         {option}
@@ -105,7 +111,11 @@ function TestsPartial(params: TP): ReactElement {
     showSearch = true,
   } = params;
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { tests, aggregated_models: aggregatedModels, runAts: runAtsData } = overview;
+  const {
+    tests,
+    aggregated_models: aggregatedModels,
+    runAts: runAtsData,
+  } = overview;
   const [backUpData, setBackUpData] = useState([]);
   const [data, setData] = useState([]);
   const [options, setOptions] = useState([]);
@@ -115,22 +125,23 @@ function TestsPartial(params: TP): ReactElement {
     const cols: ColumnsProps[] = [{
       Header: 'Test Name',
       accessor: 'test_name',
+      Cell: LinkCell,
+    },
+    {
+      Header: 'Column',
+      accessor: 'column_name',
     },
     {
       Header: 'Status',
       accessor: 'status',
       Cell: StatusCell,
-    },
-    {
-      Header: 'Column',
-      accessor: 'column_name',
     }];
     if (showModel) {
-      cols.push({
+      cols.splice(1, 0, {
         Header: 'Model',
         accessor: 'model',
         Cell: ModelCell,
-        type: 'type',
+        type: 'test',
       });
     }
     if (showRunAt) {

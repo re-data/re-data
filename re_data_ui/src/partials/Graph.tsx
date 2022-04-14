@@ -225,8 +225,8 @@ export interface GraphPartialProps {
 }
 
 export enum ModelTabs {
-  ANOMALIES = 'anomalies',
-  SCHEMA_CHANGES = 'schema_changes',
+  ANOMALIES = 'anomaly',
+  SCHEMA_CHANGES = 'schema',
   METRICS = 'metrics',
   TESTS = 'tests',
 }
@@ -250,7 +250,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
   const model = searchParams.get('model') as string;
 
   useEffect(() => {
-    if (tab === 'test_failure') {
+    if (tab === 'test') {
       setActiveTab(ModelTabs.TESTS);
     } else {
       setActiveTab(tab as ModelTabs);

@@ -8,8 +8,9 @@ import {
   useGlobalFilter, usePagination, useSortBy, useTable,
 } from 'react-table';
 
+type ColumnType = ColumnInstance<Record<string, string>> & { type: string };
 export interface CellProps {
-  column: ColumnInstance<Record<string, string>>;
+  column: ColumnType;
   row: Row<Record<string, string>>;
   value: CellValue<string>;
 }
@@ -72,7 +73,8 @@ const CustomFilter = memo(({
 
 function Table(params: ITable): JSX.Element {
   const {
-    columns, data, showSearch = true, RightComponent = null,
+    columns, data, showSearch = true,
+    RightComponent = null,
   } = params;
 
   const {
@@ -96,6 +98,7 @@ function Table(params: ITable): JSX.Element {
     {
       columns,
       data,
+      initialState: { pageSize: 20 },
     },
     useGlobalFilter,
     useSortBy,
@@ -138,7 +141,7 @@ function Table(params: ITable): JSX.Element {
               {headerGroup.headers.map((column) => (
                 <th
                   scope="col"
-                  className={`${styledPadding} ${column?.id === 'test_name' ? 'w-3/5' : 'w-1/5'} py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider`}
+                  className={`${styledPadding} ${columns.length === 3 ? 'w-1/3' : column?.id === 'test_name' ? 'w-1/5' : 'w-1/5'} py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider`}
                   {...column.getHeaderProps(
                     column.getSortByToggleProps(),
                   )}
@@ -181,7 +184,7 @@ function Table(params: ITable): JSX.Element {
                 {row.cells.map((cell) => (
                   <td
                     {...cell.getCellProps()}
-                    className={`${styledPadding} ${cell?.column?.id === 'test_name' ? 'w-3/5 truncate' : 'w-1/5 truncate'} py-4 text-sm`}
+                    className={`${styledPadding} ${columns.length === 3 ? 'w-1/3' : cell?.column?.id === 'test_name' ? 'w-1/5 truncate' : 'w-1/5 truncate'} py-4 text-sm`}
                     role="cell"
                     title={cell.value}
                   >
@@ -226,9 +229,7 @@ function Table(params: ITable): JSX.Element {
                     >
                       {[5, 10, 20, 50, 100].map((size: number) => (
                         <option key={size} value={size}>
-                          Show
-                          {' '}
-                          {size}
+                          {`Show ${size}`}
                         </option>
                       ))}
                     </select>
