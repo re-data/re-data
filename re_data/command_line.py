@@ -15,7 +15,7 @@ from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
-    generate_slack_message, build_notification_identifiers_per_model, generate_html_content_for_email, send_mime_email
+    generate_slack_message, build_notification_identifiers_per_model, send_mime_email
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 from re_data.config.utils import read_re_data_config

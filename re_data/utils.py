@@ -19,7 +19,7 @@ from email.mime.text import MIMEText
 import smtplib
 
 
-def format_alerts_to_table(alerts: list) -> str:
+def format_alerts_to_table(alerts: list, limit=None) -> str:
     """
     Formats a list of alerts to a table.
     :param alerts:
@@ -35,6 +35,8 @@ def format_alerts_to_table(alerts: list) -> str:
             alert['value'],
             alert['time_window_end'],
         ])
+    if limit: 
+        table = table[:10]
     return tabulate(table, headers=['Message', 'Value', 'Time Window'], tablefmt='orgtbl')
 
 def safe_load(content) -> Optional[Dict[str, Any]]:
@@ -156,7 +158,7 @@ def generate_slack_message(model, details, owners) -> dict:
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "*Anomalies*\n ```{}```".format(format_alerts_to_table(anomalies))
+                "text": "*Anomalies*\n ```{}```".format(format_alerts_to_table(anomalies, limit=10))
             }
         })
     if schema_changes:
@@ -164,7 +166,15 @@ def generate_slack_message(model, details, owners) -> dict:
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "*Schema Changes*\n ```{}```".format(format_alerts_to_table(schema_changes))
+                "text": "*Schema Changes*\n ```{}```".format(format_alerts_to_table(schema_changes, limit=10))
+            }
+        })
+    if tests:
+        message_obj['blocks'].append({
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Tests failures*\n ```{}```".format(format_alerts_to_table(tests, limit=10))
             }
         })
     message_obj['blocks'].append({
@@ -172,7 +182,7 @@ def generate_slack_message(model, details, owners) -> dict:
 			"elements": [
 				{
 					"type": "plain_text",
-					"text": "Generated at {}".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+					"text": "Generated at {}. Generate observability UI for more details".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
 					"emoji": True
 				}
 			]
@@ -180,53 +190,7 @@ def generate_slack_message(model, details, owners) -> dict:
     )
     return message_obj
     
-def generate_html_content_for_email(details) -> str:
-    """
-    Generates the HTML content for the email.
-    """
-
-    anomalies = details.get('anomalies') or []
-    schema_changes = details.get('schema_changes') or []
-    tests = details.get('tests') or []
-    all_alerts = anomalies + schema_changes + tests
-    table_content = []
-    for alert in all_alerts:
-        txt = f"""
-            <tr>
-                <td>{alert.get('model')}</td>
-                <td>{alert.get('message')}</td>
-                <td>{alert.get('value')}</td>
-                <td>{alert.get('time_window_end')}</td>
-            </tr>
-        """
-        table_content.append(txt)
-    return f"""
-    <html>
-        <head>
-            <title>ReData Alerts</title>
-        </head>
-        <body>
-            <h6> {len(anomalies)} anomalies </h6>
-            <h6> {len(schema_changes)} schema changes </h6>
-            <h6> {len(tests)} failed tests </h6>
-            <p>
-                <b>Alerts:</b>
-                <br>
-                <br>
-                <table>
-                    <tr>
-                        <th>Model</th>
-                        <th>Message</th>
-                        <th>Value</th>
-                        <th>Time Window</th>
-                    </tr>
-                    {''.join(table_content)}
-                </table>
-            </p>
-        </body>
-    </html>
-    """
-
+    
 def build_mime_message(
     mail_from: str,
     mail_to: str,
