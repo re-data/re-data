@@ -26,10 +26,6 @@ const values = ({ timelineData }: valuesProps) => {
     const runAt = Object.keys(timelineData);
 
     return {
-      // title: {
-      //   left: 'center',
-      //   text: 'Timeline',
-      // },
       grid: {
         top: '20%', right: '5%', bottom: '12%', left: '15%',
       },
@@ -39,9 +35,6 @@ const values = ({ timelineData }: valuesProps) => {
       },
       yAxis: {
         type: 'value',
-      // axisLabel: {
-      //   formatter: getFormatter(metricName),
-      // },
       },
       series: [
         {
@@ -50,31 +43,8 @@ const values = ({ timelineData }: valuesProps) => {
           type: 'line',
           color: '#8884d8',
           smooth: true,
-        // markArea: {
-        //   itemStyle: {
-        //     color: 'rgba(255, 173, 177, 0.4)',
-        //   },
-        //   data: generateMarkAreas(anomaliesMap, columnName, metricName),
-        // },
         },
       ],
-    // tooltip: {
-    //   trigger: 'axis',
-    //   axisPointer: {
-    //     type: 'line',
-    //   },
-    // },
-    // visualMap: {
-    //   show: false,
-    //   dimension: 0,
-    //   pieces,
-    //   inRange: {
-    //     color: pieces.length ? '#ee2828' : '#8884d8',
-    //   },
-    //   outOfRange: {
-    //     color: '#8884d8',
-    //   },
-    // },
     };
   }
   return {};
@@ -227,8 +197,8 @@ const TestDetails: FC = (): ReactElement => {
     setData(option ? backUpData.filter((row: ITestSchema) => row.run_at === option) : backUpData);
   };
 
-  // console.log('results => ', results, 'data => ', data);
-  console.log(testNameMapping, testName);
+  console.log('results => ', results, 'data => ', data);
+  console.log('testNameMapping => ', testNameMapping, testName);
 
   return (
     <>
