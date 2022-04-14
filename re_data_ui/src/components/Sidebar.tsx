@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import {
-  BiNetworkChart, BsSlack, ImNotification,
+  BiNetworkChart, BsSlack, ImNotification, BiCodeCurly,
   SiReadthedocs, SiSpeedtest, VscTable, BsGithub,
 } from 'react-icons/all';
 import { NavLink } from 'react-router-dom';
@@ -73,7 +73,7 @@ const Sidebar: React.FC = (): ReactElement => (
           to="macros"
           className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
         >
-          <SiSpeedtest size="1.25em" />
+          <BiCodeCurly size="1.25em" />
           <span>Macros</span>
         </NavLink>
       </nav>

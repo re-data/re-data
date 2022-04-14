@@ -119,6 +119,7 @@ export interface DbtGraph {
   sources: { [key: string]: DbtSource };
   child_map: { [key: string]: [] };
   parent_map: { [key: string]: [] };
+  macros: { [key: string]: unknown };
 }
 
 export interface AggregatedMetrics {
