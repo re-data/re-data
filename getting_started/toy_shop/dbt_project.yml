@@ -11,9 +11,6 @@ model-paths:
   - "models"
   - "sources"
 
-on-run-end:
-  - "{{ re_data.save_test_history(results) }}"
-
 models:
   re_data:
     enabled: true
@@ -63,6 +60,7 @@ vars:
   re_data:anomaly_detector:
     name: modified_z_score
     threshold: 3
+
   re_data:owners_config:
     deji:
       - type: slack
@@ -96,6 +94,7 @@ vars:
       - type: email
         identifier: deji@getre.io
         name: deji
+
   re_data:metrics_base:
     table:
       - row_count
