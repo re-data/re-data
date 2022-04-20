@@ -50,6 +50,8 @@ jobs:
             yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' re_data.yml
             mkdir $HOME/.re_data
             cp re_data.yml $HOME/.re_data/
+            cat re_data.yml
+            cat $HOME/re_data.yml
 
 
       - name: Install re_data and python dependencies
