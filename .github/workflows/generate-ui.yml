@@ -4,6 +4,7 @@ on: [push, delete]
 
 env:
   DBT_PROFILES_DIR: ${{ github.workspace }}/getting_started/toy_shop
+  RE_DATA_CONFIG_DIR: ${{ github.workspace }}/getting_started/toy_shop
   SNOWFLAKE_RE_DATA_TESTING_ACCOUNT: ${{ secrets.SNOWFLAKE_RE_DATA_TESTING_ACCOUNT }}
   RE_DATA_TESTING_USER: ${{ secrets.RE_DATA_TESTING_USER }}
   RE_DATA_TESTING_PASSWORD: ${{ secrets.RE_DATA_TESTING_PASSWORD }}
@@ -43,15 +44,13 @@ jobs:
         uses: rlespinasse/github-slug-action@v3.x
 
       - name: Configure re_data.yml
+        working-directory: ./getting_started/toy_shop
         uses: mikefarah/yq@master
         with:
           cmd: |
             yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' re_data.yml 
             yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' re_data.yml
-            mkdir $HOME/.re_data
-            cp re_data.yml $HOME/.re_data/
             cat re_data.yml
-            cat $HOME/re_data.yml
 
 
       - name: Install re_data and python dependencies
