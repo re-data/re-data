@@ -48,8 +48,8 @@ jobs:
           cmd: |
             yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' re_data.yml 
             yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' re_data.yml
-            mkdir ~/.re_data
-            cp re_data.yml ~/.re_data/
+            mkdir $HOME/.re_data
+            cp re_data.yml $HOME/.re_data/
 
 
       - name: Install re_data and python dependencies
@@ -146,8 +146,8 @@ jobs:
           cmd: |
             yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' re_data.yml 
             yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' re_data.yml
-            mkdir ~/.re_data
-            cp re_data.yml ~/.re_data/
+            mkdir $HOME/.re_data
+            cp re_data.yml $HOME/.re_data/
 
       - name: Set the TOY_SHOP_SCHEMA environment variable
         run: |
