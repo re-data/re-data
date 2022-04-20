@@ -73,6 +73,10 @@ vars:
         identifier: mateusz@getre.io
         name: mateusz
 
+      - type: email
+        identifier: deji@getre.io
+        name: deji
+
       - type: slack
         identifier: U01F80NJW23
         name: mateusz
@@ -87,7 +91,11 @@ vars:
 
       - type: slack
         identifier: U02FHBSTW0H
-        name: deji      
+        name: deji  
+
+      - type: email
+        identifier: deji@getre.io
+        name: deji
   re_data:metrics_base:
     table:
       - row_count

@@ -42,6 +42,16 @@ jobs:
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
 
+      - name: Configure re_data.yml
+        uses: mikefarah/yq@master
+        with:
+          cmd: |
+            yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' re_data.yml 
+            yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' re_data.yml
+            mkdir ~/.re_data
+            cp re_data.yml ~/.re_data/
+
+
       - name: Install re_data and python dependencies
         working-directory: .
         run: |
@@ -127,6 +137,15 @@ jobs:
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Configure re_data.yml
+        uses: mikefarah/yq@master
+        with:
+          cmd: |
+            yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' re_data.yml 
+            yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' re_data.yml
+            mkdir ~/.re_data
+            cp re_data.yml ~/.re_data/
 
       - name: Set the TOY_SHOP_SCHEMA environment variable
         run: |
