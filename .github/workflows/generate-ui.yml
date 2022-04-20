@@ -71,12 +71,14 @@ jobs:
           chmod +x ./setup_toy_shop.sh
           ./setup_toy_shop.sh toy_shop_postgres
 
-      - name: Send slack alert notification
+      - name: Send alert notifications to various channels
         working-directory: ./getting_started/toy_shop
         if: github.repository == 're-data/re-data'
         run: |
           re_data notify slack --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
           --profile toy_shop_postgres --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit> - (postgres)"
+          re_data notify email --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
+          --profile toy_shop_postgres
 
       - uses: actions/setup-node@v2
         with:
@@ -196,12 +198,14 @@ jobs:
           chmod +x ./setup_toy_shop.sh
           ./setup_toy_shop.sh toy_shop_${{ matrix.database }}
 
-      - name: Send slack alert notification
+      - name: Send alert notifications to various channels
         working-directory: ./getting_started/toy_shop
         if: github.repository == 're-data/re-data'
         run: |
           re_data notify slack --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
           --profile toy_shop_${{ matrix.database }} --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit> - (${{ matrix.database }})"
+          re_data notify email --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
+          --profile toy_shop_${{ matrix.database }}
 
       - uses: actions/setup-node@v2
         with:
