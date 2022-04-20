@@ -44,13 +44,12 @@ jobs:
         uses: rlespinasse/github-slug-action@v3.x
 
       - name: Configure re_data.yml
-        working-directory: ./getting_started/toy_shop
         uses: mikefarah/yq@master
         with:
           cmd: |
-            yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' re_data.yml 
-            yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' re_data.yml
-            cat re_data.yml
+            yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' ./getting_started/toy_shop/re_data.yml 
+            yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' ./getting_started/toy_shop/re_data.yml
+            cat ./getting_started/toy_shop/re_data.yml
 
 
       - name: Install re_data and python dependencies
@@ -145,10 +144,9 @@ jobs:
         uses: mikefarah/yq@master
         with:
           cmd: |
-            yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' re_data.yml 
-            yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' re_data.yml
-            mkdir $HOME/.re_data
-            cp re_data.yml $HOME/.re_data/
+            yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' ./getting_started/toy_shop/re_data.yml 
+            yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' ./getting_started/toy_shop/re_data.yml
+            cat ./getting_started/toy_shop/re_data.yml
 
       - name: Set the TOY_SHOP_SCHEMA environment variable
         run: |
