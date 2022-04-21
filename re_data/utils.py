@@ -100,7 +100,7 @@ def build_notification_identifiers_per_model(monitored_list: list, channel) -> D
 
 
 
-def generate_slack_message(model, details, owners) -> dict:
+def generate_slack_message(model, details, owners, subtitle: str) -> dict:
     """
     Generates a slack message for a given model.
     """
@@ -177,6 +177,18 @@ def generate_slack_message(model, details, owners) -> dict:
                 "text": "*Tests failures*\n ```{}```".format(format_alerts_to_table(tests, limit=10))
             }
         })
+    if subtitle:
+        message_obj['blocks'].append({
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": subtitle,
+					"emoji": True
+				}
+			]
+		}
+    )
     message_obj['blocks'].append({
 			"type": "context",
 			"elements": [
@@ -188,6 +200,7 @@ def generate_slack_message(model, details, owners) -> dict:
 			]
 		}
     )
+
     return message_obj
     
     

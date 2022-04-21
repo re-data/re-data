@@ -37,7 +37,7 @@ def add_dbt_flags(command_list, flags):
         if value and key != 'dbt_vars':
             key = key.replace('_', '-')
             command_list.extend([f'--{key}', value])
-    logging.info(' '.join(command_list))
+    print(' '.join(command_list))
 
 def get_target_paths(kwargs, re_data_target_dir=None):
     project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
@@ -113,7 +113,7 @@ def main():
 )
 @anonymous_tracking
 def init(project_name):
-    logging.info(f"Creating {project_name} template project")
+    print(f"Creating {project_name} template project")
     dir_path = os.path.dirname(os.path.realpath(__file__))
     shutil.copytree(os.path.join(dir_path, 'dbt_template'), project_name)
 
@@ -128,17 +128,17 @@ def init(project_name):
     else:
         info = chalk.red("FAILURE")
 
-    logging.info(f"Creating {project_name} template project", info)
+    print(f"Creating {project_name} template project", info)
 
     if not response:
-        logging.info(f"Setup profile & re_data:schemas var in dbt_project.yml", "INFO")
+        print(f"Setup profile & re_data:schemas var in dbt_project.yml", "INFO")
 
 
 @main.command()
 @add_options(dbt_flags)
 @anonymous_tracking
 def detect(**kwargs):
-    logging.info(f"Detecting tables", "RUN")
+    print(f"Detecting tables", "RUN")
 
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     run_list = ['dbt', 'run', '--models', 're_data_columns', 're_data_monitored']
@@ -147,7 +147,7 @@ def detect(**kwargs):
     completed_process = subprocess.run(run_list)
     completed_process.check_returncode()
 
-    logging.info(f"Detecting tables", "SUCCESS")
+    print(f"Detecting tables", "SUCCESS")
 
 
 @main.command()
@@ -199,7 +199,7 @@ def run(start_date, end_date, interval, full_refresh, **kwargs):
 
         start_str = for_date.strftime("%Y-%m-%d %H:%M")
         end_str = (for_date + delta).strftime("%Y-%m-%d %H:%M")
-        logging.info(f"Running for time interval: {start_str} - {end_str}", "RUN")
+        print(f"Running for time interval: {start_str} - {end_str}", "RUN")
 
         re_data_dbt_vars = {
             're_data:time_window_start': str(for_date),
@@ -219,7 +219,7 @@ def run(start_date, end_date, interval, full_refresh, **kwargs):
 
         for_date += delta
 
-        logging.info(
+        print(
             f"Running for date: {for_date.date()}",
             chalk.green("SUCCESS"),
         )
@@ -296,7 +296,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     target_file_path = os.path.join(re_data_target_path, 'index.html')
     shutil.copyfile(OVERVIEW_INDEX_FILE_PATH, target_file_path)
 
-    logging.info(
+    print(
         f"Generating overview page", chalk.green("SUCCESS")
     )
 
@@ -357,7 +357,7 @@ def serve(port, re_data_target_dir, **kwargs):
 @click.option(
     '--webhook-url',
     type=click.STRING,
-    required=True,
+    required=False,
     help="Incoming webhook url to post messages from external sources into Slack."
          " e.g. https://hooks.slack.com/services/T0JKJQKQS/B0JKJQKQS/XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 )
@@ -380,6 +380,12 @@ def serve(port, re_data_target_dir, **kwargs):
 def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwargs):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
+
+    if not webhook_url: # if webhook_url is via arguments, check the config file
+        config = read_re_data_config()
+        validate_config_section(config, 'slack')
+        slack_config = config.get('notifications').get('slack')
+        webhook_url = slack_config.get('webhook_url')
 
     _, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     alerts_path = os.path.join(re_data_target_path, 'alerts.json')
@@ -409,9 +415,9 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
     alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members)
     for model, details in alerts_per_model.items():
         owners = slack_members.get(model, [])
-        slack_message = generate_slack_message(model, details, owners)
+        slack_message = generate_slack_message(model, details, owners, subtitle)
         slack_notify(webhook_url, slack_message)
-    logging.info(
+    print(
         f"Notification sent", chalk.green("SUCCESS")
     )
 
@@ -502,7 +508,7 @@ def email(start_date, end_date, re_data_target_dir, **kwargs):
                 use_ssl=use_ssl,
             )
     
-    logging.info(
+    print(
         f"Notification sent", chalk.green("SUCCESS")
     )
 
