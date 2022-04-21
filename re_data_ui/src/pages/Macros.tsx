@@ -110,7 +110,6 @@ const Macros: FC = (): ReactElement => {
             <h4 className="font-bold text-xl">Used in</h4>
             <div className="mt-3">
               <div className="flex flex-col mt-2 rounded-md overflow-hidden">
-                <span>table 1</span>
                 <ul
                   className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-400"
                 >
