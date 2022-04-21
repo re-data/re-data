@@ -182,7 +182,7 @@ def generate_slack_message(model, details, owners, subtitle: str) -> dict:
 			"type": "context",
 			"elements": [
 				{
-					"type": "plain_text",
+					"type": "mrkdwn",
 					"text": subtitle,
 					"emoji": True
 				}
