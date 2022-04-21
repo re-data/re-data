@@ -1,7 +1,7 @@
 import React, {
-  FC, ReactElement, useContext, useEffect, useMemo, useState, Fragment,
+  FC, ReactElement, useContext, useEffect, useState,
 } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { FaRegClipboard } from 'react-icons/all';
 import { Select } from '../components';
 import {
@@ -10,43 +10,25 @@ import {
 import { CodeFormatter } from '../partials';
 import { copyToClipboard } from '../utils';
 
-const packageName = 'toy_shop';
-
 const Macros: FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
 
   const [, setURLSearchParams] = useSearchParams();
   const [searchParams] = useSearchParams();
 
-  const { loading, graph } = overview;
+  const {
+    loading, macros,
+    macrosOptions,
+    macroModelDepends,
+  } = overview;
 
   const [macroDetails, setMacroDetails] = useState<Record<string, string>>();
   const [optionValue, setOptionValue] = useState<SelectOptionProps | null>();
 
   const macro = searchParams.get('macro') as string;
 
-  const [macros, options] = useMemo(() => {
-    const result: Record<string, string> = {};
-    const values = [];
-    if (graph?.macros) {
-      for (const [key, value] of Object.entries(graph.macros)) {
-        // console.log();
-        if (key.includes(packageName)) {
-          // console.log(`${key}: `, value);
-          // result.push(value);
-          result[key] = value as string;
-          values.push({
-            value: key,
-            label: key,
-          });
-        }
-      }
-    }
-    return [result, values];
-  }, [graph?.macros]);
-
   useEffect(() => {
-    if (macro && !overview.loading) {
+    if (macro && macros && !overview.loading) {
       setOptionValue({
         value: macro,
         label: macro,
@@ -56,7 +38,7 @@ const Macros: FC = (): ReactElement => {
   }, [!overview.loading]);
 
   const handleChange = (option: SelectOptionProps | null) => {
-    if (option) {
+    if (option && macros) {
       const mac = option.value as string;
       setOptionValue({
         value: mac,
@@ -67,7 +49,8 @@ const Macros: FC = (): ReactElement => {
     }
   };
 
-  console.log('macros loaded => ', macros, options);
+  // console.log('macros loaded => ', macros, options);
+  // console.log('macroModelDepends => ', macroModelDepends, macroModelDepends?.[macro], macro);
 
   return (
     <>
@@ -81,7 +64,7 @@ const Macros: FC = (): ReactElement => {
               <div className="md:w-1/3 w-full ml-1">
                 <Select
                   value={optionValue}
-                  options={options || []}
+                  options={macrosOptions || []}
                   handleChange={handleChange}
                   placeholder="Macro Name"
                 />
@@ -114,7 +97,7 @@ const Macros: FC = (): ReactElement => {
               <div className="mt-3">
                 <div className="flex flex-col mt-2 rounded-md overflow-hidden">
                   <CodeFormatter
-                    code={macroDetails.macro_sql}
+                    code={macroDetails.macro_sql.trim()}
                     language="sql"
                   />
                 </div>
@@ -122,12 +105,30 @@ const Macros: FC = (): ReactElement => {
             </section>
           )}
 
-          {macroDetails?.macro_sql && (
+          {macroModelDepends?.[macro] && (
           <section className="bg-white rounded-md px-3 pt-4 pb-10 mb-6">
             <h4 className="font-bold text-xl">Used in</h4>
             <div className="mt-3">
               <div className="flex flex-col mt-2 rounded-md overflow-hidden">
                 <span>table 1</span>
+                <ul
+                  className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-400"
+                >
+                  {macroModelDepends?.[macro]?.map((table) => (
+                    <li
+                      className="text-sm mb-1 hover:font-bold hover:underline hover:text-primary"
+                      key={table}
+                    >
+                      {table.includes('re_data') ? (
+                        <>
+                          {table}
+                        </>
+                      ) : (
+                        <Link to={`/tables?model=${table}`}>{table}</Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </section>

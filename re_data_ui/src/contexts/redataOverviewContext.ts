@@ -183,6 +183,7 @@ export interface Alert {
 }
 
 export interface OverviewData {
+  macroModelDepends?: Record<string, string[]>;
   alerts: Array<Alert>;
   tests: Array<ITestSchema>;
   aggregated_models: Map<string, ReDataModelDetails>;
@@ -191,9 +192,11 @@ export interface OverviewData {
   loading: boolean;
   dbtMapping: Record<string, string>;
   modelNodes: SelectOptionProps[];
+  macrosOptions: SelectOptionProps[];
   failedTests?: Record<string, ITestSchema[]>;
   runAts?: Record<string, ITestSchema[]>;
-  macros?: Record<string, []>;
+  macros?: Record<string, unknown>;
+  modelNodesDepends?: Record<string, string[]>;
   testsObject: Record<string, ITestSchema[]>;
   modelTestMapping: Record<string, ITestSchema[]>;
   testNameMapping: Record<string, string>;
@@ -221,6 +224,9 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   loading: true,
   dbtMapping: {},
   modelNodes: [],
+  macrosOptions: [],
+  modelNodesDepends: {},
+  macroModelDepends: {},
   runAts: {},
   macros: {},
   testsObject: {},

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable camelcase */
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
@@ -10,7 +11,7 @@ import {
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey, DBT_MANIFEST_FILE, generateMetricIdentifier,
-  generateModelId,
+  generateModelId, PACKAGE_NAME,
   RE_DATA_OVERVIEW_FILE, stripQuotes, supportedResTypes,
 } from '../utils';
 
@@ -161,31 +162,77 @@ const formatDbtData = (graphData: DbtGraph) => {
   const testNameMapping: Record<string, string> = {};
   const modelNodes: SelectOptionProps[] = [];
 
+  const macros: Record<string, string> = {};
+  const macrosOptions: SelectOptionProps[] = [];
+
+  const modelNodesDepends: Record<string, string[]> = {};
+  // const failedTestsObject: Record <string, ITestSchema[]> = {};
+  const macroModelDepends: Record<string, string[]> = {};
+
+  // find a way to know where these macros exists
+  for (const [key, value] of Object.entries(graphData.macros)) {
+    const { package_name: packageName } = value as any;
+    // console.log('key ', key, value.package_name || key === 're_data');
+    if (packageName === PACKAGE_NAME || packageName === 're_data') {
+      macros[key] = value as string;
+      macrosOptions.push({
+        value: key,
+        label: key,
+      });
+    }
+  }
+  // console.log('macros: ', macros);
+
   Object.entries({ ...graphData.sources, ...graphData.nodes })
     .forEach(([key, value]) => {
       const {
         resource_type: resourceType,
         package_name: packageName,
         test_metadata: testMetadata,
+        depends_on: dependsOn,
         name,
       } = value;
       const testMetadataName = testMetadata?.name as string;
+      const modelId = generateModelId(value);
+      const dependsOnMacros = dependsOn?.macros || [];
 
+      // console.log('dependsOn ', dependsOnMacros);
       if (resourceType === 'test' && packageName !== 're_data') {
         testNameMapping[name?.toLowerCase()] = testMetadataName || name;
       }
 
       if (supportedResTypes.has(resourceType) && packageName !== 're_data') {
-        const modelId = generateModelId(value);
         dbtMapping[modelId] = key;
         modelNodes.push({
           value: modelId,
           label: modelId,
         });
+
+        modelNodesDepends[modelId] = dependsOnMacros;
+      }
+
+      for (const [k] of Object.entries(macros)) {
+        if (dependsOnMacros.includes(k)) {
+          if (Object.prototype.hasOwnProperty.call(macroModelDepends, k)) {
+            macroModelDepends[k].push(modelId);
+          } else {
+            macroModelDepends[k] = [modelId];
+          }
+        }
       }
     });
 
-  return { dbtMapping, modelNodes, testNameMapping };
+  // console.log('macroModelDepends ', macroModelDepends);
+  // console.log('modelNodesDepends ', modelNodesDepends);
+  return {
+    dbtMapping,
+    modelNodes,
+    macrosOptions,
+    macroModelDepends,
+    testNameMapping,
+    modelNodesDepends,
+    macros,
+  };
 };
 
 const Dashboard: React.FC = (): ReactElement => {
@@ -198,10 +245,12 @@ const Dashboard: React.FC = (): ReactElement => {
     loading: true,
     dbtMapping: {},
     modelNodes: [],
+    macrosOptions: [],
     failedTests: {},
     runAts: {},
     macros: {},
     testsObject: {},
+    macroModelDepends: {},
     modelTestMapping: {},
     testNameMapping: {},
   };
@@ -228,14 +277,21 @@ const Dashboard: React.FC = (): ReactElement => {
         loading: false,
         dbtMapping: {},
         modelNodes: [],
+        macrosOptions: [],
         failedTests: {},
         runAts: {},
         macros: {},
         testsObject: {},
         modelTestMapping: {},
         testNameMapping: {},
+        macroModelDepends: {},
       };
-      const { dbtMapping, modelNodes, testNameMapping } = formatDbtData(graphData);
+      const {
+        dbtMapping, modelNodes,
+        macrosOptions, testNameMapping,
+        modelNodesDepends, macros,
+        macroModelDepends,
+      } = formatDbtData(graphData);
       const result = new Map<string, ReDataModelDetails>();
       for (const node of modelNodes) {
         const obj: ReDataModelDetails = {
@@ -271,6 +327,10 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.dbtMapping = dbtMapping;
       overview.testNameMapping = testNameMapping;
       overview.modelNodes = modelNodes;
+      overview.macros = macros;
+      overview.macrosOptions = macrosOptions;
+      overview.modelNodesDepends = modelNodesDepends;
+      overview.macroModelDepends = macroModelDepends;
       overview.failedTests = failedTests;
       overview.runAts = runAts;
       overview.modelTestMapping = modelTestMapping;
