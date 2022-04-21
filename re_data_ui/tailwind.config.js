@@ -1,3 +1,5 @@
+/* eslint-disable import/extensions */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const colors = require('./src/utils/colors');
 
 module.exports = {

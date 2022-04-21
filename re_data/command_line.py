@@ -289,6 +289,14 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
 
+    # run dbt docs generate to generate the a full manifest that contains compiled_path etc
+    dbt_docs = ['dbt', 'docs', 'generate']
+    if dbt_vars: dbt_docs.extend(['--vars', yaml.dump(dbt_vars)])
+    add_dbt_flags(dbt_docs, kwargs)
+    dbt_docs_process = subprocess.run(dbt_docs)
+    dbt_docs_process.check_returncode()
+
+
     dbt_manifest_path = os.path.join(dbt_target_path, 'manifest.json')
     re_data_manifest = os.path.join(re_data_target_path, 'dbt_manifest.json')
     shutil.copyfile(dbt_manifest_path, re_data_manifest)
@@ -315,10 +323,14 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
         Defaults to the 'target-path' used in dbt_project.yml
     """
 )
+@click.option(
+    "--no-browser",
+    is_flag=True,
+)
 @overview.command()
 @anonymous_tracking
 @add_options([dbt_project_dir_option])
-def serve(port, re_data_target_dir, **kwargs):
+def serve(port, re_data_target_dir, no_browser, **kwargs):
     _, serve_dir = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     os.chdir(serve_dir)
 
@@ -326,7 +338,7 @@ def serve(port, re_data_target_dir, **kwargs):
 
     httpd = TCPServer((address, port), SimpleHTTPRequestHandler)
 
-    if True:
+    if not no_browser:
         try:
             webbrowser.open_new_tab(f'http://127.0.0.1:{port}/#/alerts')
         except webbrowser.Error:

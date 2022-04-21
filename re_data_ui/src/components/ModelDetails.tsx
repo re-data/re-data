@@ -22,6 +22,7 @@ import './ModelDetails.css';
 import SchemaChanges from './SchemaChanges';
 import TableSchema from './TableSchema';
 import { TestsPartial } from '../partials';
+import { ModelTabs } from '../partials/Graph';
 
 echarts.use(
   [
@@ -37,13 +38,6 @@ echarts.use(
     CanvasRenderer,
   ],
 );
-
-enum ModelTabs {
-  ANOMALIES = 'anomalies',
-  SCHEMA_CHANGES = 'schema_changes',
-  METRICS = 'metrics',
-  TESTS = 'tests',
-}
 
 const arrow = (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -70,9 +64,13 @@ const Information = () => (
   </section>
 );
 
-const ModelDetails: React.FC = (): ReactElement => {
+type ModelDetailsTypes = {
+  activeTab: ModelTabs;
+  toggleTabs: (x: ModelTabs) => void;
+}
+
+const ModelDetails = ({ activeTab, toggleTabs }: ModelDetailsTypes): ReactElement => {
   const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState(ModelTabs.ANOMALIES);
   const { init } = useModel();
   const [modelDetails, setModelDetails] = useState<ReDataModelDetails>();
 
@@ -88,10 +86,10 @@ const ModelDetails: React.FC = (): ReactElement => {
     }
   }, [fullTableName, overview.loading]);
 
-  const showAnomalies = (): void => setActiveTab(ModelTabs.ANOMALIES);
-  const showSchema = (): void => setActiveTab(ModelTabs.SCHEMA_CHANGES);
-  const showMetrics = (): void => setActiveTab(ModelTabs.METRICS);
-  const showTests = (): void => setActiveTab(ModelTabs.TESTS);
+  const showAnomalies = (): void => toggleTabs(ModelTabs.ANOMALIES);
+  const showSchema = (): void => toggleTabs(ModelTabs.SCHEMA_CHANGES);
+  const showMetrics = (): void => toggleTabs(ModelTabs.METRICS);
+  const showTests = (): void => toggleTabs(ModelTabs.TESTS);
 
   const renderTab = (tab: ModelTabs): ReactElement => {
     if (modelDetails) {

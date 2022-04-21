@@ -1,7 +1,8 @@
 import React, {
-  ReactElement, useCallback, useContext, useState,
+  ReactElement, useCallback, useContext, useState, useEffect,
 } from 'react';
 import { Elements } from 'react-flow-renderer';
+import { useSearchParams } from 'react-router-dom';
 import { FlowGraph, ModelDetails } from '../components';
 import {
   DbtNode, DbtSource, OverviewData, ReDataModelDetails, RedataOverviewContext,
@@ -223,17 +224,38 @@ export interface GraphPartialProps {
   showModelDetails?: boolean;
 }
 
+export enum ModelTabs {
+  ANOMALIES = 'anomaly',
+  SCHEMA_CHANGES = 'schema',
+  METRICS = 'metrics',
+  TESTS = 'tests',
+}
+
 function GraphPartial(params: GraphPartialProps): ReactElement {
   const {
     modelName = null,
     showModelDetails = true,
   } = params;
   const [monitored, setMonitored] = useState(true);
+  const [, setURLSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const overview: OverviewData = useContext(RedataOverviewContext);
   const overviewDataLoaded = !!overview.graph;
   const [modelType, setModelType] = useState<string | null>(null);
   const [alerts, setAlerts] = useState<AlertsType>(null);
+  const [activeTab, setActiveTab] = useState(ModelTabs.ANOMALIES);
+
+  const tab = searchParams.get('tab') as unknown;
+  const model = searchParams.get('model') as string;
+
+  useEffect(() => {
+    if (tab === 'test') {
+      setActiveTab(ModelTabs.TESTS);
+    } else {
+      setActiveTab(tab as ModelTabs);
+    }
+  }, []);
 
   const elements: Elements = generateGraph({
     overview,
@@ -266,6 +288,15 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
   const toggleMonitored = useCallback(() => {
     setMonitored(!monitored);
   }, [monitored]);
+
+  const toggleTabs = (tabName: ModelTabs) => {
+    setActiveTab(tabName);
+    if (model) {
+      setURLSearchParams({ model, tab: tabName });
+    } else {
+      setURLSearchParams({ tab: tabName });
+    }
+  };
 
   return (
     <>
@@ -371,7 +402,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
           )}
         </div>
 
-        {showModelDetails && <ModelDetails />}
+        {showModelDetails && <ModelDetails activeTab={activeTab} toggleTabs={toggleTabs} />}
       </div>
     </>
   );

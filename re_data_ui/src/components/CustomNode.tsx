@@ -1,12 +1,15 @@
 import React, { FC, memo } from 'react';
 import { Handle, NodeProps, Position } from 'react-flow-renderer';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import '../styles/custom-nodes.css';
 
 const CustomNode: FC<NodeProps> = (props: NodeProps) => {
   const { pathname } = useLocation();
-
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const model = searchParams.get('model') as string;
+
   const {
     data: {
       label, otherName, active, id, failedTests,
@@ -20,10 +23,12 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
 
   const details = () => navigate(`/tables?model=${id}`);
 
+  const isActive = active || (model === id);
+
   return (
     <div
-      style={active ? {} : containerStyle}
-      className={active ? 'container-active' : 'container'}
+      style={isActive ? {} : containerStyle}
+      className={isActive ? 'container-active' : 'container'}
     >
       <div className="node">
         <Handle type="target" position={Position.Left} />
@@ -34,7 +39,7 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
           </div>
         </div>
 
-        {active && (
+        {isActive && (
           <>
             {pathname === '/tables' ? null : (
               <button
@@ -53,7 +58,7 @@ const CustomNode: FC<NodeProps> = (props: NodeProps) => {
         <Handle type="source" position={Position.Right} />
       </div>
 
-      <div className={active ? 'dot-active-container' : 'dot-container'}>
+      <div className={isActive ? 'dot-active-container' : 'dot-container'}>
         {anomalies && <div className="anomalies-dot" />}
         {schemaChanges && <div className="schema-dot" />}
         {failedTests && <div className="failed-dot" />}
