@@ -3,6 +3,7 @@ import React from 'react';
 
 export interface DbtNode {
   raw_sql: string;
+  compiled_sql: string;
   resource_type: string;
   depends_on: {
     macros: string[];

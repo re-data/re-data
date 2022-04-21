@@ -111,11 +111,11 @@ const Macros: FC = (): ReactElement => {
             <div className="mt-3">
               <div className="flex flex-col mt-2 rounded-md overflow-hidden">
                 <ul
-                  className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-400"
+                  className="marker:text-sky-400 space-y-3 text-slate-400"
                 >
                   {macroModelDepends?.[macro]?.map((table) => (
                     <li
-                      className="text-sm mb-1 hover:font-bold hover:underline hover:text-primary"
+                      className="text-sm mb-1 font-semibold text-primary"
                       key={table}
                     >
                       {table.includes('re_data') ? (
@@ -132,10 +132,8 @@ const Macros: FC = (): ReactElement => {
             </div>
           </section>
           )}
-
         </>
       )}
-
     </>
   );
 };
