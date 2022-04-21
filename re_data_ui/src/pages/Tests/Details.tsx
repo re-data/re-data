@@ -284,14 +284,14 @@ const TestDetails: FC = (): ReactElement => {
                     null,
                     2,
                   )
-                  : '',
+                  : 'No failure json',
                 language: 'json',
               },
               {
                 label: 'Compiled SQL',
                 data: results?.compiled_sql
                   ? format(results?.compiled_sql.trim())
-                  : '',
+                  : 'No compiled sql',
                 language: 'sql',
               },
             ]}

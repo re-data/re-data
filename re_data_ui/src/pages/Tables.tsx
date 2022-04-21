@@ -208,12 +208,12 @@ const Tables: React.FC = (): ReactElement => {
                 tabs={[
                   {
                     label: 'SQL',
-                    data: rawSql.trim(),
+                    data: rawSql ? rawSql.trim() : 'No SQL available',
                     language: 'sql',
                   },
                   {
                     label: 'Compiled SQL',
-                    data: compiledSql.trim(),
+                    data: compiledSql ? compiledSql.trim() : 'No Compiled SQL available',
                     language: 'sql',
                   },
                 ]}

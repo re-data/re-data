@@ -48,7 +48,6 @@ const generateHeader = ({
 };
 
 const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
-  console.log('tabs ', tabs);
   const [activeTab, setActiveTab] = useState(0);
 
   return (
