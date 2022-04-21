@@ -180,7 +180,7 @@ def generate_slack_message(model, details, owners, subtitle: str) -> dict:
     if subtitle:
         message_obj['blocks'].append({
 			"type": "section",
-			"elements": [
+			"text": [
 				{
 					"type": "mrkdwn",
 					"text": subtitle
