@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import {
-  Alert, Anomaly, DbtGraph, ITableSchema, ITestSchema, Metric,
+  Alert, Anomaly, DbtGraph, DbtMacro, ITableSchema, ITestSchema, Metric,
   OverviewData, ReDataModelDetails, RedataOverviewContext, SchemaChange, SelectOptionProps,
 } from '../contexts/redataOverviewContext';
 import {

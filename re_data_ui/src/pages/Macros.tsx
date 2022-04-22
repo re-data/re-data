@@ -11,6 +11,7 @@ import { FaRegClipboard } from 'react-icons/all';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Select, Toggle } from '../components';
 import {
+  DbtMacro,
   OverviewData,
   RedataOverviewContext,
   SelectOptionProps,
@@ -28,7 +29,7 @@ const Macros: FC = (): ReactElement => {
     loading, macros, macrosOptions, macroModelDepends,
   } = overview;
 
-  const [macroDetails, setMacroDetails] = useState<Record<string, string>>();
+  const [macroDetails, setMacroDetails] = useState<DbtMacro>();
   const [optionValue, setOptionValue] = useState<SelectOptionProps | null>();
 
   const [monitored, setMonitored] = useState<boolean>(false);
@@ -41,7 +42,7 @@ const Macros: FC = (): ReactElement => {
         value: macro,
         label: macro,
       });
-      setMacroDetails(macros[macro] as unknown as Record<string, string>);
+      setMacroDetails(macros[macro] as DbtMacro);
     }
   }, [!overview.loading]);
 
@@ -52,7 +53,7 @@ const Macros: FC = (): ReactElement => {
         value: mac,
         label: mac,
       });
-      setMacroDetails(macros[mac] as unknown as Record<string, string>);
+      setMacroDetails(macros[mac] as DbtMacro);
       setURLSearchParams({ macro: mac });
     }
   };
@@ -71,6 +72,8 @@ const Macros: FC = (): ReactElement => {
   // console.log('macros loaded => ', macros, options);
   // console.log('macroModelDepends => ', macroModelDepends, macroModelDepends?.[macro], macro);
 
+  console.log('x > ', macroDetails?.depends_on?.macros);
+  console.log('y > ', macroModelDepends?.[macro]);
   return (
     <>
       {loading ? (
@@ -84,7 +87,6 @@ const Macros: FC = (): ReactElement => {
                 <Select
                   value={optionValue}
                   options={options}
-                  // options={macrosOptions || []}
                   handleChange={handleChange}
                   placeholder="Macro Name"
                 />
@@ -92,7 +94,7 @@ const Macros: FC = (): ReactElement => {
               <div className="ml-8">
                 <Toggle
                   label1="All macros"
-                  label2="Some macros"
+                  label2="Project macros"
                   onChange={toggleMacro}
                 />
               </div>
@@ -129,11 +131,16 @@ const Macros: FC = (): ReactElement => {
             </section>
           )}
 
-          {macroModelDepends?.[macro] && (
+          {(
+            Boolean(macroModelDepends?.[macro]?.length)
+              || Boolean(macroDetails?.depends_on?.macros?.length)
+          ) && (
             <section className="bg-white rounded-md px-3 pt-4 pb-10 mb-6">
               <h4 className="font-bold text-xl">Used in</h4>
               <div className="mt-3">
-                <div className="flex flex-col mt-2 rounded-md overflow-hidden">
+                {Boolean(macroModelDepends?.[macro]?.length) && (
+                <div className="flex flex-col mt-2">
+                  <p className="text-xs mb-1">Table</p>
                   <ul className="marker:text-sky-400 space-y-3 text-slate-400">
                     {macroModelDepends?.[macro]?.map((table) => (
                       <li
@@ -149,6 +156,22 @@ const Macros: FC = (): ReactElement => {
                     ))}
                   </ul>
                 </div>
+                )}
+                {Boolean(macroDetails?.depends_on?.macros?.length) && (
+                  <div className="flex flex-col mt-4">
+                    <p className="text-xs mb-1">Macro</p>
+                    <ul className="marker:text-sky-400 space-y-3 text-slate-400">
+                      {macroDetails?.depends_on?.macros?.map((mac) => (
+                        <li
+                          className="text-sm mb-1 font-semibold text-primary"
+                          key={mac}
+                        >
+                          <Link to={`/macros?macro=${mac}`}>{mac}</Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </section>
           )}

@@ -57,6 +57,28 @@ export interface DbtNode {
   test_metadata: Record<string, unknown>;
 }
 
+export interface DbtMacro {
+  arguments: [];
+  created_at: number;
+  depends_on: {
+    macros: string[];
+  };
+  description: string;
+  docs: {
+    show: boolean
+  },
+  macro_sql: string;
+  meta: Record<string, unknown>;
+  name: string;
+  original_file_path: string;
+  package_name: string;
+  patch_path: string;
+  path: string;
+  resource_type: string;
+  tags: [];
+  unique_id: string;
+}
+
 export interface Anomaly {
   column_name: string;
   id: string;
