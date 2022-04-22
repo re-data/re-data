@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable camelcase */
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
@@ -171,7 +170,7 @@ const formatDbtData = (graphData: DbtGraph) => {
 
   // find a way to know where these macros exists
   for (const [key, value] of Object.entries(graphData.macros)) {
-    const { package_name: packageName } = value as any;
+    const { package_name: packageName } = value as DbtMacro;
     // console.log('key ', key, value.package_name || key === 're_data');
     if (packageName === PACKAGE_NAME || packageName === 're_data') {
       macros[key] = value as string;

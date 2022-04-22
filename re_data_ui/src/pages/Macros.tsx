@@ -72,8 +72,6 @@ const Macros: FC = (): ReactElement => {
   // console.log('macros loaded => ', macros, options);
   // console.log('macroModelDepends => ', macroModelDepends, macroModelDepends?.[macro], macro);
 
-  console.log('x > ', macroDetails?.depends_on?.macros);
-  console.log('y > ', macroModelDepends?.[macro]);
   return (
     <>
       {loading ? (
