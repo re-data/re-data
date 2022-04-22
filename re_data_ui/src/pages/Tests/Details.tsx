@@ -277,6 +277,13 @@ const TestDetails: FC = (): ReactElement => {
           <MetaData
             tabs={[
               {
+                label: 'Compiled SQL',
+                data: results?.compiled_sql
+                  ? format(results?.compiled_sql.trim())
+                  : 'No compiled sql',
+                language: 'sql',
+              },
+              {
                 label: 'Failure Json',
                 data: results?.failures_json
                   ? JSON.stringify(
@@ -286,13 +293,6 @@ const TestDetails: FC = (): ReactElement => {
                   )
                   : 'No failure json',
                 language: 'json',
-              },
-              {
-                label: 'Compiled SQL',
-                data: results?.compiled_sql
-                  ? format(results?.compiled_sql.trim())
-                  : 'No compiled sql',
-                language: 'sql',
               },
             ]}
           />

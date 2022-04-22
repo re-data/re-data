@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import { Elements } from 'react-flow-renderer';
 import { useSearchParams } from 'react-router-dom';
-import { FlowGraph, ModelDetails } from '../components';
+import { FlowGraph, ModelDetails, Toggle } from '../components';
 import {
   DbtNode, DbtSource, OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
@@ -364,27 +364,12 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
           </button>
         </div>
         {showModelDetails && (
-          <div className="flex items-center mr-8">
-            <div className="flex items-center justify-center w-full">
-              <label htmlFor="toggleB" className="flex items-center cursor-pointer">
-                <div className="mr-3 text-gray-700 text-sm font-medium">
-                  Monitored
-                </div>
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    id="toggleB"
-                    className="sr-only sd"
-                    onChange={toggleMonitored}
-                  />
-                  <div className="block bg-gray-300 w-10 h-6 rounded-full" />
-                  <div className="dot absolute left-1 top-1 bg-primary w-4 h-4 rounded-full transition" />
-                </div>
-                <div className="ml-3 text-gray-700 text-sm font-medium">
-                  All Nodes
-                </div>
-              </label>
-            </div>
+          <div className="mr-8">
+            <Toggle
+              label1="Monitored"
+              label2="All Nodes"
+              onChange={toggleMonitored}
+            />
           </div>
         )}
       </div>
