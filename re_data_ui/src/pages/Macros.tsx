@@ -35,6 +35,7 @@ const Macros: FC = (): ReactElement => {
   const [monitored, setMonitored] = useState<boolean>(false);
 
   const macro = searchParams.get('macro') as string;
+  console.log('macro ', macro);
 
   useEffect(() => {
     if (macro && macros && !overview.loading) {
@@ -44,7 +45,7 @@ const Macros: FC = (): ReactElement => {
       });
       setMacroDetails(macros[macro] as DbtMacro);
     }
-  }, [!overview.loading]);
+  }, [!overview.loading, macro]);
 
   const handleChange = (option: SelectOptionProps | null) => {
     if (option && macros) {
@@ -64,6 +65,12 @@ const Macros: FC = (): ReactElement => {
     }
     return macrosOptions;
   }, [monitored, macros]);
+
+  const macrosList = useMemo(() => {
+    const list = Array.from(options.values()).map((option) => option.value);
+    console.log('list', list);
+    return new Set([...list]);
+  }, [options]);
 
   const toggleMacro = useCallback(() => {
     setMonitored(!monitored);
@@ -164,7 +171,11 @@ const Macros: FC = (): ReactElement => {
                           className="text-sm mb-1 font-semibold text-primary"
                           key={mac}
                         >
-                          <Link to={`/macros?macro=${mac}`}>{mac}</Link>
+                          {!macrosList.has(mac) ? (
+                            <>{mac}</>
+                          ) : (
+                            <Link to={`/macros?macro=${mac}`}>{mac}</Link>
+                          )}
                         </li>
                       ))}
                     </ul>
