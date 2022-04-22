@@ -35,7 +35,6 @@ const Macros: FC = (): ReactElement => {
   const [monitored, setMonitored] = useState<boolean>(false);
 
   const macro = searchParams.get('macro') as string;
-  console.log('macro ', macro);
 
   useEffect(() => {
     if (macro && macros && !overview.loading) {
@@ -63,21 +62,19 @@ const Macros: FC = (): ReactElement => {
     if (monitored) {
       return macrosOptions.filter((option) => option.value.includes(PACKAGE_NAME));
     }
+
     return macrosOptions;
   }, [monitored, macros]);
 
   const macrosList = useMemo(() => {
     const list = Array.from(options.values()).map((option) => option.value);
-    console.log('list', list);
+
     return new Set([...list]);
   }, [options]);
 
   const toggleMacro = useCallback(() => {
     setMonitored(!monitored);
   }, [monitored]);
-
-  // console.log('macros loaded => ', macros, options);
-  // console.log('macroModelDepends => ', macroModelDepends, macroModelDepends?.[macro], macro);
 
   return (
     <>
