@@ -6,7 +6,7 @@ sidebar_position: 1
 
 re_data is an open-source data reliability framework for modern data stack. 😊
 
-Currently, re_data focuses on observing the dbt project (together with underlaying data warehouse - Postgres, BigQuery, Snowflake, Redshift).
+Currently, re_data focuses on observing the dbt project (together with underlying data warehouse - Postgres, BigQuery, Snowflake, Redshift).
 
 # Live demo
 

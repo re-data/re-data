@@ -3,7 +3,6 @@
 </p>
 <p align="center">
 <a href="https://www.getre.io/slack"><img alt="Slack" src="https://img.shields.io/badge/chat-slack-blue.svg"/></a>
-<img alt="License" src="https://img.shields.io/github/license/redata-team/redata?color=violet"/>
 <img alt="Last commit" src="https://img.shields.io/github/last-commit/redata-team/redata"/>
 </p>
 
@@ -11,7 +10,7 @@
 
 re_data is an open-source data reliability framework for the modern data stack. 😊
 
-Currently, re_data focuses on observing the dbt project (together with underlaying data warehouse - Postgres, BigQuery, Snowflake, Redshift).
+Currently, re_data focuses on observing the dbt project (together with underlying data warehouse - Postgres, BigQuery, Snowflake, Redshift).
 
 # Live demo
 

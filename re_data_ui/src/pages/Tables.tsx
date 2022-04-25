@@ -1,5 +1,5 @@
 import React, {
-  ReactElement, useContext, useEffect, useState,
+  ReactElement, useContext, useEffect, useState, useMemo,
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
 import { useSearchParams } from 'react-router-dom';
@@ -10,13 +10,14 @@ import {
   SelectOptionProps, OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
-import { GraphPartial, TestsPartial } from '../partials';
+import { GraphPartial, TestsPartial, CodeFormatter } from '../partials';
+import colors from '../utils/colors.js';
 
 const showA = true;
 
 const Tables: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { modelNodes } = overview;
+  const { modelNodes, dbtMapping, graph } = overview;
   const [activeTab, setActiveTab] = useState('');
   const [callApi, setCallApi] = useState(true);
   const [optionValue, setOptionValue] = useState<SelectOptionProps | null>();
@@ -28,6 +29,12 @@ const Tables: React.FC = (): ReactElement => {
 
   const [modelDetails, setModelDetails] = useState<ReDataModelDetails>();
 
+  const rawSql = useMemo(() => {
+    const result = graph?.nodes?.[dbtMapping?.[model]]?.raw_sql;
+    return result || '';
+  }, [graph, dbtMapping, model]);
+
+  console.log('graph ', graph?.nodes?.[dbtMapping?.[model]]);
   const { init } = useModel();
 
   const handleChange = (option: SelectOptionProps | null) => {
@@ -118,6 +125,13 @@ const Tables: React.FC = (): ReactElement => {
                   Tests
                 </button>
               </li>
+              <li
+                className={`mr-4 ${activeTab === 'codes' && 'active-tab'}`}
+              >
+                <button type="button" onClick={() => handleScroll('codes')}>
+                  Code
+                </button>
+              </li>
             </ul>
           </nav>
           <section id="anomalies" className="pb-4 pt-16 -mt-12">
@@ -163,7 +177,7 @@ const Tables: React.FC = (): ReactElement => {
           </section>
           <section id="graph" className="pb-4 pt-4">
             <div className="bg-white rounded-md px-3 py-4">
-              <h3 className="mb-3 text-md font-medium">Graph</h3>
+              <h3 className="mb-3 text-md font-medium">Lineage</h3>
               <div className="relative graph-view h-96">
                 <GraphPartial modelName={model} showModelDetails={false} />
               </div>
@@ -181,11 +195,28 @@ const Tables: React.FC = (): ReactElement => {
               </div>
             </div>
           </section>
+          <section id="codes" className="pb-4 pt-4">
+            <div className="bg-white rounded-md px-3 py-4">
+              <h3 className="mb-3 text-md font-medium">Raw SQL</h3>
+              <div className="flex flex-col mt-2 rounded-md overflow-hidden">
+                {rawSql ? (
+                  <CodeFormatter
+                    code={rawSql}
+                    language="sql"
+                  />
+                ) : (
+                  <div className="text-center font-semibold">
+                    <p>No raw SQL available</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
         </div>
       ) : (
         <div className="bg-white my-4 py-6 rounded-md">
           <EmptyContent text="Please type a table name in the input above">
-            <FaRegSmileWink size={80} color="#392396" />
+            <FaRegSmileWink size={80} color={colors.primary} />
           </EmptyContent>
         </div>
       )}

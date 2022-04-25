@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text(encoding='utf-8')
 
 setup(
     name="re_data",
-    version="0.7.0",
+    version="0.7.1",
     author="redata-team",
     author_email="mateusz@getre.io",
     description="re_data - data quality framework",
@@ -29,6 +29,7 @@ setup(
         "dbt-core>=0.20.0,<1.1.0",
         "yachalk>=0.1.0,<0.2.0",
         "tabulate==0.8.9",
+        "jsonschema==3.0.0",
         "analytics-python",
         
     ],

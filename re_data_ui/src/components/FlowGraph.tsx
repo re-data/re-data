@@ -9,6 +9,7 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import '../graph.css';
+import { ModelTabs } from '../partials/Graph';
 import { getLayoutElements } from '../utils';
 import CustomNode from './CustomNode';
 
@@ -156,7 +157,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
 
       fitElements();
     }
-  }, [instanceRef, modelName, tab]);
+  }, [instanceRef, modelName]);
 
   const onPaneClick = useCallback(() => {
     if (!disableClick) {
@@ -194,7 +195,7 @@ function FlowGraph(params: FlowGraphProps): ReactElement {
               if (!disableClick && isNode(element)) {
                 resetHighlight();
                 highlightPath(element, false);
-                setURLSearchParams({ model: element.data.id });
+                setURLSearchParams({ model: element.data.id, tab: ModelTabs.ANOMALIES });
               }
             }}
             onNodeDragStop={onNodeDragStop}

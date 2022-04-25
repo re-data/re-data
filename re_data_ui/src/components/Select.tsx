@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import Select from 'react-select';
 
-interface optionsProps {
+export interface optionsProps {
   value: string;
   label: string;
 }

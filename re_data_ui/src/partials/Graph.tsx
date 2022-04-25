@@ -1,7 +1,8 @@
 import React, {
-  ReactElement, useCallback, useContext, useState,
+  ReactElement, useCallback, useContext, useState, useEffect,
 } from 'react';
 import { Elements } from 'react-flow-renderer';
+import { useSearchParams } from 'react-router-dom';
 import { FlowGraph, ModelDetails } from '../components';
 import {
   DbtNode, DbtSource, OverviewData, ReDataModelDetails, RedataOverviewContext,
@@ -10,7 +11,7 @@ import {
   generateEdge, generateModelId, generateNode, supportedResTypes,
 } from '../utils';
 
-type AlertsType = 'anomaly' | 'schema_change' | null
+type AlertsType = 'anomaly' | 'schema_change' | 'failed_test' | null
 
 type GenerateGraphProps = {
   overview: OverviewData;
@@ -49,8 +50,12 @@ const generateGraph = (
     modelNodes,
     aggregated_models: aggregatedModels,
     graph: { nodes: dbtNodes, sources: dbtSources },
+    failedTests,
   } = overview;
   const allNodes = { ...dbtNodes, ...dbtSources };
+
+  const failedKeys = failedTests ? Object.keys(failedTests) : [];
+  const failedTestKeys = new Set([...failedKeys]);
 
   if (modelName) {
     const {
@@ -72,8 +77,9 @@ const generateGraph = (
       index: '0',
       modelId,
       details,
-      anomalies: anomalies.size > 0,
-      schemaChanges: schemaChanges.length > 0,
+      failedTests: failedTestKeys?.has(modelId),
+      anomalies: anomalies?.size > 0,
+      schemaChanges: schemaChanges?.length > 0,
     });
     elements.push(n);
     elementObj[modelId] = '0';
@@ -81,11 +87,11 @@ const generateGraph = (
     const parentNodesLength = modelParentNodes.length;
 
     for (let index = 0; index < parentNodesLength; index++) {
-      const parent = modelParentNodes[index];
-      const parentDetails = allNodes[parent];
+      const parent = modelParentNodes?.[index];
+      const parentDetails = allNodes?.[parent];
       const { resource_type: resourceType } = parentDetails;
 
-      if (supportedResTypes.has(resourceType)) {
+      if (supportedResTypes?.has(resourceType)) {
         const parentModelId = generateModelId(parentDetails);
         const {
           anomalies: parentAnomalies,
@@ -97,8 +103,9 @@ const generateGraph = (
           modelId: parentModelId,
           index: key,
           details: parentDetails,
-          anomalies: parentAnomalies.size > 0,
-          schemaChanges: parentSchemaChanges.length > 0,
+          failedTests: failedTestKeys?.has(parentModelId),
+          anomalies: parentAnomalies?.size > 0,
+          schemaChanges: parentSchemaChanges?.length > 0,
         });
         elements.push(parentNode);
         elementObj[parentModelId] = key?.toString();
@@ -111,14 +118,14 @@ const generateGraph = (
     }
 
     for (let index = 0; index < modelChildNodes.length; index++) {
-      const child = modelChildNodes[index];
+      const child = modelChildNodes?.[index];
 
-      const childDetails = allNodes[child];
+      const childDetails = allNodes?.[child];
       const {
         database, schema, name,
         resource_type: resourceType,
       } = childDetails;
-      if (supportedResTypes.has(resourceType)) {
+      if (supportedResTypes?.has(resourceType)) {
         const childModelId = `${database}.${schema}.${name}`.toLowerCase();
         const {
           anomalies: childAnomalies,
@@ -130,8 +137,9 @@ const generateGraph = (
           modelId: childModelId,
           index: key,
           details: childDetails,
-          anomalies: childAnomalies.size > 0,
-          schemaChanges: childSchemaChanges.length > 0,
+          anomalies: childAnomalies?.size > 0,
+          failedTests: failedTestKeys?.has(childModelId),
+          schemaChanges: childSchemaChanges?.length > 0,
         });
         elements.push(childNode);
         elementObj[childModelId] = key?.toString();
@@ -144,9 +152,9 @@ const generateGraph = (
     }
   } else {
     for (let index = 0; index < modelNodes.length; index++) {
-      const currentNode = modelNodes[index];
-      const modelTitle = dbtMapping[currentNode.label];
-      const details = allNodes[modelTitle];
+      const currentNode = modelNodes?.[index];
+      const modelTitle = dbtMapping?.[currentNode.label];
+      const details = allNodes?.[modelTitle];
       const modelId = generateModelId(details);
 
       // for monitored nodes
@@ -154,16 +162,18 @@ const generateGraph = (
       const isNodeMonitored = config?.re_data_monitored || false;
       const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
 
-      if (alerts === 'anomaly' && anomalies.size < 1) {
+      if (alerts === 'anomaly' && anomalies?.size < 1) {
         continue;
-      } else if (alerts === 'schema_change' && schemaChanges.length < 1) {
+      } else if (alerts === 'schema_change' && schemaChanges?.length < 1) {
+        continue;
+      } else if (alerts === 'failed_test' && !failedTestKeys?.has(modelId)) {
         continue;
       }
       if (monitored && !isNodeMonitored) {
         continue;
       }
       // check if model type exists and this currentNode is of that type
-      if (modelType && modelType !== details.resource_type) {
+      if (modelType && modelType !== details?.resource_type) {
         continue;
       }
 
@@ -171,8 +181,9 @@ const generateGraph = (
         index,
         modelId,
         details,
-        anomalies: anomalies.size > 0,
-        schemaChanges: schemaChanges.length > 0,
+        failedTests: failedTestKeys?.has(modelId),
+        anomalies: anomalies?.size > 0,
+        schemaChanges: schemaChanges?.length > 0,
       });
       elementObj[modelId] = index?.toString();
 
@@ -180,11 +191,11 @@ const generateGraph = (
 
       if (details.resource_type !== 'source') {
         const d = details as DbtNode;
-        const parentNodes = new Set(d.depends_on.nodes);
+        const parentNodes = new Set(d?.depends_on.nodes);
         parentNodes.forEach((parent) => {
-          const parentNode: DbtNode | DbtSource = dbtNodes[parent]
-            ? dbtNodes[parent]
-            : dbtSources[parent];
+          const parentNode: DbtNode | DbtSource = dbtNodes?.[parent]
+            ? dbtNodes?.[parent]
+            : dbtSources?.[parent];
           if (parentNode) {
             const parentModelId = generateModelId(parentNode);
             edgesArr.push({
@@ -197,10 +208,10 @@ const generateGraph = (
     }
   }
 
-  for (let index = 0; index < edgesArr.length; index++) {
-    const { from, to } = edgesArr[index];
+  for (let index = 0; index < edgesArr?.length; index++) {
+    const { from, to } = edgesArr?.[index];
     const edge = generateEdge({ obj: elementObj, from, to });
-    if (edge.source && edge.target) {
+    if (edge?.source && edge?.target) {
       elements.push(edge);
     }
   }
@@ -213,17 +224,38 @@ export interface GraphPartialProps {
   showModelDetails?: boolean;
 }
 
+export enum ModelTabs {
+  ANOMALIES = 'anomaly',
+  SCHEMA_CHANGES = 'schema',
+  METRICS = 'metrics',
+  TESTS = 'tests',
+}
+
 function GraphPartial(params: GraphPartialProps): ReactElement {
   const {
     modelName = null,
     showModelDetails = true,
   } = params;
   const [monitored, setMonitored] = useState(true);
+  const [, setURLSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const overview: OverviewData = useContext(RedataOverviewContext);
   const overviewDataLoaded = !!overview.graph;
   const [modelType, setModelType] = useState<string | null>(null);
   const [alerts, setAlerts] = useState<AlertsType>(null);
+  const [activeTab, setActiveTab] = useState(ModelTabs.ANOMALIES);
+
+  const tab = searchParams.get('tab') as unknown;
+  const model = searchParams.get('model') as string;
+
+  useEffect(() => {
+    if (tab === 'test') {
+      setActiveTab(ModelTabs.TESTS);
+    } else {
+      setActiveTab(tab as ModelTabs);
+    }
+  }, []);
 
   const elements: Elements = generateGraph({
     overview,
@@ -257,6 +289,15 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
     setMonitored(!monitored);
   }, [monitored]);
 
+  const toggleTabs = (tabName: ModelTabs) => {
+    setActiveTab(tabName);
+    if (model) {
+      setURLSearchParams({ model, tab: tabName });
+    } else {
+      setURLSearchParams({ tab: tabName });
+    }
+  };
+
   return (
     <>
       <div className="flex justify-between items-center absolute mt-4 ml-4 mr-20 z-20 w-2/3">
@@ -266,7 +307,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
             disabled={!showModelDetails}
             title="Toggle Source Nodes"
             onClick={() => toggleModelType('source')}
-            className={`flex items-center ml-1 mr-4 ${modelType === 'source' && 'active-tab'}`}
+            className={`flex items-center mr-4 ${modelType === 'source' && 'active-tab'}`}
           >
             <div className="w-3 h-3 bg-source rounded-tooltip" />
             <p className="text-sm font-medium ml-1">Source</p>
@@ -276,7 +317,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
             disabled={!showModelDetails}
             title="Toggle Seed Nodes"
             onClick={() => toggleModelType('seed')}
-            className={`flex items-center ml-1 mr-4 ${modelType === 'seed' && 'active-tab'}`}
+            className={`flex items-center mr-4 ${modelType === 'seed' && 'active-tab'}`}
           >
             <div className="w-3 h-3 bg-seed rounded-tooltip" />
             <p className="text-sm font-medium ml-1">Seed</p>
@@ -286,7 +327,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
             disabled={!showModelDetails}
             title="Toggle Model Nodes"
             onClick={() => toggleModelType('model')}
-            className={`flex items-center ml-1 mr-4 ${modelType === 'model' && 'active-tab'}`}
+            className={`flex items-center mr-4 ${modelType === 'model' && 'active-tab'}`}
           >
             <div className="w-3 h-3 bg-model rounded-tooltip" />
             <p className="text-sm font-medium ml-1">Model</p>
@@ -294,11 +335,21 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
           <button
             type="button"
             disabled={!showModelDetails}
-            title="Toggle Model Nodes"
-            onClick={() => toggleAlerts('anomaly')}
-            className={`flex items-center ml-1 mr-4 ${alerts === 'anomaly' && 'active-tab'}`}
+            title="Toggle Failed Test"
+            onClick={() => toggleAlerts('failed_test')}
+            className={`flex items-center mr-4 ${alerts === 'failed_test' && 'active-tab'}`}
           >
             <div className="w-3 h-3 bg-red-500 rounded-full" />
+            <p className="text-sm font-medium ml-1">Failed Test</p>
+          </button>
+          <button
+            type="button"
+            disabled={!showModelDetails}
+            title="Toggle Model Nodes"
+            onClick={() => toggleAlerts('anomaly')}
+            className={`flex items-center mr-4 ${alerts === 'anomaly' && 'active-tab'}`}
+          >
+            <div className="w-3 h-3 bg-secondary rounded-full" />
             <p className="text-sm font-medium ml-1">Anomaly</p>
           </button>
           <button
@@ -306,7 +357,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
             disabled={!showModelDetails}
             title="Toggle Model Nodes"
             onClick={() => toggleAlerts('schema_change')}
-            className={`flex items-center ml-1 mr-4 ${alerts === 'schema_change' && 'active-tab'}`}
+            className={`flex items-center mr-4 ${alerts === 'schema_change' && 'active-tab'}`}
           >
             <div className="w-3 h-3 bg-yellow-300 rounded-full" />
             <p className="text-sm font-medium ml-1">Schema Change</p>
@@ -351,7 +402,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
           )}
         </div>
 
-        {showModelDetails && <ModelDetails />}
+        {showModelDetails && <ModelDetails activeTab={activeTab} toggleTabs={toggleTabs} />}
       </div>
     </>
   );

@@ -85,7 +85,8 @@
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": ["error"],
     "no-continue": "off",
-    "prefer-default-export": "off"
+    "prefer-default-export": "off",
+    "react/require-default-props": "off"
   },
   "settings": {
     "import/resolver": {

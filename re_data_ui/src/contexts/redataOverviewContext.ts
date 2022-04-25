@@ -52,7 +52,8 @@ export interface DbtNode {
   build_path: string | null;
   deferred: boolean;
   unrendered_config: Record<string, unknown>;
-  created_at: number
+  created_at: number,
+  test_metadata: Record<string, unknown>;
 }
 
 export interface Anomaly {
@@ -107,6 +108,7 @@ export interface DbtSource {
   tags: [];
   unique_id: string;
   unrendered_config: Record<string, unknown>;
+  test_metadata: Record<string, unknown>;
 }
 
 export interface DbtGraph {
@@ -127,7 +129,10 @@ export interface ReDataModelDetails {
   schemaChanges: Array<SchemaChange>;
   metrics: AggregatedMetrics;
   tableSchema: Array<ITableSchema>
-  testSchema: Array<ITestSchema>
+  tests: Array<ITestSchema>
+  failedTests?: Record<string, unknown>;
+  runAts?: Record<string, []>;
+  // testsObject: Record<string, unknown>;
 }
 
 export interface SchemaChange {
@@ -144,6 +149,13 @@ export interface SchemaChange {
 
 export interface ITestSchema {
   column_name: string;
+  compiled_sql?: string;
+  execution_time?: string;
+  failures_count?: string;
+  failures_json?: string;
+  failures_table?: string;
+  message?: string;
+  severity?: string;
   status: string;
   test_name: string;
   model: string;
@@ -174,6 +186,11 @@ export interface OverviewData {
   loading: boolean;
   dbtMapping: Record<string, string>;
   modelNodes: SelectOptionProps[];
+  failedTests?: Record<string, ITestSchema[]>;
+  runAts?: Record<string, ITestSchema[]>;
+  testsObject: Record<string, ITestSchema[]>;
+  modelTestMapping: Record<string, ITestSchema[]>;
+  testNameMapping: Record<string, string>;
 }
 
 export interface SelectOptionProps {
@@ -198,4 +215,8 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   loading: true,
   dbtMapping: {},
   modelNodes: [],
+  runAts: {},
+  testsObject: {},
+  modelTestMapping: {},
+  testNameMapping: {},
 });
