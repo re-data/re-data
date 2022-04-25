@@ -4,3 +4,4 @@ packages:
 
   - git: https://github.com/re-data/dbt-re-data.git
     revision: main
+

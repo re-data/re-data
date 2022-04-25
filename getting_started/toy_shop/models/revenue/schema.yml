@@ -6,6 +6,8 @@ models:
       re_data_columns:
         - amount
         - status
+      re_data_owners:
+        - deji
       re_data_metrics:
         table:
           - orders_above_100
