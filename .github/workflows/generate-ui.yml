@@ -186,14 +186,6 @@ jobs:
           chmod +x ./setup_toy_shop.sh
           ./setup_toy_shop.sh toy_shop_${{ matrix.database }}
 
-      - name: Copy overview data
-        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
-        shell: bash
-
-      - name: Copy dbt manifest
-        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
-        shell: bash
-
       - name: Send alert notifications to various channels
         working-directory: ./getting_started/toy_shop
         if: github.repository == 're-data/re-data'
