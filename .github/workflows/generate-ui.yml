@@ -232,7 +232,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./re_data_ui/build
+          publish_dir: ./getting_started/toy_shop/target/re_data
           destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}
 
   clean-up-schemas:
