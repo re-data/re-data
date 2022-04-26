@@ -1,7 +1,6 @@
 version: 2
 
 seeds:
-  - name: order_items
   - name: companies
     config:
       re_data_monitored: true
