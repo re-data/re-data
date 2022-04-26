@@ -26,7 +26,8 @@ const Macros: FC = (): ReactElement => {
   const [searchParams] = useSearchParams();
 
   const {
-    loading, macros, macrosOptions, macroModelDepends,
+    loading, macros,
+    macrosOptions, macroModelDepends,
   } = overview;
 
   const [macroDetails, setMacroDetails] = useState<DbtMacro>();
