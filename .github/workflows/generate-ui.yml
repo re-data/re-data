@@ -219,7 +219,8 @@ jobs:
 
       - name: Build app for production
         working-directory: ./re_data_ui
-        run: npm run build
+        shell: bash
+        run: ./build.sh
         env:
           PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}
 
@@ -230,12 +231,10 @@ jobs:
         run: sleep 60
         shell: bash
 
-      - name: Keep only index.html, overview json and dbt_manifest.json file
-        working-directory: ./re_data_ui/build
+      - name: Generate re_data artefacts
+        working-directory: ./getting_started/toy_shop
         run: |
-          rm -rf static
-          shopt -s extglob
-          rm -- !(index.html|overview.json|dbt_manifest.json)
+          re_data overview generate --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_${{ matrix.database }}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
