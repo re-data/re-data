@@ -2,14 +2,14 @@ version: 2
 
 sources:
   - name: '{{ target.schema + "_sources" }}'
-    tests:
-      - re_data.assert_in_range:
-          metric: row_count
-          min_value: 10
-          max_value: 20
-
     tables:
       - name: toy_shop_customers
+        tests:
+          - re_data.assert_in_range:
+              metric: row_count
+              min_value: 10
+              max_value: 20
+
         columns:
           - name: id
 
