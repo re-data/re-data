@@ -54,7 +54,7 @@ jobs:
       - name: Install re_data and python dependencies
         working-directory: .
         run: |
-          pip install .
+          pip install -e .
           pip install dbt-postgres==1.0.0
 
       - name: Install dbt dependencies
@@ -83,14 +83,6 @@ jobs:
         with:
           node-version: "16.13.0"
 
-      - name: Copy overview data
-        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
-        shell: bash
-
-      - name: Copy dbt manifest
-        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
-        shell: bash
-
       - name: Set homepage in package.json
         working-directory: ./re_data_ui
         run: contents=$(jq '.homepage="https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}"' package.json) && echo "${contents}" > package.json
@@ -103,22 +95,21 @@ jobs:
 
       - name: Build app for production
         working-directory: ./re_data_ui
-        run: npm run build
+        shell: bash
+        run: ./build.sh
         env:
           PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}
 
-      - name: Keep only index.html, overview json and dbt_manifest.json file
-        working-directory: ./re_data_ui/build
+      - name: Generate re_data artefacts
+        working-directory: ./getting_started/toy_shop
         run: |
-          rm -rf static
-          shopt -s extglob
-          rm -- !(index.html|overview.json|dbt_manifest.json)
+          re_data overview generate --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_postgres
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./re_data_ui/build
+          publish_dir: ./getting_started/toy_shop/target/re_data
           destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}
 
   generate-ui-other-dbs:
@@ -162,7 +153,7 @@ jobs:
       - name: Install re_data and python dependencies
         working-directory: .
         run: |
-          pip install .
+          pip install -e .
           pip install dbt-${{ matrix.database }}
 
       - name: Replace sources schema in dbt_project.yml vars
@@ -208,14 +199,6 @@ jobs:
         with:
           node-version: "16.13.0"
 
-      - name: Copy overview data
-        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
-        shell: bash
-
-      - name: Copy dbt manifest
-        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
-        shell: bash
-
       - name: Set homepage in package.json
         working-directory: ./re_data_ui
         run: contents=$(jq '.homepage="https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}"' package.json) && echo "${contents}" > package.json
@@ -228,7 +211,8 @@ jobs:
 
       - name: Build app for production
         working-directory: ./re_data_ui
-        run: npm run build
+        shell: bash
+        run: ./build.sh
         env:
           PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}
 
@@ -239,18 +223,16 @@ jobs:
         run: sleep 60
         shell: bash
 
-      - name: Keep only index.html, overview json and dbt_manifest.json file
-        working-directory: ./re_data_ui/build
+      - name: Generate re_data artefacts
+        working-directory: ./getting_started/toy_shop
         run: |
-          rm -rf static
-          shopt -s extglob
-          rm -- !(index.html|overview.json|dbt_manifest.json)
+          re_data overview generate --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_${{ matrix.database }}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./re_data_ui/build
+          publish_dir: ./getting_started/toy_shop/target/re_data
           destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}
 
   clean-up-schemas:
