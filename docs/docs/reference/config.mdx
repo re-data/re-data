@@ -51,18 +51,18 @@ version: 2
 models:
   - name: pending_orders
     config:
-      +re_data_monitored: true
-      +re_data_time_filter: created_at
-      +re_data_columns:
+      re_data_monitored: true
+      re_data_time_filter: created_at
+      re_data_columns:
         - amount
         - status
-      +re_data_metrics:
+      re_data_metrics:
         table:
           - orders_above_100
         column:
           status:
             - distinct_values
-      +re_data_anomaly_detector:
+      re_data_anomaly_detector:
         name: modified_z_score
         threshold: 3
           

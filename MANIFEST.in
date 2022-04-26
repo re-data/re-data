@@ -11,4 +11,5 @@ include re_data/dbt_template/.gitignore
 include re_data/dbt_template/packages.yml
 include re_data/dbt_template/README.md
 include re_data/templates/dbt_project.yml
+include re_data/templates/email_alert.html
 include re_data/include/index.html
