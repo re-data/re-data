@@ -27,6 +27,7 @@ We support most of the main data warehouses supported by dbt. We plan to add sup
 |      | Integration | Status     |
 | :---        |    :----:   |          ---: |
 | <img height="30" width="30%" src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Slack_Technologies_Logo.svg" />      | Slack       | Supported |
+| <font size="5">✉️ ✉️ ✉️</font> | Email       | Supported |
 
 
 Let us know on **[Slack! 😊](https://www.getre.io/slack)** if you would like to add supported for other tools!
