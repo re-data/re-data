@@ -60,6 +60,14 @@ jobs:
         run: |
           chmod +x ./setup_toy_shop.sh
           ./setup_toy_shop.sh toy_shop_postgres
+          
+      - name: Copy overview data
+        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
+        shell: bash
+
+      - name: Copy dbt manifest
+        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
+        shell: bash
 
       - name: Send slack alert notification
         working-directory: ./getting_started/toy_shop
@@ -71,14 +79,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16.13.0"
-
-      - name: Copy overview data
-        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
-        shell: bash
-
-      - name: Copy dbt manifest
-        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
-        shell: bash
 
       - name: Set homepage in package.json
         working-directory: ./re_data_ui
@@ -177,6 +177,14 @@ jobs:
           chmod +x ./setup_toy_shop.sh
           ./setup_toy_shop.sh toy_shop_${{ matrix.database }}
 
+      - name: Copy overview data
+        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
+        shell: bash
+
+      - name: Copy dbt manifest
+        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
+        shell: bash
+
       - name: Send slack alert notification
         working-directory: ./getting_started/toy_shop
         if: github.repository == 're-data/re-data'
@@ -187,14 +195,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16.13.0"
-
-      - name: Copy overview data
-        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
-        shell: bash
-
-      - name: Copy dbt manifest
-        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
-        shell: bash
 
       - name: Set homepage in package.json
         working-directory: ./re_data_ui
