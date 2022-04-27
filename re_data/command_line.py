@@ -278,9 +278,6 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     metadata_path = os.path.join(re_data_target_path, 'metadata.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     metadata = load_metadata_from_project(kwargs)
-    # write metadata to re_data target path
-    with open(metadata_path, 'w+', encoding='utf-8') as f:
-        json.dump(metadata, f)
 
     args = {
         'start_date': start_date,
@@ -293,6 +290,10 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     add_dbt_flags(command_list, kwargs)
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
+
+    # write metadata to re_data target path
+    with open(metadata_path, 'w+', encoding='utf-8') as f:
+        json.dump(metadata, f)
 
     # run dbt docs generate to generate the a full manifest that contains compiled_path etc
     dbt_docs = ['dbt', 'docs', 'generate']
