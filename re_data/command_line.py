@@ -15,7 +15,7 @@ from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
-    generate_slack_message, build_notification_identifiers_per_model, send_mime_email
+    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 from re_data.config.utils import read_re_data_config
@@ -275,7 +275,12 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     end_date = str(end_date.date())
     dbt_target_path, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     overview_path = os.path.join(re_data_target_path, 'overview.json')
+    metadata_path = os.path.join(re_data_target_path, 'metadata.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
+    metadata = load_metadata_from_project(kwargs)
+    # write metadata to re_data target path
+    with open(metadata_path, 'w', encoding='utf-8') as f:
+        json.dump(metadata, f)
 
     args = {
         'start_date': start_date,

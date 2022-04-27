@@ -1,9 +1,11 @@
 from tabulate import tabulate
-from typing import Any, Dict, Optional, Iterable, List, Tuple, Union
+from typing import Any, Dict, Optional, List, Tuple
 from datetime import datetime
 from collections import defaultdict
 import yaml
 import json
+import os
+from dbt.config.project import Project
 
 
 try:
@@ -261,3 +263,13 @@ def send_mime_email(
         server.login(smtp_user, smtp_password)
     server.sendmail(mail_from, mail_to, mime_msg.as_string())
     server.quit()
+
+
+def load_metadata_from_project(kwargs) -> Dict:
+    project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
+    partial = Project.partial_load(project_root)
+    metadata = {
+        'project_dict': partial.project_dict,
+        'packages': partial.packages_dict
+    }
+    return metadata
