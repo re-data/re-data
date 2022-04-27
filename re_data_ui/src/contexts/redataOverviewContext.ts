@@ -206,7 +206,8 @@ export interface Alert {
 }
 
 export interface OverviewData {
-  macroModelDepends?: Record<string, string[]>;
+  macroDepends?: Record<string, string[]>;
+  macroModelUsedIn?: Record<string, string[]>;
   alerts: Array<Alert>;
   tests: Array<ITestSchema>;
   aggregated_models: Map<string, ReDataModelDetails>;
@@ -249,7 +250,8 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   modelNodes: [],
   macrosOptions: [],
   modelNodesDepends: {},
-  macroModelDepends: {},
+  macroModelUsedIn: {},
+  macroDepends: {},
   runAts: {},
   macros: {},
   testsObject: {},

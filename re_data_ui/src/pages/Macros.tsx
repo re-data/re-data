@@ -26,8 +26,7 @@ const Macros: FC = (): ReactElement => {
   const [searchParams] = useSearchParams();
 
   const {
-    loading, macros,
-    macrosOptions, macroModelDepends,
+    loading, macros, macrosOptions, macroModelUsedIn, macroDepends,
   } = overview;
 
   const [macroDetails, setMacroDetails] = useState<DbtMacro>();
@@ -76,6 +75,9 @@ const Macros: FC = (): ReactElement => {
   const toggleMacro = useCallback(() => {
     setMonitored(!monitored);
   }, [monitored]);
+
+  // console.log('depends_on ', macroDetails?.depends_on?.macros, macroDetails);
+  console.log(macroDepends, macroDepends?.[macro]);
 
   return (
     <>
@@ -134,31 +136,54 @@ const Macros: FC = (): ReactElement => {
             </section>
           )}
 
-          {(
-            Boolean(macroModelDepends?.[macro]?.length)
-              || Boolean(macroDetails?.depends_on?.macros?.length)
-          ) && (
+          {Boolean(macroDepends?.[macro]?.length) && (
             <section className="bg-white rounded-md px-3 pt-4 pb-10 mb-6">
-              <h4 className="font-bold text-xl">Used in</h4>
+              <h4 className="font-bold text-xl">Used In</h4>
               <div className="mt-3">
-                {Boolean(macroModelDepends?.[macro]?.length) && (
-                <div className="flex flex-col mt-2">
-                  <p className="text-xs mb-1">Table</p>
+                <div className="flex flex-col mt-4">
+                  <p className="text-xs mb-1">Macro</p>
                   <ul className="marker:text-sky-400 space-y-3 text-slate-400">
-                    {macroModelDepends?.[macro]?.map((table) => (
+                    {macroDepends?.[macro]?.map((mac) => (
                       <li
                         className="text-sm mb-1 font-semibold text-primary"
-                        key={table}
+                        key={mac}
                       >
-                        {table.includes('re_data') ? (
-                          <>{table}</>
+                        {!macrosList.has(mac) ? (
+                          <>{mac}</>
                         ) : (
-                          <Link to={`/tables?model=${table}`}>{table}</Link>
+                          <Link to={`/macros?macro=${mac}`}>{mac}</Link>
                         )}
                       </li>
                     ))}
                   </ul>
                 </div>
+              </div>
+            </section>
+          )}
+
+          {(Boolean(macroModelUsedIn?.[macro]?.length)
+            || Boolean(macroDetails?.depends_on?.macros?.length)) && (
+            <section className="bg-white rounded-md px-3 pt-4 pb-10 mb-6">
+              <h4 className="font-bold text-xl">Depends On</h4>
+              <div className="mt-3">
+                {Boolean(macroModelUsedIn?.[macro]?.length) && (
+                  <div className="flex flex-col mt-2">
+                    <p className="text-xs mb-1">Table</p>
+                    <ul className="marker:text-sky-400 space-y-3 text-slate-400">
+                      {macroModelUsedIn?.[macro]?.map((table) => (
+                        <li
+                          className="text-sm mb-1 font-semibold text-primary"
+                          key={table}
+                        >
+                          {table.includes('re_data') ? (
+                            <>{table}</>
+                          ) : (
+                            <Link to={`/tables?model=${table}`}>{table}</Link>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
                 {Boolean(macroDetails?.depends_on?.macros?.length) && (
                   <div className="flex flex-col mt-4">
