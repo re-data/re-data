@@ -103,7 +103,7 @@ jobs:
       - name: Generate re_data artefacts
         working-directory: ./getting_started/toy_shop
         run: |
-          re_data overview generate --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_postgres
+          re_data overview generate --start-date 2021-01-01 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_postgres
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
@@ -226,7 +226,7 @@ jobs:
       - name: Generate re_data artefacts
         working-directory: ./getting_started/toy_shop
         run: |
-          re_data overview generate --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_${{ matrix.database }}
+          re_data overview generate --start-date 2021-01-01 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_${{ matrix.database }}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
