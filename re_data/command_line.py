@@ -279,7 +279,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     metadata = load_metadata_from_project(kwargs)
     # write metadata to re_data target path
-    with open(metadata_path, 'w', encoding='utf-8') as f:
+    with open(metadata_path, 'w+', encoding='utf-8') as f:
         json.dump(metadata, f)
 
     args = {
