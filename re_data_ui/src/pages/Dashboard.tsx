@@ -51,7 +51,6 @@ const formatOverviewData = (
   data: Array<RawOverviewData>,
   result: Map<string, ReDataModelDetails>,
 ): formatOverviewDataReturnType => {
-  // console.log('data -> ', data);
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
   const testsObject: Record<string, ITestSchema[]> = {};
@@ -78,7 +77,6 @@ const formatOverviewData = (
     const columnName = item.column_name ? item.column_name : '';
     const details = result.get(model) as ReDataModelDetails;
     if (item.type === 'alert') {
-      // console.log('alert', item);
       const alert = JSON.parse(item.data) as Alert;
       alertsChanges.push(alert);
     } else if (item.type === 'metric') {
@@ -141,7 +139,6 @@ const formatOverviewData = (
         }
       }
 
-      // console.log('schema', schema);
       tests.push(schema);
     } else if (item.type === 'anomaly') {
       const anomaly = JSON.parse(item.data) as Anomaly;
@@ -187,17 +184,13 @@ const formatDbtData = (graphData: DbtGraph) => {
   const macrosOptions: SelectOptionProps[] = [];
 
   const modelNodesDepends: Record<string, string[]> = {};
-  // const failedTestsObject: Record <string, ITestSchema[]> = {};
   const macroModelUsedIn: Record<string, string[]> = {};
   const macroDepends: Record<string, string[]> = {};
 
   // find a way to know where these macros exists
   for (const [key, value] of Object.entries(graphData.macros)) {
     const { package_name: packageName, depends_on: dependsOn } = value as DbtMacro;
-    // console.log('key ', key, value.package_name || key === 're_data');
     if (packageName === PACKAGE_NAME || packageName === 're_data') {
-      // console.log('key => ', key, 'dependsOn =>', dependsOn.macros);
-
       dependsOn.macros.map((macro: string) => {
         if (!Object.prototype.hasOwnProperty.call(macroDepends, macro)) {
           macroDepends[macro] = [key];
@@ -215,9 +208,6 @@ const formatDbtData = (graphData: DbtGraph) => {
     }
   }
 
-  // console.log('reverse: ', macroDepends);
-  // console.log('macros: ', Object.keys(macros));
-
   Object.entries({ ...graphData.sources, ...graphData.nodes }).forEach(
     ([key, value]) => {
       const {
@@ -231,7 +221,6 @@ const formatDbtData = (graphData: DbtGraph) => {
       const modelId = generateModelId(value);
       const dependsOnMacros = dependsOn?.macros || [];
 
-      // console.log('dependsOn ', dependsOnMacros);
       if (resourceType === 'test' && packageName !== 're_data') {
         testNameMapping[name?.toLowerCase()] = testMetadataName || name;
       }
@@ -258,8 +247,6 @@ const formatDbtData = (graphData: DbtGraph) => {
     },
   );
 
-  // console.log('macroModelUsedIn ', macroModelUsedIn);
-  // console.log('modelNodesDepends ', modelNodesDepends);
   return {
     dbtMapping,
     modelNodes,

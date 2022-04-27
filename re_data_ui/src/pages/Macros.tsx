@@ -76,9 +76,6 @@ const Macros: FC = (): ReactElement => {
     setMonitored(!monitored);
   }, [monitored]);
 
-  // console.log('depends_on ', macroDetails?.depends_on?.macros, macroDetails);
-  console.log(macroDepends, macroDepends?.[macro]);
-
   return (
     <>
       {loading ? (
