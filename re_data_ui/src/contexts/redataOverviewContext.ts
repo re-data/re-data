@@ -147,6 +147,30 @@ export interface DbtGraph {
   macros: { [key: string]: unknown };
 }
 
+export interface MetaData {
+  project_dict: {
+    name: string,
+    version: string,
+    'config-version': number,
+    profile: string,
+    'target-path': string,
+    'clean-targets': string[],
+    'model-paths': string[],
+    'on-run-end': string[],
+    models: Record<string, unknown>,
+    sources:Record<string, unknown>,
+    seeds: Record<string, unknown>,
+    vars: {
+        're_data:anomaly_detector': Record<string, unknown>,
+        're_data:owners_config': Record<string, unknown>,
+        're_data:metrics_base': Record<string, unknown>,
+    }
+  },
+  packages: {
+    packages: Record<string, unknown>[]
+  }
+}
+
 export interface AggregatedMetrics {
   tableMetrics: Map<string, Array<Metric>>;
   columnMetrics: Map<string, Array<Metric>>;
@@ -212,6 +236,7 @@ export interface OverviewData {
   tests: Array<ITestSchema>;
   aggregated_models: Map<string, ReDataModelDetails>;
   graph: DbtGraph | null;
+  metaData: MetaData | null;
   generated_at: string;
   loading: boolean;
   dbtMapping: Record<string, string>;
@@ -243,6 +268,7 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   alerts: [],
   aggregated_models: new Map<string, ReDataModelDetails>(),
   graph: null,
+  metaData: null,
   generated_at: '',
   tests: [],
   loading: true,

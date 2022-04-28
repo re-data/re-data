@@ -10,9 +10,7 @@ import {
   DbtGraph,
   DbtMacro,
   ITableSchema,
-  ITestSchema,
-  Metric,
-  OverviewData,
+  ITestSchema, MetaData, Metric, OverviewData,
   ReDataModelDetails,
   RedataOverviewContext,
   SchemaChange,
@@ -22,8 +20,7 @@ import {
   appendToMapKey,
   DBT_MANIFEST_FILE,
   generateMetricIdentifier,
-  generateModelId,
-  PACKAGE_NAME,
+  generateModelId, METADATA_FILE, PACKAGE_NAME, PROJECT_NAME,
   RE_DATA_OVERVIEW_FILE,
   stripQuotes,
   supportedResTypes,
@@ -190,7 +187,7 @@ const formatDbtData = (graphData: DbtGraph) => {
   // find a way to know where these macros exists
   for (const [key, value] of Object.entries(graphData.macros)) {
     const { package_name: packageName, depends_on: dependsOn } = value as DbtMacro;
-    if (packageName === PACKAGE_NAME || packageName === 're_data') {
+    if (packageName === PACKAGE_NAME || packageName === PROJECT_NAME) {
       dependsOn.macros.map((macro: string) => {
         if (!Object.prototype.hasOwnProperty.call(macroDepends, macro)) {
           macroDepends[macro] = [key];
@@ -221,11 +218,11 @@ const formatDbtData = (graphData: DbtGraph) => {
       const modelId = generateModelId(value);
       const dependsOnMacros = dependsOn?.macros || [];
 
-      if (resourceType === 'test' && packageName !== 're_data') {
+      if (resourceType === 'test' && packageName !== PROJECT_NAME) {
         testNameMapping[name?.toLowerCase()] = testMetadataName || name;
       }
 
-      if (supportedResTypes.has(resourceType) && packageName !== 're_data') {
+      if (supportedResTypes.has(resourceType) && packageName !== PROJECT_NAME) {
         dbtMapping[modelId] = key;
         modelNodes.push({
           value: modelId,
@@ -264,6 +261,7 @@ const Dashboard: React.FC = (): ReactElement => {
     alerts: [],
     aggregated_models: new Map<string, ReDataModelDetails>(),
     graph: null,
+    metaData: null,
     generated_at: '',
     tests: [],
     loading: true,
@@ -286,18 +284,23 @@ const Dashboard: React.FC = (): ReactElement => {
       Accept: 'application/json',
     };
     try {
-      const [overviewRequest, dbtManifestRequest] = await Promise.all([
+      const [overviewRequest, dbtManifestRequest, metadataRequest] = await Promise.all([
         fetch(RE_DATA_OVERVIEW_FILE, { headers }),
         fetch(DBT_MANIFEST_FILE, { headers }),
+        fetch(METADATA_FILE, { headers }),
       ]);
       const overviewData: Array<RawOverviewData> = await overviewRequest.json();
       const graphData: DbtGraph = await dbtManifestRequest.json();
+      const metaData: MetaData = await metadataRequest.json();
+
+      console.log('metaData ', metaData);
 
       const overview: OverviewData = {
         alerts: [],
         tests: [],
         aggregated_models: new Map<string, ReDataModelDetails>(),
         graph: null,
+        metaData,
         generated_at: '',
         loading: false,
         dbtMapping: {},

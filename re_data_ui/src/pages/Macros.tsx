@@ -17,7 +17,7 @@ import {
   SelectOptionProps,
 } from '../contexts/redataOverviewContext';
 import { CodeFormatter } from '../partials';
-import { copyToClipboard, PACKAGE_NAME } from '../utils';
+import { copyToClipboard, PACKAGE_NAME, PROJECT_NAME } from '../utils';
 
 const Macros: FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
@@ -172,7 +172,7 @@ const Macros: FC = (): ReactElement => {
                           className="text-sm mb-1 font-semibold text-primary"
                           key={table}
                         >
-                          {table.includes('re_data') ? (
+                          {table.includes(PROJECT_NAME) ? (
                             <>{table}</>
                           ) : (
                             <Link to={`/tables?model=${table}`}>{table}</Link>
