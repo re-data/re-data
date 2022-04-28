@@ -261,3 +261,17 @@ def send_mime_email(
         server.login(smtp_user, smtp_password)
     server.sendmail(mail_from, mail_to, mime_msg.as_string())
     server.quit()
+
+
+def normalize_re_data_json_export(path: str):
+    """
+    Normalize the data exported from Re.
+    """
+    with open(path, 'r') as f:
+        json_data = json.load(f)
+    
+    normalized_json_data = [{k.lower(): v for k, v in data.items()} for data in json_data]
+
+    # overwrite the original file with the normalized data
+    with open(path, 'w+', encoding='utf-8') as f:
+        json.dump(normalized_json_data, f)
