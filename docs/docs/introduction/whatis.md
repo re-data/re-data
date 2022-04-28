@@ -15,16 +15,24 @@ Check out our **[live demo](https://re-data.github.io/re-data/ui-latest/#/alerts
 
 ![GraphExample](/screenshots/ui/graph.png)
 
-# Features
-
 ## Alerts
-Get information about suspicious data patterns (anomalies) and schema changes automatically. re_data detects trends in your data and creates alerts if something seems suspicious.
+
+re_data detects problems in your data like:
+ - anomalies (suspicious data patterns),
+ - failed dbt tests (**new in 0.8.0** 🎉),
+ - schema changes
+
+and alerts you on Slack or Email and in re_data UI so that you can react and fix issues quickly.
 
 ## Metrics
-Monitor predefined and custom metrics about your data. All metrics are stored in your database and accessible for you. re_data custom metrics can be standard dbt macros which make it very easy to add them to your project.
+For detecting anomalies re_data uses metrics. You can compute predefined and custom metrics about your data. All metrics are stored in your database and accessible for you. re_data custom metrics are just dbt macros which you can add to your dbt project.
 
 ## Asserts
-re_data contains asserts library which enable you to test computed metrics using standard dbt tests for models. This is additonal step you *can* do to make sure data is correct.
+re_data contains asserts library which enable you to test computed metrics using dbt tests. This additonal step enables you to make sure daa is correct and meets your expectations. Example macros in our asserts library:
+
+ - **[re_data.assert_in_range](/docs/reference/tests/asserts#assert_in_range)**
+ - **[re_data.assert_true](/docs/reference/tests/asserts#assert_true)**
+ - **[re_data.assert_equal](/docs/reference/tests/asserts#assert_equal)**
 
 ## Test history
 re_data stores dbt tests history and let's you investigate test details like SQL which was run or failed rows for each runned test.
@@ -33,10 +41,13 @@ re_data stores dbt tests history and let's you investigate test details like SQL
 re_data shows data lineage for your data warehouse. (This is imported from the dbt graph). You can navigate your data & investigate alerts & metrics related to each node in the graph.
 
 ## Macros
-re_data ships with a set of macros to save you time and some pain of writing code for cleaning / normalizing / validating your data. Use them to make your project cleaner 😊. You can also use them as a base for your own metrics or data tests.
+re_data ships with a set of macros to save you time and some pain of writing code for cleaning / normalizing / validating your data. Use them to make your project cleaner 😊. You can also use them as a base 
+for your own metrics or data tests. Example macros in our data cleaning library include:
 
-## Notifications
-re_data sends notifications about suspicious data patterns, schema changes to your Slack so you can react quickly and fix the issues.
+ - **[re_data.filter_remove_duplicates](/docs/reference/macros/data_filtering#filter_remove_duplicates)**
+ - **[re_data.is_number_decimal_point](/docs/reference/macros/data_validation#is_number_decimal_point)**
+ - **[re_data.clean_blacklist](/docs/reference/macros/data_cleaning#clean_blacklist)**
+
 
 # Getting started
 
