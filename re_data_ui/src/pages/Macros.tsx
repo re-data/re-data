@@ -17,7 +17,7 @@ import {
   SelectOptionProps,
 } from '../contexts/redataOverviewContext';
 import { CodeFormatter } from '../partials';
-import { copyToClipboard, PACKAGE_NAME, PROJECT_NAME } from '../utils';
+import { copyToClipboard, PROJECT_NAME } from '../utils';
 
 const Macros: FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
@@ -26,9 +26,10 @@ const Macros: FC = (): ReactElement => {
   const [searchParams] = useSearchParams();
 
   const {
-    loading, macros, macrosOptions, macroModelUsedIn, macroDepends,
+    loading, macros, macrosOptions, macroModelUsedIn, macroDepends, metaData,
   } = overview;
 
+  const PACKAGE_NAME = metaData?.project_dict?.name || '';
   const [macroDetails, setMacroDetails] = useState<DbtMacro>();
   const [optionValue, setOptionValue] = useState<SelectOptionProps | null>();
 

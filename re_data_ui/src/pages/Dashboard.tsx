@@ -20,7 +20,7 @@ import {
   appendToMapKey,
   DBT_MANIFEST_FILE,
   generateMetricIdentifier,
-  generateModelId, METADATA_FILE, PACKAGE_NAME, PROJECT_NAME,
+  generateModelId, METADATA_FILE, PROJECT_NAME,
   RE_DATA_OVERVIEW_FILE,
   stripQuotes,
   supportedResTypes,
@@ -172,7 +172,7 @@ const formatOverviewData = (
   };
 };
 
-const formatDbtData = (graphData: DbtGraph) => {
+const formatDbtData = (graphData: DbtGraph, PACKAGE_NAME: string) => {
   const dbtMapping: Record<string, string> = {};
   const testNameMapping: Record<string, string> = {};
   const modelNodes: SelectOptionProps[] = [];
@@ -293,8 +293,6 @@ const Dashboard: React.FC = (): ReactElement => {
       const graphData: DbtGraph = await dbtManifestRequest.json();
       const metaData: MetaData = await metadataRequest.json();
 
-      console.log('metaData ', metaData);
-
       const overview: OverviewData = {
         alerts: [],
         tests: [],
@@ -324,7 +322,7 @@ const Dashboard: React.FC = (): ReactElement => {
         macros,
         macroModelUsedIn,
         macroDepends,
-      } = formatDbtData(graphData);
+      } = formatDbtData(graphData, metaData?.project_dict?.name);
       const result = new Map<string, ReDataModelDetails>();
       for (const node of modelNodes) {
         const obj: ReDataModelDetails = {

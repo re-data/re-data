@@ -119,5 +119,4 @@ export const generateModelId = (details: DbtNode | DbtSource): string => {
 
 export const copyToClipboard = (text?: string): Promise<void> => navigator.clipboard.writeText(text || '');
 
-export const PACKAGE_NAME = 'toy_shop';
 export const PROJECT_NAME = 're_data';
