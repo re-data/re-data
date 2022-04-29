@@ -54,6 +54,8 @@ vars:
     name: modified_z_score
     threshold: 3
 
+  re_data:save_test_history: true
+
   re_data:owners_config:
     deji:
       - type: slack
