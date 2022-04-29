@@ -15,7 +15,8 @@ from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
-    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project
+    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export
+
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 from re_data.config.utils import read_re_data_config
@@ -310,6 +311,8 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     target_file_path = os.path.join(re_data_target_path, 'index.html')
     shutil.copyfile(OVERVIEW_INDEX_FILE_PATH, target_file_path)
 
+    normalize_re_data_json_export(overview_path)
+
     print(
         f"Generating overview page", chalk.green("SUCCESS")
     )
@@ -422,6 +425,9 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
     add_dbt_flags(command_list, kwargs)
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
+
+    normalize_re_data_json_export(alerts_path)
+    normalize_re_data_json_export(monitored_path)
 
     with open(alerts_path) as f:
         alerts = json.load(f)
