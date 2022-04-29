@@ -114,7 +114,7 @@ seeds:
 </Tabs>
 
 :::info
-Notice that you can only apply the `Config block` and `Property file` configuration to models. Sources need to be configured in the `dbt_project.yml` file. Currently, dbt doesn't accept config for them, as stated in [dbt docs](https://docs.getdbt.com/reference/source-configs).
+dbt 1.1.0 introduced config for sources so `Property file` configuration for sources in available since dbt 1.1.0
 :::
 
 You can define configuration on many levels; it's common to enable re_data for a group of tables (for example, all sources). It's also common to override some of the properties for specific groups.
