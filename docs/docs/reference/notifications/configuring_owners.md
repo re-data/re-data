@@ -2,7 +2,13 @@
 sidebar_position: 1
 ---
 
-# Configuring Owners
+# Owners
+
+Setting up owners for models, allows you to alert about the problem specific groups of people. This is realised either by mentioning on the Slack channel or in case of email, sending information only to specific people.
+
+Setting re_data owners is optional and re_data notification can work without any owners setup.
+
+### re_data:owners_config
 
 Mapping of re_data model owners and their identifier is defined in the `re_data:owners_config` block in the dbt_project.yml file.
 Here we can define an individual user or a group of users (team) with their respective identifiers. 
@@ -46,6 +52,8 @@ vars:
         identifier: user2@getre.io
         name: user2
 ```
+
+### re_data_owners
 
 ```yaml title="models/orders.sql"
 {{

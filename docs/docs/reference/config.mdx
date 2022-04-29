@@ -34,7 +34,8 @@ re_data dbt native cofiguration follows the same rules as dbt configuration, con
       re_data_time_filter='creation_time',
       re_data_columns=['amount', 'status'],
       re_data_metrics={'table': ['orders_obove_100'], 'column': { 'status': ['distinct_values'],
-      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3.0} }}
+      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3.0} }},
+      re_data_owners=['datateam']
     )
 }}
 
@@ -140,12 +141,17 @@ Additional metrics to be computed for a given table (set of tables). Those can b
 
 You can be pass any number of already defined or your custom metrics to be computed. Check out **[extra metrics](/docs/reference/metrics/extra_metrics)** section for available metrics and **[custom metrics](/docs/reference/metrics/your_own_metric)** for ways to define your own metrics.
 
-### re_data_anomaly_detector (options)
+### re_data_anomaly_detector (optional)
 
 Alternative anomaly dector with it's parameters to use when detecting anomalies in a given model (set of models)
 
 For details about configuration look into [Anomaly Detection](anomaly_detection)
 
+### re_data_owners (optional)
+
+Group of single person which should receive and alert about problem with a given model.
+
+For details about configuration look into [Notifications](notifications/configuring_owners)
 
 ## Global config vars
 
@@ -190,6 +196,17 @@ vars:
   re_data:test_history_failures: true
   re_data:test_history_failures_limit: 10
 
+  # (optional) configuring owners
+  re_data:owners_config:
+    datateam:
+      - type: slack
+        identifier: U02FHBSXXXX
+        name: user1
+    backend:
+      - type: email
+        identifier: user1@getre.io
+        name: user1
+
 ```
 
 ### re_data:time_window_start, re_data:time_window_end
@@ -231,3 +248,7 @@ Variable to enable/disable storing test failures. See [re_data tests history](/d
 ### re_data:test_history_failures_limit
 
 Variable to configure failures stored per test. See [re_data tests history](/docs/reference/tests/history) for more details.
+
+### re_data:owners_config
+
+Variable to configure owners for your data.  See [re_data notifications](/docs/reference/notifications/configuring_owners) for more details.
