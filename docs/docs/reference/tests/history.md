@@ -12,19 +12,11 @@ re_data comes with 3 config options to configure:
 #### `re_data:save_test_history` (default false) 
 by default re_data doesn't store tests history to enable this you would need to set this var to `true`
 
-#### `re_data:test_history_failures` (default true) 
-tells re_data if it should query for test failures and store them in db. It's enable by default
-
-#### `test_history_failures_limit` (default 10)
-since failures can be quite big and often similar to each other we don't advise to store all of them in db but to add some limit on number of them stored.
-
 Example test history configuration:
 
 ```yml dbt_project.yml
 vars:
   re_data:save_test_history: true
-  re_data:test_history_failures: true
-  re_data:test_history_failures_limit: 10
 ```
 
 :::caution
