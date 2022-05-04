@@ -2,7 +2,7 @@ import React, {
   ReactElement, useContext, useEffect, useState, useMemo,
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import {
   EmptyContent, MetricCharts, SchemaChanges, Select, TableSchema,
 } from '../components';
@@ -10,14 +10,17 @@ import {
   SelectOptionProps, OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
-import { GraphPartial, TestsPartial, CodeFormatter } from '../partials';
+import { GraphPartial, TestsPartial, MetaData } from '../partials';
 import colors from '../utils/colors.js';
 
 const showA = true;
 
 const Tables: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { modelNodes, dbtMapping, graph } = overview;
+  const {
+    modelNodes, dbtMapping,
+    graph, modelNodesDepends,
+  } = overview;
   const [activeTab, setActiveTab] = useState('');
   const [callApi, setCallApi] = useState(true);
   const [optionValue, setOptionValue] = useState<SelectOptionProps | null>();
@@ -29,9 +32,13 @@ const Tables: React.FC = (): ReactElement => {
 
   const [modelDetails, setModelDetails] = useState<ReDataModelDetails>();
 
-  const rawSql = useMemo(() => {
-    const result = graph?.nodes?.[dbtMapping?.[model]]?.raw_sql;
-    return result || '';
+  const [rawSql, compiledSql] = useMemo(() => {
+    const res = graph?.nodes?.[dbtMapping?.[model]];
+
+    const result = res?.raw_sql || '';
+    const result2 = res?.compiled_sql || '';
+
+    return [result, result2];
   }, [graph, dbtMapping, model]);
 
   console.log('graph ', graph?.nodes?.[dbtMapping?.[model]]);
@@ -197,18 +204,35 @@ const Tables: React.FC = (): ReactElement => {
           </section>
           <section id="codes" className="pb-4 pt-4">
             <div className="bg-white rounded-md px-3 py-4">
-              <h3 className="mb-3 text-md font-medium">Raw SQL</h3>
-              <div className="flex flex-col mt-2 rounded-md overflow-hidden">
-                {rawSql ? (
-                  <CodeFormatter
-                    code={rawSql}
-                    language="sql"
-                  />
-                ) : (
-                  <div className="text-center font-semibold">
-                    <p>No raw SQL available</p>
-                  </div>
-                )}
+              <MetaData
+                tabs={[
+                  {
+                    label: 'SQL',
+                    data: rawSql ? rawSql.trim() : 'No SQL available',
+                    language: 'sql',
+                  },
+                  {
+                    label: 'Compiled SQL',
+                    data: compiledSql ? compiledSql.trim() : 'No Compiled SQL available',
+                    language: 'sql',
+                  },
+                ]}
+              />
+
+              <div>
+                <h3 className="mt-4 mb-2 text-md font-medium">Macros</h3>
+                <ul
+                  className="marker:text-sky-400 space-y-3 text-slate-400"
+                >
+                  {modelNodesDepends?.[model]?.map((macro) => (
+                    <li
+                      className="text-sm mb-1 font-semibold text-primary"
+                      key={macro}
+                    >
+                      <Link to={`/macros?macro=${macro}`}>{macro}</Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </section>
