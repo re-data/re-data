@@ -22,5 +22,3 @@ vars:
   re_data:anomaly_detector:
     name: modified_z_score
     threshold: 3
-  re_data:schemas:
-    - example_schema # this schemas will be monitored

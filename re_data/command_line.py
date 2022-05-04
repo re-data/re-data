@@ -203,8 +203,7 @@ def run(start_date, end_date, interval, full_refresh, **kwargs):
 
         re_data_dbt_vars = {
             're_data:time_window_start': str(for_date),
-            're_data:time_window_end': str(for_date + delta),
-            're_data:anomaly_detection_window_start': str(for_date - timedelta(days=30))
+            're_data:time_window_end': str(for_date + delta)
         }
         dbt_vars.update(re_data_dbt_vars)
 
