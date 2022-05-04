@@ -134,55 +134,57 @@ const Macros: FC = (): ReactElement => {
             </section>
           )}
 
-          {Boolean(macroDepends?.[macro]?.length) && (
+          {(Boolean(macroModelUsedIn?.[macro]?.length)
+            || Boolean(macroDepends?.[macro]?.length)) && (
             <section className="bg-white rounded-md px-3 pt-4 pb-10 mb-6">
               <h4 className="font-bold text-xl">Used In</h4>
-              <div className="mt-3">
-                <div className="flex flex-col mt-4">
-                  <p className="text-xs mb-1">Macro</p>
+              {Boolean(macroModelUsedIn?.[macro]?.length) && (
+                <div className="flex flex-col mt-2">
+                  <p className="text-xs mb-1">Table</p>
                   <ul className="marker:text-sky-400 space-y-3 text-slate-400">
-                    {macroDepends?.[macro]?.map((mac) => (
+                    {macroModelUsedIn?.[macro]?.map((table) => (
                       <li
                         className="text-sm mb-1 font-semibold text-primary"
-                        key={mac}
+                        key={table}
                       >
-                        {!macrosList.has(mac) ? (
-                          <>{mac}</>
+                        {table.includes(PROJECT_NAME) ? (
+                          <>{table}</>
                         ) : (
-                          <Link to={`/macros?macro=${mac}`}>{mac}</Link>
+                          <Link to={`/tables?model=${table}`}>{table}</Link>
                         )}
                       </li>
                     ))}
                   </ul>
                 </div>
-              </div>
-            </section>
-          )}
-
-          {(Boolean(macroModelUsedIn?.[macro]?.length)
-            || Boolean(macroDetails?.depends_on?.macros?.length)) && (
-            <section className="bg-white rounded-md px-3 pt-4 pb-10 mb-6">
-              <h4 className="font-bold text-xl">Depends On</h4>
-              <div className="mt-3">
-                {Boolean(macroModelUsedIn?.[macro]?.length) && (
-                  <div className="flex flex-col mt-2">
-                    <p className="text-xs mb-1">Table</p>
+              )}
+              {Boolean(macroDepends?.[macro]?.length) && (
+                <div className="mt-3">
+                  <div className="flex flex-col mt-4">
+                    <p className="text-xs mb-1">Macro</p>
                     <ul className="marker:text-sky-400 space-y-3 text-slate-400">
-                      {macroModelUsedIn?.[macro]?.map((table) => (
+                      {macroDepends?.[macro]?.map((mac) => (
                         <li
                           className="text-sm mb-1 font-semibold text-primary"
-                          key={table}
+                          key={mac}
                         >
-                          {table.includes(PROJECT_NAME) ? (
-                            <>{table}</>
+                          {!macrosList.has(mac) ? (
+                            <>{mac}</>
                           ) : (
-                            <Link to={`/tables?model=${table}`}>{table}</Link>
+                            <Link to={`/macros?macro=${mac}`}>{mac}</Link>
                           )}
                         </li>
                       ))}
                     </ul>
                   </div>
-                )}
+                </div>
+              )}
+            </section>
+          )}
+
+          {Boolean(macroDetails?.depends_on?.macros?.length) && (
+            <section className="bg-white rounded-md px-3 pt-4 pb-10 mb-6">
+              <h4 className="font-bold text-xl">Depends On</h4>
+              <div className="mt-3">
                 {Boolean(macroDetails?.depends_on?.macros?.length) && (
                   <div className="flex flex-col mt-4">
                     <p className="text-xs mb-1">Macro</p>
