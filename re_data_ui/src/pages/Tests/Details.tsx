@@ -195,7 +195,6 @@ const TestDetails: FC = (): ReactElement => {
   const handleChange = (option: SelectOptionProps | null) => {
     if (option && modelName) {
       setOptionValue(option);
-      // setResult(testsObject[option.value] as never[]);
       navigate(`/tests/${option.value}`);
     }
   };
@@ -215,9 +214,6 @@ const TestDetails: FC = (): ReactElement => {
         : backUpData,
     );
   };
-
-  console.log('results => ', results, 'data => ', data);
-  console.log('testNameMapping => ', testNameMapping, testName);
 
   return (
     <>
