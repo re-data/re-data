@@ -19,7 +19,8 @@ const Sidebar: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
 
   const { metaData } = overview;
-  const projectVersion = metaData?.project_dict?.version || '';
+  const projectVersion = metaData?.version || '';
+  const generatedAt = metaData?.generated_at || '';
 
   return (
     <aside
@@ -133,9 +134,20 @@ const Sidebar: React.FC = (): ReactElement => {
           <span>Docs</span>
         </a>
 
-        <div className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
-          <span className="italic">
-            {`version ${projectVersion}`}
+        <div className="flex flex-col py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
+          <span className="text-xs">
+            version
+            {' '}
+            <span className="text-xs italic">{projectVersion}</span>
+          </span>
+          <span className="text-xs mt-2">
+            generated at
+            {' '}
+            <span className="text-xs italic">
+              {generatedAt}
+              {' '}
+              UTC
+            </span>
           </span>
         </div>
       </nav>
