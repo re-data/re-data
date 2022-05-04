@@ -22,7 +22,7 @@ packages:
     ***
     
     - package: re-data/re_data
-      version: [">=0.7.0", "<0.8.0"]
+      version: [">=0.8.0", "<0.9.0"]
 
 ```
 
@@ -59,7 +59,8 @@ Let's go over some of the things you already can use with re_data dbt package.
 For specifics look into reference section:
  - **[re_data dbt models](/docs/reference/models)**
  - **[re_data metrics](/docs/reference/metrics/overview_metric)**
- - **[re_data tests history & custom tests](/docs/reference/tests/history)**
+ - **[re_data asserts](/docs/reference/tests/asserts)**
+ - **[re_data tests history](/docs/reference/tests/history)**
  - **[re_data data cleaning, filtering, normalization, validation macros](/docs/reference/macros/data_cleaning)**
 
 dbt auto generated documentation, together with our models graph is also available: **[here](https://re-data.github.io/dbt-re-data/#!/model/model.re_data.re_data_monitored)**
@@ -80,6 +81,22 @@ single re_data run produces single data points about your tables for a time wind
 :::
 
 The following would create tables inside your `{default_schema}_re` schema of your database. This is configured in dbt and can be overwritten in your `dbt_project.yml`.
+
+### Storing tests history (optional)
+
+re_data enables you to store dbt tests results to investigate them later on. You can enable this functionality by setting:
+```yml dbt_project.yml
+vars:
+  re_data:save_test_history: true
+```
+
+In your `dbt_project.yml` file. After that when you run:
+
+```
+dbt test
+```
+
+re_data will store test history and with option `--store-failures` is added, it will also store failures in `re_data_test_history` model.
 
 ## Installing re_data python package
 

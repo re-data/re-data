@@ -5,6 +5,8 @@ import {
 
 export const RE_DATA_OVERVIEW_FILE = 'overview.json';
 export const DBT_MANIFEST_FILE = 'dbt_manifest.json';
+export const METADATA_FILE = 'metadata.json';
+export const MONITORED_FILE = 'monitored.json';
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 export const DATE_FORMAT = 'YYYY-MM-DD';
 
@@ -118,3 +120,7 @@ export const generateModelId = (details: DbtNode | DbtSource): string => {
   }
   return `${database}.${schema}.${identifier}`.toLowerCase();
 };
+
+export const copyToClipboard = (text?: string): Promise<void> => navigator.clipboard.writeText(text || '');
+
+export const PROJECT_NAME = 're_data';

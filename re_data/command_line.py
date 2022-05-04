@@ -15,7 +15,8 @@ from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
-    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, normalize_re_data_json_export
+    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export
+
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 from re_data.config.utils import read_re_data_config
@@ -203,8 +204,7 @@ def run(start_date, end_date, interval, full_refresh, **kwargs):
 
         re_data_dbt_vars = {
             're_data:time_window_start': str(for_date),
-            're_data:time_window_end': str(for_date + delta),
-            're_data:anomaly_detection_window_start': str(for_date - timedelta(days=30))
+            're_data:time_window_end': str(for_date + delta)
         }
         dbt_vars.update(re_data_dbt_vars)
 
@@ -275,7 +275,9 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     end_date = str(end_date.date())
     dbt_target_path, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     overview_path = os.path.join(re_data_target_path, 'overview.json')
+    metadata_path = os.path.join(re_data_target_path, 'metadata.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
+    metadata = load_metadata_from_project(kwargs)
 
     args = {
         'start_date': start_date,
@@ -288,6 +290,10 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     add_dbt_flags(command_list, kwargs)
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
+
+    # write metadata to re_data target path
+    with open(metadata_path, 'w+', encoding='utf-8') as f:
+        json.dump(metadata, f)
 
     # run dbt docs generate to generate the a full manifest that contains compiled_path etc
     dbt_docs = ['dbt', 'docs', 'generate']

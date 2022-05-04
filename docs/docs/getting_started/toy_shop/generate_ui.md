@@ -40,7 +40,13 @@ dbt run-operation schema_change_drop_orders_column
 re_data run
 ```
 
-Regenerating the user interface shows:
+Regenerating the user interface:
+```
+re_data overview generate --start-date 2021-01-01 --interval days:1
+re_data overview serve
+```
+
+Will show:
 
 ![AlertsWithSchemaChanges](/screenshots/ui/alerts_with_schema_changes.png)
 
@@ -55,7 +61,7 @@ Lineage view lets you investigate anomalies, metrics & schema changes on top of 
 
 ![GraphExample](/screenshots/ui/tests.png)
 
-Tests view lets you see history of all dbt tests run. (re_data comes with a `save_test_history` macro which when passed into `on-run-end` dbt configuration, saves tests history into the data warehouse)
+Tests view lets you see history and details (if you click on the test name) of the dbt tests runs.
 
 
 ## Tables

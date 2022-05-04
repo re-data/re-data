@@ -3,6 +3,7 @@ import React from 'react';
 
 export interface DbtNode {
   raw_sql: string;
+  compiled_sql: string;
   resource_type: string;
   depends_on: {
     macros: string[];
@@ -56,6 +57,28 @@ export interface DbtNode {
   test_metadata: Record<string, unknown>;
 }
 
+export interface DbtMacro {
+  arguments: [];
+  created_at: number;
+  depends_on: {
+    macros: string[];
+  };
+  description: string;
+  docs: {
+    show: boolean
+  },
+  macro_sql: string;
+  meta: Record<string, unknown>;
+  name: string;
+  original_file_path: string;
+  package_name: string;
+  patch_path: string;
+  path: string;
+  resource_type: string;
+  tags: [];
+  unique_id: string;
+}
+
 export interface Anomaly {
   column_name: string;
   id: string;
@@ -89,6 +112,10 @@ export interface DbtSource {
   loaded_at_field: null;
   loader: string;
   meta: Record<string, unknown>;
+  depends_on: {
+    macros: string[];
+    nodes: string[];
+  };
   name: string;
   original_file_path: string;
   package_name: string;
@@ -117,6 +144,31 @@ export interface DbtGraph {
   sources: { [key: string]: DbtSource };
   child_map: { [key: string]: [] };
   parent_map: { [key: string]: [] };
+  macros: { [key: string]: unknown };
+}
+
+export interface MetaData {
+  project_dict: {
+    name: string,
+    version: string,
+    'config-version': number,
+    profile: string,
+    'target-path': string,
+    'clean-targets': string[],
+    'model-paths': string[],
+    'on-run-end': string[],
+    models: Record<string, unknown>,
+    sources:Record<string, unknown>,
+    seeds: Record<string, unknown>,
+    vars: {
+        're_data:anomaly_detector': Record<string, unknown>,
+        're_data:owners_config': Record<string, unknown>,
+        're_data:metrics_base': Record<string, unknown>,
+    }
+  },
+  packages: {
+    packages: Record<string, unknown>[]
+  }
 }
 
 export interface AggregatedMetrics {
@@ -132,7 +184,7 @@ export interface ReDataModelDetails {
   tests: Array<ITestSchema>
   failedTests?: Record<string, unknown>;
   runAts?: Record<string, []>;
-  // testsObject: Record<string, unknown>;
+  macros?: Record<string, []>;
 }
 
 export interface SchemaChange {
@@ -178,16 +230,22 @@ export interface Alert {
 }
 
 export interface OverviewData {
+  macroDepends?: Record<string, string[]>;
+  macroModelUsedIn?: Record<string, string[]>;
   alerts: Array<Alert>;
   tests: Array<ITestSchema>;
   aggregated_models: Map<string, ReDataModelDetails>;
   graph: DbtGraph | null;
+  metaData: MetaData | null;
   generated_at: string;
   loading: boolean;
   dbtMapping: Record<string, string>;
   modelNodes: SelectOptionProps[];
+  macrosOptions: SelectOptionProps[];
   failedTests?: Record<string, ITestSchema[]>;
   runAts?: Record<string, ITestSchema[]>;
+  macros?: Record<string, unknown>;
+  modelNodesDepends?: Record<string, string[]>;
   testsObject: Record<string, ITestSchema[]>;
   modelTestMapping: Record<string, ITestSchema[]>;
   testNameMapping: Record<string, string>;
@@ -210,12 +268,18 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   alerts: [],
   aggregated_models: new Map<string, ReDataModelDetails>(),
   graph: null,
+  metaData: null,
   generated_at: '',
   tests: [],
   loading: true,
   dbtMapping: {},
   modelNodes: [],
+  macrosOptions: [],
+  modelNodesDepends: {},
+  macroModelUsedIn: {},
+  macroDepends: {},
   runAts: {},
+  macros: {},
   testsObject: {},
   modelTestMapping: {},
   testNameMapping: {},
