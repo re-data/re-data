@@ -96,8 +96,8 @@ const Macros: FC = (): ReactElement => {
               </div>
               <div className="ml-8">
                 <Toggle
-                  label1="All macros"
-                  label2="Project macros"
+                  label1="With re_data"
+                  label2="My macros"
                   onChange={toggleMacro}
                 />
               </div>

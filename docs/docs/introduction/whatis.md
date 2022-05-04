@@ -22,7 +22,7 @@ re_data detects potential problems in your data like:
  - failed dbt tests (**new in 0.8.0** 🎉),
  - schema changes
 
-and alerts you on Slack or Email and in re_data UI so that you can react, investigate and fix issues quickly.
+and alerts you on Slack or Email and in re_data UI so that you can react, investigate and fix issues quickly. You can even setup more granual alerts for specific groups of people using **[`re_data_owners`](/docs/reference/config#re_data_owners-optionalsetting)** setting.
 
 ## Metrics
 For detecting anomalies re_data uses metrics. You can compute predefined and custom metrics about your data. All metrics are stored in your database and accessible for you. re_data custom metrics are just dbt macros which you can add to your dbt project. Check out what base, extra metrics re_data has and how you can define your own metrics here:
@@ -46,7 +46,7 @@ re_data stores dbt tests history and let's you investigate test details like SQL
 ## Lineage
 re_data shows data lineage for your data warehouse. (This is imported from the dbt graph). You can navigate your data & investigate alerts & metrics related to each node in the graph.
 
-## Data cleaning 🧹
+## Cleaning macros 🧹
 re_data ships with a set of macros to save you time and pain of writing code for cleaning / normalizing / validating your data. Use them to make your project cleaner 😊. You can also use them as a base for your own metrics or data tests. Example macros in our data cleaning library include:
 
  - **[re_data.filter_remove_duplicates](/docs/reference/macros/data_filtering#filter_remove_duplicates)**
