@@ -31,7 +31,7 @@ export type RightComponentProps = {
 const LinkCell = ({ value }: CellProps) => {
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { testNameMapping } = overview;
-  const testName = testNameMapping[value];
+  const testName = testNameMapping[value?.toLowerCase()];
 
   return (
     <Link

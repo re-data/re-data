@@ -172,15 +172,17 @@ We can see there are a couple of things re_data flagged for us. Recall that re_d
 
 Before moving on and investigating it in re_data UI. Let's run tests to see if they point to any problems in our data.
 
-First we update the dbt_project.yml file to add an [on-run-end](https://docs.getdbt.com/reference/project-configs/on-run-start-on-run-end) hook. This macro provided makes it possible to save test history to your database on each test run.
+First we update the dbt_project.yml and enable storing tests history (simply by adding `re_data:save_test_history` set to `true`).
 
 :::caution
 on-run-end hooks are called for dbt tests since dbt 1.0.0, so this re_data feature is only available for dbt versions >= 1.0.0.
 :::
 
 ```yaml title="toy_shop/dbt_project.yml"
-on-run-end:
-  - "{{ re_data.save_test_history(results) }}"
+vars:
+  ...
+  
+  re_data:save_test_history: true
 ```
 
 

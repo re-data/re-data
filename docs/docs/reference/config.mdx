@@ -34,7 +34,8 @@ re_data dbt native cofiguration follows the same rules as dbt configuration, con
       re_data_time_filter='creation_time',
       re_data_columns=['amount', 'status'],
       re_data_metrics={'table': ['orders_obove_100'], 'column': { 'status': ['distinct_values'],
-      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3.0} }}
+      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3.0} }},
+      re_data_owners=['datateam']
     )
 }}
 
@@ -51,18 +52,18 @@ version: 2
 models:
   - name: pending_orders
     config:
-      +re_data_monitored: true
-      +re_data_time_filter: created_at
-      +re_data_columns:
+      re_data_monitored: true
+      re_data_time_filter: created_at
+      re_data_columns:
         - amount
         - status
-      +re_data_metrics:
+      re_data_metrics:
         table:
           - orders_above_100
         column:
           status:
             - distinct_values
-      +re_data_anomaly_detector:
+      re_data_anomaly_detector:
         name: modified_z_score
         threshold: 3
           
@@ -113,7 +114,7 @@ seeds:
 </Tabs>
 
 :::info
-Notice that you can only apply the `Config block` and `Property file` configuration to models. Sources need to be configured in the `dbt_project.yml` file. Currently, dbt doesn't accept config for them, as stated in [dbt docs](https://docs.getdbt.com/reference/source-configs).
+dbt 1.1.0 introduced config for sources so `Property file` configuration for sources in available since dbt 1.1.0
 :::
 
 You can define configuration on many levels; it's common to enable re_data for a group of tables (for example, all sources). It's also common to override some of the properties for specific groups.
@@ -140,12 +141,17 @@ Additional metrics to be computed for a given table (set of tables). Those can b
 
 You can be pass any number of already defined or your custom metrics to be computed. Check out **[extra metrics](/docs/reference/metrics/extra_metrics)** section for available metrics and **[custom metrics](/docs/reference/metrics/your_own_metric)** for ways to define your own metrics.
 
-### re_data_anomaly_detector (options)
+### re_data_anomaly_detector (optional)
 
 Alternative anomaly dector with it's parameters to use when detecting anomalies in a given model (set of models)
 
 For details about configuration look into [Anomaly Detection](anomaly_detection)
 
+### re_data_owners (optional)
+
+Group of single person which should receive and alert about problem with a given model.
+
+For details about configuration look into [Notifications](notifications/configuring_owners)
 
 ## Global config vars
 
@@ -184,6 +190,21 @@ vars:
 
   # (optional) tells how much hisory you want to consider when looking for anomalies
   re_data:anomaly_detection_look_back_days: 30
+
+  # (optional) configuring storing tests history
+  re_data:save_test_history: true
+
+  # (optional) configuring owners
+  re_data:owners_config:
+    datateam:
+      - type: slack
+        identifier: U02FHBSXXXX
+        name: user1
+    backend:
+      - type: email
+        identifier: user1@getre.io
+        name: user1
+
 ```
 
 ### re_data:time_window_start, re_data:time_window_end
@@ -213,3 +234,11 @@ See [Anomaly Detection](anomaly_detection)
 ### re_data:anomaly_detection_look_back_days
 
 The period which `re_data` considers when looking for anomalies. (By default, it's 30 days)
+
+### re_data:save_test_history
+
+Variable to enable storing test history. See [re_data tests history](/docs/reference/tests/history) for more details.
+
+### re_data:owners_config
+
+Variable to configure owners for your data.  See [re_data notifications](/docs/reference/notifications/configuring_owners) for more details.

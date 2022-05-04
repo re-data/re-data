@@ -1,8 +1,9 @@
 import click
 import subprocess
 import json
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import shutil
+import logging
 
 import os
 from re_data.templating import render
@@ -13,9 +14,15 @@ from socketserver import TCPServer
 from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
-from re_data.utils import format_alerts_to_table, parse_dbt_vars
+from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
+    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export
+
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
+from re_data.config.utils import read_re_data_config
+from re_data.config.validate import validate_config_section
+
+logger = logging.getLogger(__name__)
 
 
 def add_options(options):
@@ -197,8 +204,7 @@ def run(start_date, end_date, interval, full_refresh, **kwargs):
 
         re_data_dbt_vars = {
             're_data:time_window_start': str(for_date),
-            're_data:time_window_end': str(for_date + delta),
-            're_data:anomaly_detection_window_start': str(for_date - timedelta(days=30))
+            're_data:time_window_end': str(for_date + delta)
         }
         dbt_vars.update(re_data_dbt_vars)
 
@@ -269,7 +275,9 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     end_date = str(end_date.date())
     dbt_target_path, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     overview_path = os.path.join(re_data_target_path, 'overview.json')
+    metadata_path = os.path.join(re_data_target_path, 'metadata.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
+    metadata = load_metadata_from_project(kwargs)
 
     args = {
         'start_date': start_date,
@@ -282,6 +290,10 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     add_dbt_flags(command_list, kwargs)
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
+
+    # write metadata to re_data target path
+    with open(metadata_path, 'w+', encoding='utf-8') as f:
+        json.dump(metadata, f)
 
     # run dbt docs generate to generate the a full manifest that contains compiled_path etc
     dbt_docs = ['dbt', 'docs', 'generate']
@@ -297,6 +309,8 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
 
     target_file_path = os.path.join(re_data_target_path, 'index.html')
     shutil.copyfile(OVERVIEW_INDEX_FILE_PATH, target_file_path)
+
+    normalize_re_data_json_export(overview_path)
 
     print(
         f"Generating overview page", chalk.green("SUCCESS")
@@ -363,7 +377,7 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
 @click.option(
     '--webhook-url',
     type=click.STRING,
-    required=True,
+    required=False,
     help="Incoming webhook url to post messages from external sources into Slack."
          " e.g. https://hooks.slack.com/services/T0JKJQKQS/B0JKJQKQS/XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 )
@@ -387,15 +401,100 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
     start_date = str(start_date.date())
     end_date = str(end_date.date())
 
+    if not webhook_url: # if webhook_url is via arguments, check the config file
+        config = read_re_data_config()
+        validate_config_section(config, 'slack')
+        slack_config = config.get('notifications').get('slack')
+        webhook_url = slack_config.get('webhook_url')
+
     _, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     alerts_path = os.path.join(re_data_target_path, 'alerts.json')
+    monitored_path = os.path.join(re_data_target_path, 'monitored.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     
     args = {
         'start_date': start_date,
         'end_date': end_date,
         'alerts_path': alerts_path,
+        'monitored_path': monitored_path,
     }
+
+    command_list = ['dbt', 'run-operation', 'export_alerts', '--args', yaml.dump(args)]
+    if dbt_vars: command_list.extend(['--vars', yaml.dump(dbt_vars)])
+    add_dbt_flags(command_list, kwargs)
+    completed_process = subprocess.run(command_list)
+    completed_process.check_returncode()
+
+    normalize_re_data_json_export(alerts_path)
+    normalize_re_data_json_export(monitored_path)
+
+    with open(alerts_path) as f:
+        alerts = json.load(f)
+    with open(monitored_path) as f:
+        monitored = json.load(f)
+
+    slack_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='slack')
+
+    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members)
+    for model, details in alerts_per_model.items():
+        owners = slack_members.get(model, [])
+        slack_message = generate_slack_message(model, details, owners, subtitle)
+        slack_notify(webhook_url, slack_message)
+    print(
+        f"Notification sent", chalk.green("SUCCESS")
+    )
+
+@notify.command()
+@click.option(
+    '--start-date',
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str((date.today() - timedelta(days=7)).strftime("%Y-%m-%d")),
+    help="Specify starting date to generate alert data, by default re_data will use 7 days ago for that value"
+)
+@click.option(
+    '--end-date',
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str(date.today().strftime("%Y-%m-%d")),
+    help="""
+        Specify end date used in generating alert data, by default re_data will use current date for that.
+    """
+)
+@click.option(
+    '--re-data-target-dir',
+    type=click.STRING,
+    help="""
+        Which directory to store artefacts generated by re_data
+        Defaults to the 'target-path' used in dbt_project.yml
+    """
+)
+@add_options(dbt_flags)
+@anonymous_tracking
+def email(start_date, end_date, re_data_target_dir, **kwargs):
+    config = read_re_data_config()
+    validate_config_section(config, 'email')
+    email_config = config.get('notifications').get('email')
+    start_date = str(start_date.date())
+    end_date = str(end_date.date())
+
+    mail_from = email_config.get('mail_from')
+    smtp_host = email_config.get('smtp_host')
+    smtp_port = email_config.get('smtp_port')
+    smtp_user = email_config.get('smtp_user')
+    smtp_password = email_config.get('smtp_password')
+    use_ssl = email_config.get('use_ssl', False)
+
+    _, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
+    alerts_path = os.path.join(re_data_target_path, 'alerts.json')
+    monitored_path = os.path.join(re_data_target_path, 'monitored.json')
+    dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
+    
+    args = {
+        'start_date': start_date,
+        'end_date': end_date,
+        'alerts_path': alerts_path,
+        'monitored_path': monitored_path,
+    }
+    
 
     command_list = ['dbt', 'run-operation', 'export_alerts', '--args', yaml.dump(args)]
     if dbt_vars: command_list.extend(['--vars', yaml.dump(dbt_vars)])
@@ -405,21 +504,33 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
 
     with open(alerts_path) as f:
         alerts = json.load(f)
-    if len(alerts) > 0:
-        tabulated_alerts = format_alerts_to_table(alerts[:20])
-        message = f"""
-:red_circle: {len(alerts)} alerts found between {start_date} and {end_date}.
-{subtitle}
+    with open(monitored_path) as f:
+        monitored = json.load(f)
 
-_Showing most recent 20 alerts._
-<https://docs.getre.io/latest/docs/reference/cli/overview|Generate Observability UI> to show more details.
+    email_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='email')
+    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=email_members)
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    for model in alerts_per_model:
+        owners = email_members.get(model, [])
+        for mail_to, group_name in owners:
+            mime_msg = build_mime_message(
+                mail_from=mail_from,
+                mail_to=mail_to,
+                subject='ReData Alerts [{}]'.format(current_time),
+                html_content=render.render_email_alert(alerts=alerts_per_model, owner=mail_to, group_name=group_name),
+            )
 
-```{tabulated_alerts}```
-"""
-    else:
-        message = f""":white_check_mark: No alerts found between {start_date} and {end_date}.
-{subtitle}"""
-    slack_notify(webhook_url, message)
+            send_mime_email(
+                mime_msg=mime_msg,
+                mail_from=mail_from,
+                mail_to=mail_to,
+                smtp_host=smtp_host,
+                smtp_port=smtp_port,
+                smtp_user=smtp_user,
+                smtp_password=smtp_password,
+                use_ssl=use_ssl,
+            )
+    
     print(
         f"Notification sent", chalk.green("SUCCESS")
     )

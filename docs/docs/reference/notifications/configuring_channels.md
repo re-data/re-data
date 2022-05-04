@@ -1,12 +1,10 @@
 ---
-sidebar_position: 4
+sidebar_position: 2
 ---
 
-# Notifications
+# Configuring Channels and Sending Alerts
 
-Notifications are a great way to stay up to date with activities in your warehouse. You can let re_data send you notifications for alerts that occured within a specified date range.
-
-re_data currently supports the following channels for notifications.
+Before using the notify command to send alerts, we need to configure the respective channels.
 
 ## Slack
 To send alerts to a slack channel, we make use of [incoming webhooks](https://api.slack.com/messaging/webhooks) which is a simple way to post messages from apps into Slack.
@@ -44,6 +42,14 @@ By default, the most recent 20 alerts are shown and you can generate the Observa
 
 Before you can send alerts via email, you need to have configured an email account on the SMTP server you are going to use to send the email.
 
+- mail_from: Email address to set as the email's from
+- smtp_host: SMTP server to use
+- smtp_port: SMTP port to use
+- smtp_user: SMTP user to use
+- smtp_password: SMTP password to use
+- use_ssl: Use SSL to connect to SMTP server
+
+
 ```yaml title="~/.re_data/re_data.yml"
 notifications:
   email:
@@ -61,6 +67,9 @@ re_data notify email \
 --start-date 2021-01-01 \
 --end-date 2021-01-31
 ```
+
+Below is a sample alert notification message sent by a slack app created.
+![EmailAlertMessage](/screenshots/notifications/email_notification_message.png)
 
 :::info
 ### Having issues?

@@ -4,6 +4,7 @@ on: [push, delete]
 
 env:
   DBT_PROFILES_DIR: ${{ github.workspace }}/getting_started/toy_shop
+  RE_DATA_CONFIG_DIR: ${{ github.workspace }}/getting_started/toy_shop
   SNOWFLAKE_RE_DATA_TESTING_ACCOUNT: ${{ secrets.SNOWFLAKE_RE_DATA_TESTING_ACCOUNT }}
   RE_DATA_TESTING_USER: ${{ secrets.RE_DATA_TESTING_USER }}
   RE_DATA_TESTING_PASSWORD: ${{ secrets.RE_DATA_TESTING_PASSWORD }}
@@ -42,10 +43,18 @@ jobs:
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
 
+      - name: Configure re_data.yml
+        uses: mikefarah/yq@master
+        with:
+          cmd: |
+            yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' ./getting_started/toy_shop/re_data.yml 
+            yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' ./getting_started/toy_shop/re_data.yml
+
+
       - name: Install re_data and python dependencies
         working-directory: .
         run: |
-          pip install .
+          pip install -e .
           pip install dbt-postgres==1.0.0
 
       - name: Install dbt dependencies
@@ -61,24 +70,18 @@ jobs:
           chmod +x ./setup_toy_shop.sh
           ./setup_toy_shop.sh toy_shop_postgres
 
-      - name: Send slack alert notification
+      - name: Send alert notifications to various channels
         working-directory: ./getting_started/toy_shop
         if: github.repository == 're-data/re-data'
         run: |
           re_data notify slack --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
           --profile toy_shop_postgres --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit> - (postgres)"
+          re_data notify email --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
+          --profile toy_shop_postgres
 
       - uses: actions/setup-node@v2
         with:
           node-version: "16.13.0"
-
-      - name: Copy overview data
-        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
-        shell: bash
-
-      - name: Copy dbt manifest
-        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
-        shell: bash
 
       - name: Set homepage in package.json
         working-directory: ./re_data_ui
@@ -92,22 +95,21 @@ jobs:
 
       - name: Build app for production
         working-directory: ./re_data_ui
-        run: npm run build
+        shell: bash
+        run: ./build.sh
         env:
           PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}
 
-      - name: Keep only index.html, overview json and dbt_manifest.json file
-        working-directory: ./re_data_ui/build
+      - name: Generate re_data artefacts
+        working-directory: ./getting_started/toy_shop
         run: |
-          rm -rf static
-          shopt -s extglob
-          rm -- !(index.html|overview.json|dbt_manifest.json)
+          re_data overview generate --start-date 2021-01-01 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_postgres
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./re_data_ui/build
+          publish_dir: ./getting_started/toy_shop/target/re_data
           destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}
 
   generate-ui-other-dbs:
@@ -128,6 +130,13 @@ jobs:
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
 
+      - name: Configure re_data.yml
+        uses: mikefarah/yq@master
+        with:
+          cmd: |
+            yq -i '.notifications.slack.webhook_url = "${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}}"' ./getting_started/toy_shop/re_data.yml 
+            yq -i '.notifications.email.smtp_password = "${{secrets.RE_DATA_SENDGRID_API_KEY}}"' ./getting_started/toy_shop/re_data.yml
+
       - name: Set the TOY_SHOP_SCHEMA environment variable
         run: |
           echo "TOY_SHOP_SCHEMA=toy_shop_${GITHUB_REF_SLUG//[^[:alnum:]]/_}" >> $GITHUB_ENV
@@ -144,8 +153,8 @@ jobs:
       - name: Install re_data and python dependencies
         working-directory: .
         run: |
-          pip install .
-          pip install dbt-${{ matrix.database }}==1.0.0
+          pip install -e .
+          pip install dbt-${{ matrix.database }}
 
       - name: Replace sources schema in dbt_project.yml vars
         working-directory: ./getting_started/toy_shop
@@ -177,24 +186,18 @@ jobs:
           chmod +x ./setup_toy_shop.sh
           ./setup_toy_shop.sh toy_shop_${{ matrix.database }}
 
-      - name: Send slack alert notification
+      - name: Send alert notifications to various channels
         working-directory: ./getting_started/toy_shop
         if: github.repository == 're-data/re-data'
         run: |
           re_data notify slack --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
           --profile toy_shop_${{ matrix.database }} --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit> - (${{ matrix.database }})"
+          re_data notify email --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
+          --profile toy_shop_${{ matrix.database }}
 
       - uses: actions/setup-node@v2
         with:
           node-version: "16.13.0"
-
-      - name: Copy overview data
-        run: "cp getting_started/toy_shop/target/re_data/overview.json re_data_ui/public/overview.json"
-        shell: bash
-
-      - name: Copy dbt manifest
-        run: "cp getting_started/toy_shop/target/manifest.json re_data_ui/public/dbt_manifest.json"
-        shell: bash
 
       - name: Set homepage in package.json
         working-directory: ./re_data_ui
@@ -208,7 +211,8 @@ jobs:
 
       - name: Build app for production
         working-directory: ./re_data_ui
-        run: npm run build
+        shell: bash
+        run: ./build.sh
         env:
           PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}
 
@@ -219,18 +223,16 @@ jobs:
         run: sleep 60
         shell: bash
 
-      - name: Keep only index.html, overview json and dbt_manifest.json file
-        working-directory: ./re_data_ui/build
+      - name: Generate re_data artefacts
+        working-directory: ./getting_started/toy_shop
         run: |
-          rm -rf static
-          shopt -s extglob
-          rm -- !(index.html|overview.json|dbt_manifest.json)
+          re_data overview generate --start-date 2021-01-01 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_${{ matrix.database }}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./re_data_ui/build
+          publish_dir: ./getting_started/toy_shop/target/re_data
           destination_dir: ./ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}
 
   clean-up-schemas:
@@ -267,7 +269,7 @@ jobs:
       - name: Install dependencies and drop branch schema
         working-directory: ./getting_started/toy_shop
         run: |
-          pip install dbt-${{ matrix.database }}==1.0.0
+          pip install dbt-${{ matrix.database }}
           dbt deps
           dbt run-operation drop_all_schemas --args "{ schema_name: ${{ env.TOY_SHOP_SCHEMA }} }" --profile toy_shop_${{ matrix.database }}
 

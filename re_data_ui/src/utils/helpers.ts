@@ -110,9 +110,13 @@ export const generateModelId = (details: DbtNode | DbtSource): string => {
     database, schema,
   } = details;
   let identifier = details.name;
+
   if (details.resource_type === 'source') {
     const sourceDetails = details as DbtSource;
-    identifier = sourceDetails.identifier ? sourceDetails.identifier : details.name;
+    identifier = sourceDetails.identifier || details.name;
+  } else {
+    const modelDetails = details as DbtNode;
+    identifier = modelDetails.alias || modelDetails.name;
   }
   return `${database}.${schema}.${identifier}`.toLowerCase();
 };
