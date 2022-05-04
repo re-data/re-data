@@ -19,7 +19,7 @@ const Sidebar: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
 
   const { metaData } = overview;
-  const version = metaData?.project_dict?.version || '';
+  const projectVersion = metaData?.project_dict?.version || '';
 
   return (
     <aside
@@ -135,7 +135,7 @@ const Sidebar: React.FC = (): ReactElement => {
 
         <div className="flex items-center space-x-2 py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white">
           <span className="italic">
-            {`version ${version}`}
+            {`version ${projectVersion}`}
           </span>
         </div>
       </nav>
