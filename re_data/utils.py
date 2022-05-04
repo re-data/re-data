@@ -1,6 +1,6 @@
 from tabulate import tabulate
 from typing import Any, Dict, Optional, List, Tuple
-from datetime import datetime
+from datetime import datetime, timezone
 from collections import defaultdict
 import yaml
 import json
@@ -273,7 +273,8 @@ def load_metadata_from_project(kwargs) -> Dict:
     metadata = {
         'project_dict': partial.project_dict,
         'packages': partial.packages_dict,
-        'version': version
+        'version': version,
+        'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     }
     return metadata
 
