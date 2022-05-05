@@ -1,5 +1,6 @@
 include re_data/dbt_template/analysis/.gitkeep
 include re_data/dbt_template/macros/.gitkeep
+include re_data/dbt_template/macros/schema_changes.sql
 include re_data/dbt_template/models/.gitkeep
 include re_data/dbt_template/models/pending_orders_per_customer.sql
 include re_data/dbt_template/tests/.gitkeep
