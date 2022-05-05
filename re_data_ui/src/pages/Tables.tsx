@@ -1,8 +1,8 @@
 import React, {
-  ReactElement, useContext, useEffect, useState,
+  ReactElement, useContext, useEffect, useState, useMemo,
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import {
   EmptyContent, MetricCharts, SchemaChanges, Select, TableSchema,
 } from '../components';
@@ -10,13 +10,17 @@ import {
   SelectOptionProps, OverviewData, ReDataModelDetails, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
-import { GraphPartial, TestsPartial } from '../partials';
+import { GraphPartial, TestsPartial, MetaData } from '../partials';
+import colors from '../utils/colors.js';
 
 const showA = true;
 
 const Tables: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const { modelNodes } = overview;
+  const {
+    modelNodes, dbtMapping,
+    graph, modelNodesDepends,
+  } = overview;
   const [activeTab, setActiveTab] = useState('');
   const [callApi, setCallApi] = useState(true);
   const [optionValue, setOptionValue] = useState<SelectOptionProps | null>();
@@ -28,6 +32,16 @@ const Tables: React.FC = (): ReactElement => {
 
   const [modelDetails, setModelDetails] = useState<ReDataModelDetails>();
 
+  const [rawSql, compiledSql] = useMemo(() => {
+    const res = graph?.nodes?.[dbtMapping?.[model]];
+
+    const result = res?.raw_sql || '';
+    const result2 = res?.compiled_sql || '';
+
+    return [result, result2];
+  }, [graph, dbtMapping, model]);
+
+  console.log('graph ', graph?.nodes?.[dbtMapping?.[model]]);
   const { init } = useModel();
 
   const handleChange = (option: SelectOptionProps | null) => {
@@ -118,6 +132,13 @@ const Tables: React.FC = (): ReactElement => {
                   Tests
                 </button>
               </li>
+              <li
+                className={`mr-4 ${activeTab === 'codes' && 'active-tab'}`}
+              >
+                <button type="button" onClick={() => handleScroll('codes')}>
+                  Code
+                </button>
+              </li>
             </ul>
           </nav>
           <section id="anomalies" className="pb-4 pt-16 -mt-12">
@@ -163,7 +184,7 @@ const Tables: React.FC = (): ReactElement => {
           </section>
           <section id="graph" className="pb-4 pt-4">
             <div className="bg-white rounded-md px-3 py-4">
-              <h3 className="mb-3 text-md font-medium">Graph</h3>
+              <h3 className="mb-3 text-md font-medium">Lineage</h3>
               <div className="relative graph-view h-96">
                 <GraphPartial modelName={model} showModelDetails={false} />
               </div>
@@ -181,11 +202,45 @@ const Tables: React.FC = (): ReactElement => {
               </div>
             </div>
           </section>
+          <section id="codes" className="pb-4 pt-4">
+            <div className="bg-white rounded-md px-3 py-4">
+              <MetaData
+                tabs={[
+                  {
+                    label: 'SQL',
+                    data: rawSql ? rawSql.trim() : 'No SQL available',
+                    language: 'sql',
+                  },
+                  {
+                    label: 'Compiled SQL',
+                    data: compiledSql ? compiledSql.trim() : 'No Compiled SQL available',
+                    language: 'sql',
+                  },
+                ]}
+              />
+
+              <div>
+                <h3 className="mt-4 mb-2 text-md font-medium">Macros</h3>
+                <ul
+                  className="marker:text-sky-400 space-y-3 text-slate-400"
+                >
+                  {modelNodesDepends?.[model]?.map((macro) => (
+                    <li
+                      className="text-sm mb-1 font-semibold text-primary"
+                      key={macro}
+                    >
+                      <Link to={`/macros?macro=${macro}`}>{macro}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
         </div>
       ) : (
         <div className="bg-white my-4 py-6 rounded-md">
           <EmptyContent text="Please type a table name in the input above">
-            <FaRegSmileWink size={80} color="#392396" />
+            <FaRegSmileWink size={80} color={colors.primary} />
           </EmptyContent>
         </div>
       )}

@@ -1,13 +1,14 @@
 import dayjs from 'dayjs';
 import React, { ReactElement, useContext, useMemo } from 'react';
 import { FaRegSmileBeam } from 'react-icons/all';
-import { Link } from 'react-router-dom';
 import { EmptyContent, Table } from '../components';
 import AlertBadge from '../components/AlertBadge';
-import { ColumnsProps, CellProps } from '../components/Table';
+import { CellProps, ColumnsProps } from '../components/Table';
 import {
   Alert, OverviewData, RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
+import colors from '../utils/colors.js';
+import { ModelCell } from '../partials';
 
 const generateAlertData = (alerts: Alert[]) => {
   const result = [];
@@ -18,7 +19,7 @@ const generateAlertData = (alerts: Alert[]) => {
 
     result.push({
       model: alert.model,
-      type: alert.type,
+      type: alert.type === 'schema_change' ? 'schema' : alert.type,
       message: alert.message,
       value: alert.value,
       date: dayjs(alert.time_window_end).format(dateTimeFormat),
@@ -28,19 +29,14 @@ const generateAlertData = (alerts: Alert[]) => {
   return result;
 };
 
-const ModelCell = ({ value }: CellProps) => (
-  <Link
-    to={`/graph?model=${value?.toLowerCase()}`}
-    className="text-sm text-blue-700 font-semibold"
-  >
-    {value}
-  </Link>
+const AlertCell = ({ value }: CellProps) => (
+  <AlertBadge label={value} />
 );
 
-const AlertCell = ({ value }: CellProps) => (
-  <AlertBadge
-    error={value === 'anomaly'}
-  />
+const MessageCell = ({ value }: CellProps) => (
+  <div className="truncate w-400">
+    {value}
+  </div>
 );
 
 const Alerts: React.FC = (): ReactElement => {
@@ -61,6 +57,7 @@ const Alerts: React.FC = (): ReactElement => {
     {
       Header: 'Message',
       accessor: 'message',
+      Cell: MessageCell,
     },
     {
       Header: 'Value',
@@ -87,7 +84,7 @@ const Alerts: React.FC = (): ReactElement => {
         )
         : (
           <EmptyContent text="No Alerts!">
-            <FaRegSmileBeam size={80} color="#392396" />
+            <FaRegSmileBeam size={80} color={colors.primary} />
           </EmptyContent>
         )}
     </>

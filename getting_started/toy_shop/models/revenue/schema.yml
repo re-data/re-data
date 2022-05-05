@@ -3,10 +3,12 @@ version: 2
 models:
   - name: pending_orders
     config:
-      +re_data_columns:
+      re_data_columns:
         - amount
         - status
-      +re_data_metrics:
+      re_data_owners:
+        - deji
+      re_data_metrics:
         table:
           - orders_above_100
         column:
@@ -17,5 +19,3 @@ models:
       - name: status
         tests:
           - not_null
-          - accepted_values:
-              values: [pending]

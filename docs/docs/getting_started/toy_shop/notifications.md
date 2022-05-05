@@ -26,11 +26,41 @@ re_data notify slack \
 --subtitle="[Optional] Markdown text to be added as a subtitle in the slack message generated"
 ```
 
+or configure in re_data.yml
+
+```yaml title="~/.re_data/re_data.yml"
+notifications:
+  slack:
+    webhook_url: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+```
+
 Below is a sample alert notification message sent by a slack app created.
 
 ![SlackMessage](/screenshots/notifications/slack_notification_message.png)
 
 By default, the most recent 20 alerts are shown and you can generate the Observability UI to show more details relating to alerts.
+
+## Email
+
+Before you can send alerts via email, you need to have configured an email account on the SMTP server you are going to use to send the email.
+
+```yaml title="~/.re_data/re_data.yml"
+notifications:
+  email:
+    mail_from: notifications@getre.io
+    smtp_host: smtp.sendgrid.net
+    smtp_port: 465
+    smtp_user: username
+    smtp_password: xxxxx
+    use_ssl: true
+```
+
+Email alerts can now be sent using the command as shown below
+```bash
+re_data notify email \
+--start-date 2021-01-01 \
+--end-date 2021-01-31
+```
 
 :::info
 ### Having issues?

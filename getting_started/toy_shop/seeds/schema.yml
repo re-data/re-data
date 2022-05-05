@@ -1,7 +1,6 @@
 version: 2
 
 seeds:
-  - name: order_items
   - name: companies
     config:
       re_data_monitored: true
@@ -12,6 +11,12 @@ seeds:
         - year
 
   - name: orders
+    tests:
+      - re_data.assert_in_range:
+          metric: row_count
+          min_value: 450
+          max_value: 550
+
     config:
       re_data_columns:
         - amount
@@ -19,22 +24,10 @@ seeds:
       re_data_anomaly_detector:
         name: boxplot
         whisker_boundary_multiplier: 2.0
+      re_data_owners:
+        - backend
 
     columns:
-      - name: customer_id
-        tests:
-          - not_null
-
       - name: status
-        tests:
-          - not_null
-          - accepted_values:
-              values: [pending, shipped, delivered, not paid, paid]
-
-      - name: created_at
-        tests:
-          - not_null
-
-      - name: amount
         tests:
           - not_null

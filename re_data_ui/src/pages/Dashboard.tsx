@@ -1,35 +1,59 @@
+/* eslint-disable camelcase */
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import {
-  Alert, Anomaly, DbtGraph, ITableSchema, ITestSchema, Metric,
-  OverviewData, ReDataModelDetails, RedataOverviewContext, SchemaChange, SelectOptionProps,
+  Alert,
+  Anomaly,
+  DbtGraph,
+  DbtMacro,
+  ITableSchema,
+  ITestSchema, MetaData, Metric, OverviewData,
+  ReDataModelDetails,
+  RedataOverviewContext,
+  SchemaChange,
+  SelectOptionProps,
 } from '../contexts/redataOverviewContext';
 import {
-  appendToMapKey, DBT_MANIFEST_FILE, generateMetricIdentifier,
-  generateModelId,
-  RE_DATA_OVERVIEW_FILE, stripQuotes, supportedResTypes,
+  appendToMapKey,
+  DBT_MANIFEST_FILE,
+  generateMetricIdentifier,
+  generateModelId, METADATA_FILE, PROJECT_NAME,
+  RE_DATA_OVERVIEW_FILE,
+  stripQuotes,
+  supportedResTypes,
 } from '../utils';
 
 interface RawOverviewData {
   type: 'alert' | 'metric' | 'schema_change' | 'schema' | 'test' | 'anomaly';
-  // eslint-disable-next-line camelcase
   table_name: string;
-  // eslint-disable-next-line camelcase
   column_name: string;
-  // eslint-disable-next-line camelcase
   computed_on: string;
   data: string;
 }
 
+type formatOverviewDataReturnType = {
+  aggregatedModels: Map<string, ReDataModelDetails>;
+  tests: ITestSchema[];
+  failedTests: Record<string, ITestSchema[]>;
+  runAts: Record<string, ITestSchema[]>;
+  testsObject: Record<string, ITestSchema[]>;
+  modelTestMapping: Record<string, ITestSchema[]>;
+  alerts: Alert[];
+};
+
 const formatOverviewData = (
   data: Array<RawOverviewData>,
   result: Map<string, ReDataModelDetails>,
-): [Map<string, ReDataModelDetails>, ITestSchema[], Alert[]] => {
+): formatOverviewDataReturnType => {
   const alertsChanges: Alert[] = [];
   const tests: ITestSchema[] = [];
+  const testsObject: Record<string, ITestSchema[]> = {};
+  const failedTestsObject: Record<string, ITestSchema[]> = {};
+  const runAtObject: Record<string, ITestSchema[]> = {};
+  const modelTestMapping: Record<string, ITestSchema[]> = {};
   data.forEach((item: RawOverviewData) => {
     if (!item.table_name) return;
     const model = stripQuotes(item.table_name).toLowerCase();
@@ -42,7 +66,8 @@ const formatOverviewData = (
           columnMetrics: new Map<string, Array<Metric>>(),
         },
         tableSchema: [],
-        testSchema: [],
+        tests: [],
+        failedTests: {},
       };
       result.set(model, obj);
     }
@@ -55,7 +80,8 @@ const formatOverviewData = (
       const metric = JSON.parse(item.data) as Metric;
       metric.column_name = columnName;
       const key = generateMetricIdentifier(model, columnName, metric);
-      if (columnName === '') { // table metric
+      if (columnName === '') {
+        // table metric
         appendToMapKey(details.metrics.tableMetrics, key, metric);
       } else {
         appendToMapKey(details.metrics.columnMetrics, key, metric);
@@ -70,10 +96,46 @@ const formatOverviewData = (
       details.tableSchema.push(schema);
     } else if (item.type === 'test') {
       const schema = JSON.parse(item.data) as ITestSchema;
+      const run_at = dayjs(schema.run_at).format(
+        'YYYY-MM-DD HH:mm:ss',
+      ) as string;
+
       schema.column_name = columnName;
       schema.model = model;
-      schema.run_at = dayjs(schema.run_at).format('YYYY-MM-DD HH:mm:ss');
-      details.testSchema.push(schema);
+      schema.run_at = run_at;
+
+      details.tests.push(schema);
+      if (
+        Object.prototype.hasOwnProperty.call(
+          modelTestMapping,
+          schema?.test_name?.toLocaleLowerCase(),
+        )
+      ) {
+        modelTestMapping[schema?.test_name?.toLocaleLowerCase()].push(schema);
+      } else {
+        modelTestMapping[schema?.test_name?.toLocaleLowerCase()] = [schema];
+      }
+      if (Object.prototype.hasOwnProperty.call(runAtObject, run_at)) {
+        runAtObject[run_at].push(schema);
+      } else {
+        runAtObject[run_at] = [schema];
+      }
+      if (Object.prototype.hasOwnProperty.call(testsObject, model)) {
+        testsObject[model].push(schema);
+      } else {
+        testsObject[model] = [schema];
+      }
+      if (
+        schema.status?.toLowerCase() === 'fail'
+        || schema.status?.toLowerCase() === 'error'
+      ) {
+        if (Object.prototype.hasOwnProperty.call(failedTestsObject, model)) {
+          failedTestsObject[model].push(schema);
+        } else {
+          failedTestsObject[model] = [schema];
+        }
+      }
+
       tests.push(schema);
     } else if (item.type === 'anomaly') {
       const anomaly = JSON.parse(item.data) as Anomaly;
@@ -99,26 +161,99 @@ const formatOverviewData = (
   }
   alertsChanges.sort((a, b) => dayjs(b.time_window_end).diff(a.time_window_end));
 
-  return [result, tests, alertsChanges];
+  return {
+    aggregatedModels: result,
+    tests,
+    testsObject,
+    failedTests: failedTestsObject,
+    runAts: runAtObject,
+    alerts: alertsChanges,
+    modelTestMapping,
+  };
 };
 
-const formatDbtData = (graphData: DbtGraph) => {
+const formatDbtData = (graphData: DbtGraph, PACKAGE_NAME: string) => {
   const dbtMapping: Record<string, string> = {};
+  const testNameMapping: Record<string, string> = {};
   const modelNodes: SelectOptionProps[] = [];
-  Object.entries({ ...graphData.sources, ...graphData.nodes })
-    .forEach(([key, value]) => {
-      const { resource_type: resourceType, package_name: packageName } = value;
 
-      if (supportedResTypes.has(resourceType) && packageName !== 're_data') {
-        const modelId = generateModelId(value);
+  const macros: Record<string, string> = {};
+  const macrosOptions: SelectOptionProps[] = [];
+
+  const modelNodesDepends: Record<string, string[]> = {};
+  const macroModelUsedIn: Record<string, string[]> = {};
+  const macroDepends: Record<string, string[]> = {};
+
+  // find a way to know where these macros exists
+  for (const [key, value] of Object.entries(graphData.macros)) {
+    const { package_name: packageName, depends_on: dependsOn } = value as DbtMacro;
+    if (packageName === PACKAGE_NAME || packageName === PROJECT_NAME) {
+      dependsOn.macros.map((macro: string) => {
+        if (!Object.prototype.hasOwnProperty.call(macroDepends, macro)) {
+          macroDepends[macro] = [key];
+        } else {
+          macroDepends[macro].push(key);
+        }
+        return true;
+      });
+
+      macros[key] = value as string;
+      macrosOptions.push({
+        value: key,
+        label: key,
+      });
+    }
+  }
+
+  Object.entries({ ...graphData.sources, ...graphData.nodes }).forEach(
+    ([key, value]) => {
+      const {
+        resource_type: resourceType,
+        package_name: packageName,
+        test_metadata: testMetadata,
+        depends_on: dependsOn,
+        name,
+      } = value;
+      const testMetadataName = testMetadata?.name as string;
+      const modelId = generateModelId(value);
+      const dependsOnMacros = dependsOn?.macros || [];
+
+      if (resourceType === 'test' && packageName !== PROJECT_NAME) {
+        testNameMapping[name?.toLowerCase()] = testMetadataName || name;
+      }
+
+      if (supportedResTypes.has(resourceType) && packageName !== PROJECT_NAME) {
         dbtMapping[modelId] = key;
         modelNodes.push({
           value: modelId,
           label: modelId,
         });
+
+        modelNodesDepends[modelId] = dependsOnMacros;
       }
-    });
-  return { dbtMapping, modelNodes };
+
+      for (const [k] of Object.entries(macros)) {
+        if (dependsOnMacros.includes(k)) {
+          if (Object.prototype.hasOwnProperty.call(macroModelUsedIn, k)) {
+            macroModelUsedIn[k].push(modelId);
+          } else {
+            macroModelUsedIn[k] = [modelId];
+          }
+        }
+      }
+    },
+  );
+
+  return {
+    dbtMapping,
+    modelNodes,
+    macrosOptions,
+    macroModelUsedIn,
+    testNameMapping,
+    modelNodesDepends,
+    macroDepends,
+    macros,
+  };
 };
 
 const Dashboard: React.FC = (): ReactElement => {
@@ -126,11 +261,21 @@ const Dashboard: React.FC = (): ReactElement => {
     alerts: [],
     aggregated_models: new Map<string, ReDataModelDetails>(),
     graph: null,
+    metaData: null,
     generated_at: '',
     tests: [],
     loading: true,
     dbtMapping: {},
     modelNodes: [],
+    macrosOptions: [],
+    failedTests: {},
+    runAts: {},
+    macros: {},
+    testsObject: {},
+    macroModelUsedIn: {},
+    macroDepends: {},
+    modelTestMapping: {},
+    testNameMapping: {},
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -139,24 +284,45 @@ const Dashboard: React.FC = (): ReactElement => {
       Accept: 'application/json',
     };
     try {
-      const [overviewRequest, dbtManifestRequest] = await Promise.all([
+      const [overviewRequest, dbtManifestRequest, metadataRequest] = await Promise.all([
         fetch(RE_DATA_OVERVIEW_FILE, { headers }),
         fetch(DBT_MANIFEST_FILE, { headers }),
+        fetch(METADATA_FILE, { headers }),
       ]);
       const overviewData: Array<RawOverviewData> = await overviewRequest.json();
       const graphData: DbtGraph = await dbtManifestRequest.json();
+      const metaData: MetaData = await metadataRequest.json();
 
       const overview: OverviewData = {
         alerts: [],
         tests: [],
         aggregated_models: new Map<string, ReDataModelDetails>(),
         graph: null,
+        metaData,
         generated_at: '',
         loading: false,
         dbtMapping: {},
         modelNodes: [],
+        macrosOptions: [],
+        failedTests: {},
+        runAts: {},
+        macros: {},
+        testsObject: {},
+        modelTestMapping: {},
+        testNameMapping: {},
+        macroModelUsedIn: {},
+        macroDepends: {},
       };
-      const { dbtMapping, modelNodes } = formatDbtData(graphData);
+      const {
+        dbtMapping,
+        modelNodes,
+        macrosOptions,
+        testNameMapping,
+        modelNodesDepends,
+        macros,
+        macroModelUsedIn,
+        macroDepends,
+      } = formatDbtData(graphData, metaData?.project_dict?.name);
       const result = new Map<string, ReDataModelDetails>();
       for (const node of modelNodes) {
         const obj: ReDataModelDetails = {
@@ -167,18 +333,39 @@ const Dashboard: React.FC = (): ReactElement => {
             columnMetrics: new Map<string, Array<Metric>>(),
           },
           tableSchema: [],
-          testSchema: [],
+          tests: [],
+          failedTests: {},
+          runAts: {},
+          macros: {},
         };
         result.set(node.value, obj);
       }
-      const [aggregatedModels, tests, alerts] = formatOverviewData(overviewData, result);
+      const {
+        aggregatedModels,
+        tests,
+        failedTests,
+        testsObject,
+        runAts,
+        alerts,
+        modelTestMapping,
+      } = formatOverviewData(overviewData, result);
 
       overview.aggregated_models = aggregatedModels;
+      overview.testsObject = testsObject;
       overview.alerts = alerts;
       overview.graph = graphData;
       overview.tests = tests;
       overview.dbtMapping = dbtMapping;
+      overview.testNameMapping = testNameMapping;
       overview.modelNodes = modelNodes;
+      overview.macros = macros;
+      overview.macrosOptions = macrosOptions;
+      overview.modelNodesDepends = modelNodesDepends;
+      overview.macroModelUsedIn = macroModelUsedIn;
+      overview.macroDepends = macroDepends;
+      overview.failedTests = failedTests;
+      overview.runAts = runAts;
+      overview.modelTestMapping = modelTestMapping;
 
       console.log('overview -> ', overview);
       setReDataOverview(overview);
@@ -193,11 +380,17 @@ const Dashboard: React.FC = (): ReactElement => {
 
   return (
     <RedataOverviewContext.Provider value={reDataOverview}>
-      <div className="relative min-h-screen md:flex overflow-hidden" data-dev-hint="container">
+      <div
+        className="relative min-h-screen md:flex overflow-hidden"
+        data-dev-hint="container"
+      >
         <Header />
         <Sidebar />
 
-        <main id="content" className="flex-1 p-6 lg:px-8 bg-gray-100 max-h-screen overflow-y-auto">
+        <main
+          id="content"
+          className="flex-1 p-6 lg:px-8 bg-gray-100 max-h-screen overflow-y-auto"
+        >
           <div className="max-w-full mx-auto h-full">
             <div className="px-4 py-6 sm:px-0 h-full">
               <Outlet />

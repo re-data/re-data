@@ -71,27 +71,6 @@ def customers():
     write_to_csv(customers, ["id","first_name","last_name","age","joined_at"], "seeds/customers.csv")
 
 
-def order_items():
-    def get_toy_name():
-        names = ["Teddy bear", "Lego", "Car", "Plane", "Train", "Bicycle", "Boat", "Helicopter", "Car", "Plane", "Train", "Bicycle", "Boat", "Helicopter"]
-        return random.choice(names)
-
-    order_items = []
-    for i in range(1, 7000):
-        item_id = i
-        order_id = random.randint(1, 5000)
-        toy_name = get_toy_name()
-        price = random.randint(10, 1000)
-        added_at = get_proper_date()
-        order_items.append([item_id, order_id, toy_name, price, added_at])
-
-    order_items.append([item_id + 1, 100, "Plane", 100, datetime.datetime(2021, 1, 6, 4, 14, 0)])
-    for i in range(1, 50):
-        order_items.append([random.randint(7000, 8000), "", "", random.randint(1, 100), random_date(start_date, end_date)])
-
-    write_to_csv(order_items, ["item_id","order_id","name","amount","added_at"], "seeds/order_items.csv")
-
-
 def companies():
     companies = []
     for i in range(1, 50):
@@ -107,5 +86,4 @@ def companies():
 if __name__ == "__main__":
     orders()
     customers()
-    order_items()
     companies()

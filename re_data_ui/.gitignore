@@ -24,6 +24,8 @@ yarn-error.log*
 
 overview.json
 public/overview.json
+public/metadata.json
+public/monitored.json
 
 yarn.lock
 public/dbt_manifest.json
