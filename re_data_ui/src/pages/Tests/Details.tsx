@@ -34,7 +34,6 @@ const values = ({ timelineData }: valuesProps) => {
   if (timelineData) {
     const timelineVal = Object.entries(timelineData)
       .sort(([x]:[string, string], [y]:[string, string]) => dayjs(x).diff(y))
-      // .sort(([x]:[string, string], [y]:[string, string]) => new Date(x).valueOf() - new Date(y).valueOf())
       .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
     const data = Object.values(timelineVal);
