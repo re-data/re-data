@@ -19,5 +19,3 @@ models:
       - name: status
         tests:
           - not_null
-          - accepted_values:
-              values: [pending]

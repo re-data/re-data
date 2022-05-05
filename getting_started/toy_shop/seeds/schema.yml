@@ -31,5 +31,3 @@ seeds:
       - name: status
         tests:
           - not_null
-          - accepted_values:
-              values: [pending, shipped, delivered, not paid, paid]
