@@ -12,6 +12,7 @@ import React, {
 } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { format } from 'sql-formatter';
+import dayjs from 'dayjs';
 import { Select, Table } from '../../components';
 import { CellProps, ColumnsProps } from '../../components/Table';
 import {
@@ -31,8 +32,15 @@ type valuesProps = {
 
 const values = ({ timelineData }: valuesProps) => {
   if (timelineData) {
-    const data = Object.values(timelineData);
-    const runAt = Object.keys(timelineData);
+    const timelineVal = Object.entries(timelineData)
+      .sort(([x]:[string, string], [y]:[string, string]) => dayjs(x).diff(y))
+      // .sort(([x]:[string, string], [y]:[string, string]) => new Date(x).valueOf() - new Date(y).valueOf())
+      .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+
+    const data = Object.values(timelineVal);
+    const runAt = Object.keys(timelineVal);
+
+    console.log('timelineData ', timelineData);
 
     return {
       grid: {
