@@ -168,7 +168,9 @@ export interface MetaData {
   },
   packages: {
     packages: Record<string, unknown>[]
-  }
+  },
+  version: string,
+  generated_at: string,
 }
 
 export interface AggregatedMetrics {
