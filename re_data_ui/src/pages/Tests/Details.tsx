@@ -39,8 +39,6 @@ const values = ({ timelineData }: valuesProps) => {
     const data = Object.values(timelineVal);
     const runAt = Object.keys(timelineVal);
 
-    console.log('timelineData ', timelineData);
-
     return {
       grid: {
         top: '20%',
