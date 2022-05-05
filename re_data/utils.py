@@ -1,11 +1,12 @@
 from tabulate import tabulate
 from typing import Any, Dict, Optional, List, Tuple
-from datetime import datetime
+from datetime import datetime, timezone
 from collections import defaultdict
 import yaml
 import json
 import os
 from dbt.config.project import Project
+import pkg_resources
 
 
 try:
@@ -268,9 +269,12 @@ def send_mime_email(
 def load_metadata_from_project(kwargs) -> Dict:
     project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
     partial = Project.partial_load(project_root)
+    version = pkg_resources.require("re_data")[0].version
     metadata = {
         'project_dict': partial.project_dict,
-        'packages': partial.packages_dict
+        'packages': partial.packages_dict,
+        'version': version,
+        'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     }
     return metadata
 
