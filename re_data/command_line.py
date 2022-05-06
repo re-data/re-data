@@ -276,6 +276,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     dbt_target_path, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     overview_path = os.path.join(re_data_target_path, 'overview.json')
     metadata_path = os.path.join(re_data_target_path, 'metadata.json')
+    tests_history_path = os.path.join(re_data_target_path, 'tests_history.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     metadata = load_metadata_from_project(kwargs)
 
@@ -290,6 +291,18 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     add_dbt_flags(command_list, kwargs)
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
+
+    # export tests history
+    tests_history_args = {
+        'start_date': start_date,
+        'end_date': end_date,
+        'tests_history_path': tests_history_path
+    }
+    tests_history_command_list = ['dbt', 'run-operation', 'export_tests_history', '--args', yaml.dump(tests_history_args)]
+    if dbt_vars: tests_history_command_list.extend(['--vars', yaml.dump(dbt_vars)])
+    add_dbt_flags(tests_history_command_list, kwargs)
+    th_completed_process = subprocess.run(tests_history_command_list)
+    th_completed_process.check_returncode()
 
     # write metadata to re_data target path
     with open(metadata_path, 'w+', encoding='utf-8') as f:
@@ -311,6 +324,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     shutil.copyfile(OVERVIEW_INDEX_FILE_PATH, target_file_path)
 
     normalize_re_data_json_export(overview_path)
+    normalize_re_data_json_export(tests_history_path)
 
     print(
         f"Generating overview page", chalk.green("SUCCESS")

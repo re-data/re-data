@@ -2,5 +2,5 @@ packages:
   - package: dbt-labs/dbt_utils
     version: [">=0.7.0", "<0.9.0"]
 
-  - package: re-data/re_data
-    version: [">=0.8.0", "<0.9.0"]
+  - git: "https://github.com/re-data/dbt-re-data.git"
+    revision: feature/monitored-table-sampling
