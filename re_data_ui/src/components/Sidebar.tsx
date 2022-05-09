@@ -1,5 +1,6 @@
 import React, { ReactElement, useContext } from 'react';
 import {
+  BiCog,
   BiCodeCurly,
   BiNetworkChart,
   BsGithub,
@@ -101,6 +102,14 @@ const Sidebar: React.FC = (): ReactElement => {
           >
             <BiCodeCurly size="1.25em" />
             <span>Macros</span>
+          </NavLink>
+
+          <NavLink
+            to="settings"
+            className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+          >
+            <BiCog size="1.25em" />
+            <span>Settings</span>
           </NavLink>
         </nav>
       </div>
