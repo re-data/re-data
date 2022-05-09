@@ -6,8 +6,9 @@ import { Link } from 'react-router-dom';
 import { EmptyContent, Table } from '../components';
 import { CellProps, ColumnsProps } from '../components/Table';
 import {
-  ITestSchema, OverviewData,
-  ReDataModelDetails, RedataOverviewContext,
+  OverviewData,
+  RedataOverviewContext,
+  TestData,
 } from '../contexts/redataOverviewContext';
 import colors from '../utils/colors.js';
 import ModelCell from './ModelCell';
@@ -26,7 +27,7 @@ export type RightComponentProps = {
   value: string;
   handleChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   showOptionLabel?: boolean;
-}
+};
 
 const LinkCell = ({ value }: CellProps) => {
   const overview: OverviewData = useContext(RedataOverviewContext);
@@ -43,18 +44,20 @@ const LinkCell = ({ value }: CellProps) => {
   );
 };
 
-export const RightComponent = (
-  {
-    options, value, handleChange,
-    showOptionLabel = true,
-  }: RightComponentProps,
-): JSX.Element => (
+export const RightComponent = ({
+  options,
+  value,
+  handleChange,
+  showOptionLabel = true,
+}: RightComponentProps): JSX.Element => (
   <select
     className="px-2 py-1 rounded-md w-1/4 right-component border border-gray-300"
     onChange={handleChange}
     value={value}
   >
-    {showOptionLabel && <option value="">All sorted by run time (new firsts)</option>}
+    {showOptionLabel && (
+      <option value="">All sorted by run time (new firsts)</option>
+    )}
     {options.map((option: string) => (
       <option key={option} value={option}>
         {option}
@@ -64,31 +67,26 @@ export const RightComponent = (
 );
 
 type generateTestsDataProps = {
-  tests: ITestSchema[]
-  modelName?: string | null
-  aggregatedModels: Map<string, ReDataModelDetails>;
-  runAtsData?: Record<string, ITestSchema[]>;
-}
+  tests: TestData[];
+  modelName?: string | null;
+  runAtsData?: Record<string, TestData[]>;
+};
 
 const generateTestsData = (props: generateTestsDataProps) => {
-  const {
-    tests, aggregatedModels, runAtsData, modelName,
-  } = props;
-  const result: Array<ITestSchema> = [];
+  const { tests, runAtsData, modelName } = props;
+  const result: Array<TestData> = [];
   const runAts = new Set<string>();
 
-  if (modelName) {
-    if (aggregatedModels.has(modelName) && runAtsData) {
-      const aggregate = aggregatedModels.get(modelName);
-      const x = Object.keys(runAtsData).sort().pop();
+  if (modelName && runAtsData) {
+    const dateTime = Object.keys(runAtsData).sort().pop();
 
-      const aggregateTests = aggregate?.tests || [];
-      if (x) {
-        for (let index = 0; index < aggregateTests.length; index++) {
-          const test = aggregateTests[index];
-          if (x === test.run_at) {
-            result.push({ ...test });
-          }
+    if (dateTime) {
+      const data = runAtsData[dateTime];
+      for (let index = 0; index < data.length; index++) {
+        const test = data[index];
+
+        if (test.table_name === modelName) {
+          result.push({ ...test });
         }
       }
     }
@@ -106,40 +104,40 @@ const generateTestsData = (props: generateTestsDataProps) => {
 
 function TestsPartial(params: TP): ReactElement {
   const {
-    showModel, showFilter = true,
-    showRunAt, modelName = null,
+    showModel,
+    showFilter = true,
+    showRunAt,
+    modelName = null,
     showSearch = true,
   } = params;
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const {
-    tests,
-    aggregated_models: aggregatedModels,
-    runAts: runAtsData,
-  } = overview;
+  const { tests, runAts: runAtsData } = overview;
   const [backUpData, setBackUpData] = useState([]);
   const [data, setData] = useState([]);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState('');
 
   const columns = useMemo(() => {
-    const cols: ColumnsProps[] = [{
-      Header: 'Test Name',
-      accessor: 'test_name',
-      Cell: LinkCell,
-    },
-    {
-      Header: 'Column',
-      accessor: 'column_name',
-    },
-    {
-      Header: 'Status',
-      accessor: 'status',
-      Cell: StatusCell,
-    }];
+    const cols: ColumnsProps[] = [
+      {
+        Header: 'Test Name',
+        accessor: 'test_name',
+        Cell: LinkCell,
+      },
+      {
+        Header: 'Column',
+        accessor: 'column_name',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+        Cell: StatusCell,
+      },
+    ];
     if (showModel) {
       cols.splice(1, 0, {
         Header: 'Model',
-        accessor: 'model',
+        accessor: 'table_name',
         Cell: ModelCell,
         type: 'test',
       });
@@ -158,49 +156,50 @@ function TestsPartial(params: TP): ReactElement {
     const option = e.target.value;
     setSelectedOption(option);
     if (option) {
-      setData(backUpData.filter((row: ITestSchema) => row.run_at === option));
+      setData(backUpData.filter((row: TestData) => row.run_at === option));
     } else {
       setData(backUpData);
     }
   };
 
   useMemo(() => {
-    const initialTests = generateTestsData({
+    const { result, runAts } = generateTestsData({
       tests,
       modelName,
-      aggregatedModels,
       runAtsData,
     });
-    const { result, runAts } = initialTests;
 
     setOptions(Array.from(runAts) as []);
     setBackUpData(result as []);
     setData(result as []);
   }, [tests, modelName]);
 
-  const check = !showFilter ? null : () => (
-    <RightComponent
-      options={options}
-      value={selectedOption}
-      handleChange={handleChange}
-    />
-  );
+  const check = !showFilter
+    ? null
+    : () => (
+      <RightComponent
+        options={options}
+        value={selectedOption}
+        handleChange={handleChange}
+      />
+    );
 
   return (
     <>
-      {(data.length)
-        ? (
-          <Table
-            columns={columns}
-            data={data}
-            showSearch={showSearch}
-            RightComponent={check}
-          />
-        ) : (
-          <EmptyContent text={modelName ? `No test for '${modelName}' model` : 'No Test'}>
-            <FaRegSmileWink size={80} color={colors.primary} />
-          </EmptyContent>
-        )}
+      {data.length ? (
+        <Table
+          columns={columns}
+          data={data}
+          showSearch={showSearch}
+          RightComponent={check}
+        />
+      ) : (
+        <EmptyContent
+          text={modelName ? `No test for '${modelName}' model` : 'No Test'}
+        >
+          <FaRegSmileWink size={80} color={colors.primary} />
+        </EmptyContent>
+      )}
     </>
   );
 }

@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 import { Select, Table } from '../../components';
 import { CellProps, ColumnsProps } from '../../components/Table';
 import {
-  ITestSchema,
+  TestData,
   OverviewData,
   RedataOverviewContext,
   SelectOptionProps,
@@ -71,8 +71,8 @@ type generateDetailsDataProps = {
   modelName?: string | null;
   loading: boolean;
   testName?: string;
-  testsObject?: Record<string, ITestSchema[]>;
-  modelTestMapping?: Record<string, ITestSchema[]>;
+  testsObject?: Record<string, TestData[]>;
+  modelTestMapping?: Record<string, TestData[]>;
 };
 
 const generateDetailsData = (props: generateDetailsDataProps) => {
@@ -175,7 +175,7 @@ const TestDetails: FC = (): ReactElement => {
     testsObject, modelTestMapping, testNameMapping, loading,
   } = overview;
 
-  const modelName = modelTestMapping?.[testName || '']?.[0]?.model;
+  const modelName = modelTestMapping?.[testName || '']?.[0]?.table_name;
 
   const {
     options, result, timelineData, runAtOptions, testDetailsObject,
@@ -204,9 +204,9 @@ const TestDetails: FC = (): ReactElement => {
     }
   };
 
-  const results: ITestSchema = useMemo(() => {
+  const results: TestData = useMemo(() => {
     const key = selectedOption || Array.from(runAtOptions)?.[0];
-    return (testDetailsObject?.[key] as ITestSchema) || {};
+    return (testDetailsObject?.[key] as TestData) || {};
   }, [runAtOptions, testDetailsObject, selectedOption]);
 
   const handleRunAtChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -215,7 +215,7 @@ const TestDetails: FC = (): ReactElement => {
     setSelectedOption(option);
     setData(
       option
-        ? backUpData.filter((row: ITestSchema) => row.run_at === option)
+        ? backUpData.filter((row: TestData) => row.run_at === option)
         : backUpData,
     );
   };

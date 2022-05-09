@@ -147,6 +147,23 @@ export interface DbtGraph {
   macros: { [key: string]: unknown };
 }
 
+export interface TestData {
+  column_name: string,
+  compiled_sql?: string
+  execution_time?: number | string,
+  failures_count?: string,
+  failures_json?: string,
+  failures_table?: string,
+  message?: string,
+  run_at: string,
+  run_at_2?: string,
+  severity?: string,
+  status: string,
+  table_name: string,
+  test_name: string,
+  test_name_2?: string,
+}
+
 export interface MetaData {
   project_dict: {
     name: string,
@@ -183,7 +200,7 @@ export interface ReDataModelDetails {
   schemaChanges: Array<SchemaChange>;
   metrics: AggregatedMetrics;
   tableSchema: Array<ITableSchema>
-  tests: Array<ITestSchema>
+  tests: Array<TestData>
   failedTests?: Record<string, unknown>;
   runAts?: Record<string, []>;
   macros?: Record<string, []>;
@@ -232,25 +249,25 @@ export interface Alert {
 }
 
 export interface OverviewData {
+  aggregated_models: Map<string, ReDataModelDetails>;
+  alerts: Array<Alert>;
+  dbtMapping: Record<string, string>;
+  failedTests?: Record<string, TestData[]>;
+  generated_at: string;
+  graph: DbtGraph | null;
+  loading: boolean;
   macroDepends?: Record<string, string[]>;
   macroModelUsedIn?: Record<string, string[]>;
-  alerts: Array<Alert>;
-  tests: Array<ITestSchema>;
-  aggregated_models: Map<string, ReDataModelDetails>;
-  graph: DbtGraph | null;
-  metaData: MetaData | null;
-  generated_at: string;
-  loading: boolean;
-  dbtMapping: Record<string, string>;
-  modelNodes: SelectOptionProps[];
-  macrosOptions: SelectOptionProps[];
-  failedTests?: Record<string, ITestSchema[]>;
-  runAts?: Record<string, ITestSchema[]>;
   macros?: Record<string, unknown>;
+  macrosOptions: SelectOptionProps[];
+  metaData: MetaData | null;
+  modelNodes: SelectOptionProps[];
   modelNodesDepends?: Record<string, string[]>;
-  testsObject: Record<string, ITestSchema[]>;
-  modelTestMapping: Record<string, ITestSchema[]>;
+  modelTestMapping: Record<string, TestData[]>;
+  runAts?: Record<string, TestData[]>;
   testNameMapping: Record<string, string>;
+  tests: Array<TestData>;
+  testsObject: Record<string, TestData[]>;
 }
 
 export interface SelectOptionProps {
