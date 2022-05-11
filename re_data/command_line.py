@@ -338,6 +338,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
 
     normalize_re_data_json_export(overview_path)
     normalize_re_data_json_export(tests_history_path)
+    normalize_re_data_json_export(table_samples_path)
 
     print(
         f"Generating overview page", chalk.green("SUCCESS")
