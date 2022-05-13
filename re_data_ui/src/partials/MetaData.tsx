@@ -1,7 +1,9 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useMemo } from 'react';
 import { FaRegClipboard } from 'react-icons/all';
 import { copyToClipboard } from '../utils';
 import CodeFormatter from './CodeFormatter';
+import { Table } from '../components';
+import { ColumnsProps } from '../components/Table';
 
 type TabType = {
   label: string;
@@ -49,6 +51,39 @@ const generateHeader = ({
 
 const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
+  console.log('tabs?.[0]?.data  ', tabs?.[0]?.data, tabs?.[0]?.data ? 'ok' : 'yy');
+  const jsonData = tabs?.[0]?.data ? JSON.parse(tabs?.[0]?.data) : null;
+  const label1 = tabs?.[0]?.label;
+
+  console.log('data ', jsonData);
+
+  const columns: ColumnsProps[] = useMemo(() => {
+    if (!jsonData) return [];
+    const keys = Object.keys(jsonData?.[0]);
+
+    const result = [];
+
+    for (let index = 0; index < keys.length; index++) {
+      const element = keys[index];
+      result.push({
+        Header: element?.replace('_', ' '),
+        accessor: element,
+      });
+    }
+
+    return result;
+  }, []);
+
+  const data: Record<string, unknown>[] = useMemo(() => {
+    if (!jsonData) return [];
+    const result: Record<string, unknown>[] = [];
+
+    for (let index = 0; index < jsonData.length; index++) {
+      const element = jsonData[index];
+      result.push(element);
+    }
+    return result;
+  }, []);
 
   return (
     <section>
@@ -71,10 +106,14 @@ const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
 
       <div className="mt-3">
         <div className="flex flex-col mt-2 rounded-md overflow-hidden">
-          <CodeFormatter
-            code={tabs[activeTab].data}
-            language={tabs[activeTab].language}
-          />
+          {label1 === 'Failures' ? (
+            <Table columns={columns} data={data} showSearch={false} />
+          ) : (
+            <CodeFormatter
+              code={tabs[activeTab].data}
+              language={tabs[activeTab].language}
+            />
+          )}
         </div>
       </div>
     </section>
