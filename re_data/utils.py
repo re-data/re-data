@@ -21,6 +21,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 
+ALERT_TYPES = {'anomaly', 'schema_change', 'test'}
+
 
 def format_alerts_to_table(alerts: list, limit=None) -> str:
     """
@@ -103,7 +105,7 @@ def build_notification_identifiers_per_model(monitored_list: list, channel) -> D
 
 
 
-def generate_slack_message(model, details, owners, subtitle: str) -> dict:
+def generate_slack_message(model, details, owners, subtitle: str, selected_alert_types: set) -> dict:
     """
     Generates a slack message for a given model.
     """
@@ -156,7 +158,7 @@ def generate_slack_message(model, details, owners, subtitle: str) -> dict:
             },
         ]
     }
-    if anomalies:
+    if anomalies and 'anomaly' in selected_alert_types:
         message_obj['blocks'].append({
             "type": "section",
             "text": {
@@ -164,7 +166,7 @@ def generate_slack_message(model, details, owners, subtitle: str) -> dict:
                 "text": "*Anomalies*\n ```{}```".format(format_alerts_to_table(anomalies, limit=10))
             }
         })
-    if schema_changes:
+    if schema_changes and 'schema_change' in selected_alert_types:
         message_obj['blocks'].append({
             "type": "section",
             "text": {
@@ -172,7 +174,7 @@ def generate_slack_message(model, details, owners, subtitle: str) -> dict:
                 "text": "*Schema Changes*\n ```{}```".format(format_alerts_to_table(schema_changes, limit=10))
             }
         })
-    if tests:
+    if tests and 'test' in selected_alert_types:
         message_obj['blocks'].append({
             "type": "section",
             "text": {
