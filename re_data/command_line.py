@@ -1,3 +1,4 @@
+from email.policy import default
 import click
 import subprocess
 import json
@@ -15,7 +16,8 @@ from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
-    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export
+    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export, \
+        ALERT_TYPES
 
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
@@ -423,11 +425,23 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
         Defaults to the 'target-path' used in dbt_project.yml
     """
 )
+@click.option(
+    '--select',
+    multiple=True,
+    default=ALERT_TYPES,
+    help="""
+        Specfy which alert types to generate. This accepts multiple options
+        e.g. --select anomaly --select schema_change
+    """)
 @add_options(dbt_flags)
 @anonymous_tracking
-def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwargs):
+def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, select, **kwargs):
+    for alert_type in select:
+        if alert_type not in ALERT_TYPES:
+            raise click.BadOptionUsage("select", "%s not a valid alert type" % alert_type)
     start_date = str(start_date.date())
     end_date = str(end_date.date())
+    selected_alert_types = set(select)
 
     if not webhook_url: # if webhook_url is via arguments, check the config file
         config = read_re_data_config()
@@ -466,7 +480,7 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
     alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members)
     for model, details in alerts_per_model.items():
         owners = slack_members.get(model, [])
-        slack_message = generate_slack_message(model, details, owners, subtitle)
+        slack_message = generate_slack_message(model, details, owners, subtitle, selected_alert_types)
         slack_notify(webhook_url, slack_message)
     print(
         f"Notification sent", chalk.green("SUCCESS")
