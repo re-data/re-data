@@ -51,11 +51,11 @@ const generateHeader = ({
 
 const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
-  console.log('tabs?.[0]?.data  ', tabs?.[0]?.data, tabs?.[0]?.data ? 'ok' : 'yy');
+  // console.log('tabs?.[0]?.data  ', tabs?.[0]?.data, tabs?.[0]?.data ? 'ok' : 'yy');
   const jsonData = tabs?.[0]?.data ? JSON.parse(tabs?.[0]?.data) : null;
   const label1 = tabs?.[0]?.label;
 
-  console.log('data ', jsonData);
+  // console.log('data ', jsonData);
 
   const columns: ColumnsProps[] = useMemo(() => {
     if (!jsonData) return [];

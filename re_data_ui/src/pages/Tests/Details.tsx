@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import EChartsReactCore from 'echarts-for-react/lib/core';
 import { ToolboxComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
@@ -12,18 +14,18 @@ import React, {
 } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { format } from 'sql-formatter';
-import dayjs from 'dayjs';
 import { Select, Table } from '../../components';
 import { CellProps, ColumnsProps } from '../../components/Table';
 import {
-  TestData,
   OverviewData,
   RedataOverviewContext,
   SelectOptionProps,
+  TestData,
 } from '../../contexts/redataOverviewContext';
 import { MetaData, StatusCell } from '../../partials';
 import { RightComponent } from '../../partials/Tests';
 
+dayjs.extend(customParseFormat);
 echarts.use([ToolboxComponent]);
 
 type valuesProps = {
@@ -33,7 +35,7 @@ type valuesProps = {
 const values = ({ timelineData }: valuesProps) => {
   if (timelineData) {
     const timelineVal = Object.entries(timelineData)
-      .sort(([x]:[string, string], [y]:[string, string]) => dayjs(x).diff(y))
+      .sort(([x]: [string, string], [y]: [string, string]) => dayjs(x).diff(y))
       .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
     const data = Object.values(timelineVal);
@@ -71,13 +73,17 @@ type generateDetailsDataProps = {
   modelName?: string | null;
   loading: boolean;
   testName?: string;
+  runAt: string;
   testsObject?: Record<string, TestData[]>;
   modelTestMapping?: Record<string, TestData[]>;
 };
 
+const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+
 const generateDetailsData = (props: generateDetailsDataProps) => {
   const {
-    loading, modelName, testName, testsObject, modelTestMapping,
+    loading, modelName, testName,
+    testsObject, modelTestMapping, runAt,
   } = props;
 
   const val = [];
@@ -99,13 +105,22 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
     const arr = testsObject[modelName];
     const valSet = new Set();
 
+    // console.log('arr ', arr, runAt);
     for (let index = 0; index < arr?.length; index++) {
       const element = arr[index];
+      // console.log('element ', element.run_at, runAt, element.runat === runAt);
+
+      if (element.run_at === runAt && (testName?.toLowerCase() === element.test_name?.toLowerCase())) {
+        console.log('element ', element, testName);
+      }
 
       if (testName?.toLowerCase() === element.test_name?.toLowerCase()) {
         runAts.add(element.run_at);
+        // runAts.add(dayjs((element.run_at)).format(dateTimeFormat));
         timelineData[element.run_at] = element.failures_count || '';
-        testDetailsObject[element.run_at] = element;
+        if (element.run_at !== runAt) {
+          testDetailsObject[element.run_at] = element;
+        }
       }
       if (!valSet.has(element.test_name)) {
         valSet.add(element.test_name);
@@ -116,7 +131,13 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
         });
       }
     }
+
+    console.log('\n');
+    console.log('\n');
   }
+
+  // console.log('testDetailsObject ', testDetailsObject);
+  console.log('result ', result);
 
   return {
     options: val,
@@ -134,7 +155,9 @@ const TestDetails: FC = (): ReactElement => {
 
   const navigate = useNavigate();
 
-  let { testName } = useParams();
+  let { testName, runAt } = useParams();
+  runAt = dayjs(Number(runAt)).format(dateTimeFormat);
+  // console.log('runAt >> ', runAt);
   testName = testName?.toLowerCase();
 
   const columns: ColumnsProps[] = useMemo(
@@ -184,6 +207,7 @@ const TestDetails: FC = (): ReactElement => {
     loading,
     testsObject,
     modelTestMapping,
+    runAt,
     testName,
   });
 
@@ -203,6 +227,8 @@ const TestDetails: FC = (): ReactElement => {
       navigate(`/tests/${option.value}`);
     }
   };
+
+  // console.log('testDetailsObject ', testDetailsObject);
 
   const results: TestData = useMemo(() => {
     const key = selectedOption || Array.from(runAtOptions)?.[0];
@@ -280,19 +306,13 @@ const TestDetails: FC = (): ReactElement => {
             tabs={[
               {
                 label: 'Failures',
-                data: results?.failures_json
-                  ? JSON.stringify(
-                    JSON.parse(results.failures_json.trim()),
-                    null,
-                    2,
-                  )
-                  : '',
+                data: results.failures_json || '',
                 language: 'json',
               },
               {
                 label: 'Compiled SQL',
-                data: results?.compiled_sql
-                  ? format(results?.compiled_sql.trim())
+                data: results.compiled_sql
+                  ? format(results.compiled_sql.trim())
                   : 'No compiled sql',
                 language: 'sql',
               },
