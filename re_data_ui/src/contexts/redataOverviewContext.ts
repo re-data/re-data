@@ -147,6 +147,12 @@ export interface DbtGraph {
   macros: { [key: string]: unknown };
 }
 
+export interface TableSample {
+  sample_data: string;
+  sampled_on: string;
+  table_name: string;
+}
+
 export interface TestData {
   column_name: string,
   compiled_sql?: string
@@ -268,6 +274,7 @@ export interface OverviewData {
   testNameMapping: Record<string, string>;
   tests: Array<TestData>;
   testsObject: Record<string, TestData[]>;
+  tableSamples: Map<string, TableSample>;
 }
 
 export interface SelectOptionProps {
@@ -302,4 +309,5 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   testsObject: {},
   modelTestMapping: {},
   testNameMapping: {},
+  tableSamples: new Map<string, TableSample>(),
 });

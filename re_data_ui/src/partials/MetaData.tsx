@@ -1,9 +1,8 @@
-import React, { Fragment, useState, useMemo } from 'react';
+import React, { Fragment, useState } from 'react';
 import { FaRegClipboard } from 'react-icons/all';
 import { copyToClipboard } from '../utils';
 import CodeFormatter from './CodeFormatter';
-import { Table } from '../components';
-import { ColumnsProps } from '../components/Table';
+import { DynamicTable } from '../components';
 
 type TabType = {
   label: string;
@@ -51,39 +50,11 @@ const generateHeader = ({
 
 const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
-  console.log('tabs ', tabs);
+  // console.log('tabs ', tabs);
 
-  const label1 = tabs?.[0]?.label;
+  const label1 = tabs[0].label;
 
-  const jsonData = label1 === 'Failures' && (tabs?.[0]?.data ? JSON.parse(tabs[0].data) : null);
-
-  const columns: ColumnsProps[] = useMemo(() => {
-    if (!jsonData) return [];
-    const keys = Object.keys(jsonData?.[0]);
-
-    const result = [];
-
-    for (let index = 0; index < keys.length; index++) {
-      const element = keys[index];
-      result.push({
-        Header: element?.replace('_', ' '),
-        accessor: element,
-      });
-    }
-
-    return result;
-  }, []);
-
-  const data: Record<string, unknown>[] = useMemo(() => {
-    if (!jsonData) return [];
-    const result: Record<string, unknown>[] = [];
-
-    for (let index = 0; index < jsonData.length; index++) {
-      const element = jsonData[index];
-      result.push(element);
-    }
-    return result;
-  }, []);
+  const jsonData = label1 === 'Failures' && (tabs[0].data ? JSON.parse(tabs[0].data) : null);
 
   return (
     <section>
@@ -108,11 +79,22 @@ const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
 
       <div className="mt-3">
         <div className="flex flex-col mt-2 rounded-md overflow-hidden">
-          {label1 === 'Failures' ? (
-            <Table columns={columns} data={data} showSearch={false} />
+          {tabs[activeTab].label === 'Failures' ? (
+            <>
+              {jsonData ? (
+                <DynamicTable
+                  values={
+                    (jsonData as unknown as Record<string, unknown>[])
+                    || null
+                  }
+                />
+              ) : (
+                <p className="text-sm font-semibold">No Failure json available</p>
+              )}
+            </>
           ) : (
             <CodeFormatter
-              code={tabs[activeTab].data}
+              code={tabs[activeTab].data || `No ${tabs[activeTab].label} available`}
               language={tabs[activeTab].language}
             />
           )}

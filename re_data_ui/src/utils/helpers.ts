@@ -5,6 +5,7 @@ import {
 
 export const RE_DATA_OVERVIEW_FILE = 'overview.json';
 export const DBT_MANIFEST_FILE = 'dbt_manifest.json';
+export const TABLE_SAMPLE_FILE = 'table_samples.json';
 export const TEST_FILE = 'tests_history.json';
 export const METADATA_FILE = 'metadata.json';
 export const MONITORED_FILE = 'monitored.json';

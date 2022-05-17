@@ -105,7 +105,6 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
     const arr = testsObject[modelName];
     const valSet = new Set();
 
-    // console.log('arr ', arr, runAt);
     for (let index = 0; index < arr?.length; index++) {
       const element = arr[index];
       // console.log('element ', element.run_at, runAt, element.runat === runAt);
@@ -127,7 +126,7 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
 
         val.push({
           label: element.test_name,
-          value: element.test_name?.toLowerCase(),
+          value: `${element.test_name?.toLowerCase()}/${dayjs(element.run_at).valueOf()}`,
         });
       }
     }
@@ -137,7 +136,7 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
   }
 
   // console.log('testDetailsObject ', testDetailsObject);
-  console.log('result ', result);
+  console.log('val options ', val);
 
   return {
     options: val,
