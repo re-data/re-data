@@ -219,13 +219,11 @@ const Tables: React.FC = (): ReactElement => {
                   {
                     label: 'SQL',
                     data: rawSql ? rawSql.trim() : null,
-                    // data: rawSql ? rawSql.trim() : 'No SQL available',
                     language: 'sql',
                   },
                   {
                     label: 'Compiled SQL',
                     data: compiledSql ? compiledSql.trim() : null,
-                    // data: compiledSql ? compiledSql.trim() : 'No Compiled SQL available',
                     language: 'sql',
                   },
                 ]}
@@ -250,7 +248,7 @@ const Tables: React.FC = (): ReactElement => {
           </section>
           <section id="sample" className="pb-4 pt-4">
             <div className="bg-white rounded-md px-3 py-4">
-              <h3 className="mb-3 text-md font-medium">Table Sample</h3>
+              <h3 className="mb-3 text-md font-medium">Recent Rows</h3>
               <div className="grid grid-cols-1 gap-4">
                 <DynamicTable
                   values={

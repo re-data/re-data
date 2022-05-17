@@ -327,9 +327,7 @@ const Dashboard: React.FC = (): ReactElement => {
       const graphData: DbtGraph = await dbtManifestRequest.json();
       const metaData: MetaData = await metadataRequest.json();
       const testData: Array<TestData> = await testRequest.json();
-      const tableSamples = await tableSamplesRequest.json();
-      // const tableSamples: Array<TableSample> = await tableSamplesRequest.json();
-      console.log('tableSamples ', tableSamples);
+      const tableSamples: Array<TableSample> = await tableSamplesRequest.json();
 
       const tableSamplesData = new Map<string, TableSample>();
 
@@ -340,10 +338,7 @@ const Dashboard: React.FC = (): ReactElement => {
         sample_data = JSON.parse(sample_data);
 
         tableSamplesData.set(table_name, { table_name, sampled_on, sample_data });
-        // console.log('element', element, JSON.parse(element.table_name));
-        // console.log('element', element);
       }
-      console.log('tableSamplesData', tableSamplesData);
 
       const {
         tests, failedTests, testsObject, runAts, modelTestMapping,

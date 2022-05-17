@@ -79,6 +79,7 @@ type generateDetailsDataProps = {
 };
 
 const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+const dateTimeFormat2 = 'YYYY-MM-DDTHH:mm:ss';
 
 const generateDetailsData = (props: generateDetailsDataProps) => {
   const {
@@ -130,13 +131,10 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
         });
       }
     }
-
-    console.log('\n');
-    console.log('\n');
   }
 
   // console.log('testDetailsObject ', testDetailsObject);
-  console.log('val options ', val);
+  // console.log('val options ', val);
 
   return {
     options: val,
@@ -154,9 +152,11 @@ const TestDetails: FC = (): ReactElement => {
 
   const navigate = useNavigate();
 
-  let { testName, runAt } = useParams();
-  runAt = dayjs(Number(runAt)).format(dateTimeFormat);
-  // console.log('runAt >> ', runAt);
+  let { testName } = useParams();
+  const { runAt: _runAt } = useParams();
+  const runAt = dayjs(Number(_runAt)).format(dateTimeFormat);
+  const runAt2 = dayjs(Number(_runAt)).format(dateTimeFormat2);
+  // console.log('runAt >> ', runAt, runAt2);
   testName = testName?.toLowerCase();
 
   const columns: ColumnsProps[] = useMemo(
@@ -230,9 +230,14 @@ const TestDetails: FC = (): ReactElement => {
   // console.log('testDetailsObject ', testDetailsObject);
 
   const results: TestData = useMemo(() => {
-    const key = selectedOption || Array.from(runAtOptions)?.[0];
+    const key = selectedOption || runAt2 || Array.from(runAtOptions)?.[0];
+    // runAt
+    console.log('i run again - ', key, testDetailsObject);
+
     return (testDetailsObject?.[key] as TestData) || {};
   }, [runAtOptions, testDetailsObject, selectedOption]);
+
+  console.log('results ', results);
 
   const handleRunAtChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const option = e.target.value;
@@ -294,26 +299,21 @@ const TestDetails: FC = (): ReactElement => {
           <RightComponent
             showOptionLabel={false}
             options={Array.from(runAtOptions) as []}
-            value={selectedOption || Array.from(runAtOptions)?.[0]}
+            value={selectedOption || runAt2 || Array.from(runAtOptions)?.[0]}
             handleChange={handleRunAtChange}
           />
         </div>
 
-        {/* TODO: remove the failure json from here */}
         {results.status && (
           <MetaData
             tabs={[
               {
                 label: 'Failures',
-                // data: results.failures_json || '',
                 data: results.failures_json || null,
                 language: 'json',
               },
               {
                 label: 'Compiled SQL',
-                // data: results.compiled_sql
-                //   ? format(results.compiled_sql.trim())
-                //   : 'No compiled sql',
                 data: results.compiled_sql
                   ? format(results.compiled_sql.trim())
                   : null,
