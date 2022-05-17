@@ -7,7 +7,7 @@ import { ColumnsProps } from '../components/Table';
 
 type TabType = {
   label: string;
-  data: string;
+  data: string | null;
   language: string;
 };
 
@@ -51,11 +51,11 @@ const generateHeader = ({
 
 const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
-  // console.log('tabs?.[0]?.data  ', tabs?.[0]?.data, tabs?.[0]?.data ? 'ok' : 'yy');
-  const jsonData = tabs?.[0]?.data ? JSON.parse(tabs?.[0]?.data) : null;
+  console.log('tabs ', tabs);
+
   const label1 = tabs?.[0]?.label;
 
-  // console.log('data ', jsonData);
+  const jsonData = label1 === 'Failures' && (tabs?.[0]?.data ? JSON.parse(tabs[0].data) : null);
 
   const columns: ColumnsProps[] = useMemo(() => {
     if (!jsonData) return [];
@@ -92,16 +92,18 @@ const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
           {generateHeader({ tabs, activeTab, setActiveTab })}
         </Fragment>
 
-        <li className="ml-auto">
-          <button
-            onClick={() => copyToClipboard(tabs[activeTab].data)}
-            type="button"
-            className="inline-flex items-center p-4 rounded-t-lg text-black copy-icon font-semibold"
-          >
-            <FaRegClipboard size={16} className="mr-2 text-black " />
-            Copy to clipboard
-          </button>
-        </li>
+        {tabs[activeTab].data && (
+          <li className="ml-auto">
+            <button
+              onClick={() => copyToClipboard(tabs[activeTab].data || undefined)}
+              type="button"
+              className="inline-flex items-center p-4 rounded-t-lg text-black copy-icon font-semibold"
+            >
+              <FaRegClipboard size={16} className="mr-2 text-black " />
+              Copy to clipboard
+            </button>
+          </li>
+        )}
       </ul>
 
       <div className="mt-3">

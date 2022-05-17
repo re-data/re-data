@@ -306,14 +306,18 @@ const TestDetails: FC = (): ReactElement => {
             tabs={[
               {
                 label: 'Failures',
-                data: results.failures_json || '',
+                // data: results.failures_json || '',
+                data: results.failures_json || null,
                 language: 'json',
               },
               {
                 label: 'Compiled SQL',
+                // data: results.compiled_sql
+                //   ? format(results.compiled_sql.trim())
+                //   : 'No compiled sql',
                 data: results.compiled_sql
                   ? format(results.compiled_sql.trim())
-                  : 'No compiled sql',
+                  : null,
                 language: 'sql',
               },
             ]}
