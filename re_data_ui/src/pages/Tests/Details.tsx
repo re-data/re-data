@@ -211,14 +211,17 @@ const TestDetails: FC = (): ReactElement => {
   });
 
   useEffect(() => {
-    const firstRunAt = Array.from(runAtOptions)?.[0];
+    if (!result) return;
+
+    const firstRunAt = runAt2 || Array.from(runAtOptions)?.[0];
     let res = (result as []) || [];
     if (firstRunAt) {
       res = result.filter((row) => row.run_at === firstRunAt) as [];
     }
+
     setData(res);
     setBackUpData((result as []) || []);
-  }, [result]);
+  }, [result, runAt2]);
 
   const handleChange = (option: SelectOptionProps | null) => {
     if (option && modelName) {
