@@ -6,7 +6,6 @@ interface DynamicTableType {
 }
 
 const DynamicTable = ({ values }: DynamicTableType): JSX.Element => {
-  console.log('values ', values);
   const columns: ColumnsProps[] = useMemo(() => {
     if (!values) return [];
     const keys = Object.keys(values?.[0]);

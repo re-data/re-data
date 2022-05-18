@@ -108,15 +108,9 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
 
     for (let index = 0; index < arr?.length; index++) {
       const element = arr[index];
-      // console.log('element ', element.run_at, runAt, element.runat === runAt);
-
-      if (element.run_at === runAt && (testName?.toLowerCase() === element.test_name?.toLowerCase())) {
-        console.log('element ', element, testName);
-      }
 
       if (testName?.toLowerCase() === element.test_name?.toLowerCase()) {
         runAts.add(element.run_at);
-        // runAts.add(dayjs((element.run_at)).format(dateTimeFormat));
         timelineData[element.run_at] = element.failures_count || '';
         if (element.run_at !== runAt) {
           testDetailsObject[element.run_at] = element;
@@ -132,9 +126,6 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
       }
     }
   }
-
-  // console.log('testDetailsObject ', testDetailsObject);
-  // console.log('val options ', val);
 
   return {
     options: val,
@@ -156,7 +147,7 @@ const TestDetails: FC = (): ReactElement => {
   const { runAt: _runAt } = useParams();
   const runAt = dayjs(Number(_runAt)).format(dateTimeFormat);
   const runAt2 = dayjs(Number(_runAt)).format(dateTimeFormat2);
-  // console.log('runAt >> ', runAt, runAt2);
+
   testName = testName?.toLowerCase();
 
   const columns: ColumnsProps[] = useMemo(
@@ -230,17 +221,11 @@ const TestDetails: FC = (): ReactElement => {
     }
   };
 
-  // console.log('testDetailsObject ', testDetailsObject);
-
   const results: TestData = useMemo(() => {
     const key = selectedOption || runAt2 || Array.from(runAtOptions)?.[0];
-    // runAt
-    console.log('i run again - ', key, testDetailsObject);
 
     return (testDetailsObject?.[key] as TestData) || {};
   }, [runAtOptions, testDetailsObject, selectedOption]);
-
-  console.log('results ', results);
 
   const handleRunAtChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const option = e.target.value;

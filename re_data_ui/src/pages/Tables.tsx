@@ -43,8 +43,6 @@ const Tables: React.FC = (): ReactElement => {
     return [result, result2];
   }, [graph, dbtMapping, model]);
 
-  console.log('tableSamples ', tableSamples.get(model));
-  // console.log('graph ', graph?.nodes?.[dbtMapping?.[model]]);
   const { init } = useModel();
 
   const handleChange = (option: SelectOptionProps | null) => {

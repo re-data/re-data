@@ -50,8 +50,6 @@ const generateHeader = ({
 
 const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
-  // console.log('tabs ', tabs);
-
   const label1 = tabs[0].label;
 
   const jsonData = label1 === 'Failures' && (tabs[0].data ? JSON.parse(tabs[0].data) : null);
