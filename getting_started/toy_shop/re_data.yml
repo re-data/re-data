@@ -1,6 +1,6 @@
 notifications:
   slack:
-    webhook_url: cooll
+    webhook_url:
   email:
     mail_from: mateusz@getre.io
     smtp_host: smtp.sendgrid.net
