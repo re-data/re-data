@@ -17,6 +17,7 @@ import {
   RedataOverviewContext,
   SchemaChange,
   SelectOptionProps,
+  TableSample,
   TestData,
 } from '../contexts/redataOverviewContext';
 import {
@@ -29,6 +30,7 @@ import {
   RE_DATA_OVERVIEW_FILE,
   stripQuotes,
   supportedResTypes,
+  TABLE_SAMPLE_FILE,
   TEST_FILE,
 } from '../utils';
 
@@ -214,6 +216,8 @@ type formatTestDataProps = {
   modelTestMapping: Record<string, TestData[]>;
 };
 
+const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+
 const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
   const testsObject: Record<string, TestData[]> = {};
   const failedTests: Record<string, TestData[]> = {};
@@ -225,7 +229,7 @@ const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
   for (let index = 0; index < tests.length; index++) {
     const element = tests[index];
     const run_at = dayjs(element.run_at).format(
-      'YYYY-MM-DD HH:mm:ss',
+      dateTimeFormat,
     ) as string;
 
     testData.push({
@@ -297,6 +301,7 @@ const Dashboard: React.FC = (): ReactElement => {
     macroDepends: {},
     modelTestMapping: {},
     testNameMapping: {},
+    tableSamples: new Map<string, TableSample>(),
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -310,16 +315,30 @@ const Dashboard: React.FC = (): ReactElement => {
         dbtManifestRequest,
         testRequest,
         metadataRequest,
+        tableSamplesRequest,
       ] = await Promise.all([
         fetch(RE_DATA_OVERVIEW_FILE, { headers }),
         fetch(DBT_MANIFEST_FILE, { headers }),
         fetch(TEST_FILE, { headers }),
         fetch(METADATA_FILE, { headers }),
+        fetch(TABLE_SAMPLE_FILE, { headers }),
       ]);
       const overviewData: Array<RawOverviewData> = await overviewRequest.json();
       const graphData: DbtGraph = await dbtManifestRequest.json();
       const metaData: MetaData = await metadataRequest.json();
       const testData: Array<TestData> = await testRequest.json();
+      const tableSamples: Array<TableSample> = await tableSamplesRequest.json();
+
+      const tableSamplesData = new Map<string, TableSample>();
+
+      for (let index = 0; index < tableSamples.length; index++) {
+        let { table_name, sampled_on, sample_data } = tableSamples[index];
+        table_name = table_name.replaceAll('"', '');
+        sampled_on = dayjs(sampled_on).format(dateTimeFormat);
+        sample_data = JSON.parse(sample_data);
+
+        tableSamplesData.set(table_name, { table_name, sampled_on, sample_data });
+      }
 
       const {
         tests, failedTests, testsObject, runAts, modelTestMapping,
@@ -344,6 +363,7 @@ const Dashboard: React.FC = (): ReactElement => {
         testNameMapping: {},
         macroModelUsedIn: {},
         macroDepends: {},
+        tableSamples: new Map<string, TableSample>(),
       };
       const {
         dbtMapping,
@@ -393,6 +413,7 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.failedTests = failedTests;
       overview.runAts = runAts;
       overview.modelTestMapping = modelTestMapping;
+      overview.tableSamples = tableSamplesData;
 
       console.log('overview -> ', overview);
       setReDataOverview(overview);

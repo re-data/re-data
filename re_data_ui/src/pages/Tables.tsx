@@ -5,6 +5,7 @@ import { FaRegSmileWink } from 'react-icons/all';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   EmptyContent, MetricCharts, SchemaChanges, Select, TableSchema,
+  DynamicTable,
 } from '../components';
 import {
   SelectOptionProps, OverviewData, ReDataModelDetails, RedataOverviewContext,
@@ -20,6 +21,7 @@ const Tables: React.FC = (): ReactElement => {
   const {
     modelNodes, dbtMapping,
     graph, modelNodesDepends,
+    tableSamples,
   } = overview;
   const [activeTab, setActiveTab] = useState('');
   const [callApi, setCallApi] = useState(true);
@@ -41,7 +43,6 @@ const Tables: React.FC = (): ReactElement => {
     return [result, result2];
   }, [graph, dbtMapping, model]);
 
-  console.log('graph ', graph?.nodes?.[dbtMapping?.[model]]);
   const { init } = useModel();
 
   const handleChange = (option: SelectOptionProps | null) => {
@@ -139,6 +140,13 @@ const Tables: React.FC = (): ReactElement => {
                   Code
                 </button>
               </li>
+              <li
+                className={`mr-4 ${activeTab === 'sample' && 'active-tab'}`}
+              >
+                <button type="button" onClick={() => handleScroll('sample')}>
+                  Sample
+                </button>
+              </li>
             </ul>
           </nav>
           <section id="anomalies" className="pb-4 pt-16 -mt-12">
@@ -208,12 +216,12 @@ const Tables: React.FC = (): ReactElement => {
                 tabs={[
                   {
                     label: 'SQL',
-                    data: rawSql ? rawSql.trim() : 'No SQL available',
+                    data: rawSql ? rawSql.trim() : null,
                     language: 'sql',
                   },
                   {
                     label: 'Compiled SQL',
-                    data: compiledSql ? compiledSql.trim() : 'No Compiled SQL available',
+                    data: compiledSql ? compiledSql.trim() : null,
                     language: 'sql',
                   },
                 ]}
@@ -233,6 +241,19 @@ const Tables: React.FC = (): ReactElement => {
                     </li>
                   ))}
                 </ul>
+              </div>
+            </div>
+          </section>
+          <section id="sample" className="pb-4 pt-4">
+            <div className="bg-white rounded-md px-3 py-4">
+              <h3 className="mb-3 text-md font-medium">Recent Rows</h3>
+              <div className="grid grid-cols-1 gap-4">
+                <DynamicTable
+                  values={
+                    (tableSamples.get(model)?.sample_data as unknown as Record<string, unknown>[])
+                    || null
+                  }
+                />
               </div>
             </div>
           </section>

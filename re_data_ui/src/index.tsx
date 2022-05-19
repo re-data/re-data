@@ -21,7 +21,7 @@ ReactDOM.render(
           <Route path="alerts" element={<Alerts />} />
           <Route path="graph" element={<GraphView />} />
           <Route path="tests" element={<Tests />} />
-          <Route path="tests/:testName" element={<TestDetails />} />
+          <Route path="tests/:testName/:runAt" element={<TestDetails />} />
           <Route path="tables" element={<Tables />} />
           <Route path="macros" element={<Macros />} />
         </Route>

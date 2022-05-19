@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, {
   ReactElement, useContext, useMemo, useState,
 } from 'react';
@@ -29,14 +30,16 @@ export type RightComponentProps = {
   showOptionLabel?: boolean;
 };
 
-const LinkCell = ({ value }: CellProps) => {
+const LinkCell = ({ value, row }: CellProps) => {
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { testNameMapping } = overview;
   const testName = testNameMapping[value?.toLowerCase()];
 
+  const runAt = dayjs(row.original.run_at).valueOf();
+
   return (
     <Link
-      to={`/tests/${value.toLowerCase()}`}
+      to={`/tests/${value.toLowerCase()}/${runAt}`}
       className="text-sm text-blue-700 font-semibold inline-flex flex-col"
     >
       {testName}
