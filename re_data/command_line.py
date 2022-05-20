@@ -17,7 +17,7 @@ import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
     generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export, \
-        ALERT_TYPES
+        ALERT_TYPES, validate_alert_types
 
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
@@ -436,9 +436,7 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
 @add_options(dbt_flags)
 @anonymous_tracking
 def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, select, **kwargs):
-    for alert_type in select:
-        if alert_type not in ALERT_TYPES:
-            raise click.BadOptionUsage("select", "%s not a valid alert type" % alert_type)
+    validate_alert_types(selected_alert_types=select)
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     selected_alert_types = set(select)
@@ -477,7 +475,7 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
 
     slack_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='slack')
 
-    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members)
+    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members, selected_alert_types=selected_alert_types)
     for model, details in alerts_per_model.items():
         owners = slack_members.get(model, [])
         slack_message = generate_slack_message(model, details, owners, subtitle, selected_alert_types)
@@ -509,9 +507,19 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
         Defaults to the 'target-path' used in dbt_project.yml
     """
 )
+@click.option(
+    '--select',
+    multiple=True,
+    default=ALERT_TYPES,
+    help="""
+        Specfy which alert types to generate. This accepts multiple options
+        e.g. --select anomaly --select schema_change
+    """)
 @add_options(dbt_flags)
 @anonymous_tracking
-def email(start_date, end_date, re_data_target_dir, **kwargs):
+def email(start_date, end_date, re_data_target_dir, select, **kwargs):
+    validate_alert_types(selected_alert_types=select)
+    selected_alert_types = set(select)
     config = read_re_data_config()
     validate_config_section(config, 'email')
     email_config = config.get('notifications').get('email')
@@ -550,7 +558,7 @@ def email(start_date, end_date, re_data_target_dir, **kwargs):
         monitored = json.load(f)
 
     email_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='email')
-    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=email_members)
+    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=email_members, selected_alert_types=selected_alert_types)
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     for model in alerts_per_model:
         owners = email_members.get(model, [])
