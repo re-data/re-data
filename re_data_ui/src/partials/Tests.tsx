@@ -102,7 +102,7 @@ const generateTestsData = (props: generateTestsDataProps) => {
     }
   }
 
-  return { result, runAts };
+  return { result: result.sort((a, b) => dayjs(b.run_at).diff(a.run_at)), runAts };
 };
 
 function TestsPartial(params: TP): ReactElement {
@@ -172,7 +172,7 @@ function TestsPartial(params: TP): ReactElement {
       runAtsData,
     });
 
-    setOptions(Array.from(runAts) as []);
+    setOptions(Array.from(runAts).sort((a, b) => dayjs(b).diff(a)) as []);
     setBackUpData(result as []);
     setData(result as []);
   }, [tests, modelName]);
