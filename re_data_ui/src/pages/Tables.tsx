@@ -194,7 +194,7 @@ const Tables: React.FC = (): ReactElement => {
             <div className="bg-white rounded-md px-3 py-4">
               <h3 className="mb-3 text-md font-medium">Lineage</h3>
               <div className="relative graph-view h-96">
-                <GraphPartial modelName={model} showModelDetails={false} />
+                <GraphPartial modelName={model} showModelDetails={false} showFilter={false} />
               </div>
             </div>
           </section>

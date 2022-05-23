@@ -286,7 +286,7 @@ const TestDetails: FC = (): ReactElement => {
           <h4 className="font-bold text-xl">By Run</h4>
           <RightComponent
             showOptionLabel={false}
-            options={Array.from(runAtOptions) as []}
+            options={Array.from(runAtOptions).sort((a, b) => dayjs(b).diff(a)) as []}
             value={selectedOption || runAt2 || Array.from(runAtOptions)?.[0]}
             handleChange={handleRunAtChange}
           />

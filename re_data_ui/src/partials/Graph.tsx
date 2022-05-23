@@ -249,6 +249,7 @@ const generateGraph = (
 export interface GraphPartialProps {
   modelName?: string | null;
   showModelDetails?: boolean;
+  showFilter?: boolean;
 }
 
 export enum ModelTabs {
@@ -262,6 +263,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
   const {
     modelName = null,
     showModelDetails = true,
+    showFilter = true,
   } = params;
   const [monitored, setMonitored] = useState(true);
   const [, setURLSearchParams] = useSearchParams();
@@ -337,14 +339,16 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
 
   return (
     <>
-      <div className="absolute top-0 left-32 w-1/4">
-        <Select
-          value={{ label: model, value: model }}
-          options={nodes}
-          handleChange={handleChange}
-          placeholder="Please enter a table name to highlight node"
-        />
-      </div>
+      {showFilter && (
+        <div className="absolute top-0 left-32 w-1/4">
+          <Select
+            value={{ label: model, value: model }}
+            options={nodes}
+            handleChange={handleChange}
+            placeholder="Please enter a table name to highlight node"
+          />
+        </div>
+      )}
 
       <div className="flex justify-between items-center absolute mt-4 ml-4 mr-20 z-20 w-2/3">
         <div className="flex items-center">
