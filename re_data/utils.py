@@ -7,6 +7,7 @@ import json
 import os
 from dbt.config.project import Project
 import pkg_resources
+from click import BadOptionUsage
 
 
 try:
@@ -57,7 +58,7 @@ def parse_dbt_vars(dbt_vars_string) -> Dict[str, Any]:
     return dbt_vars
 
 
-def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str, Tuple[str, str]]) -> dict:
+def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str, Tuple[str, str]], selected_alert_types: set) -> dict:
     """
     Prepares alerts per model for slack message generation.
     """
@@ -71,11 +72,11 @@ def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str,
                 'tests': [],
                 'owners': [k[0] for k in members_per_model.get(model, [])] or ['allUsers', 'allGroups'],
             }
-        if alert['type'] == 'anomaly':
+        if alert['type'] == 'anomaly' and alert['type'] in selected_alert_types:
             alerts_per_model[model]['anomalies'].append(alert)
-        elif alert['type'] == 'schema_change':
+        elif alert['type'] == 'schema_change' and alert['type'] in selected_alert_types:
             alerts_per_model[model]['schema_changes'].append(alert)
-        elif alert['type'] == 'test':
+        elif alert['type'] == 'test' and alert['type'] in selected_alert_types:
             alerts_per_model[model]['tests'].append(alert)
     return alerts_per_model
 
@@ -293,3 +294,8 @@ def normalize_re_data_json_export(path: str):
     # overwrite the original file with the normalized data
     with open(path, 'w+', encoding='utf-8') as f:
         json.dump(normalized_json_data, f)
+
+def validate_alert_types(selected_alert_types: List[str]):
+    for alert_type in selected_alert_types:
+        if alert_type not in ALERT_TYPES:
+            raise BadOptionUsage("select", "%s not a valid alert type" % alert_type)
