@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext } from 'react';
+import React, { ReactElement, Fragment, useContext } from 'react';
 import {
   BiCog,
   BiCodeCurly,
@@ -104,13 +104,15 @@ const Sidebar: React.FC = (): ReactElement => {
             <span>Macros</span>
           </NavLink>
 
-          <NavLink
-            to="settings"
-            className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
-          >
-            <BiCog size="1.25em" />
-            <span>Settings</span>
-          </NavLink>
+          <div className="mt-5">
+            <NavLink
+              to="settings"
+              className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+            >
+              <BiCog size="1.25em" />
+              <span>Settings</span>
+            </NavLink>
+          </div>
         </nav>
       </div>
 

@@ -8,6 +8,7 @@ import Tests from './pages/Tests/index';
 import TestDetails from './pages/Tests/Details';
 import Tables from './pages/Tables';
 import Macros from './pages/Macros';
+import Settings from './pages/Settings';
 import Dashboard from './pages/Dashboard';
 import GraphView from './pages/GraphView';
 import reportWebVitals from './reportWebVitals';
@@ -24,6 +25,7 @@ ReactDOM.render(
           <Route path="tests/:testName" element={<TestDetails />} />
           <Route path="tables" element={<Tables />} />
           <Route path="macros" element={<Macros />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Route>
     </Routes>
