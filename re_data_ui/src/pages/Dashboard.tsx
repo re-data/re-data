@@ -19,7 +19,6 @@ import {
   SelectOptionProps,
   TableSample,
   TestData,
-  MonitoredData,
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey,
