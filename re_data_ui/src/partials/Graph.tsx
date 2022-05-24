@@ -3,9 +3,12 @@ import React, {
 } from 'react';
 import { Elements } from 'react-flow-renderer';
 import { useSearchParams } from 'react-router-dom';
-import { FlowGraph, ModelDetails, Toggle } from '../components';
 import {
-  DbtNode, DbtSource, OverviewData, ReDataModelDetails, RedataOverviewContext,
+  FlowGraph, ModelDetails, Toggle, Select,
+} from '../components';
+import { optionsProps } from '../components/Select';
+import {
+  DbtNode, DbtSource, OverviewData, ReDataModelDetails, RedataOverviewContext, SelectOptionProps,
 } from '../contexts/redataOverviewContext';
 import {
   generateEdge, generateModelId, generateNode, supportedResTypes,
@@ -19,6 +22,11 @@ type GenerateGraphProps = {
   modelType?: string | null;
   monitored?: boolean;
   alerts?: AlertsType;
+}
+
+type GenerateGraphResponseProps = {
+  elements: Elements;
+  nodes: Array<optionsProps>;
 }
 
 const getAlertData = (modelId: string, aggregatedModels: Map<string, ReDataModelDetails>) => {
@@ -36,13 +44,15 @@ const generateGraph = (
     modelType, monitored,
     alerts,
   }: GenerateGraphProps,
-): Elements => {
+): GenerateGraphResponseProps => {
   const elements: Elements = [];
   const elementObj: Record<string, string> = {};
   const edgesArr: Record<string, string>[] = [];
 
+  const nodes: optionsProps[] = [];
+
   if (!overview.graph || !overview.modelNodes) {
-    return elements;
+    return { elements, nodes };
   }
 
   const {
@@ -81,6 +91,10 @@ const generateGraph = (
       anomalies: anomalies?.size > 0,
       schemaChanges: schemaChanges?.length > 0,
     });
+    nodes.push({
+      label: modelId,
+      value: modelId,
+    });
     elements.push(n);
     elementObj[modelId] = '0';
 
@@ -106,6 +120,11 @@ const generateGraph = (
           failedTests: failedTestKeys?.has(parentModelId),
           anomalies: parentAnomalies?.size > 0,
           schemaChanges: parentSchemaChanges?.length > 0,
+        });
+
+        nodes.push({
+          label: parentModelId,
+          value: parentModelId,
         });
         elements.push(parentNode);
         elementObj[parentModelId] = key?.toString();
@@ -140,6 +159,10 @@ const generateGraph = (
           anomalies: childAnomalies?.size > 0,
           failedTests: failedTestKeys?.has(childModelId),
           schemaChanges: childSchemaChanges?.length > 0,
+        });
+        nodes.push({
+          label: childModelId,
+          value: childModelId,
         });
         elements.push(childNode);
         elementObj[childModelId] = key?.toString();
@@ -187,6 +210,10 @@ const generateGraph = (
       });
       elementObj[modelId] = index?.toString();
 
+      nodes.push({
+        label: modelId,
+        value: modelId,
+      });
       elements.push(node);
 
       if (details.resource_type !== 'source') {
@@ -216,12 +243,13 @@ const generateGraph = (
     }
   }
 
-  return elements;
+  return { elements, nodes };
 };
 
 export interface GraphPartialProps {
   modelName?: string | null;
   showModelDetails?: boolean;
+  showFilter?: boolean;
 }
 
 export enum ModelTabs {
@@ -235,6 +263,7 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
   const {
     modelName = null,
     showModelDetails = true,
+    showFilter = true,
   } = params;
   const [monitored, setMonitored] = useState(true);
   const [, setURLSearchParams] = useSearchParams();
@@ -253,11 +282,11 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
     if (tab === 'test') {
       setActiveTab(ModelTabs.TESTS);
     } else {
-      setActiveTab(tab as ModelTabs);
+      setActiveTab(tab ? tab as ModelTabs : ModelTabs.ANOMALIES);
     }
   }, []);
 
-  const elements: Elements = generateGraph({
+  const { elements, nodes } = generateGraph({
     overview,
     modelName,
     modelType,
@@ -298,8 +327,29 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
     }
   };
 
+  const handleChange = (option: SelectOptionProps | null) => {
+    if (option) {
+      if (activeTab) {
+        setURLSearchParams({ model: option.value, tab: activeTab });
+      } else {
+        setURLSearchParams({ model: option.value });
+      }
+    }
+  };
+
   return (
     <>
+      {showFilter && (
+        <div className="absolute top-0 left-32 w-1/4">
+          <Select
+            value={{ label: model, value: model }}
+            options={nodes}
+            handleChange={handleChange}
+            placeholder="Please enter a table name to highlight node"
+          />
+        </div>
+      )}
+
       <div className="flex justify-between items-center absolute mt-4 ml-4 mr-20 z-20 w-2/3">
         <div className="flex items-center">
           <button

@@ -50,6 +50,7 @@ seeds:
             - distinct_values
 
 vars:
+  re_data:store_table_samples: true
   re_data:anomaly_detector:
     name: modified_z_score
     threshold: 3

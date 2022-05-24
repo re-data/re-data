@@ -1,3 +1,4 @@
+from email.policy import default
 import click
 import subprocess
 import json
@@ -15,7 +16,8 @@ from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
-    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export
+    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export, \
+        ALERT_TYPES, validate_alert_types
 
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
@@ -276,6 +278,8 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     dbt_target_path, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     overview_path = os.path.join(re_data_target_path, 'overview.json')
     metadata_path = os.path.join(re_data_target_path, 'metadata.json')
+    tests_history_path = os.path.join(re_data_target_path, 'tests_history.json')
+    table_samples_path = os.path.join(re_data_target_path, 'table_samples.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     metadata = load_metadata_from_project(kwargs)
 
@@ -290,6 +294,30 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     add_dbt_flags(command_list, kwargs)
     completed_process = subprocess.run(command_list)
     completed_process.check_returncode()
+
+    # export tests history
+    tests_history_args = {
+        'start_date': start_date,
+        'end_date': end_date,
+        'tests_history_path': tests_history_path
+    }
+    tests_history_command_list = ['dbt', 'run-operation', 'export_tests_history', '--args', yaml.dump(tests_history_args)]
+    if dbt_vars: tests_history_command_list.extend(['--vars', yaml.dump(dbt_vars)])
+    add_dbt_flags(tests_history_command_list, kwargs)
+    th_completed_process = subprocess.run(tests_history_command_list)
+    th_completed_process.check_returncode()
+
+    # export table samples
+    table_samples_args = {
+        'start_date': start_date,
+        'end_date': end_date,
+        'table_samples_path': table_samples_path
+    }
+    table_samples_command_list = ['dbt', 'run-operation', 'export_table_samples', '--args', yaml.dump(table_samples_args)]
+    if dbt_vars: table_samples_command_list.extend(['--vars', yaml.dump(dbt_vars)])
+    add_dbt_flags(table_samples_command_list, kwargs)
+    ts_completed_process = subprocess.run(table_samples_command_list)
+    ts_completed_process.check_returncode()
 
     # write metadata to re_data target path
     with open(metadata_path, 'w+', encoding='utf-8') as f:
@@ -311,6 +339,8 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     shutil.copyfile(OVERVIEW_INDEX_FILE_PATH, target_file_path)
 
     normalize_re_data_json_export(overview_path)
+    normalize_re_data_json_export(tests_history_path)
+    normalize_re_data_json_export(table_samples_path)
 
     print(
         f"Generating overview page", chalk.green("SUCCESS")
@@ -395,11 +425,21 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
         Defaults to the 'target-path' used in dbt_project.yml
     """
 )
+@click.option(
+    '--select',
+    multiple=True,
+    default=ALERT_TYPES,
+    help="""
+        Specfy which alert types to generate. This accepts multiple options
+        e.g. --select anomaly --select schema_change
+    """)
 @add_options(dbt_flags)
 @anonymous_tracking
-def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwargs):
+def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, select, **kwargs):
+    validate_alert_types(selected_alert_types=select)
     start_date = str(start_date.date())
     end_date = str(end_date.date())
+    selected_alert_types = set(select)
 
     if not webhook_url: # if webhook_url is via arguments, check the config file
         config = read_re_data_config()
@@ -435,10 +475,10 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
 
     slack_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='slack')
 
-    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members)
+    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members, selected_alert_types=selected_alert_types)
     for model, details in alerts_per_model.items():
         owners = slack_members.get(model, [])
-        slack_message = generate_slack_message(model, details, owners, subtitle)
+        slack_message = generate_slack_message(model, details, owners, subtitle, selected_alert_types)
         slack_notify(webhook_url, slack_message)
     print(
         f"Notification sent", chalk.green("SUCCESS")
@@ -467,9 +507,19 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, **kwa
         Defaults to the 'target-path' used in dbt_project.yml
     """
 )
+@click.option(
+    '--select',
+    multiple=True,
+    default=ALERT_TYPES,
+    help="""
+        Specfy which alert types to generate. This accepts multiple options
+        e.g. --select anomaly --select schema_change
+    """)
 @add_options(dbt_flags)
 @anonymous_tracking
-def email(start_date, end_date, re_data_target_dir, **kwargs):
+def email(start_date, end_date, re_data_target_dir, select, **kwargs):
+    validate_alert_types(selected_alert_types=select)
+    selected_alert_types = set(select)
     config = read_re_data_config()
     validate_config_section(config, 'email')
     email_config = config.get('notifications').get('email')
@@ -508,7 +558,7 @@ def email(start_date, end_date, re_data_target_dir, **kwargs):
         monitored = json.load(f)
 
     email_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='email')
-    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=email_members)
+    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=email_members, selected_alert_types=selected_alert_types)
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     for model in alerts_per_model:
         owners = email_members.get(model, [])
