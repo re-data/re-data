@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   FC,
-  Key,
   ReactElement,
   useCallback,
   useContext,
@@ -13,7 +12,6 @@ import {
   RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import { CodeFormatter } from '../partials';
-import { isEmpty } from '../utils';
 
 const Settings: FC = (): ReactElement => {
   const [toggleAccordion, setToggleAccordion] = useState<number | null>(0);
