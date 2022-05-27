@@ -106,11 +106,14 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
     const arr = testsObject[modelName];
     const valSet = new Set();
 
+    console.log('arr', arr);
+
     for (let index = 0; index < arr?.length; index++) {
       const element = arr[index];
 
       if (testName?.toLowerCase() === element.test_name?.toLowerCase()) {
         runAts.add(element.run_at);
+        console.log('element > ', element);
         timelineData[element.run_at] = element.failures_count || '';
         if (element.run_at !== runAt) {
           testDetailsObject[element.run_at] = element;

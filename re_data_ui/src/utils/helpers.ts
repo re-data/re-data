@@ -126,3 +126,13 @@ export const generateModelId = (details: DbtNode | DbtSource): string => {
 export const copyToClipboard = (text?: string): Promise<void> => navigator.clipboard.writeText(text || '');
 
 export const PROJECT_NAME = 're_data';
+
+export const isObject = (obj: unknown): boolean => typeof obj === 'object' && obj !== null;
+
+export const isEmpty = (obj: unknown): boolean => Boolean(typeof obj === 'object' && obj && Object.keys(obj).length === 0);
+// {
+//   if (obj) {
+//     return !Object.entries(obj).length;
+//   }
+//   return true;
+// };

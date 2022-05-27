@@ -56,3 +56,8 @@
     transform: rotate(360deg);
   }
 }
+
+
+.settings-sidebar .active {
+  @apply bg-gray-800 text-white font-semibold
+}
