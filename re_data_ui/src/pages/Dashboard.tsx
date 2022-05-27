@@ -337,8 +337,6 @@ const Dashboard: React.FC = (): ReactElement => {
       const tableSamplesData = new Map<string, TableSample>();
       const monitoredData = [];
 
-      // console.log('monitoredData ', monitoredRes);
-
       for (let index = 0; index < monitoredRes.length; index++) {
         let {
           anomaly_detector, columns, metrics, model, owners,
@@ -350,8 +348,6 @@ const Dashboard: React.FC = (): ReactElement => {
         metrics = JSON.parse(metrics);
         owners = JSON.parse(owners);
 
-        // console.log('res ', (anomaly_detector), (columns), (metrics), (model), (owners));
-
         monitoredData.push({
           anomalyDetector: anomaly_detector,
           columns,
@@ -362,7 +358,6 @@ const Dashboard: React.FC = (): ReactElement => {
         });
       }
 
-      // console.log('monitoredData ', monitoredData);
       for (let index = 0; index < tableSamples.length; index++) {
         let { table_name, sampled_on, sample_data } = tableSamples[index];
         table_name = table_name.replaceAll('"', '');

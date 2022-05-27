@@ -36,8 +36,6 @@ const Settings: FC = (): ReactElement => {
         anomalyDetector, columns, metrics, model, owners, timeFilter,
       } = monitoredData[index];
 
-      // console.log('metrics ', metrics);
-
       result.push(
         <div
           className={`py-4 ${
@@ -165,6 +163,7 @@ const Settings: FC = (): ReactElement => {
               <CodeFormatter
                 code={(JSON.stringify(value, null, 3))}
                 language="json"
+                mode="light"
               />
             </div>
           </div>,
@@ -183,40 +182,42 @@ const Settings: FC = (): ReactElement => {
   );
 
   return (
-    <section className="h-min-full w-full">
-      <h2 className="mb-8 text-2xl font-bold">Settings</h2>
-      <div className="grid grid-cols-6 gap-4 ">
-        <aside className="rounded-md bg-white shadow-lg settings-sidebar">
-          <ul className="my-4">
-            <li
-              className={`text-sm font-medium p-3 mb-5 cursor-pointer ${
-                activeView === 'monitored' ? 'active' : ''
-              }`}
-              onClick={toggleActiveView.bind(null, 'monitored')}
-              role="presentation"
-            >
-              Monitored
-            </li>
-            <li
-              className={`text-sm font-medium p-3 mb-5 cursor-pointer ${
-                activeView === 'dbt' ? 'active' : ''
-              }`}
-              onClick={toggleActiveView.bind(null, 'dbt')}
-              role="presentation"
-            >
-              DBT
-            </li>
-          </ul>
-        </aside>
-        <div className="col-span-5  bg-white rounded-md p-4 shadow-lg">
-          <div className="accordion px-2 mb-20">
-            {activeView === 'monitored'
-              ? renderReDataInformation()
-              : renderDBTInformation()}
+    <div>
+      <section className="min-h-full w-full">
+        <h2 className="mb-8 text-2xl font-bold">Settings</h2>
+        <div className="flex gap-1 justify-between h-inherit">
+          <aside className=" settings-sidebar w-32">
+            <ul className="my-4">
+              <li
+                className={`text-sm font-medium py-2 pl-0 mb-2 w-max cursor-pointer ${
+                  activeView === 'monitored' ? 'active' : ''
+                }`}
+                onClick={toggleActiveView.bind(null, 'monitored')}
+                role="presentation"
+              >
+                Tables
+              </li>
+              <li
+                className={`text-sm font-medium p-3 pl-0 mb-2 w-max cursor-pointer ${
+                  activeView === 'dbt' ? 'active' : ''
+                }`}
+                onClick={toggleActiveView.bind(null, 'dbt')}
+                role="presentation"
+              >
+                Vars
+              </li>
+            </ul>
+          </aside>
+          <div className="col-span-5  bg-white rounded-md p-4 shadow-lg w-full">
+            <div className="accordion px-2 mb-20">
+              {activeView === 'monitored'
+                ? renderReDataInformation()
+                : renderDBTInformation()}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };
 

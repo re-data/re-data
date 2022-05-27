@@ -59,5 +59,8 @@
 
 
 .settings-sidebar .active {
-  @apply bg-gray-800 text-white font-semibold
+  @apply font-bold;
+  /* border-bottom: 3px solid rgba(57,35,150); */
+  border-bottom: 3px solid rgba(57,35,150, var(--tw-bg-opacity));
+  
 }

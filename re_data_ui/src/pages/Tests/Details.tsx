@@ -38,6 +38,8 @@ const values = ({ timelineData }: valuesProps) => {
       .sort(([x]: [string, string], [y]: [string, string]) => dayjs(x).diff(y))
       .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
+    console.log('timelineData', timelineData);
+
     const data = Object.values(timelineVal);
     const runAt = Object.keys(timelineVal);
 
@@ -106,15 +108,12 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
     const arr = testsObject[modelName];
     const valSet = new Set();
 
-    console.log('arr', arr);
-
     for (let index = 0; index < arr?.length; index++) {
       const element = arr[index];
 
       if (testName?.toLowerCase() === element.test_name?.toLowerCase()) {
         runAts.add(element.run_at);
-        console.log('element > ', element);
-        timelineData[element.run_at] = element.failures_count || '';
+        timelineData[element.run_at] = element.failures_count || '0';
         if (element.run_at !== runAt) {
           testDetailsObject[element.run_at] = element;
         }
