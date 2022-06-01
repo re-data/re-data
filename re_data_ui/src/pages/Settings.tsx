@@ -36,6 +36,11 @@ const Settings: FC = (): ReactElement => {
         anomalyDetector, columns, metrics, model, owners, timeFilter,
       } = monitoredData[index];
 
+      const splitModel = model.split('.');
+      const modelName = splitModel.at(splitModel.length - 1);
+      splitModel.pop();
+      const modelPath = splitModel.join('.');
+
       result.push(
         <div
           className={`py-4 ${
@@ -48,7 +53,10 @@ const Settings: FC = (): ReactElement => {
             className="flex cursor-pointer justify-between bg-white accordion-head"
             onClick={toggleThisAccordion.bind(null, index)}
           >
-            <h3 className="font-bold text-lg">{model}</h3>
+            <div>
+              <h3 className="font-bold text-lg">{modelName}</h3>
+              <p className="italic text-xs">{modelPath}</p>
+            </div>
 
             {toggleAccordion === index ? (
               <BsArrowUpCircle size="1.25em" />
@@ -198,7 +206,7 @@ const Settings: FC = (): ReactElement => {
                 Tables
               </li>
               <li
-                className={`text-sm font-medium p-3 pl-0 mb-2 w-max cursor-pointer ${
+                className={`text-sm font-medium py-2 pl-0 mb-2 w-max cursor-pointer ${
                   activeView === 'dbt' ? 'active' : ''
                 }`}
                 onClick={toggleActiveView.bind(null, 'dbt')}
