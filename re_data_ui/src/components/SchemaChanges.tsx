@@ -2,7 +2,6 @@ import React, { ReactElement } from 'react';
 import { FaRegSmileBeam } from 'react-icons/all';
 import { generateSchemaChangeMessage } from '../utils/helpers';
 import { ReDataModelDetails } from '../contexts/redataOverviewContext';
-// import AlertBadge from './AlertBadge';
 import EmptyContent from './EmptyContent';
 import colors from '../utils/colors.js';
 
@@ -47,7 +46,6 @@ function SchemaChanges(params: SchemaChangesProps): ReactElement {
                               <div
                                 className="text-gray-900"
                               >
-                                {/* <AlertBadge label="schema" /> */}
                                 {generateSchemaChangeMessage(change)}
                               </div>
                             </td>

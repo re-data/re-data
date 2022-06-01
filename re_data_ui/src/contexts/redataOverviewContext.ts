@@ -153,6 +153,15 @@ export interface TableSample {
   table_name: string;
 }
 
+export interface MonitoredData {
+  anomalyDetector: Record<string, string | number>,
+  columns: Array<string>
+  metrics: Record<string, Array<string>>,
+  model: string,
+  owners: Record<string, Record<string, string>>,
+  timeFilter: string,
+}
+
 export interface TestData {
   column_name: string,
   compiled_sql?: string
@@ -275,6 +284,7 @@ export interface OverviewData {
   tests: Array<TestData>;
   testsObject: Record<string, TestData[]>;
   tableSamples: Map<string, TableSample>;
+  monitoredData: Array<MonitoredData>;
 }
 
 export interface SelectOptionProps {
@@ -310,4 +320,5 @@ export const RedataOverviewContext = React.createContext<OverviewData>({
   modelTestMapping: {},
   testNameMapping: {},
   tableSamples: new Map<string, TableSample>(),
+  monitoredData: [],
 });

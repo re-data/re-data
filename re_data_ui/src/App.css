@@ -28,6 +28,26 @@
   color: #61dafb;
 }
 
+.accordion {
+	width: 100%;
+	overflow: hidden;	
+}
+.accordion-header {
+  position: relative;
+}
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  will-change: max-height;
+  transition: all 0.25s ease-out;
+  opacity: 0;
+}
+.accordion-content.active {
+  opacity: 1;
+  max-height: 100%;
+  display: block;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -35,4 +55,12 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.settings-sidebar .active {
+  @apply font-bold;
+  /* border-bottom: 3px solid rgba(57,35,150); */
+  border-bottom: 3px solid rgba(57,35,150, var(--tw-bg-opacity));
+  
 }

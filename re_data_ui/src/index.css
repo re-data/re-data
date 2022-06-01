@@ -21,7 +21,7 @@ code {
 }
 
 .navlink {
-    @apply flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-600 hover:text-white
+    @apply flex items-center space-x-2 mb-2 py-2 px-4 transition duration-200 hover:bg-gray-600 hover:text-white
 }
 
 .navlink.active {
