@@ -203,6 +203,7 @@ export interface MetaData {
   },
   version: string,
   generated_at: string,
+  re_data_args?: Record<string, unknown>,
 }
 
 export interface AggregatedMetrics {

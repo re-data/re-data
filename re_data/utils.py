@@ -269,7 +269,7 @@ def send_mime_email(
     server.quit()
 
     
-def load_metadata_from_project(kwargs) -> Dict:
+def load_metadata_from_project(start_date, end_date, interval, kwargs) -> Dict:
     project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
     partial = Project.partial_load(project_root)
     version = pkg_resources.require("re_data")[0].version
@@ -277,7 +277,12 @@ def load_metadata_from_project(kwargs) -> Dict:
         'project_dict': partial.project_dict,
         'packages': partial.packages_dict,
         'version': version,
-        'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+        'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
+        're_data_args': {
+            'start_date': start_date,
+            'end_date': end_date,
+            'interval': interval
+        }
     }
     return metadata
 

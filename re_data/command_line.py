@@ -281,7 +281,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     tests_history_path = os.path.join(re_data_target_path, 'tests_history.json')
     table_samples_path = os.path.join(re_data_target_path, 'table_samples.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
-    metadata = load_metadata_from_project(kwargs)
+    metadata = load_metadata_from_project(start_date, end_date, interval, kwargs)
 
     args = {
         'start_date': start_date,

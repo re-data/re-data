@@ -13,10 +13,12 @@ import {
 } from '../contexts/redataOverviewContext';
 import { CodeFormatter } from '../partials';
 
+type activeViewTypes = 'monitored' | 'dbt' | 'timeline';
+
 const Settings: FC = (): ReactElement => {
   const [toggleAccordion, setToggleAccordion] = useState<number | null>(0);
 
-  const [activeView, setActiveView] = useState<string>('monitored');
+  const [activeView, setActiveView] = useState<activeViewTypes>('monitored');
 
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { monitoredData, metaData } = overview;
@@ -37,8 +39,7 @@ const Settings: FC = (): ReactElement => {
       } = monitoredData[index];
 
       const splitModel = model.split('.');
-      const modelName = splitModel.at(splitModel.length - 1);
-      splitModel.pop();
+      const modelName = splitModel.pop();
       const modelPath = splitModel.join('.');
 
       result.push(
@@ -182,12 +183,60 @@ const Settings: FC = (): ReactElement => {
     return result.length ? result : null;
   };
 
+  const renderTimelineInformation = () => {
+    const result = [];
+    if (metaData && metaData.re_data_args) {
+      let index = 0;
+      for (const [key, value] of Object.entries(metaData.re_data_args)) {
+        result.push(
+          <div
+            className={`py-4 ${monitoredData.length !== index + 1 ? 'border-b' : 'border-b-0'
+            }`}
+            key={index}
+          >
+            <div
+              role="presentation"
+              className="flex cursor-pointer justify-between bg-white accordion-head"
+              onClick={toggleThisAccordion.bind(null, index)}
+            >
+              <h3 className="font-bold text-lg">{key}</h3>
+
+              {toggleAccordion === index ? (
+                <BsArrowUpCircle size="1.25em" />
+              ) : (
+                <BsArrowDownCircle size="1.25em" />
+              )}
+            </div>
+            <div
+              className={`pr-10 pt-5 accordion-content text-sm ${toggleAccordion === index ? 'active' : ''
+              }`}
+            >
+              <CodeFormatter
+                code={(JSON.stringify(value, null, 3))}
+                language="json"
+                mode="light"
+              />
+            </div>
+          </div>,
+        );
+        index += 1;
+      }
+    }
+    return result.length ? result : null;
+  };
+
   const toggleActiveView = useCallback(
     (view) => {
       setActiveView(view);
     },
     [activeView],
   );
+
+  const view = {
+    monitored: renderReDataInformation(),
+    dbt: renderDBTInformation(),
+    timeline: renderTimelineInformation(),
+  };
 
   return (
     <div>
@@ -214,13 +263,20 @@ const Settings: FC = (): ReactElement => {
               >
                 Vars
               </li>
+              <li
+                className={`text-sm font-medium py-2 pl-0 mb-2 w-max cursor-pointer ${
+                  activeView === 'timeline' ? 'active' : ''
+                }`}
+                onClick={toggleActiveView.bind(null, 'timeline')}
+                role="presentation"
+              >
+                Timeline
+              </li>
             </ul>
           </aside>
           <div className="col-span-5  bg-white rounded-md p-4 shadow-lg w-full">
             <div className="accordion px-2 mb-20">
-              {activeView === 'monitored'
-                ? renderReDataInformation()
-                : renderDBTInformation()}
+              {view[activeView]}
             </div>
           </div>
         </div>
