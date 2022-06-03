@@ -39,8 +39,7 @@ const Settings: FC = (): ReactElement => {
       } = monitoredData[index];
 
       const splitModel = model.split('.');
-      const modelName = splitModel.at(splitModel.length - 1);
-      splitModel.pop();
+      const modelName = splitModel.pop();
       const modelPath = splitModel.join('.');
 
       result.push(
