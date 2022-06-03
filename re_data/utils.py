@@ -42,7 +42,7 @@ def format_alerts_to_table(alerts: list, limit=None) -> str:
             alert['time_window_end'],
         ])
     if limit: 
-        table = table[:10]
+        table = table[:limit]
     return tabulate(table, headers=['Message', 'Value', 'Time Window'], tablefmt='orgtbl')
 
 def safe_load(content) -> Optional[Dict[str, Any]]:
@@ -64,7 +64,7 @@ def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str,
     """
     alerts_per_model = {}
     for alert in alerts:
-        model = alert['model'].replace('"', '')
+        model = alert['model'].replace('"', '').replace('`', '')
         if model not in alerts_per_model:
             alerts_per_model[model] = {
                 'anomalies': [],
@@ -91,7 +91,7 @@ def build_notification_identifiers_per_model(monitored_list: list, channel) -> D
     """
     obj = defaultdict(list)
     for monitored in monitored_list:
-        model = monitored['model'].replace('"', '')
+        model = monitored['model'].replace('"', '').replace('`', '')
         members = json.loads(monitored.get('owners')) or {}
         for identifier, details in members.items():
             notify_channel = details.get('notify_channel')
