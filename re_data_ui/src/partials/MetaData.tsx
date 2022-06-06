@@ -2,10 +2,11 @@ import React, { Fragment, useState } from 'react';
 import { FaRegClipboard } from 'react-icons/all';
 import { copyToClipboard } from '../utils';
 import CodeFormatter from './CodeFormatter';
+import { DynamicTable } from '../components';
 
 type TabType = {
   label: string;
-  data: string;
+  data: string | null;
   language: string;
 };
 
@@ -49,6 +50,9 @@ const generateHeader = ({
 
 const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
+  const label1 = tabs[0].label;
+
+  const jsonData = label1 === 'Failures' && (tabs[0].data ? JSON.parse(tabs[0].data) : null);
 
   return (
     <section>
@@ -57,24 +61,41 @@ const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
           {generateHeader({ tabs, activeTab, setActiveTab })}
         </Fragment>
 
-        <li className="ml-auto">
-          <button
-            onClick={() => copyToClipboard(tabs[activeTab].data)}
-            type="button"
-            className="inline-flex items-center p-4 rounded-t-lg text-black copy-icon font-semibold"
-          >
-            <FaRegClipboard size={16} className="mr-2 text-black " />
-            Copy to clipboard
-          </button>
-        </li>
+        {tabs[activeTab].data && (
+          <li className="ml-auto">
+            <button
+              onClick={() => copyToClipboard(tabs[activeTab].data || undefined)}
+              type="button"
+              className="inline-flex items-center p-4 rounded-t-lg text-black copy-icon font-semibold"
+            >
+              <FaRegClipboard size={16} className="mr-2 text-black " />
+              Copy to clipboard
+            </button>
+          </li>
+        )}
       </ul>
 
       <div className="mt-3">
         <div className="flex flex-col mt-2 rounded-md overflow-hidden">
-          <CodeFormatter
-            code={tabs[activeTab].data}
-            language={tabs[activeTab].language}
-          />
+          {tabs[activeTab].label === 'Failures' ? (
+            <>
+              {jsonData ? (
+                <DynamicTable
+                  values={
+                    (jsonData as unknown as Record<string, unknown>[])
+                    || null
+                  }
+                />
+              ) : (
+                <p className="text-sm font-semibold">No Failure json available</p>
+              )}
+            </>
+          ) : (
+            <CodeFormatter
+              code={tabs[activeTab].data || `No ${tabs[activeTab].label} available`}
+              language={tabs[activeTab].language}
+            />
+          )}
         </div>
       </div>
     </section>

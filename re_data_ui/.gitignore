@@ -26,6 +26,9 @@ overview.json
 public/overview.json
 public/metadata.json
 public/monitored.json
+public/alerts.json
+public/table_samples.json
+public/tests_history.json
 
 yarn.lock
 public/dbt_manifest.json

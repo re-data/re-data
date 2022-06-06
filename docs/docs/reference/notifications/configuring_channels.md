@@ -21,6 +21,9 @@ re_data notify slack \
 --start-date 2021-01-01 \
 --end-date 2021-01-31 \
 --webhook-url https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX \
+--select anomaly \
+--select test \
+--select schema_change \
 --subtitle="[Optional] Markdown text to be added as a subtitle in the slack message generated"
 ```
 
@@ -65,7 +68,10 @@ Email alerts can now be sent using the command as shown below
 ```bash
 re_data notify email \
 --start-date 2021-01-01 \
---end-date 2021-01-31
+--end-date 2021-01-31 \
+--select anomaly \
+--select test \
+--select schema_change
 ```
 
 Below is a sample alert notification message sent by a slack app created.
