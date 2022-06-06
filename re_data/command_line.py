@@ -12,12 +12,13 @@ from re_data.include import OVERVIEW_INDEX_FILE_PATH
 from http.server import SimpleHTTPRequestHandler
 import webbrowser
 from socketserver import TCPServer
+from re_data.version import check_version, with_version_check
 from yachalk import chalk
 import yaml
 from re_data.notifications.slack import slack_notify
 from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
     generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export, \
-        ALERT_TYPES, validate_alert_types
+        ALERT_TYPES, validate_alert_types, get_project_root
 
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
@@ -43,7 +44,7 @@ def add_dbt_flags(command_list, flags):
     print(' '.join(command_list))
 
 def get_target_paths(kwargs, re_data_target_dir=None):
-    project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
+    project_root = get_project_root(kwargs)
     partial = Project.partial_load(project_root)
     dbt_target_path = os.path.abspath(partial.project_dict['target-path'])
 
@@ -103,7 +104,6 @@ dbt_flags = [
     dbt_profiles_dir_option,
     dbt_vars_option
 ]
-
 
 @click.group(help=f"re_data CLI")
 def main():
@@ -272,6 +272,7 @@ def notify():
 )
 @add_options(dbt_flags)
 @anonymous_tracking
+@with_version_check
 def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
@@ -435,6 +436,7 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
     """)
 @add_options(dbt_flags)
 @anonymous_tracking
+@with_version_check
 def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, select, **kwargs):
     validate_alert_types(selected_alert_types=select)
     start_date = str(start_date.date())
@@ -517,6 +519,7 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
     """)
 @add_options(dbt_flags)
 @anonymous_tracking
+@with_version_check
 def email(start_date, end_date, re_data_target_dir, select, **kwargs):
     validate_alert_types(selected_alert_types=select)
     selected_alert_types = set(select)
