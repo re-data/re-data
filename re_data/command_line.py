@@ -283,12 +283,14 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     table_samples_path = os.path.join(re_data_target_path, 'table_samples.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
     metadata = load_metadata_from_project(start_date, end_date, interval, kwargs)
+    monitored_path = os.path.join(re_data_target_path, 'monitored.json')
 
     args = {
         'start_date': start_date,
         'end_date': end_date,
         'interval': interval,
-        'overview_path': overview_path
+        'overview_path': overview_path,
+        'monitored_path': monitored_path,
     }
     command_list = ['dbt', 'run-operation', 'generate_overview', '--args', yaml.dump(args)]
     if dbt_vars: command_list.extend(['--vars', yaml.dump(dbt_vars)])
