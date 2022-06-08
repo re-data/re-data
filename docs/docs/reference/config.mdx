@@ -200,6 +200,12 @@ vars:
   # (optional) configuring storing tests history
   re_data:save_test_history: true
 
+  # (optional) querying db for failing rows
+  re_data:query_test_failures: true
+
+  # (optional) limit the number of failed rows returned per test
+  re_data:test_history_failures_limit: 10
+
   # (optional) configuring storing table samples
   re_data:store_table_samples: true
 
@@ -253,6 +259,14 @@ The period which `re_data` considers when looking for anomalies. (By default, it
 ### re_data:save_test_history
 
 Variable to enable storing test history. See [re_data tests history](/docs/reference/tests/history) for more details.
+
+### re_data:query_test_failures
+
+Variable to configure if re_data should query failed rows (`true` by default)
+
+### re_data:test_history_failures_limit
+
+Variable to configure how many failured rows to fetch per table (`10` by default)
 
 ### re_data:store_table_samples
 This is used to enable storing sample data of monitored tables.
