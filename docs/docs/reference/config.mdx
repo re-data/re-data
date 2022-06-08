@@ -187,12 +187,27 @@ vars:
         - avg_length
         - nulls_count
         - missing_count
+  
+  # (optional) configuring 
+  re_data:select:
+    - model_name1
+    - model_name2
+    - source_name1
 
   # (optional) tells how much hisory you want to consider when looking for anomalies
   re_data:anomaly_detection_look_back_days: 30
 
   # (optional) configuring storing tests history
   re_data:save_test_history: true
+
+  # (optional) querying db for failing rows
+  re_data:query_test_failures: true
+
+  # (optional) limit the number of failed rows returned per test
+  re_data:test_history_failures_limit: 10
+
+  # (optional) configuring storing table samples
+  re_data:store_table_samples: true
 
   # (optional) configuring owners
   re_data:owners_config:
@@ -227,6 +242,12 @@ Here you only add metrics if you want to compute them for all tables which are m
 schema changes are currently not set up using this parameter. Every monitored table is scanned for schema changed currently.
 :::
 
+### re_data:select
+
+This is a list which allows you to additionally restrict re_data to only compute metrics/anomalies for certain models.
+Each model listed here still needs to have `re_data_monitored=true` to be monitored.
+If the list is not passed, re_data will computed stats for all `re_data_monitored=true` models.
+
 ### re_data:anomaly_detector
 
 See [Anomaly Detection](anomaly_detection)
@@ -238,6 +259,17 @@ The period which `re_data` considers when looking for anomalies. (By default, it
 ### re_data:save_test_history
 
 Variable to enable storing test history. See [re_data tests history](/docs/reference/tests/history) for more details.
+
+### re_data:query_test_failures
+
+Variable to configure if re_data should query failed rows (`true` by default)
+
+### re_data:test_history_failures_limit
+
+Variable to configure how many failured rows to fetch per table (`10` by default)
+
+### re_data:store_table_samples
+This is used to enable storing sample data of monitored tables.
 
 ### re_data:owners_config
 

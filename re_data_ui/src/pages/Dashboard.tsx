@@ -10,20 +10,29 @@ import {
   DbtGraph,
   DbtMacro,
   ITableSchema,
-  ITestSchema, MetaData, Metric, OverviewData,
+  MetaData,
+  Metric,
+  OverviewData,
   ReDataModelDetails,
   RedataOverviewContext,
   SchemaChange,
   SelectOptionProps,
+  TableSample,
+  TestData,
 } from '../contexts/redataOverviewContext';
 import {
   appendToMapKey,
   DBT_MANIFEST_FILE,
   generateMetricIdentifier,
-  generateModelId, METADATA_FILE, PROJECT_NAME,
+  generateModelId,
+  METADATA_FILE,
+  PROJECT_NAME,
   RE_DATA_OVERVIEW_FILE,
   stripQuotes,
+  MONITORED_FILE,
   supportedResTypes,
+  TABLE_SAMPLE_FILE,
+  TEST_FILE,
 } from '../utils';
 
 interface RawOverviewData {
@@ -36,11 +45,6 @@ interface RawOverviewData {
 
 type formatOverviewDataReturnType = {
   aggregatedModels: Map<string, ReDataModelDetails>;
-  tests: ITestSchema[];
-  failedTests: Record<string, ITestSchema[]>;
-  runAts: Record<string, ITestSchema[]>;
-  testsObject: Record<string, ITestSchema[]>;
-  modelTestMapping: Record<string, ITestSchema[]>;
   alerts: Alert[];
 };
 
@@ -49,11 +53,7 @@ const formatOverviewData = (
   result: Map<string, ReDataModelDetails>,
 ): formatOverviewDataReturnType => {
   const alertsChanges: Alert[] = [];
-  const tests: ITestSchema[] = [];
-  const testsObject: Record<string, ITestSchema[]> = {};
-  const failedTestsObject: Record<string, ITestSchema[]> = {};
-  const runAtObject: Record<string, ITestSchema[]> = {};
-  const modelTestMapping: Record<string, ITestSchema[]> = {};
+
   data.forEach((item: RawOverviewData) => {
     if (!item.table_name) return;
     const model = stripQuotes(item.table_name).toLowerCase();
@@ -73,6 +73,7 @@ const formatOverviewData = (
     }
     const columnName = item.column_name ? item.column_name : '';
     const details = result.get(model) as ReDataModelDetails;
+
     if (item.type === 'alert') {
       const alert = JSON.parse(item.data) as Alert;
       alertsChanges.push(alert);
@@ -94,49 +95,6 @@ const formatOverviewData = (
       const schema = JSON.parse(item.data) as ITableSchema;
       schema.column_name = columnName;
       details.tableSchema.push(schema);
-    } else if (item.type === 'test') {
-      const schema = JSON.parse(item.data) as ITestSchema;
-      const run_at = dayjs(schema.run_at).format(
-        'YYYY-MM-DD HH:mm:ss',
-      ) as string;
-
-      schema.column_name = columnName;
-      schema.model = model;
-      schema.run_at = run_at;
-
-      details.tests.push(schema);
-      if (
-        Object.prototype.hasOwnProperty.call(
-          modelTestMapping,
-          schema?.test_name?.toLocaleLowerCase(),
-        )
-      ) {
-        modelTestMapping[schema?.test_name?.toLocaleLowerCase()].push(schema);
-      } else {
-        modelTestMapping[schema?.test_name?.toLocaleLowerCase()] = [schema];
-      }
-      if (Object.prototype.hasOwnProperty.call(runAtObject, run_at)) {
-        runAtObject[run_at].push(schema);
-      } else {
-        runAtObject[run_at] = [schema];
-      }
-      if (Object.prototype.hasOwnProperty.call(testsObject, model)) {
-        testsObject[model].push(schema);
-      } else {
-        testsObject[model] = [schema];
-      }
-      if (
-        schema.status?.toLowerCase() === 'fail'
-        || schema.status?.toLowerCase() === 'error'
-      ) {
-        if (Object.prototype.hasOwnProperty.call(failedTestsObject, model)) {
-          failedTestsObject[model].push(schema);
-        } else {
-          failedTestsObject[model] = [schema];
-        }
-      }
-
-      tests.push(schema);
     } else if (item.type === 'anomaly') {
       const anomaly = JSON.parse(item.data) as Anomaly;
       anomaly.column_name = columnName;
@@ -163,12 +121,7 @@ const formatOverviewData = (
 
   return {
     aggregatedModels: result,
-    tests,
-    testsObject,
-    failedTests: failedTestsObject,
-    runAts: runAtObject,
     alerts: alertsChanges,
-    modelTestMapping,
   };
 };
 
@@ -256,6 +209,79 @@ const formatDbtData = (graphData: DbtGraph, PACKAGE_NAME: string) => {
   };
 };
 
+type formatTestDataProps = {
+  tests: TestData[];
+  failedTests: Record<string, TestData[]>;
+  runAts: Record<string, TestData[]>;
+  testsObject: Record<string, TestData[]>;
+  modelTestMapping: Record<string, TestData[]>;
+};
+
+const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+
+const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
+  const testsObject: Record<string, TestData[]> = {};
+  const failedTests: Record<string, TestData[]> = {};
+  const runAts: Record<string, TestData[]> = {};
+  const modelTestMapping: Record<string, TestData[]> = {};
+
+  const testData: TestData[] = [];
+
+  for (let index = 0; index < tests.length; index++) {
+    const element = tests[index];
+    const run_at = dayjs(element.run_at).format(
+      dateTimeFormat,
+    ) as string;
+
+    testData.push({
+      ...element,
+      run_at,
+    });
+
+    const model = stripQuotes(element.table_name).toLowerCase();
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        modelTestMapping,
+        element?.test_name?.toLocaleLowerCase(),
+      )
+    ) {
+      modelTestMapping[element?.test_name?.toLocaleLowerCase()].push(element);
+    } else {
+      modelTestMapping[element?.test_name?.toLocaleLowerCase()] = [element];
+    }
+
+    if (Object.prototype.hasOwnProperty.call(runAts, run_at)) {
+      runAts[run_at].push(element);
+    } else {
+      runAts[run_at] = [element];
+    }
+    if (Object.prototype.hasOwnProperty.call(testsObject, model)) {
+      testsObject[model].push(element);
+    } else {
+      testsObject[model] = [element];
+    }
+    if (
+      element.status?.toLowerCase() === 'fail'
+      || element.status?.toLowerCase() === 'error'
+    ) {
+      if (Object.prototype.hasOwnProperty.call(failedTests, model)) {
+        failedTests[model].push(element);
+      } else {
+        failedTests[model] = [element];
+      }
+    }
+  }
+
+  return {
+    tests: testData,
+    testsObject,
+    failedTests,
+    runAts,
+    modelTestMapping,
+  };
+};
+
 const Dashboard: React.FC = (): ReactElement => {
   const initialOverview: OverviewData = {
     alerts: [],
@@ -276,6 +302,8 @@ const Dashboard: React.FC = (): ReactElement => {
     macroDepends: {},
     modelTestMapping: {},
     testNameMapping: {},
+    tableSamples: new Map<string, TableSample>(),
+    monitoredData: [],
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -284,14 +312,64 @@ const Dashboard: React.FC = (): ReactElement => {
       Accept: 'application/json',
     };
     try {
-      const [overviewRequest, dbtManifestRequest, metadataRequest] = await Promise.all([
+      const [
+        overviewRequest,
+        dbtManifestRequest,
+        testRequest,
+        metadataRequest,
+        monitoredRequest,
+        tableSamplesRequest,
+      ] = await Promise.all([
         fetch(RE_DATA_OVERVIEW_FILE, { headers }),
         fetch(DBT_MANIFEST_FILE, { headers }),
+        fetch(TEST_FILE, { headers }),
         fetch(METADATA_FILE, { headers }),
+        fetch(MONITORED_FILE, { headers }),
+        fetch(TABLE_SAMPLE_FILE, { headers }),
       ]);
       const overviewData: Array<RawOverviewData> = await overviewRequest.json();
       const graphData: DbtGraph = await dbtManifestRequest.json();
       const metaData: MetaData = await metadataRequest.json();
+      const testData: Array<TestData> = await testRequest.json();
+      const monitoredRes = await monitoredRequest.json();
+      const tableSamples: Array<TableSample> = await tableSamplesRequest.json();
+
+      const tableSamplesData = new Map<string, TableSample>();
+      const monitoredData = [];
+
+      for (let index = 0; index < monitoredRes.length; index++) {
+        let {
+          anomaly_detector, columns, metrics, model, owners,
+        } = monitoredRes[index];
+
+        model = model.replaceAll('"', '');
+        anomaly_detector = JSON.parse(anomaly_detector);
+        columns = JSON.parse(columns);
+        metrics = JSON.parse(metrics);
+        owners = JSON.parse(owners);
+
+        monitoredData.push({
+          anomalyDetector: anomaly_detector,
+          columns,
+          metrics,
+          model,
+          owners,
+          timeFilter: monitoredRes[index].time_filter,
+        });
+      }
+
+      for (let index = 0; index < tableSamples.length; index++) {
+        let { table_name, sampled_on, sample_data } = tableSamples[index];
+        table_name = table_name.replaceAll('"', '');
+        sampled_on = dayjs(sampled_on).format(dateTimeFormat);
+        sample_data = JSON.parse(sample_data);
+
+        tableSamplesData.set(table_name, { table_name, sampled_on, sample_data });
+      }
+
+      const {
+        tests, failedTests, testsObject, runAts, modelTestMapping,
+      } = formatTestData(testData);
 
       const overview: OverviewData = {
         alerts: [],
@@ -312,6 +390,8 @@ const Dashboard: React.FC = (): ReactElement => {
         testNameMapping: {},
         macroModelUsedIn: {},
         macroDepends: {},
+        tableSamples: new Map<string, TableSample>(),
+        monitoredData: [],
       };
       const {
         dbtMapping,
@@ -340,15 +420,10 @@ const Dashboard: React.FC = (): ReactElement => {
         };
         result.set(node.value, obj);
       }
-      const {
-        aggregatedModels,
-        tests,
-        failedTests,
-        testsObject,
-        runAts,
-        alerts,
-        modelTestMapping,
-      } = formatOverviewData(overviewData, result);
+      const { aggregatedModels, alerts } = formatOverviewData(
+        overviewData,
+        result,
+      );
 
       overview.aggregated_models = aggregatedModels;
       overview.testsObject = testsObject;
@@ -366,6 +441,8 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.failedTests = failedTests;
       overview.runAts = runAts;
       overview.modelTestMapping = modelTestMapping;
+      overview.tableSamples = tableSamplesData;
+      overview.monitoredData = monitoredData;
 
       console.log('overview -> ', overview);
       setReDataOverview(overview);

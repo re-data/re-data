@@ -7,6 +7,7 @@ import json
 import os
 from dbt.config.project import Project
 import pkg_resources
+from click import BadOptionUsage
 
 
 try:
@@ -21,6 +22,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 
+ALERT_TYPES = {'anomaly', 'schema_change', 'test'}
+
+def get_project_root(kwargs):
+    return os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
 
 def format_alerts_to_table(alerts: list, limit=None) -> str:
     """
@@ -39,7 +44,7 @@ def format_alerts_to_table(alerts: list, limit=None) -> str:
             alert['time_window_end'],
         ])
     if limit: 
-        table = table[:10]
+        table = table[:limit]
     return tabulate(table, headers=['Message', 'Value', 'Time Window'], tablefmt='orgtbl')
 
 def safe_load(content) -> Optional[Dict[str, Any]]:
@@ -55,13 +60,13 @@ def parse_dbt_vars(dbt_vars_string) -> Dict[str, Any]:
     return dbt_vars
 
 
-def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str, Tuple[str, str]]) -> dict:
+def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str, Tuple[str, str]], selected_alert_types: set) -> dict:
     """
     Prepares alerts per model for slack message generation.
     """
     alerts_per_model = {}
     for alert in alerts:
-        model = alert['model'].replace('"', '')
+        model = alert['model'].replace('"', '').replace('`', '')
         if model not in alerts_per_model:
             alerts_per_model[model] = {
                 'anomalies': [],
@@ -69,11 +74,11 @@ def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str,
                 'tests': [],
                 'owners': [k[0] for k in members_per_model.get(model, [])] or ['allUsers', 'allGroups'],
             }
-        if alert['type'] == 'anomaly':
+        if alert['type'] == 'anomaly' and alert['type'] in selected_alert_types:
             alerts_per_model[model]['anomalies'].append(alert)
-        elif alert['type'] == 'schema_change':
+        elif alert['type'] == 'schema_change' and alert['type'] in selected_alert_types:
             alerts_per_model[model]['schema_changes'].append(alert)
-        elif alert['type'] == 'test':
+        elif alert['type'] == 'test' and alert['type'] in selected_alert_types:
             alerts_per_model[model]['tests'].append(alert)
     return alerts_per_model
 
@@ -88,7 +93,7 @@ def build_notification_identifiers_per_model(monitored_list: list, channel) -> D
     """
     obj = defaultdict(list)
     for monitored in monitored_list:
-        model = monitored['model'].replace('"', '')
+        model = monitored['model'].replace('"', '').replace('`', '')
         members = json.loads(monitored.get('owners')) or {}
         for identifier, details in members.items():
             notify_channel = details.get('notify_channel')
@@ -103,7 +108,7 @@ def build_notification_identifiers_per_model(monitored_list: list, channel) -> D
 
 
 
-def generate_slack_message(model, details, owners, subtitle: str) -> dict:
+def generate_slack_message(model, details, owners, subtitle: str, selected_alert_types: set) -> dict:
     """
     Generates a slack message for a given model.
     """
@@ -156,7 +161,7 @@ def generate_slack_message(model, details, owners, subtitle: str) -> dict:
             },
         ]
     }
-    if anomalies:
+    if anomalies and 'anomaly' in selected_alert_types:
         message_obj['blocks'].append({
             "type": "section",
             "text": {
@@ -164,7 +169,7 @@ def generate_slack_message(model, details, owners, subtitle: str) -> dict:
                 "text": "*Anomalies*\n ```{}```".format(format_alerts_to_table(anomalies, limit=10))
             }
         })
-    if schema_changes:
+    if schema_changes and 'schema_change' in selected_alert_types:
         message_obj['blocks'].append({
             "type": "section",
             "text": {
@@ -172,7 +177,7 @@ def generate_slack_message(model, details, owners, subtitle: str) -> dict:
                 "text": "*Schema Changes*\n ```{}```".format(format_alerts_to_table(schema_changes, limit=10))
             }
         })
-    if tests:
+    if tests and 'test' in selected_alert_types:
         message_obj['blocks'].append({
             "type": "section",
             "text": {
@@ -266,7 +271,7 @@ def send_mime_email(
     server.quit()
 
     
-def load_metadata_from_project(kwargs) -> Dict:
+def load_metadata_from_project(start_date, end_date, interval, kwargs) -> Dict:
     project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
     partial = Project.partial_load(project_root)
     version = pkg_resources.require("re_data")[0].version
@@ -274,7 +279,12 @@ def load_metadata_from_project(kwargs) -> Dict:
         'project_dict': partial.project_dict,
         'packages': partial.packages_dict,
         'version': version,
-        'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+        'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
+        're_data_args': {
+            'start_date': start_date,
+            'end_date': end_date,
+            'interval': interval
+        }
     }
     return metadata
 
@@ -291,3 +301,8 @@ def normalize_re_data_json_export(path: str):
     # overwrite the original file with the normalized data
     with open(path, 'w+', encoding='utf-8') as f:
         json.dump(normalized_json_data, f)
+
+def validate_alert_types(selected_alert_types: List[str]):
+    for alert_type in selected_alert_types:
+        if alert_type not in ALERT_TYPES:
+            raise BadOptionUsage("select", "%s not a valid alert type" % alert_type)

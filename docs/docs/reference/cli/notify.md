@@ -12,7 +12,10 @@ re_data notify slack \
 --start-date 2021-01-01 \
 --end-date 2021-01-31 \
 --webhook-url https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX \
---subtitle="[Optional] Markdown text to be added as a subtitle in the slack message generated"
+--subtitle="[Optional] Markdown text to be added as a subtitle in the slack message generated" \
+--select anomaly \
+--select test \
+--select schema_change
 ```
 
 Running this command would generate a slack message from the alerts re_data detected.
@@ -23,6 +26,7 @@ Running this command would generate a slack message from the alerts re_data dete
     - webhook-url - [incoming webhook](https://api.slack.com/messaging/webhooks) gotten from a slack app.
     - subtitle (optional) - extra markdown text passed to the generated message. Often used to add some more context to the message generated.
     - dbt-vars - This accepts a valid YAML dictionary as string which is passed down to the dbt command using [--vars](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/using-variables).
+    - select - (default: anomaly, schema_change, test) - alert type to be included in the notifications. This option allows multiple values and must be a valid alert type.
 - Dbt supported arguments:
   - profile - Which profile to load. Overrides setting in dbt_project.yml.
   - target - Which target to load for the given profile.
@@ -34,7 +38,10 @@ Running this command would generate a slack message from the alerts re_data dete
 ```bash
 re_data notify email \
 --start-date 2021-01-01 \
---end-date 2021-01-31
+--end-date 2021-01-31 \
+--select anomaly \
+--select test \
+--select schema_change
 ```
 
 Running this command would generate a slack message from the alerts re_data detected.
@@ -42,6 +49,7 @@ Running this command would generate a slack message from the alerts re_data dete
 - Supported arguments:
     - start-date (default: today - 7 days) - start date of the period for which you want to generate alerts
     - end-date (default: today) - end date of the period for which you want to generate alerts
+    - select - (default: anomaly, schema_change, test) - alert type to be included in the notifications. This option allows multiple values and must be a valid alert type.
     - dbt-vars - This accepts a valid YAML dictionary as string which is passed down to the dbt command using [--vars](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/using-variables).
 - Dbt supported arguments:
   - profile - Which profile to load. Overrides setting in dbt_project.yml.
