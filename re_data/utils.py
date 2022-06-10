@@ -24,6 +24,8 @@ import smtplib
 
 ALERT_TYPES = {'anomaly', 'schema_change', 'test'}
 
+def get_project_root(kwargs):
+    return os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
 
 def format_alerts_to_table(alerts: list, limit=None) -> str:
     """
