@@ -17,7 +17,7 @@ function SchemaChanges(params: SchemaChangesProps): ReactElement {
   return (
     <>
       {showTitle && (
-        <span className="text-lg">Schema Changes</span>
+        <p className="text-lg font-medium mb-1">Schema Changes</p>
       )}
       {schemaChanges.length
         ? (
