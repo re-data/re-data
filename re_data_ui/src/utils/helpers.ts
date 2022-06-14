@@ -53,7 +53,7 @@ export const getFormatter = (metricName: string): string => {
 
 export const generateSchemaChangeMessage = (change: SchemaChange): string => {
   let message = '';
-  const detectedTime = dayjs(change.detected_time).format(DATE_TIME_FORMAT);
+  const detectedTime = dayjs.utc(change.detected_time).format(DATE_TIME_FORMAT);
   switch (change.operation) {
     case 'column_added':
       message = `column ${change.column_name} of type ${change.data_type} was added at ${detectedTime}`;

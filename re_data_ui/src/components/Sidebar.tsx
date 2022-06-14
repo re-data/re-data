@@ -11,17 +11,20 @@ import {
   VscTable,
 } from 'react-icons/all';
 import { NavLink } from 'react-router-dom';
+import dayjs from 'dayjs';
 import {
   OverviewData,
   RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
+
+const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 const Sidebar: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
 
   const { metaData } = overview;
   const projectVersion = metaData?.version || '';
-  const generatedAt = metaData?.generated_at || '';
+  const generatedAt = metaData?.generated_at ? dayjs.utc(metaData.generated_at).format(DATE_TIME_FORMAT) : '';
 
   return (
     <aside
@@ -155,9 +158,7 @@ const Sidebar: React.FC = (): ReactElement => {
             generated at
             {' '}
             <span className="text-xs italic">
-              {generatedAt}
-              {' '}
-              UTC
+              {`${generatedAt} UTC`}
             </span>
           </span>
         </div>
