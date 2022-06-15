@@ -270,10 +270,17 @@ def notify():
         Defaults to the 'target-path' used in dbt_project.yml
     """
 )
+@click.option(
+    '--force',
+    type=click.BOOL,
+    help="""
+        Forced to pass some processes if true
+    """
+)
 @add_options(dbt_flags)
 @anonymous_tracking
 @with_version_check
-def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
+def generate(start_date, end_date, interval, re_data_target_dir, force, **kwargs):
     start_date = str(start_date.date())
     end_date = str(end_date.date())
     dbt_target_path, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
@@ -331,8 +338,8 @@ def generate(start_date, end_date, interval, re_data_target_dir, **kwargs):
     if dbt_vars: dbt_docs.extend(['--vars', yaml.dump(dbt_vars)])
     add_dbt_flags(dbt_docs, kwargs)
     dbt_docs_process = subprocess.run(dbt_docs)
-    dbt_docs_process.check_returncode()
-
+    if force is True:
+        dbt_docs_process.check_returncode()
 
     dbt_manifest_path = os.path.join(dbt_target_path, 'manifest.json')
     re_data_manifest = os.path.join(re_data_target_path, 'dbt_manifest.json')
