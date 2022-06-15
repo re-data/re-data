@@ -338,7 +338,7 @@ def generate(start_date, end_date, interval, re_data_target_dir, force, **kwargs
     if dbt_vars: dbt_docs.extend(['--vars', yaml.dump(dbt_vars)])
     add_dbt_flags(dbt_docs, kwargs)
     dbt_docs_process = subprocess.run(dbt_docs)
-    if force is True:
+    if force is not True:
         dbt_docs_process.check_returncode()
 
     dbt_manifest_path = os.path.join(dbt_target_path, 'manifest.json')
