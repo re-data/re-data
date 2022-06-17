@@ -2,6 +2,7 @@
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import utc from 'dayjs/plugin/utc';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import {
@@ -34,6 +35,8 @@ import {
   TABLE_SAMPLE_FILE,
   TEST_FILE,
 } from '../utils';
+
+dayjs.extend(utc);
 
 interface RawOverviewData {
   type: 'alert' | 'metric' | 'schema_change' | 'schema' | 'test' | 'anomaly';
@@ -228,8 +231,8 @@ const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
   const testData: TestData[] = [];
 
   for (let index = 0; index < tests.length; index++) {
-    const element = tests[index];
-    const run_at = dayjs(element.run_at).format(
+    let element = tests[index];
+    const run_at = dayjs.utc(element.run_at).format(
       dateTimeFormat,
     ) as string;
 
@@ -237,6 +240,8 @@ const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
       ...element,
       run_at,
     });
+
+    element = { ...element, run_at };
 
     const model = stripQuotes(element.table_name).toLowerCase();
 

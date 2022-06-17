@@ -81,12 +81,11 @@ type generateDetailsDataProps = {
 };
 
 const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
-const dateTimeFormat2 = 'YYYY-MM-DDTHH:mm:ss';
 
 const generateDetailsData = (props: generateDetailsDataProps) => {
   const {
     loading, modelName, testName,
-    testsObject, modelTestMapping, runAt,
+    testsObject, modelTestMapping,
   } = props;
 
   const val = [];
@@ -114,9 +113,7 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
       if (testName?.toLowerCase() === element.test_name?.toLowerCase()) {
         runAts.add(element.run_at);
         timelineData[element.run_at] = element.failures_count || '0';
-        if (element.run_at !== runAt) {
-          testDetailsObject[element.run_at] = element;
-        }
+        testDetailsObject[element.run_at] = element;
       }
       if (!valSet.has(element.test_name)) {
         valSet.add(element.test_name);
@@ -148,7 +145,6 @@ const TestDetails: FC = (): ReactElement => {
   let { testName } = useParams();
   const { runAt: _runAt } = useParams();
   const runAt = dayjs(Number(_runAt)).format(dateTimeFormat);
-  const runAt2 = dayjs(Number(_runAt)).format(dateTimeFormat2);
 
   testName = testName?.toLowerCase();
 
@@ -206,7 +202,7 @@ const TestDetails: FC = (): ReactElement => {
   useEffect(() => {
     if (!result) return;
 
-    const firstRunAt = runAt2 || Array.from(runAtOptions)?.[0];
+    const firstRunAt = selectedOption || runAt || Array.from(runAtOptions)?.[0];
     let res = (result as []) || [];
     if (firstRunAt) {
       res = result.filter((row) => row.run_at === firstRunAt) as [];
@@ -214,7 +210,7 @@ const TestDetails: FC = (): ReactElement => {
 
     setData(res);
     setBackUpData((result as []) || []);
-  }, [result, runAt2]);
+  }, [result, runAt, selectedOption]);
 
   const handleChange = (option: SelectOptionProps | null) => {
     if (option && modelName) {
@@ -224,10 +220,10 @@ const TestDetails: FC = (): ReactElement => {
   };
 
   const results: TestData = useMemo(() => {
-    const key = selectedOption || runAt2 || Array.from(runAtOptions)?.[0];
+    const key = selectedOption || runAt || Array.from(runAtOptions)?.[0];
 
     return (testDetailsObject?.[key] as TestData) || {};
-  }, [runAtOptions, testDetailsObject, selectedOption]);
+  }, [runAtOptions, testDetailsObject, selectedOption, runAt]);
 
   const handleRunAtChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const option = e.target.value;
@@ -289,7 +285,7 @@ const TestDetails: FC = (): ReactElement => {
           <RightComponent
             showOptionLabel={false}
             options={Array.from(runAtOptions).sort((a, b) => dayjs(b).diff(a)) as []}
-            value={selectedOption || runAt2 || Array.from(runAtOptions)?.[0]}
+            value={selectedOption || runAt || Array.from(runAtOptions)?.[0]}
             handleChange={handleRunAtChange}
           />
         </div>
