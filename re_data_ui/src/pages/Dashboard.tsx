@@ -227,48 +227,54 @@ const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
   const testData: TestData[] = [];
 
   for (let index = 0; index < tests.length; index++) {
-    const element = tests[index];
-    const run_at = dayjs(element.run_at).format(
-      dateTimeFormat,
-    ) as string;
+    let element = tests[index];
+    if (element.table_name) {
+      const run_at = dayjs.utc(element.run_at).format(
+        dateTimeFormat,
+      ) as string;
 
-    testData.push({
-      ...element,
-      run_at,
-    });
+      testData.push({
+        ...element,
+        run_at,
+      });
 
-    const model = stripQuotes(element.table_name).toLowerCase();
+      element = { ...element, run_at };
 
-    if (
-      Object.prototype.hasOwnProperty.call(
-        modelTestMapping,
-        element?.test_name?.toLocaleLowerCase(),
-      )
-    ) {
-      modelTestMapping[element?.test_name?.toLocaleLowerCase()].push(element);
-    } else {
-      modelTestMapping[element?.test_name?.toLocaleLowerCase()] = [element];
-    }
+      const model = stripQuotes(element.table_name).toLowerCase();
 
-    if (Object.prototype.hasOwnProperty.call(runAts, run_at)) {
-      runAts[run_at].push(element);
-    } else {
-      runAts[run_at] = [element];
-    }
-    if (Object.prototype.hasOwnProperty.call(testsObject, model)) {
-      testsObject[model].push(element);
-    } else {
-      testsObject[model] = [element];
-    }
-    if (
-      element.status?.toLowerCase() === 'fail'
-      || element.status?.toLowerCase() === 'error'
-    ) {
-      if (Object.prototype.hasOwnProperty.call(failedTests, model)) {
-        failedTests[model].push(element);
+      if (
+        Object.prototype.hasOwnProperty.call(
+          modelTestMapping,
+          element?.test_name?.toLocaleLowerCase(),
+        )
+      ) {
+        modelTestMapping[element?.test_name?.toLocaleLowerCase()].push(element);
       } else {
-        failedTests[model] = [element];
+        modelTestMapping[element?.test_name?.toLocaleLowerCase()] = [element];
       }
+
+      if (Object.prototype.hasOwnProperty.call(runAts, run_at)) {
+        runAts[run_at].push(element);
+      } else {
+        runAts[run_at] = [element];
+      }
+      if (Object.prototype.hasOwnProperty.call(testsObject, model)) {
+        testsObject[model].push(element);
+      } else {
+        testsObject[model] = [element];
+      }
+      if (
+        element.status?.toLowerCase() === 'fail'
+        || element.status?.toLowerCase() === 'error'
+      ) {
+        if (Object.prototype.hasOwnProperty.call(failedTests, model)) {
+          failedTests[model].push(element);
+        } else {
+          failedTests[model] = [element];
+        }
+      }
+    } else {
+      console.log('element ', element);
     }
   }
 
@@ -333,9 +339,10 @@ const Dashboard: React.FC = (): ReactElement => {
 
       for (let index = 0; index < tableSamples.length; index++) {
         let { table_name, sampled_on, sample_data } = tableSamples[index];
+
         table_name = table_name.replaceAll('"', '');
         sampled_on = dayjs(sampled_on).format(dateTimeFormat);
-        sample_data = JSON.parse(sample_data);
+        sample_data = JSON.parse(JSON.stringify(sample_data));
 
         tableSamplesData.set(table_name, { table_name, sampled_on, sample_data });
       }
