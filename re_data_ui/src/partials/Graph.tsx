@@ -283,6 +283,10 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
     } else {
       setActiveTab(tab ? tab as ModelTabs : ModelTabs.ANOMALIES);
     }
+
+    return () => {
+      setActiveTab(ModelTabs.ANOMALIES);
+    };
   }, []);
 
   const { elements, nodes } = generateGraph({
