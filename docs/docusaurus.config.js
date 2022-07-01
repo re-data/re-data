@@ -32,28 +32,16 @@ module.exports = {
       },
       items: [
         {
-          to: 'docs/introduction/whatis',
-          label: 'Docs',
+          to: 'docs/data_reports/introduction',
+          label: 'Data Reports',
           position: 'left',
           activeBasePath: 'introduction'
         },
         {
-          to: 'docs/getting_started/installation/for_dbt_users',
-          label: 'Getting started',
+          to: 'docs/data_reliability/introduction/whatis',
+          label: 'Data Reliability',
           position: 'left',
-          activeBasePath: 'reference'
-        },
-        {
-          to: 'docs/reference/config',
-          label: 'Reference',
-          position: 'left',
-          activeBasePath: 'reference'
-        },
-        {
-          to: 'docs/qa',
-          label: 'Q&A',
-          position: 'left',
-          activeBasePath: 'Q&A'
+          activeBasePath: 'introduction'
         },
         {
           href: 'https://github.com/re-data/re-data',
