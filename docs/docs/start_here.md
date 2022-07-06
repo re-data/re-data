@@ -10,7 +10,7 @@ sidebar_position: 0
 re_data Cloud allows you to host data reports from multiple open-source data tools of your choice.
 Including re_data reports created by our open-source framework of course 😊
 
-Check out **[introduction](/docs/data_reports/introduction)** on how to upload reports and list of  **[supported uploads](/docs/data_reports/integrations/catalog)**.
+Check out **[introduction](/docs/data_reports/introduction)** on how to upload reports and list of  **[supported libraries](/docs/data_reports/integrations/catalog)**.
 
 
 ## Data reliability (Open-Source)
