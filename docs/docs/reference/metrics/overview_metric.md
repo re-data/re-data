@@ -74,7 +74,7 @@ re_data comes with a set of metrics that are computed by default for all monitor
 ```
 
 
-Definition of all base metrics is available under **[default metrics](/docs/reference/metrics/base_metrics)** section.
+Definition of all base metrics is available under **[default metrics](/docs/reference/metrics/default_metrics)** section.
 
 ## Extra
 
