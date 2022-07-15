@@ -43,29 +43,29 @@ re_data comes with a set of metrics that are computed by default for all monitor
 
 ```sql title="re_data:default_metrics:"
   re_data:metrics_groups:
-    - table_metrics:
-        table:
-          - row_count
-          - freshness
+    table_metrics:
+      table:
+        - row_count
+        - freshness
 
-    - column_metrics:
-        column:
-          numeric:
-            - min
-            - max
-            - avg
-            - stddev
-            - variance
-            - nulls_count
-            - nulls_percent
-          text:
-            - min_length
-            - max_length
-            - avg_length
-            - nulls_count
-            - missing_count
-            - nulls_percent
-            - missing_percent
+    column_metrics:
+      column:
+        numeric:
+          - min
+          - max
+          - avg
+          - stddev
+          - variance
+          - nulls_count
+          - nulls_percent
+        text:
+          - min_length
+          - max_length
+          - avg_length
+          - nulls_count
+          - missing_count
+          - nulls_percent
+          - missing_percent
 
   re_data:default_metrics:
     - table_metrics

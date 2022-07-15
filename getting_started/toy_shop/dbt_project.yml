@@ -92,24 +92,24 @@ vars:
         name: deji
 
   re_data:metrics_groups:
-    - toy_shop_group:
-        table:
-          - row_count
-          - freshness
+    toy_shop_group:
+      table:
+        - row_count
+        - freshness
 
-        column:
-          numeric:
-            - min
-            - max
-            - avg
-            - stddev
-            - nulls_percent
+      column:
+        numeric:
+          - min
+          - max
+          - avg
+          - stddev
+          - nulls_percent
 
-          text:
-            - min_length
-            - max_length
-            - avg_length
-            - missing_percent
+        text:
+          - min_length
+          - max_length
+          - avg_length
+          - missing_percent
 
-  re_data:metrics_default_groups:
+  re_data:default_metrics:
     - toy_shop_group
