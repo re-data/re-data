@@ -250,7 +250,7 @@ const Tables: React.FC = (): ReactElement => {
               <div className="grid grid-cols-1 gap-4">
                 <DynamicTable
                   values={
-                    (tableSamples.get(model)?.sample_data as unknown as Record<string, unknown>[])
+                    (tableSamples.get(model)?.sample_data as unknown as Record<string, string>[])
                     || null
                   }
                 />

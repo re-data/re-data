@@ -77,14 +77,12 @@ type GenerateNodeProps = {
   failedTests: boolean,
 }
 
-type GenerateNodeReturnType =
-  Record<string, boolean | string | null | Record<string, string | null | boolean>>
-
 const generateNode = ({
   modelId, index,
   details, anomalies,
   schemaChanges, failedTests,
-}: GenerateNodeProps): GenerateNodeReturnType => ({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+}: GenerateNodeProps): any => ({
   key: modelId,
   id: index?.toString(),
   type: 'custom-node',
