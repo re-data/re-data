@@ -243,7 +243,6 @@ const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
 
     element = { ...element, run_at };
     if (!element.table_name) element.table_name = 'no_table_name';
-    console.log('here', element.table_name);
 
     const model = stripQuotes(element.table_name).toLowerCase();
 
