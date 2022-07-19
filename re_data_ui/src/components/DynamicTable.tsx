@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import Table, { ColumnsProps } from './Table';
 
 interface DynamicTableType {
-  values: Record<string, unknown>[] | null;
+  values: Record<string, string>[] | null;
 }
 
 const DynamicTable = ({ values }: DynamicTableType): JSX.Element => {
@@ -23,13 +23,13 @@ const DynamicTable = ({ values }: DynamicTableType): JSX.Element => {
     return result;
   }, [values]);
 
-  const data: Record<string, unknown>[] = useMemo(() => {
+  const data: Record<string, string>[] = useMemo(() => {
     if (!values) return [];
-    const result: Record<string, unknown>[] = [];
+    const result: Record<string, string>[] = [];
 
     for (let index = 0; index < values.length; index++) {
       const element = values[index];
-      result.push(element) as unknown as [];
+      result.push(element);
     }
     return result;
   }, [values]);
