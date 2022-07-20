@@ -226,15 +226,62 @@ This is a list which allows you to additionally restrict re_data to only compute
 Each model listed here still needs to have `re_data_monitored=true` to be monitored.
 If the list is not passed, re_data will computed stats for all `re_data_monitored=true` models.
 
+List elements can be either model/source name or dbt tags which your models have. Example select section with tags would look like this:
+
+```yaml
+vars:
+  ...
+
+  re_data:select:
+    - tag:my_tag_name
+    - tag:my_other_tag_name
+    - specific_table
+    - other_specific_table
+```
+
 ### re_data:metrics_groups
 
-Groups of metrics to compute. By defult `table_metrics` and `column_metrics` are defined here, but you 
-can redefine them or add a new groups. Those groups can be later passed to specific model configurations as well as
-passed to `re_data:default_metrics` variable.
+Groups of metrics to compute. By defult `table_metrics` and `column_metrics` are defined here, and that's their definition:
+
+```yaml
+re_data:metrics_groups:
+  table_metrics:
+    table:
+      - row_count
+      - freshness
+
+  column_metrics:
+    column:
+      numeric:
+        - min
+        - max
+        - avg
+        - stddev
+        - variance
+        - nulls_count
+        - nulls_percent
+      text:
+        - min_length
+        - max_length
+        - avg_length
+        - nulls_count
+        - missing_count
+        - nulls_percent
+        - missing_percent
+```
+
+You can redefine this var any way you want. If you remove `table_metrics`, `column_metrics` group you will then not be able to use them in `re_data_metrics_groups` settings.
 
 ### re_data:default_metrics
 
-Default metrics to compute for each model if no `re_data_metrics` or `re_data_metrics_groups` are specified.
+Default metrics to compute for each model if no `re_data_metrics_groups` is specified. You can use any of the metrics groups defined in `re_data:metrics_groups` here.
+The default re_data configuration is a follows:
+
+```yaml
+re_data:default_metrics:
+  - table_metrics
+  - column_metrics
+```
 
 ### re_data:anomaly_detector
 
