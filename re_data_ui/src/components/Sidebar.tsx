@@ -12,12 +12,15 @@ import {
 } from 'react-icons/all';
 import { NavLink } from 'react-router-dom';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import {
   OverviewData,
   RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 
 const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+
+dayjs.extend(utc);
 
 const Sidebar: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);

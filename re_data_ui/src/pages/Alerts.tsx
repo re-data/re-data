@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import React, { ReactElement, useContext, useMemo } from 'react';
 import { FaRegSmileBeam } from 'react-icons/all';
+import utc from 'dayjs/plugin/utc';
 import { EmptyContent, Table } from '../components';
 import AlertBadge from '../components/AlertBadge';
 import { CellProps, ColumnsProps } from '../components/Table';
@@ -9,6 +10,8 @@ import {
 } from '../contexts/redataOverviewContext';
 import colors from '../utils/colors.js';
 import { ModelCell } from '../partials';
+
+dayjs.extend(utc);
 
 const generateAlertData = (alerts: Alert[]) => {
   const result = [];

@@ -14,6 +14,7 @@ import React, {
 } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { format } from 'sql-formatter';
+import utc from 'dayjs/plugin/utc';
 import { Select, Table } from '../../components';
 import { CellProps, ColumnsProps } from '../../components/Table';
 import {
@@ -26,6 +27,8 @@ import { MetaData, StatusCell } from '../../partials';
 import { RightComponent } from '../../partials/Tests';
 
 dayjs.extend(customParseFormat);
+dayjs.extend(utc);
+
 echarts.use([ToolboxComponent]);
 
 type valuesProps = {
@@ -33,42 +36,41 @@ type valuesProps = {
 };
 
 const values = ({ timelineData }: valuesProps) => {
-  if (timelineData) {
-    const timelineVal = Object.entries(timelineData)
-      .sort(([x]: [string, string], [y]: [string, string]) => dayjs(x).diff(y))
-      .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+  if (!timelineData) return {};
 
-    console.log('timelineData', timelineData);
+  const timelineVal = Object.entries(timelineData)
+    .sort(([x]: [string, string], [y]: [string, string]) => dayjs(x).diff(y))
+    .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
-    const data = Object.values(timelineVal);
-    const runAt = Object.keys(timelineVal);
+  // console.log('timelineData', timelineData);
 
-    return {
-      grid: {
-        top: '20%',
-        right: '5%',
-        bottom: '12%',
-        left: '15%',
+  const data = Object.values(timelineVal);
+  const runAt = Object.keys(timelineVal);
+
+  return {
+    grid: {
+      top: '20%',
+      right: '5%',
+      bottom: '12%',
+      left: '15%',
+    },
+    xAxis: {
+      type: 'category',
+      data: runAt,
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: [
+      {
+        name: 'timeline',
+        data,
+        type: 'line',
+        color: '#8884d8',
+        smooth: true,
       },
-      xAxis: {
-        type: 'category',
-        data: runAt,
-      },
-      yAxis: {
-        type: 'value',
-      },
-      series: [
-        {
-          name: 'timeline',
-          data,
-          type: 'line',
-          color: '#8884d8',
-          smooth: true,
-        },
-      ],
-    };
-  }
-  return {};
+    ],
+  };
 };
 
 type generateDetailsDataProps = {
