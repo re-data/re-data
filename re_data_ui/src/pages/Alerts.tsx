@@ -22,7 +22,7 @@ const generateAlertData = (alerts: Alert[]) => {
       type: alert.type === 'schema_change' ? 'schema' : alert.type,
       message: alert.message,
       value: alert.value,
-      date: dayjs(alert.time_window_end).format(dateTimeFormat),
+      date: dayjs.utc(alert.time_window_end).format(dateTimeFormat),
     });
   }
 
@@ -64,7 +64,7 @@ const Alerts: React.FC = (): ReactElement => {
       accessor: 'value',
     },
     {
-      Header: 'Time',
+      Header: 'Time (UTC)',
       accessor: 'date',
     },
   ], []);

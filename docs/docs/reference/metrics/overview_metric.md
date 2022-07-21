@@ -37,41 +37,48 @@ Table level metrics compute stats based on the whole table row, the most simple 
 
 Column level metrics are testing a single column of data values. For example, computing maximal value appears in the column. They take column names as an argument, which makes them generic. (you can use them on different columns and different tables)
 
-## Base 
+## Default 
 
-re_data comes with a set of metrics that are computed by default for all monitored tables. This is controlled by `metrics_base`. By default `metrics_base` variable is defined as:
+re_data comes with a set of metrics that are computed by default for all monitored tables. This is controlled by `re_data:default_metrics`. Default metrics variable contain list of metrics groups which you would like to compute for all the tables. Check out 
 
-```sql title="re_data:metrics_base:"
-  re_data:metrics_base:
-    table:
-      - row_count
-      - freshness
+```sql title="re_data:default_metrics:"
+  re_data:metrics_groups:
+    table_metrics:
+      table:
+        - row_count
+        - freshness
 
-    column:
-      numeric:
-        - min
-        - max
-        - avg
-        - stddev
-        - variance
-        - nulls_count
-        - nulls_percent
-      text:
-        - min_length
-        - max_length
-        - avg_length
-        - nulls_count
-        - missing_count
-        - nulls_percent
-        - missing_percent
+    column_metrics:
+      column:
+        numeric:
+          - min
+          - max
+          - avg
+          - stddev
+          - variance
+          - nulls_count
+          - nulls_percent
+        text:
+          - min_length
+          - max_length
+          - avg_length
+          - nulls_count
+          - missing_count
+          - nulls_percent
+          - missing_percent
+
+  re_data:default_metrics:
+    - table_metrics
+    - column_metrics
+
 ```
 
-Definition of all base metrics is available under **[Base metrics](/docs/reference/metrics/base_metrics)** section.
+
+Definition of all base metrics is available under **[default metrics](/docs/reference/metrics/default_metrics)** section.
 
 ## Extra
 
-Apart from base metrics which are computed by default, re_data contains set of macros which can be 
-computed as extra metrics. Full list of those metrics is available in **[Extra metrics](/docs/reference/metrics/extra_metrics)** section.
+Apart from base metrics which can be added to your metrics computed, but are not available computed by default. Full list of those metrics is available in **[Extra metrics](/docs/reference/metrics/extra_metrics)** section.
 
 ## Custom
 

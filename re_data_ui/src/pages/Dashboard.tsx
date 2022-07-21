@@ -2,6 +2,7 @@
 import dayjs from 'dayjs';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import utc from 'dayjs/plugin/utc';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import {
@@ -29,10 +30,13 @@ import {
   PROJECT_NAME,
   RE_DATA_OVERVIEW_FILE,
   stripQuotes,
+  MONITORED_FILE,
   supportedResTypes,
   TABLE_SAMPLE_FILE,
   TEST_FILE,
 } from '../utils';
+
+dayjs.extend(utc);
 
 interface RawOverviewData {
   type: 'alert' | 'metric' | 'schema_change' | 'schema' | 'test' | 'anomaly';
@@ -228,53 +232,50 @@ const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
 
   for (let index = 0; index < tests.length; index++) {
     let element = tests[index];
-    if (element.table_name) {
-      const run_at = dayjs.utc(element.run_at).format(
-        dateTimeFormat,
-      ) as string;
+    const run_at = dayjs.utc(element.run_at).format(
+      dateTimeFormat,
+    ) as string;
 
-      testData.push({
-        ...element,
-        run_at,
-      });
+    testData.push({
+      ...element,
+      run_at,
+    });
 
-      element = { ...element, run_at };
+    element = { ...element, run_at };
+    if (!element.table_name) element.table_name = 'no_table_name';
 
-      const model = stripQuotes(element.table_name).toLowerCase();
+    const model = stripQuotes(element.table_name).toLowerCase();
 
-      if (
-        Object.prototype.hasOwnProperty.call(
-          modelTestMapping,
-          element?.test_name?.toLocaleLowerCase(),
-        )
-      ) {
-        modelTestMapping[element?.test_name?.toLocaleLowerCase()].push(element);
-      } else {
-        modelTestMapping[element?.test_name?.toLocaleLowerCase()] = [element];
-      }
-
-      if (Object.prototype.hasOwnProperty.call(runAts, run_at)) {
-        runAts[run_at].push(element);
-      } else {
-        runAts[run_at] = [element];
-      }
-      if (Object.prototype.hasOwnProperty.call(testsObject, model)) {
-        testsObject[model].push(element);
-      } else {
-        testsObject[model] = [element];
-      }
-      if (
-        element.status?.toLowerCase() === 'fail'
-        || element.status?.toLowerCase() === 'error'
-      ) {
-        if (Object.prototype.hasOwnProperty.call(failedTests, model)) {
-          failedTests[model].push(element);
-        } else {
-          failedTests[model] = [element];
-        }
-      }
+    if (
+      Object.prototype.hasOwnProperty.call(
+        modelTestMapping,
+        element?.test_name?.toLocaleLowerCase(),
+      )
+    ) {
+      modelTestMapping[element?.test_name?.toLocaleLowerCase()].push(element);
     } else {
-      console.log('element ', element);
+      modelTestMapping[element?.test_name?.toLocaleLowerCase()] = [element];
+    }
+
+    if (Object.prototype.hasOwnProperty.call(runAts, run_at)) {
+      runAts[run_at].push(element);
+    } else {
+      runAts[run_at] = [element];
+    }
+    if (Object.prototype.hasOwnProperty.call(testsObject, model)) {
+      testsObject[model].push(element);
+    } else {
+      testsObject[model] = [element];
+    }
+    if (
+      element.status?.toLowerCase() === 'fail'
+      || element.status?.toLowerCase() === 'error'
+    ) {
+      if (Object.prototype.hasOwnProperty.call(failedTests, model)) {
+        failedTests[model].push(element);
+      } else {
+        failedTests[model] = [element];
+      }
     }
   }
 
@@ -308,6 +309,7 @@ const Dashboard: React.FC = (): ReactElement => {
     modelTestMapping: {},
     testNameMapping: {},
     tableSamples: new Map<string, TableSample>(),
+    monitoredData: [],
   };
   const [reDataOverview, setReDataOverview] = useState<OverviewData>(initialOverview);
   const prepareOverviewData = async (): Promise<void> => {
@@ -321,28 +323,53 @@ const Dashboard: React.FC = (): ReactElement => {
         dbtManifestRequest,
         testRequest,
         metadataRequest,
+        monitoredRequest,
         tableSamplesRequest,
       ] = await Promise.all([
         fetch(RE_DATA_OVERVIEW_FILE, { headers }),
         fetch(DBT_MANIFEST_FILE, { headers }),
         fetch(TEST_FILE, { headers }),
         fetch(METADATA_FILE, { headers }),
+        fetch(MONITORED_FILE, { headers }),
         fetch(TABLE_SAMPLE_FILE, { headers }),
       ]);
       const overviewData: Array<RawOverviewData> = await overviewRequest.json();
       const graphData: DbtGraph = await dbtManifestRequest.json();
       const metaData: MetaData = await metadataRequest.json();
       const testData: Array<TestData> = await testRequest.json();
+      const monitoredRes = await monitoredRequest.json();
       const tableSamples: Array<TableSample> = await tableSamplesRequest.json();
 
       const tableSamplesData = new Map<string, TableSample>();
+      const monitoredData = [];
+
+      for (let index = 0; index < monitoredRes.length; index++) {
+        let {
+          anomaly_detector, columns, metrics, model, owners,
+        } = monitoredRes[index];
+
+        model = model.replaceAll('"', '');
+        anomaly_detector = JSON.parse(anomaly_detector);
+        columns = JSON.parse(columns);
+        metrics = JSON.parse(metrics);
+        owners = JSON.parse(owners);
+
+        monitoredData.push({
+          anomalyDetector: anomaly_detector,
+          columns,
+          metrics,
+          model,
+          owners,
+          timeFilter: monitoredRes[index].time_filter,
+        });
+      }
 
       for (let index = 0; index < tableSamples.length; index++) {
-        let { table_name, sampled_on, sample_data } = tableSamples[index];
+        let { table_name, sampled_on } = tableSamples[index];
+        const { sample_data } = tableSamples[index];
 
         table_name = table_name.replaceAll('"', '');
         sampled_on = dayjs(sampled_on).format(dateTimeFormat);
-        sample_data = JSON.parse(JSON.stringify(sample_data));
 
         tableSamplesData.set(table_name, { table_name, sampled_on, sample_data });
       }
@@ -371,6 +398,7 @@ const Dashboard: React.FC = (): ReactElement => {
         macroModelUsedIn: {},
         macroDepends: {},
         tableSamples: new Map<string, TableSample>(),
+        monitoredData: [],
       };
       const {
         dbtMapping,
@@ -421,6 +449,7 @@ const Dashboard: React.FC = (): ReactElement => {
       overview.runAts = runAts;
       overview.modelTestMapping = modelTestMapping;
       overview.tableSamples = tableSamplesData;
+      overview.monitoredData = monitoredData;
 
       console.log('overview -> ', overview);
       setReDataOverview(overview);

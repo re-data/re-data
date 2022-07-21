@@ -76,8 +76,6 @@ jobs:
         run: |
           re_data notify slack --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
           --profile toy_shop_postgres --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit> - (postgres)"
-          re_data notify email --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
-          --profile toy_shop_postgres
 
       - uses: actions/setup-node@v2
         with:
@@ -192,8 +190,6 @@ jobs:
         run: |
           re_data notify slack --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
           --profile toy_shop_${{ matrix.database }} --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit> - (${{ matrix.database }})"
-          re_data notify email --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
-          --profile toy_shop_${{ matrix.database }}
 
       - uses: actions/setup-node@v2
         with:

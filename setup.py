@@ -1,5 +1,6 @@
 import pathlib
 from setuptools import find_packages, setup
+import re
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -7,10 +8,13 @@ HERE = pathlib.Path(__file__).parent
 # The text of the README file
 README = (HERE / "README.md").read_text(encoding='utf-8')
 
+def get_property(prop, project):
+    result = re.search(r'{}\s*=\s*[\'"]([^\'"]*)[\'"]'.format(prop), open(project + '/__init__.py').read())
+    return result.group(1)
 
 setup(
     name="re_data",
-    version="0.8.0",
+    version = get_property('__version__', 're_data'),
     author="redata-team",
     author_email="mateusz@getre.io",
     description="re_data - data quality framework",

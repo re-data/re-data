@@ -5,10 +5,11 @@ import { dark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 type CodeFormatterProps = {
     code: ReactNode
     language: string
+    mode?: 'light' | 'dark';
   }
 
-const CodeFormatter = ({ code, language }: CodeFormatterProps): JSX.Element => (
-  <SyntaxHighlighter language={language} style={dark}>
+const CodeFormatter = ({ code, language, mode = 'dark' }: CodeFormatterProps): JSX.Element => (
+  <SyntaxHighlighter language={language} style={mode === 'dark' ? dark : undefined}>
     {code}
   </SyntaxHighlighter>
 );

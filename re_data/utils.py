@@ -24,6 +24,8 @@ import smtplib
 
 ALERT_TYPES = {'anomaly', 'schema_change', 'test'}
 
+def get_project_root(kwargs):
+    return os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
 
 def format_alerts_to_table(alerts: list, limit=None) -> str:
     """
@@ -42,7 +44,7 @@ def format_alerts_to_table(alerts: list, limit=None) -> str:
             alert['time_window_end'],
         ])
     if limit: 
-        table = table[:10]
+        table = table[:limit]
     return tabulate(table, headers=['Message', 'Value', 'Time Window'], tablefmt='orgtbl')
 
 def safe_load(content) -> Optional[Dict[str, Any]]:
@@ -64,7 +66,7 @@ def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str,
     """
     alerts_per_model = {}
     for alert in alerts:
-        model = alert['model'].replace('"', '')
+        model = alert['model'].replace('"', '').replace('`', '')
         if model not in alerts_per_model:
             alerts_per_model[model] = {
                 'anomalies': [],
@@ -91,7 +93,7 @@ def build_notification_identifiers_per_model(monitored_list: list, channel) -> D
     """
     obj = defaultdict(list)
     for monitored in monitored_list:
-        model = monitored['model'].replace('"', '')
+        model = monitored['model'].replace('"', '').replace('`', '')
         members = json.loads(monitored.get('owners')) or {}
         for identifier, details in members.items():
             notify_channel = details.get('notify_channel')
@@ -269,7 +271,7 @@ def send_mime_email(
     server.quit()
 
     
-def load_metadata_from_project(kwargs) -> Dict:
+def load_metadata_from_project(start_date, end_date, interval, kwargs) -> Dict:
     project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
     partial = Project.partial_load(project_root)
     version = pkg_resources.require("re_data")[0].version
@@ -277,7 +279,12 @@ def load_metadata_from_project(kwargs) -> Dict:
         'project_dict': partial.project_dict,
         'packages': partial.packages_dict,
         'version': version,
-        'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+        'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
+        're_data_args': {
+            'start_date': start_date,
+            'end_date': end_date,
+            'interval': interval
+        }
     }
     return metadata
 
