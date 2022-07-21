@@ -365,11 +365,11 @@ const Dashboard: React.FC = (): ReactElement => {
       }
 
       for (let index = 0; index < tableSamples.length; index++) {
-        let { table_name, sampled_on, sample_data } = tableSamples[index];
+        let { table_name, sampled_on } = tableSamples[index];
+        const { sample_data } = tableSamples[index];
 
         table_name = table_name.replaceAll('"', '');
         sampled_on = dayjs(sampled_on).format(dateTimeFormat);
-        sample_data = JSON.parse(JSON.stringify(sample_data));
 
         tableSamplesData.set(table_name, { table_name, sampled_on, sample_data });
       }

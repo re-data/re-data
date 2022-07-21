@@ -1,17 +1,24 @@
 import React, {
-  ReactElement, useContext, useEffect, useState, useMemo,
+  ReactElement, useContext, useEffect, useMemo, useState,
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
-import { useSearchParams, Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
-  EmptyContent, MetricCharts, SchemaChanges, Select, TableSchema,
   DynamicTable,
+  EmptyContent,
+  MetricCharts,
+  SchemaChanges,
+  Select,
+  TableSchema,
 } from '../components';
 import {
-  SelectOptionProps, OverviewData, ReDataModelDetails, RedataOverviewContext,
+  OverviewData,
+  ReDataModelDetails,
+  RedataOverviewContext,
+  SelectOptionProps,
 } from '../contexts/redataOverviewContext';
 import useModel from '../hooks/useModel';
-import { GraphPartial, TestsPartial, MetaData } from '../partials';
+import { GraphPartial, MetaData, TestsPartial } from '../partials';
 import colors from '../utils/colors.js';
 
 const showA = true;
@@ -19,9 +26,7 @@ const showA = true;
 const Tables: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
   const {
-    modelNodes, dbtMapping,
-    graph, modelNodesDepends,
-    tableSamples,
+    modelNodes, dbtMapping, graph, modelNodesDepends, tableSamples,
   } = overview;
   const [activeTab, setActiveTab] = useState('');
   const [callApi, setCallApi] = useState(true);
@@ -105,44 +110,32 @@ const Tables: React.FC = (): ReactElement => {
                   Anomalies
                 </button>
               </li>
-              <li
-                className={`mr-4 ${activeTab === 'metrics' && 'active-tab'}`}
-              >
+              <li className={`mr-4 ${activeTab === 'metrics' && 'active-tab'}`}>
                 <button type="button" onClick={() => handleScroll('metrics')}>
                   Metrics
                 </button>
               </li>
-              <li
-                className={`mr-4 ${activeTab === 'schema' && 'active-tab'}`}
-              >
+              <li className={`mr-4 ${activeTab === 'schema' && 'active-tab'}`}>
                 <button type="button" onClick={() => handleScroll('schema')}>
                   Schemas
                 </button>
               </li>
-              <li
-                className={`mr-4 ${activeTab === 'graph' && 'active-tab'}`}
-              >
+              <li className={`mr-4 ${activeTab === 'graph' && 'active-tab'}`}>
                 <button type="button" onClick={() => handleScroll('graph')}>
                   Lineage
                 </button>
               </li>
-              <li
-                className={`mr-4 ${activeTab === 'tests' && 'active-tab'}`}
-              >
+              <li className={`mr-4 ${activeTab === 'tests' && 'active-tab'}`}>
                 <button type="button" onClick={() => handleScroll('tests')}>
                   Tests
                 </button>
               </li>
-              <li
-                className={`mr-4 ${activeTab === 'codes' && 'active-tab'}`}
-              >
+              <li className={`mr-4 ${activeTab === 'codes' && 'active-tab'}`}>
                 <button type="button" onClick={() => handleScroll('codes')}>
                   Code
                 </button>
               </li>
-              <li
-                className={`mr-4 ${activeTab === 'sample' && 'active-tab'}`}
-              >
+              <li className={`mr-4 ${activeTab === 'sample' && 'active-tab'}`}>
                 <button type="button" onClick={() => handleScroll('sample')}>
                   Sample
                 </button>
@@ -183,10 +176,7 @@ const Tables: React.FC = (): ReactElement => {
                   tableSchemas={modelDetails.tableSchema}
                   showTitle={false}
                 />
-                <SchemaChanges
-                  modelDetails={modelDetails}
-                  showTitle={false}
-                />
+                <SchemaChanges modelDetails={modelDetails} showTitle={false} />
               </div>
             </div>
           </section>
@@ -194,7 +184,11 @@ const Tables: React.FC = (): ReactElement => {
             <div className="bg-white rounded-md px-3 py-4">
               <h3 className="mb-3 text-md font-medium">Lineage</h3>
               <div className="relative graph-view h-96">
-                <GraphPartial modelName={model} showModelDetails={false} showFilter={false} />
+                <GraphPartial
+                  modelName={model}
+                  showModelDetails={false}
+                  showFilter={false}
+                />
               </div>
             </div>
           </section>
@@ -202,11 +196,7 @@ const Tables: React.FC = (): ReactElement => {
             <div className="bg-white rounded-md px-3 py-4">
               <h3 className="mb-3 text-md font-medium">Tests</h3>
               <div className="grid grid-cols-1 gap-4">
-                <TestsPartial
-                  showRunAt
-                  showModel={false}
-                  modelName={model}
-                />
+                <TestsPartial showRunAt showModel={false} modelName={model} />
               </div>
             </div>
           </section>
@@ -229,9 +219,7 @@ const Tables: React.FC = (): ReactElement => {
 
               <div>
                 <h3 className="mt-4 mb-2 text-md font-medium">Macros</h3>
-                <ul
-                  className="marker:text-sky-400 space-y-3 text-slate-400"
-                >
+                <ul className="marker:text-sky-400 space-y-3 text-slate-400">
                   {modelNodesDepends?.[model]?.map((macro) => (
                     <li
                       className="text-sm mb-1 font-semibold text-primary"
@@ -250,8 +238,10 @@ const Tables: React.FC = (): ReactElement => {
               <div className="grid grid-cols-1 gap-4">
                 <DynamicTable
                   values={
-                    (tableSamples.get(model)?.sample_data as unknown as Record<string, string>[])
-                    || null
+                    (tableSamples.get(model)?.sample_data as unknown as Record<
+                      string,
+                      string
+                    >[]) || null
                   }
                 />
               </div>
