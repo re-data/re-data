@@ -7,10 +7,9 @@ interface DynamicTableType {
   values: Record<string, string>[] | null;
 }
 
-const OtherCell = ({ value }: CellProps): JSX.Element => <div>{value}</div>;
+const OtherCell = ({ value }: CellProps): JSX.Element => <span>{value}</span>;
 
 const DynamicTable = ({ values }: DynamicTableType): JSX.Element => {
-  console.log('values => ', values);
   if (!values) {
     return (
       <Table

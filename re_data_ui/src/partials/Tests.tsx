@@ -39,9 +39,6 @@ const LinkCell = ({ value, row }: CellProps) => {
   const testName = testNameMapping[value?.toLowerCase()];
 
   const runAt = dayjs(row.original.run_at).valueOf();
-  const decode = dayjs(Number(runAt)).format('YYYY-MM-DD HH:mm:ss');
-
-  console.log('runAt', decode, row.original.run_at, runAt);
 
   return (
     <Link
