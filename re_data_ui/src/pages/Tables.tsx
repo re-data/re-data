@@ -1,5 +1,9 @@
 import React, {
-  ReactElement, useContext, useEffect, useMemo, useState,
+  ReactElement,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -238,10 +242,11 @@ const Tables: React.FC = (): ReactElement => {
               <div className="grid grid-cols-1 gap-4">
                 <DynamicTable
                   values={
-                    (JSON.parse(tableSamples.get(model)?.sample_data || '') as unknown as Record<
-                      string,
-                      string
-                    >[]) || null
+                    (((tableSamples.get(model)?.sample_data as string)
+                      ? JSON.parse(
+                          tableSamples.get(model)?.sample_data as string,
+                      )
+                      : null) || null) as unknown as Record<string, string>[]
                   }
                 />
               </div>
