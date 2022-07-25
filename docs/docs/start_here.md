@@ -20,9 +20,11 @@ To start with **re_data** go to **[introduction](/docs/re_data/introduction/what
 
 ## re_cloud
 **re_cloud** allows you to very easily host & manage data reports from data tools of your choice like:
-- dbt docs,
-- great_expectations,
+- dbt docs
+- **re_data** (of course 😅) 
+- great_expectations
 - pandas_profiling
-- **re_data** (of course 😅) and more!
+- and more!
 
+To start with **re_cloud** 
 Check out **[introduction](/docs/re_cloud/introduction)** on how to upload reports and list of  **[supported libraries](/docs/re_cloud/integrations/catalog)**.
