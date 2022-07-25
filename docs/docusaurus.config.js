@@ -25,21 +25,21 @@ module.exports = {
   ],
   themeConfig: {
     navbar: {
-      title: 're_data',
+      title: '',
       logo: {
         alt: 're_data logo',
         src: 'img/logo_circle.svg',
       },
       items: [
         {
-          to: 'docs/data_reports/introduction',
-          label: 'Data Reports',
+          to: 'docs/re_data/introduction/whatis',
+          label: 're_data',
           position: 'left',
           activeBasePath: 'introduction'
         },
         {
-          to: 'docs/data_reliability/introduction/whatis',
-          label: 'Data Reliability',
+          to: 'docs/re_cloud/introduction',
+          label: 're_cloud',
           position: 'left',
           activeBasePath: 'introduction'
         },
