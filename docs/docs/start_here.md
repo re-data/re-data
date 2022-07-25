@@ -5,18 +5,24 @@ sidebar_position: 0
 # Welcome to re docs!
 
 
-## re_data (Open-Source)
+## re_data
 
 re_data is an open-source data reliability framework build for modern data stack.
 
-Currently, re_data focuses on observing the dbt project together with underlying data engine. 
+**re_data** focuses on observing the dbt project and lets you:
+ - get alerts about bad data
+ - compute data quality metrics
+ - write your own data asserts
+ - and more 😊
 
-Check introduction for re_data **[here](/docs/re_data/introduction/whatis)**
+To start with **re_data** go to **[introduction](/docs/re_data/introduction/whatis_data)** 🚀
 
 
-## re_cloud (Cloud)
-
-re_data Cloud allows you to host data reports from multiple open-source data tools of your choice.
-Including re_data reports created by our open-source framework of course 😊
+## re_cloud
+**re_cloud** allows you to very easily host & manage data reports from data tools of your choice like:
+- dbt docs,
+- great_expectations,
+- pandas_profiling
+- **re_data** (of course 😅) and more!
 
 Check out **[introduction](/docs/re_cloud/introduction)** on how to upload reports and list of  **[supported libraries](/docs/re_cloud/integrations/catalog)**.

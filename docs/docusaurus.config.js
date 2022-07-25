@@ -32,13 +32,13 @@ module.exports = {
       },
       items: [
         {
-          to: 'docs/re_data/introduction/whatis',
+          to: 'docs/re_data/introduction/whatis_data',
           label: 're_data',
           position: 'left',
           activeBasePath: 'introduction'
         },
         {
-          to: 'docs/re_cloud/introduction',
+          to: 'docs/re_cloud/introduction/whatis_cloud',
           label: 're_cloud',
           position: 'left',
           activeBasePath: 'introduction'
