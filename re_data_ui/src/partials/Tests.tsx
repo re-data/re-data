@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import { FaRegSmileWink } from 'react-icons/all';
 import { Link } from 'react-router-dom';
+import utc from 'dayjs/plugin/utc';
 import { EmptyContent, Table } from '../components';
 import { CellProps, ColumnsProps } from '../components/Table';
 import {
@@ -30,12 +31,17 @@ export type RightComponentProps = {
   showOptionLabel?: boolean;
 };
 
+dayjs.extend(utc);
+
 const LinkCell = ({ value, row }: CellProps) => {
   const overview: OverviewData = useContext(RedataOverviewContext);
   const { testNameMapping } = overview;
   const testName = testNameMapping[value?.toLowerCase()];
 
   const runAt = dayjs(row.original.run_at).valueOf();
+  const decode = dayjs(Number(runAt)).format('YYYY-MM-DD HH:mm:ss');
+
+  console.log('runAt', decode, row.original.run_at, runAt);
 
   return (
     <Link

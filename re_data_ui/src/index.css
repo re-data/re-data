@@ -40,16 +40,27 @@ code {
     border-color: #adc6ff;
 }
 
-.pass {
+.pass,
+.completed,
+.success {
     color: #FFF;
     background: hsl(150deg 66% 44%);
-    width: 60px;
+}
+
+.pending {
+    @apply bg-yellow-400 text-white;
+}
+
+.pending {
+    color: #FFF;
+    @apply px-3 bg-yellow-400 font-semibold;
+    width: 80px;
 }
 
 .fail,
+.failed,
 .error {
     @apply bg-red-600 text-white;
-    width: 60px;
 }
 
 select {

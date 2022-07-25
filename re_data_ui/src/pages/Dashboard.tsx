@@ -242,6 +242,7 @@ const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
     });
 
     element = { ...element, run_at };
+    if (!element.table_name) element.table_name = 'no_table_name';
 
     const model = stripQuotes(element.table_name).toLowerCase();
 
@@ -364,10 +365,11 @@ const Dashboard: React.FC = (): ReactElement => {
       }
 
       for (let index = 0; index < tableSamples.length; index++) {
-        let { table_name, sampled_on, sample_data } = tableSamples[index];
+        let { table_name, sampled_on } = tableSamples[index];
+        const { sample_data } = tableSamples[index];
+
         table_name = table_name.replaceAll('"', '');
         sampled_on = dayjs(sampled_on).format(dateTimeFormat);
-        sample_data = JSON.parse(sample_data);
 
         tableSamplesData.set(table_name, { table_name, sampled_on, sample_data });
       }

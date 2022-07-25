@@ -33,6 +33,7 @@ re_data dbt native cofiguration follows the same rules as dbt configuration, con
       re_data_monitored=true,
       re_data_time_filter='creation_time',
       re_data_columns=['amount', 'status'],
+      re_data_metrics_groups=['table_metrics', 'column_metrics'],
       re_data_metrics={'table': ['orders_obove_100'], 'column': { 'status': ['distinct_values'],
       re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3.0} }},
       re_data_owners=['datateam']
@@ -57,6 +58,8 @@ models:
       re_data_columns:
         - amount
         - status
+      re_data_metrics_groups:
+        - table_metrics
       re_data_metrics:
         table:
           - orders_above_100
@@ -82,6 +85,8 @@ models:
       +re_data_anomaly_detector:
         name: modified_z_score
         threshold: 3
+      +re_data_metrics_groups:
+        - table_metrics
 
       orders_per_age:
         +re_data_metrics:
@@ -135,11 +140,20 @@ SQL expression (for example, column name) to filter records of the table to a sp
 
 Set of columns for which re_data should compute metrics. If not specified, re_data will compute stats for all columns with either numeric or text types.
 
+### re_data_metrics_groups (optional)
+
+List of groups of metrics to compute. You can use any `re_data:metrics_groups` defined in your vars here.
+If not specified, re_data will compute metrics defined by `re_data:default_metrics` variable.
+
 ### re_data_metrics (optional)
 
-Additional metrics to be computed for a given table (set of tables). Those can be either whole `table` level or `column` level. (Check out **[metrics](/docs/reference/metrics/overview_metric)** section to learn distinction between the two)
+**Additional** metrics to be computed for a given table (set of tables). Those can be either whole `table` level or `column` level. (Check out **[metrics](/docs/reference/metrics/overview_metric)** section to learn distinction between the two)
 
 You can be pass any number of already defined or your custom metrics to be computed. Check out **[extra metrics](/docs/reference/metrics/extra_metrics)** section for available metrics and **[custom metrics](/docs/reference/metrics/your_own_metric)** for ways to define your own metrics.
+
+In a lot of cases when you extend metrics which are computed we recommend creating a new `re_data:metrics_groups` in your vars,
+adding your metrics to it and then defining `re_data_metrics_groups` to use it for set of models. 
+This approach is usually more flexible when adding new metrics for a given model.
 
 ### re_data_anomaly_detector (optional)
 
@@ -163,30 +177,6 @@ vars:
   # (optional) if not passed, stats for last day will be computed
   re_data:time_window_start: '{{ (run_started_at - modules.datetime.timedelta(1)).strftime("%Y-%m-%d 00:00:00") }}'
   re_data:time_window_end: '{{ run_started_at.strftime("%Y-%m-%d 00:00:00") }}'
-
-  # (optional) override standard metrics computed for all your tables
-  re_data:metrics_base:
-    table:
-      - row_count
-      - freshness
-      - buy_count # my own custom metric
-      
-    column:
-      numeric:
-        - min
-        - max
-        - avg
-        - stddev
-        - variance
-        - nulls_count
-        - diff # my own custom metric
-        
-      text:
-        - min_length
-        - max_length
-        - avg_length
-        - nulls_count
-        - missing_count
   
   # (optional) configuring 
   re_data:select:
@@ -230,23 +220,68 @@ It's also possible to compute metrics from overlapping data for example last 7 d
 
 By default, re_data computes daily stats from the last day (it actually uses exact configuration from example for that)
 
-### re_data:metrics_base
-
-This is a set of metrics to compute for all monitored tables.
-Some metrics like `row_count` are table level, others are specified
-per column type: so that expression will be run for all columns of this type.
-
-Here you only add metrics if you want to compute them for all tables which are monitored. You can also set up metrics to be computed for specific tables only (with table specific config)
-
-:::info
-schema changes are currently not set up using this parameter. Every monitored table is scanned for schema changed currently.
-:::
-
 ### re_data:select
 
 This is a list which allows you to additionally restrict re_data to only compute metrics/anomalies for certain models.
 Each model listed here still needs to have `re_data_monitored=true` to be monitored.
 If the list is not passed, re_data will computed stats for all `re_data_monitored=true` models.
+
+List elements can be either model/source name or dbt tags which your models have. Example select section with tags would look like this:
+
+```yaml
+vars:
+  ...
+
+  re_data:select:
+    - tag:my_tag_name
+    - tag:my_other_tag_name
+    - specific_table
+    - other_specific_table
+```
+
+### re_data:metrics_groups
+
+Groups of metrics to compute. By defult `table_metrics` and `column_metrics` are defined here, and that's their definition:
+
+```yaml
+re_data:metrics_groups:
+  table_metrics:
+    table:
+      - row_count
+      - freshness
+
+  column_metrics:
+    column:
+      numeric:
+        - min
+        - max
+        - avg
+        - stddev
+        - variance
+        - nulls_count
+        - nulls_percent
+      text:
+        - min_length
+        - max_length
+        - avg_length
+        - nulls_count
+        - missing_count
+        - nulls_percent
+        - missing_percent
+```
+
+You can redefine this var any way you want. If you remove `table_metrics`, `column_metrics` group you will then not be able to use them in `re_data_metrics_groups` settings.
+
+### re_data:default_metrics
+
+Default metrics to compute for each model if no `re_data_metrics_groups` is specified. You can use any of the metrics groups defined in `re_data:metrics_groups` here.
+The default re_data configuration is a follows:
+
+```yaml
+re_data:default_metrics:
+  - table_metrics
+  - column_metrics
+```
 
 ### re_data:anomaly_detector
 
