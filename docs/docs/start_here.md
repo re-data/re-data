@@ -17,6 +17,9 @@ re_data is an open-source data reliability framework build for modern data stack
 
 To start with **re_data** go to **[introduction](/docs/re_data/introduction/whatis_data)** 🚀
 
+Check out our **[live demo](https://re-data.github.io/re-data/ui-latest/#/alerts)** of what re_data can do for you! 😊
+
+![GraphExample](/screenshots/ui/graph.png)
 
 ## re_cloud
 **re_cloud** allows you to very easily host & manage data reports from data tools of your choice like:
@@ -28,3 +31,8 @@ To start with **re_data** go to **[introduction](/docs/re_data/introduction/what
 
 To start with **re_cloud** 
 Check out **[introduction](/docs/re_cloud/introduction)** on how to upload reports and list of  **[supported libraries](/docs/re_cloud/integrations/catalog)**.
+
+
+Start with a **[free account here 😊](https://re-data.github.io/re-data/ui-latest/#/alerts)**
+
+![DashboardExample](/screenshots/cloud/dashboard.png)
