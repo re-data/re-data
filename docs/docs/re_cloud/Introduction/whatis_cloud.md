@@ -17,6 +17,3 @@ If you are curious about re_cloud and would like to jump right into it, you can 
 
 ![DashboardExample](/screenshots/cloud/dashboard.png)
 
-
-## Our vision
-
