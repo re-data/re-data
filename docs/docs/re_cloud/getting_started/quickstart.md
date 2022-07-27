@@ -15,12 +15,12 @@ This introduction assumes you are using dbt and optionally re_data. re_cloud its
 re_cloud package is small python package for uploading data reports files to re_cloud 😊
 
 ```bash
-pip install re_data
+pip install re_cloud
 ```
 
 ## Configure your API key
 
-In the Account Settings section of the re_cloud, you can find your API key, which will be used for uploading data.
+In the `Account Settings` section of the re_cloud, you can find your API key, which will be used for uploading data.
 
 ![DashboardExample](/screenshots/cloud/getapikey.png)
 
@@ -34,18 +34,18 @@ re_cloud:
 
 ## Generate reports
 
-If you didn't yet generated dbt docs and re_data reports you can do it no. `cd` to your dbt project catalog and run
-
-:::info
-This requires you to have `re_data` configured in your environment.
-If you don't and you don't need to configure it now.
-Just skip re_data parts of the rest of tutorial.
-:::
+If you didn't yet generated dbt docs and re_data reports you can do it now. `cd` to your dbt project catalog and run:
 
 ```bash
 dbt docs generate
 re_data overview generate
 ```
+
+:::info
+This requires you to have `re_data` configured in your environment!
+If you don't and you don't need to configure it now.
+Just skip re_data parts of the rest of tutorial.
+:::
 
 ## Upload reports! 😊
 
