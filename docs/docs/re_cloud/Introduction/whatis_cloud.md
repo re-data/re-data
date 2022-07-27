@@ -12,8 +12,11 @@ At lof of tools produce reports in the form of static html applications which ar
  - custom slack notifications
  - and the list goes on and on
 
+![DashboardExample](/screenshots/cloud/dashboard.png)
+
+# Getting started
 
 If you are curious about re_cloud and would like to jump right into it, you can start with a **[free account here 😊](https://re-data.github.io/re-data/ui-latest/#/alerts)**
 
-![DashboardExample](/screenshots/cloud/dashboard.png)
+To see docs on how to upload reports into the cloud check our **[Quickstart guide](/docs/re_cloud/getting_started/quickstart)**
 

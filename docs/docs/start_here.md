@@ -29,10 +29,7 @@ Check out our **[live demo](https://re-data.github.io/re-data/ui-latest/#/alerts
 - pandas_profiling
 - and more!
 
-To start with **re_cloud** 
-Check out **[introduction](/docs/re_cloud/Introduction/whatis_cloud)** on how to upload reports and list of  **[supported libraries](/docs/re_cloud/integrations/catalog)**.
-
-
-Start with a **[free account here 😊](https://re-data.github.io/re-data/ui-latest/#/alerts)**
+Start with **[a free account 😊](https://re-data.github.io/re-data/ui-latest/#/alerts)**
+and check the **[introdudction docs](/docs/re_cloud/Introduction/whatis_cloud)**
 
 ![DashboardExample](/screenshots/cloud/dashboard.png)
