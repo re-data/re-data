@@ -15,11 +15,14 @@ from socketserver import TCPServer
 from re_data.version import check_version, with_version_check
 from yachalk import chalk
 import yaml
-from re_data.notifications.slack import slack_notify
-from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
-    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export, \
-        ALERT_TYPES, validate_alert_types, get_project_root
+from re_data.notifications.slack import slack_notify, generate_slack_message
+from re_data.notifications.email import send_mime_email, build_mime_message
+from re_data.utils import (
+    parse_dbt_vars, load_metadata_from_project, normalize_re_data_json_export,
+    get_project_root
+)
 
+from re_data.notifications.utils import build_notification_identifiers_per_model, prepare_exported_alerts_per_model, validate_alert_types, ALERT_TYPES
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 from re_data.config.utils import read_re_data_config
