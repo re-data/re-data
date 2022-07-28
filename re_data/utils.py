@@ -66,7 +66,7 @@ def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str,
     """
     alerts_per_model = {}
     for alert in alerts:
-        model = alert['model'].replace('"', '').replace('`', '')
+        model = alert['model'].replace('"', '').replace('`', '') if alert['model'] else 'No specific model'
         if model not in alerts_per_model:
             alerts_per_model[model] = {
                 'anomalies': [],
