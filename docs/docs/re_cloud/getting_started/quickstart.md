@@ -53,7 +53,7 @@ Now with just 2 commands we can upoad our reports to cloud
 
 ```bash
 re_cloud upload dbt-docs
-re_cloud upload overview
+re_cloud upload re-data
 ```
 
 ## View them in the cloud
