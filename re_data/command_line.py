@@ -15,7 +15,7 @@ from socketserver import TCPServer
 from re_data.version import check_version, with_version_check
 from yachalk import chalk
 import yaml
-from re_data.notifications.slack import slack_notify, generate_slack_message
+from re_data.notifications.slack import slack_notify, generate_slack_message, generate_all_good_slack_message
 from re_data.notifications.email import send_mime_email, build_mime_message
 from re_data.utils import (
     parse_dbt_vars, load_metadata_from_project, normalize_re_data_json_export,
@@ -492,9 +492,16 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
 
     alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members, selected_alert_types=selected_alert_types)
     
+    alerts_found = False
+
     for model, details in alerts_per_model.items():
         owners = slack_members.get(model, [])
         slack_message = generate_slack_message(model, details, owners, subtitle, selected_alert_types)
+        slack_notify(webhook_url, slack_message)
+        alerts_found = True
+
+    if not alerts_found:
+        slack_message = generate_all_good_slack_message(subtitle)
         slack_notify(webhook_url, slack_message)
 
     log_notification_status(start_date, end_date, alerts_per_model)

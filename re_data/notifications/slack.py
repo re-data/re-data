@@ -1,3 +1,4 @@
+from re import sub
 from tabulate import tabulate
 import requests
 from typing import Any, Dict, Optional, List, Tuple
@@ -40,6 +41,33 @@ def format_alerts(alerts: list, limit=None) -> str:
         table = table[:limit]
 
     return "\n".join(table)
+
+
+def add_footer(message_obj, subtitle):
+    """
+    Adds a footer to a slack message.
+    """
+    if subtitle:
+        message_obj['blocks'].append({
+			"type": "section",
+			"text": {
+                "type": "mrkdwn",
+                "text": subtitle
+            }
+		}
+    )
+    message_obj['blocks'].append({
+        "type": "context",
+        "elements": [
+            {
+                "type": "plain_text",
+                "text": "Generated at {}. Check re_data UI for more details".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+                "emoji": True
+            }
+        ]
+    })
+    
+    return message_obj
 
 def generate_slack_message(model, details, owners, subtitle: str, selected_alert_types: set) -> dict:
     """
@@ -118,27 +146,41 @@ def generate_slack_message(model, details, owners, subtitle: str, selected_alert
                 "text": "*Tests failures*\n ```{}```".format(format_alerts(tests, limit=10))
             }
         })
-    if subtitle:
-        message_obj['blocks'].append({
-			"type": "section",
-			"text": {
-                "type": "mrkdwn",
-                "text": subtitle
-            }
-		}
-    )
-    message_obj['blocks'].append({
-			"type": "context",
-			"elements": [
-				{
-					"type": "plain_text",
-					"text": "Generated at {}. Check re_data UI for more details".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-					"emoji": True
-				}
-			]
-		}
-    )
+
+    add_footer(message_obj, subtitle)
 
     return message_obj
     
     
+
+def generate_all_good_slack_message(subtitle: str) -> dict:
+    """
+    Generates a slack message for a given model.
+    """
+    message_obj = {
+        'blocks': [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": "All Good! :tada:",
+                    "emoji": True
+                }
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "plain_text",
+                    "text": "re_data didn't found any alerts at the moment",
+                    "emoji": True
+                }
+            },
+        ]
+    }
+
+    add_footer(message_obj, subtitle)
+
+    return message_obj
