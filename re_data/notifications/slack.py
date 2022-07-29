@@ -30,26 +30,34 @@ def format_alerts(alerts: list, alert_type,limit=None) -> str:
     """
     elements = []
     for alert in alerts:
-        time = datetime.strptime(alert.get('time_window_end'), "%Y-%m-%d %H:%M:%S")
-        time_formatted = time.strftime("%Y-%m-%d %H:%M")
-        elements.extend([
-            {
-                "type": "divider"
-            },
+        elements.append(
             {
                 "type": "section",
                 "fields": [
                     {
-                        "type": "mrkdwn",
-                        "text": f"*message*: {alert.get('message')}",
+                        "type": "plain_text",
+                        "text": f"{alert.get('message')}",
                     },
                     {
-                        "type": "mrkdwn",
-                        "text": f"*time*: {time_formatted}"
+                        "type": "plain_text",
+                        "text": f"{alert.get('time_window_end')}"
                     }
                 ]
-            }])
+            })
     if elements:
+        elements.insert(0, {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"*message*",
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*time*"
+                }
+            ]
+        })
         elements.insert(0, {
             'type': 'header',
             'text': {
