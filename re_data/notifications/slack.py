@@ -20,7 +20,7 @@ def slack_notify(webhook_url: str, body: dict) -> None:
     response = requests.post(webhook_url, json=body, headers=headers)
     response.raise_for_status()
 
-def format_alerts_to_table(alerts: list, limit=None) -> str:
+def format_alerts(alerts: list, limit=None) -> str:
     """
     Formats a list of alerts to a table.
     :param alerts:
@@ -30,16 +30,16 @@ def format_alerts_to_table(alerts: list, limit=None) -> str:
     """
     table = []
     for alert in alerts:
-        table.append([
-            # alert['model'],
-            alert['message'],
-            alert['value'],
-            alert['time_window_end'],
-        ])
+        time = datetime.strptime(alert.get('time_window_end'), "%Y-%m-%d %H:%M:%S")
+        time_formatted = time.strftime("%Y-%m-%d %H:%M")
+
+        table.append(
+            f"[{time_formatted}] {alert['message']}",
+        )
     if limit: 
         table = table[:limit]
-    return tabulate(table, headers=['Message', 'Value', 'Time Window'], tablefmt='simple')
 
+    return "\n".join(table)
 
 def generate_slack_message(model, details, owners, subtitle: str, selected_alert_types: set) -> dict:
     """
@@ -99,7 +99,7 @@ def generate_slack_message(model, details, owners, subtitle: str, selected_alert
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "*Anomalies*\n ```{}```".format(format_alerts_to_table(anomalies, limit=10))
+                "text": "*Anomalies*\n ```{}```".format(format_alerts(anomalies, limit=10))
             }
         })
     if schema_changes and 'schema_change' in selected_alert_types:
@@ -107,7 +107,7 @@ def generate_slack_message(model, details, owners, subtitle: str, selected_alert
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "*Schema Changes*\n ```{}```".format(format_alerts_to_table(schema_changes, limit=10))
+                "text": "*Schema Changes*\n ```{}```".format(format_alerts(schema_changes, limit=10))
             }
         })
     if tests and 'test' in selected_alert_types:
@@ -115,7 +115,7 @@ def generate_slack_message(model, details, owners, subtitle: str, selected_alert
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "*Tests failures*\n ```{}```".format(format_alerts_to_table(tests, limit=10))
+                "text": "*Tests failures*\n ```{}```".format(format_alerts(tests, limit=10))
             }
         })
     if subtitle:
