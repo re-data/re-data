@@ -83,7 +83,7 @@ def generate_slack_message(model, details, owners, subtitle: str, selected_alert
                 "type": "header",
                 "text": {
                     "type": "plain_text",
-                    "text": "Model: {}".format(model),
+                    "text": "Table: {}".format(model),
                     "emoji": True
 			    }
             },
