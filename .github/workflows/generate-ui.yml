@@ -55,7 +55,7 @@ jobs:
         working-directory: .
         run: |
           pip install -e .
-          pip install dbt-postgres==1.0.0
+          pip install dbt-postgres
 
       - name: Install dbt dependencies
         working-directory: ./getting_started/toy_shop
