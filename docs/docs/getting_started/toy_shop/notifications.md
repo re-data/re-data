@@ -38,7 +38,7 @@ Below is a sample alert notification message sent by a slack app created.
 
 ![SlackMessage](/screenshots/notifications/slack_notification_message.png)
 
-By default, the most recent 20 alerts are shown and you can generate the Observability UI to show more details relating to alerts.
+By default, the most recent 10 alerts are shown (for each table) and you can generate the Observability UI to show more details relating to alerts.
 
 ## Email
 
