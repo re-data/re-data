@@ -27,7 +27,7 @@ and alerts you on Slack or Email and in re_data UI so that you can react, invest
 ## Metrics
 For detecting anomalies re_data uses metrics. You can compute predefined and custom metrics about your data. All metrics are stored in your database and accessible for you. re_data custom metrics are just dbt macros which you can add to your dbt project. Check out what base, extra metrics re_data has and how you can define your own metrics here:
 
- - **[base metrics](/docs/reference/metrics/base_metrics)**
+ - **[default metrics](/docs/reference/metrics/default_metrics)**
  - **[extra metrics](/docs/reference/metrics/extra_metrics)**
  - **[defining your own metric](/docs/reference/metrics/your_own_metric)**
 

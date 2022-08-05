@@ -14,6 +14,7 @@ import React, {
 } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { format } from 'sql-formatter';
+import utc from 'dayjs/plugin/utc';
 import { Select, Table } from '../../components';
 import { CellProps, ColumnsProps } from '../../components/Table';
 import {
@@ -26,6 +27,8 @@ import { MetaData, StatusCell } from '../../partials';
 import { RightComponent } from '../../partials/Tests';
 
 dayjs.extend(customParseFormat);
+dayjs.extend(utc);
+
 echarts.use([ToolboxComponent]);
 
 type valuesProps = {
@@ -33,40 +36,41 @@ type valuesProps = {
 };
 
 const values = ({ timelineData }: valuesProps) => {
-  if (timelineData) {
-    const timelineVal = Object.entries(timelineData)
-      .sort(([x]: [string, string], [y]: [string, string]) => dayjs(x).diff(y))
-      .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+  if (!timelineData) return {};
 
-    const data = Object.values(timelineVal);
-    const runAt = Object.keys(timelineVal);
+  const timelineVal = Object.entries(timelineData)
+    .sort(([x]: [string, string], [y]: [string, string]) => dayjs(x).diff(y))
+    .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
-    return {
-      grid: {
-        top: '20%',
-        right: '5%',
-        bottom: '12%',
-        left: '15%',
+  // console.log('timelineData', timelineData);
+
+  const data = Object.values(timelineVal);
+  const runAt = Object.keys(timelineVal);
+
+  return {
+    grid: {
+      top: '20%',
+      right: '5%',
+      bottom: '12%',
+      left: '15%',
+    },
+    xAxis: {
+      type: 'category',
+      data: runAt,
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: [
+      {
+        name: 'timeline',
+        data,
+        type: 'line',
+        color: '#8884d8',
+        smooth: true,
       },
-      xAxis: {
-        type: 'category',
-        data: runAt,
-      },
-      yAxis: {
-        type: 'value',
-      },
-      series: [
-        {
-          name: 'timeline',
-          data,
-          type: 'line',
-          color: '#8884d8',
-          smooth: true,
-        },
-      ],
-    };
-  }
-  return {};
+    ],
+  };
 };
 
 type generateDetailsDataProps = {
@@ -79,12 +83,11 @@ type generateDetailsDataProps = {
 };
 
 const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
-const dateTimeFormat2 = 'YYYY-MM-DDTHH:mm:ss';
 
 const generateDetailsData = (props: generateDetailsDataProps) => {
   const {
     loading, modelName, testName,
-    testsObject, modelTestMapping, runAt,
+    testsObject, modelTestMapping,
   } = props;
 
   const val = [];
@@ -111,10 +114,8 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
 
       if (testName?.toLowerCase() === element.test_name?.toLowerCase()) {
         runAts.add(element.run_at);
-        timelineData[element.run_at] = element.failures_count || '';
-        if (element.run_at !== runAt) {
-          testDetailsObject[element.run_at] = element;
-        }
+        timelineData[element.run_at] = element.failures_count || '0';
+        testDetailsObject[element.run_at] = element;
       }
       if (!valSet.has(element.test_name)) {
         valSet.add(element.test_name);
@@ -146,7 +147,6 @@ const TestDetails: FC = (): ReactElement => {
   let { testName } = useParams();
   const { runAt: _runAt } = useParams();
   const runAt = dayjs(Number(_runAt)).format(dateTimeFormat);
-  const runAt2 = dayjs(Number(_runAt)).format(dateTimeFormat2);
 
   testName = testName?.toLowerCase();
 
@@ -204,7 +204,7 @@ const TestDetails: FC = (): ReactElement => {
   useEffect(() => {
     if (!result) return;
 
-    const firstRunAt = runAt2 || Array.from(runAtOptions)?.[0];
+    const firstRunAt = selectedOption || runAt || Array.from(runAtOptions)?.[0];
     let res = (result as []) || [];
     if (firstRunAt) {
       res = result.filter((row) => row.run_at === firstRunAt) as [];
@@ -212,7 +212,7 @@ const TestDetails: FC = (): ReactElement => {
 
     setData(res);
     setBackUpData((result as []) || []);
-  }, [result, runAt2]);
+  }, [result, runAt, selectedOption]);
 
   const handleChange = (option: SelectOptionProps | null) => {
     if (option && modelName) {
@@ -222,10 +222,10 @@ const TestDetails: FC = (): ReactElement => {
   };
 
   const results: TestData = useMemo(() => {
-    const key = selectedOption || runAt2 || Array.from(runAtOptions)?.[0];
+    const key = selectedOption || runAt || Array.from(runAtOptions)?.[0];
 
     return (testDetailsObject?.[key] as TestData) || {};
-  }, [runAtOptions, testDetailsObject, selectedOption]);
+  }, [runAtOptions, testDetailsObject, selectedOption, runAt]);
 
   const handleRunAtChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const option = e.target.value;
@@ -287,7 +287,7 @@ const TestDetails: FC = (): ReactElement => {
           <RightComponent
             showOptionLabel={false}
             options={Array.from(runAtOptions).sort((a, b) => dayjs(b).diff(a)) as []}
-            value={selectedOption || runAt2 || Array.from(runAtOptions)?.[0]}
+            value={selectedOption || runAt || Array.from(runAtOptions)?.[0]}
             handleChange={handleRunAtChange}
           />
         </div>

@@ -3,6 +3,7 @@ import React, {
   ReactElement, useContext, useMemo, useState,
 } from 'react';
 import { FaRegSmileBeam } from 'react-icons/all';
+import utc from 'dayjs/plugin/utc';
 import { EmptyContent, Table } from '../components';
 import AlertBadge from '../components/AlertBadge';
 import { CellProps, ColumnsProps } from '../components/Table';
@@ -36,7 +37,7 @@ const generateAlertData = (alerts: Alert[]): AlertData[] => {
       type: alert.type === 'schema_change' ? 'schema' : alert.type,
       message: alert.message,
       value: alert.value,
-      date: dayjs(alert.time_window_end).format(dateTimeFormat),
+      date: dayjs.utc(alert.time_window_end).format(dateTimeFormat),
     });
   }
 

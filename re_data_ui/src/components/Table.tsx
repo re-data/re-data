@@ -1,6 +1,8 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, memo, useMemo } from 'react';
+import React, {
+  useState, memo, useMemo, ReactNode,
+} from 'react';
 import {
   CellValue,
   ColumnInstance,
@@ -26,6 +28,7 @@ export interface ITable {
   data: Record<string, unknown>[];
   showSearch?: boolean;
   RightComponent?: React.FunctionComponent<unknown> | null;
+  EmptyData?: ReactNode;
 }
 
 interface IFilter {
@@ -73,8 +76,11 @@ const CustomFilter = memo(({
 
 function Table(params: ITable): JSX.Element {
   const {
-    columns, data, showSearch = true,
+    columns,
+    data,
+    showSearch = true,
     RightComponent = null,
+    EmptyData,
   } = params;
 
   const {
@@ -196,6 +202,8 @@ function Table(params: ITable): JSX.Element {
           })}
         </tbody>
       </table>
+
+      {page.length < 1 && EmptyData}
 
       {page.length > 0 && (
         <div className="py-3 flex items-center justify-between border-t border-gray-200">
