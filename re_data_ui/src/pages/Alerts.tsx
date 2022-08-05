@@ -15,6 +15,8 @@ import {
 import { ModelCell, TableSelect } from '../partials';
 import colors from '../utils/colors.js';
 
+dayjs.extend(utc);
+
 export type AlertType = 'Anomaly' | 'Test' | 'Schema' | 'All' | '';
 
 export type AlertData = {
