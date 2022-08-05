@@ -5,3 +5,4 @@ export { default as ModelCell } from './ModelCell';
 export { default as StatusCell } from './StatusCell';
 export { default as TestCell } from './TestCell';
 export { default as MetaData } from './MetaData';
+export { default as TableSelect } from './TableSelect';
