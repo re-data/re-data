@@ -174,7 +174,7 @@ def generate_all_good_slack_message(subtitle: str) -> dict:
                 "type": "section",
                 "text": {
                     "type": "plain_text",
-                    "text": "re_data didn't found any alerts at the moment",
+                    "text": "re_data didn't find any alerts at the moment",
                     "emoji": True
                 }
             },
