@@ -14,6 +14,6 @@ We heard numours questions on how to deploy **re_data** and this pushed as into 
 
 If you are curious about re_cloud and would like to jump right into it, you can start with a **[free account here 😊](https://cloud.getre.io/#/register)**
 
-To see docs on how to upload reports into the cloud check our **[Quickstart guide](/docs/re_cloud/getting_started/quickstart)**
+To see docs on how to upload reports into the cloud check our **[Quickstart guide](/docs/re_cloud/quickstart)**
 
 ![DashboardExample](/screenshots/cloud/dashboard.png)
