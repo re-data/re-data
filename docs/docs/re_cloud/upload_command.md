@@ -21,6 +21,8 @@ Options:
   --name TEXT         Name of the upload used for identification
 ```
 
+You don't need to pass project-dir paramter if calling this command from witin dbt main directory. Otherwise pass `project-dir` to upload generated docs from this directory.
+
 ### pandas-profiling
 
 ```
@@ -31,6 +33,8 @@ Options:
 --name TEXT         Name of the upload used for identification
 ```
 
+For pandas profiling --report-file is required paramter. re_data will upload your docs in `uncommitted/data_docs/local_site/` path then.
+
 ### great-expectations
 
 ```
@@ -39,6 +43,8 @@ re_cloud upload great-expectations --name TEXT
 Options:
   --name TEXT  Name of the upload used for identification
 ```
+
+For great-expectation `cd` to great-expectations directory. re_data uploads 
 
 ### re-data
 
@@ -57,8 +63,15 @@ Options:
   --name TEXT                Name of the upload used for identification
 ```
 
+If you are inside dbt project dir and didn't changed default `target` directory for docs and re_data both `project-dir` and `re-data-target-dir` are optional.
+
 ## common parameters
 
 ### `name`
 
 Name which you would like to give to the report, this will show in the interface. Names don't need to and often will not be unique, given that in most of the pipelines you will be uploading similar reports every day / hours, etc.
+
+
+## Help
+
+If you need any help with setting up the upload, let us know on **[Slack](https://www.getre.io/slack)**, we will try to help right away 😊
