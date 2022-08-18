@@ -15,15 +15,19 @@ from socketserver import TCPServer
 from re_data.version import check_version, with_version_check
 from yachalk import chalk
 import yaml
-from re_data.notifications.slack import slack_notify
-from re_data.utils import build_mime_message, parse_dbt_vars, prepare_exported_alerts_per_model, \
-    generate_slack_message, build_notification_identifiers_per_model, send_mime_email, load_metadata_from_project, normalize_re_data_json_export, \
-        ALERT_TYPES, validate_alert_types, get_project_root
+from re_data.notifications.slack import slack_notify, generate_slack_message, generate_all_good_slack_message
+from re_data.notifications.email import send_mime_email, build_mime_message
+from re_data.utils import (
+    parse_dbt_vars, load_metadata_from_project, normalize_re_data_json_export,
+    get_project_root
+)
 
+from re_data.notifications.utils import build_notification_identifiers_per_model, prepare_exported_alerts_per_model, validate_alert_types, ALERT_TYPES
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 from re_data.config.utils import read_re_data_config
 from re_data.config.validate import validate_config_section
+from re_data.logs import log_notification_status
 
 logger = logging.getLogger(__name__)
 
@@ -487,13 +491,21 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
     slack_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='slack')
 
     alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members, selected_alert_types=selected_alert_types)
+    
+    alerts_found = False
+
     for model, details in alerts_per_model.items():
         owners = slack_members.get(model, [])
         slack_message = generate_slack_message(model, details, owners, subtitle, selected_alert_types)
         slack_notify(webhook_url, slack_message)
-    print(
-        f"Notification sent", chalk.green("SUCCESS")
-    )
+        alerts_found = True
+
+    if not alerts_found:
+        slack_message = generate_all_good_slack_message(subtitle)
+        slack_notify(webhook_url, slack_message)
+
+    log_notification_status(start_date, end_date, alerts_per_model)
+
 
 @notify.command()
 @click.option(
@@ -593,9 +605,7 @@ def email(start_date, end_date, re_data_target_dir, select, **kwargs):
                 use_ssl=use_ssl,
             )
     
-    print(
-        f"Notification sent", chalk.green("SUCCESS")
-    )
+    log_notification_status(start_date, end_date, alerts_per_model)
 
 
 main.add_command(overview)
