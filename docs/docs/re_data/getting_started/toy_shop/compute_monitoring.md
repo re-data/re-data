@@ -104,7 +104,7 @@ postgres=> SELECT * FROM toy_shop_re.re_data_monitored;
  orders                      | toy_shop | postgres | time_created | {}      | []      | {"name": "modified_z_score", "threshold": 3.5}
 ```
 
-You would notice that here we will also see *final* configuration applied when actually computing models (taking into account priorties from different configuration levels). More information on configuration can be found [here](/docs/reference/config).
+You would notice that here we will also see *final* configuration applied when actually computing models (taking into account priorties from different configuration levels). More information on configuration can be found [here](/docs/re_data/reference/config).
 
 :::info
 Notice that table was created inside `toy_shop_re` schema. re_data tables are by default created with this schema suffix, *except `toy_shop_re_internal`* tables which are internal tables not be used directly by you. You can change this behaviour however you want, we use following dbt config for our models. (which can be overwritten)

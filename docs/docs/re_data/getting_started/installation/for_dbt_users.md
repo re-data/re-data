@@ -40,7 +40,7 @@ On production, you most likely are already running `dbt deps` as part of dbt mod
 
 ### Configuring tables
 
-Computing metrics & anomalies for your dbt models & sources requires configuring them to be observed by re_data. You can do it in a couple of ways, all of them described in **[re_data configuration](/docs/reference/config)** reference part. A simple configuration for a single model contains just information that the model should be monitored & timestamp expression (usually column name) to be used when computing re_data time-based stats.
+Computing metrics & anomalies for your dbt models & sources requires configuring them to be observed by re_data. You can do it in a couple of ways, all of them described in **[re_data configuration](/docs/re_data/reference/config)** reference part. A simple configuration for a single model contains just information that the model should be monitored & timestamp expression (usually column name) to be used when computing re_data time-based stats.
 
 ```sql title="<model_name>.sql"
 {{
@@ -57,11 +57,11 @@ select ...
 Let's go over some of the things you already can use with re_data dbt package.
 
 For specifics look into reference section:
- - **[re_data dbt models](/docs/reference/models)**
- - **[re_data metrics](/docs/reference/metrics/overview_metric)**
- - **[re_data asserts](/docs/reference/tests/asserts)**
- - **[re_data tests history](/docs/reference/tests/history)**
- - **[re_data data cleaning, filtering, normalization, validation macros](/docs/reference/macros/data_cleaning)**
+ - **[re_data dbt models](/docs/re_data/reference/models)**
+ - **[re_data metrics](/docs/re_data/reference/metrics/overview_metric)**
+ - **[re_data asserts](/docs/re_data/reference/tests/asserts)**
+ - **[re_data tests history](/docs/re_data/reference/tests/history)**
+ - **[re_data data cleaning, filtering, normalization, validation macros](/docs/re_data/reference/macros/data_cleaning)**
 
 dbt auto generated documentation, together with our models graph is also available: **[here](https://re-data.github.io/dbt-re-data/#!/model/model.re_data.re_data_monitored)**
 
@@ -113,13 +113,13 @@ re_data python library should be installed in the same python environment where 
 ### Python package functionality
 
 Python package add enabled you to use this functionality:
- - **[re_data overview UI](/docs/reference/cli/overview)** - for generating & displaying re_data UI
- - **[re_data notify](/docs/reference/cli/notify)** - for notifying external services about alerts (currently Slack)
- - **[re_data run](/docs/reference/cli/run)** - for easily backfilling re_data dbt data
+ - **[re_data overview UI](/docs/re_data/reference/cli/overview)** - for generating & displaying re_data UI
+ - **[re_data notify](/docs/re_data/reference/cli/notify)** - for notifying external services about alerts (currently Slack)
+ - **[re_data run](/docs/re_data/reference/cli/run)** - for easily backfilling re_data dbt data
 
 ### Generate & Serve UI
 
-Let's go over 2 commands for generating & serving UI. It works quite similarly to dbt docs. First you create files by calling `re_data overview generate` and then serving already existing files by `re_data overview serve`. For more details on paramters accepted by this & other re_data commands check **[re_data CLI reference](/docs/reference/cli/overview)**
+Let's go over 2 commands for generating & serving UI. It works quite similarly to dbt docs. First you create files by calling `re_data overview generate` and then serving already existing files by `re_data overview serve`. For more details on paramters accepted by this & other re_data commands check **[re_data CLI reference](/docs/re_data/reference/cli/overview)**
 
 ```
 re_data overview generate

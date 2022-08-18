@@ -74,13 +74,13 @@ re_data comes with a set of metrics that are computed by default for all monitor
 ```
 
 
-Definition of all base metrics is available under **[default metrics](/docs/reference/metrics/default_metrics)** section.
+Definition of all base metrics is available under **[default metrics](/docs/re_data/reference/metrics/default_metrics)** section.
 
 ## Extra
 
-Apart from base metrics which can be added to your metrics computed, but are not available computed by default. Full list of those metrics is available in **[Extra metrics](/docs/reference/metrics/extra_metrics)** section.
+Apart from base metrics which can be added to your metrics computed, but are not available computed by default. Full list of those metrics is available in **[Extra metrics](/docs/re_data/reference/metrics/extra_metrics)** section.
 
 ## Custom
 
-re_data makes it possible to create macros which will compute your own metrics. More information about that in **[Custom metrics](/docs/reference/metrics/your_own_metric)**  section.
+re_data makes it possible to create macros which will compute your own metrics. More information about that in **[Custom metrics](/docs/re_data/reference/metrics/your_own_metric)**  section.
 
