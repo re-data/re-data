@@ -128,7 +128,7 @@ re_data overview serve
 
 ## Learning more
 
-More detailed instrutions on running re_data are described in out toy_shop **[example tutorial 😊](/docs/getting_started/toy_shop/toy_shop_data)** 
+More detailed instrutions on running re_data are described in out toy_shop **[example tutorial 😊](/docs/re_data/getting_started/toy_shop/toy_shop_data)** 
 
 :::info
 ### Got stuck anywhere?

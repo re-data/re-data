@@ -56,9 +56,9 @@ re_data ships with a set of macros to save you time and pain of writing code for
 
 # Getting started
 
-re_data is very easy to add to existing dbt projects. Check out **[quickstart](/docs/getting_started/installation/for_dbt_users)** instructions and follow **[toy shop](/docs/getting_started/toy_shop/toy_shop_data)** tutorial to see how you can generate re_data reliability data & UI for your data warehouse.
+re_data is very easy to add to existing dbt projects. Check out **[quickstart](/docs/re_data/getting_started/installation/for_dbt_users)** instructions and follow **[toy shop](/docs/re_data/getting_started/toy_shop/toy_shop_data)** tutorial to see how you can generate re_data reliability data & UI for your data warehouse.
 
-If you are not using dbt, re_data can still be a great option to start monitoring your existing tables. Check out installation for new users: **[new to dbt](/docs/getting_started/installation/new_to_dbt)** in this case.
+If you are not using dbt, re_data can still be a great option to start monitoring your existing tables. Check out installation for new users: **[new to dbt](/docs/re_data/getting_started/installation/new_to_dbt)** in this case.
 
 
 :::info
