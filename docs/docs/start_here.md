@@ -7,7 +7,7 @@ sidebar_position: 0
 
 ## re_data
 
-re_data is an open-source data reliability framework build for modern data stack.
+**re_data** is an open-source data reliability framework build for modern data stack.
 
 **re_data** focuses on observing the dbt project and lets you:
  - get alerts about bad data
@@ -22,14 +22,15 @@ Check out our **[live demo](https://re-data.github.io/re-data/ui-latest/#/alerts
 ![GraphExample](/screenshots/ui/graph.png)
 
 ## re_cloud
-**re_cloud** allows you to very easily host & manage data reports from data tools of your choice like:
+**re_cloud** allows you to very easily host and collaborate on data reports from data tools of your choice like:
+
+- **re_data** 😊
 - dbt docs
-- **re_data** (of course 😅) 
 - great_expectations
 - pandas_profiling
-- and more!
+- and more comming soon!
 
-Start with **[a free account 😊](https://re-data.github.io/re-data/ui-latest/#/alerts)**
-and check the **[introdudction docs](/docs/re_cloud/Introduction/whatis_cloud)**
+Start with **[a free account here 😊](https://cloud.getre.io/#/register)**
+and check our **[introdudction docs](/docs/re_cloud/Introduction/whatis_cloud)**
 
 ![DashboardExample](/screenshots/cloud/dashboard.png)

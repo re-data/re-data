@@ -6,13 +6,12 @@ sidebar_position: 1
 
 In this quick tutorial we will deploy the UI of re_data & dbt_docs to prodocution environment when you and your team can check those 2 usefull reports.
 
-This introduction assumes you are using dbt and optionally re_data. re_cloud itself can work with different tools, so check out integration guide.
-
+This introduction assumes you are using dbt and optionally re_data.
 
 
 ## Install re_cloud package
 
-re_cloud package is small python package for uploading data reports files to re_cloud 😊
+**re_cloud** package is small python package for uploading data reports files to re_cloud 😊
 
 ```bash
 pip install re_cloud
@@ -24,7 +23,7 @@ In the `Account Settings` section of the re_cloud, you can find your API key, wh
 
 ![DashboardExample](/screenshots/cloud/getapikey.png)
 
-Than paste this into your `~/.re_data/re_data.yml` configuration file.
+Than paste this into your `~/.re_data/re_data.yml` configuration file. (For simplicity we use the same directory and file as you would use for *re_data* package configuration)
 
 ```yml title="~/.re_data/re_data.yml"
 
@@ -60,4 +59,7 @@ re_cloud upload re-data
 
 Now you cloud account should contain 2 additional reports with recent upload times.
 
-![DashboardExample](/screenshots/cloud/dashboard.png)
+![DashboardExample](/screenshots/cloud/start_dashboard.png)
+
+
+re_cloud supports uploading a couple of different reports, let's check all of them 😊 

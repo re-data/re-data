@@ -44,15 +44,20 @@ module.exports = {
           activeBasePath: 'introduction'
         },
         {
+          href: 'https://www.getre.io/slack',
+          label: 'Join our Slack!',
+          position: 'right',
+        },
+        {
           href: 'https://github.com/re-data/re-data',
-          label: 'GitHub',
+          label: 'Check GitHub',
           position: 'right',
         },
       ],
     },
     footer: {
       style: 'dark',
-      copyright: `Copyright © 2021 ReData. All Rights Reserved.`,
+      copyright: `Copyright © 2022 ReData. All Rights Reserved.`,
     },
     prism: {
       theme: lightCodeTheme,
