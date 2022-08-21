@@ -49,8 +49,8 @@ module.exports = {
           position: 'right',
         },
         {
-          href: 'https://github.com/re-data/re-data',
-          label: 'Check GitHub',
+          href: 'https://getre.io',
+          label: 'getre.io',
           position: 'right',
         },
       ],

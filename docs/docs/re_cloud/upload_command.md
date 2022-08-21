@@ -71,7 +71,8 @@ If you are inside dbt project dir and didn't changed default `target` directory 
 
 Name which you would like to give to the report, this will show in the interface. Names don't need to and often will not be unique, given that in most of the pipelines you will be uploading similar reports every day / hours, etc.
 
-
 ## Help
+
+Are you not familiar with some the mentioned tools and reports mentioned? We include sample reports from all of the tools on re_cloud [free account 😊](https://cloud.getre.io/#/register)**
 
 If you need any help with setting up the upload, let us know on **[Slack](https://www.getre.io/slack)**, we will try to help right away 😊
