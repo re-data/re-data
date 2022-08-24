@@ -82,7 +82,7 @@ const MetaData = ({ tabs }: MetaDataType): JSX.Element => {
               {jsonData ? (
                 <DynamicTable
                   values={
-                    (jsonData as unknown as Record<string, unknown>[])
+                    (jsonData as unknown as Record<string, string>[])
                     || null
                   }
                 />

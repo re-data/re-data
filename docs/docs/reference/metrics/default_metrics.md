@@ -3,9 +3,9 @@ sidebar_position: 1
 dbt_docs_base_url: https://re-data.github.io/dbt-re-data
 ---
 
-# Base metrics
+# Default metrics
 
-Base metrics are computed for all monitored tables. If you would rather not compute some of them it's easy to change the base metrics list via the `re_data:metrics_base` variable.
+Default metrics are computed for all monitored tables. If you would rather not compute some of them it's easy to change the default metrics list via the `re_data:default_metrics` variable.
 
 ```csv title="Sample table for example metrics"
 __      title               rental_rate	rating      created_at
@@ -32,7 +32,7 @@ __      title               rental_rate	rating      created_at
 
 Below is a list of currently available metrics and how they are computed internally by re_data:
 
-## Base table level metrics
+## table level metrics
 
 ### row_count 
 #### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_row_count)
@@ -66,7 +66,7 @@ between re_data runs this metric **doesn't** filter changes to time-window speci
 in fact, **doesn't** use time_window settings at all.
 :::
 
-## Base column level metrics
+## Column level metrics
 
 ### min
 #### [(source code)](https://re-data.github.io/dbt-re-data/#!/macro/macro.re_data.re_data_metric_min)

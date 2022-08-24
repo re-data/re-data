@@ -21,7 +21,7 @@ code {
 }
 
 .navlink {
-    @apply flex items-center space-x-2 mb-3 py-2 px-4 transition duration-200 hover:bg-gray-600 hover:text-white
+    @apply flex items-center space-x-2 mb-2 py-2 px-4 transition duration-200 hover:bg-gray-600 hover:text-white
 }
 
 .navlink.active {
@@ -40,16 +40,27 @@ code {
     border-color: #adc6ff;
 }
 
-.pass {
+.pass,
+.completed,
+.success {
     color: #FFF;
     background: hsl(150deg 66% 44%);
-    width: 60px;
+}
+
+.pending {
+    @apply bg-yellow-400 text-white;
+}
+
+.pending {
+    color: #FFF;
+    @apply px-3 bg-yellow-400 font-semibold;
+    width: 80px;
 }
 
 .fail,
+.failed,
 .error {
     @apply bg-red-600 text-white;
-    width: 60px;
 }
 
 select {

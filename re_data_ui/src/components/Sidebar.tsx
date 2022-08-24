@@ -1,5 +1,6 @@
 import React, { ReactElement, useContext } from 'react';
 import {
+  BiCog,
   BiCodeCurly,
   BiNetworkChart,
   BsGithub,
@@ -10,17 +11,23 @@ import {
   VscTable,
 } from 'react-icons/all';
 import { NavLink } from 'react-router-dom';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import {
   OverviewData,
   RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
+
+const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+
+dayjs.extend(utc);
 
 const Sidebar: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
 
   const { metaData } = overview;
   const projectVersion = metaData?.version || '';
-  const generatedAt = metaData?.generated_at || '';
+  const generatedAt = metaData?.generated_at ? dayjs.utc(metaData.generated_at).format(DATE_TIME_FORMAT) : '';
 
   return (
     <aside
@@ -102,6 +109,16 @@ const Sidebar: React.FC = (): ReactElement => {
             <BiCodeCurly size="1.25em" />
             <span>Macros</span>
           </NavLink>
+
+          <div className="mt-5">
+            <NavLink
+              to="settings"
+              className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}
+            >
+              <BiCog size="1.25em" />
+              <span>Settings</span>
+            </NavLink>
+          </div>
         </nav>
       </div>
 
@@ -144,9 +161,7 @@ const Sidebar: React.FC = (): ReactElement => {
             generated at
             {' '}
             <span className="text-xs italic">
-              {generatedAt}
-              {' '}
-              UTC
+              {`${generatedAt} UTC`}
             </span>
           </span>
         </div>

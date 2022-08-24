@@ -1,6 +1,6 @@
 import dagre from 'dagre';
 import {
-  ArrowHeadType, Elements, Edge, Node, isNode, Position,
+  ArrowHeadType, Edge, Elements, isNode, Node, Position,
 } from 'react-flow-renderer';
 import { DbtNode, DbtSource } from '../contexts/redataOverviewContext';
 

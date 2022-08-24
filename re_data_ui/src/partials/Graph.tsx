@@ -1,5 +1,5 @@
 import React, {
-  ReactElement, useCallback, useContext, useState, useEffect,
+  ReactElement, useCallback, useContext, useEffect, useState,
 } from 'react';
 import { Elements } from 'react-flow-renderer';
 import { useSearchParams } from 'react-router-dom';
@@ -30,12 +30,15 @@ type GenerateGraphResponseProps = {
 }
 
 const getAlertData = (modelId: string, aggregatedModels: Map<string, ReDataModelDetails>) => {
-  const {
-    anomalies,
-    schemaChanges,
-  } = aggregatedModels.get(modelId) as ReDataModelDetails;
+  if (aggregatedModels.has(modelId)) {
+    const {
+      anomalies,
+      schemaChanges,
+    } = aggregatedModels.get(modelId) as ReDataModelDetails;
 
-  return { anomalies, schemaChanges };
+    return { anomalies, schemaChanges };
+  }
+  return { anomalies: new Map(), schemaChanges: [] };
 };
 
 const generateGraph = (
@@ -46,6 +49,7 @@ const generateGraph = (
   }: GenerateGraphProps,
 ): GenerateGraphResponseProps => {
   const elements: Elements = [];
+  const nodeSet = new Set();
   const elementObj: Record<string, string> = {};
   const edgesArr: Record<string, string>[] = [];
 
@@ -83,94 +87,89 @@ const generateGraph = (
 
     const { anomalies, schemaChanges } = getAlertData(modelId, aggregatedModels);
 
-    const n = generateNode({
-      index: '0',
-      modelId,
-      details,
-      failedTests: failedTestKeys?.has(modelId),
-      anomalies: anomalies?.size > 0,
-      schemaChanges: schemaChanges?.length > 0,
-    });
-    nodes.push({
-      label: modelId,
-      value: modelId,
-    });
-    elements.push(n);
-    elementObj[modelId] = '0';
+    if (!nodeSet.has(modelId)) {
+      nodeSet.add(modelId);
+      const n = generateNode({
+        index: '0',
+        modelId,
+        details,
+        failedTests: failedTestKeys?.has(modelId),
+        anomalies: anomalies?.size > 0,
+        schemaChanges: schemaChanges?.length > 0,
+      });
+      elements.push(n);
+      elementObj[modelId] = '0';
 
-    const parentNodesLength = modelParentNodes.length;
+      const parentNodesLength = modelParentNodes.length;
+      const parentSet = new Set();
+      const childSet = new Set();
 
-    for (let index = 0; index < parentNodesLength; index++) {
-      const parent = modelParentNodes?.[index];
-      const parentDetails = allNodes?.[parent];
-      const { resource_type: resourceType } = parentDetails;
+      for (let index = 0; index < parentNodesLength; index++) {
+        const parent = modelParentNodes?.[index];
+        const parentDetails = allNodes?.[parent];
+        const { resource_type: resourceType } = parentDetails;
 
-      if (supportedResTypes?.has(resourceType)) {
-        const parentModelId = generateModelId(parentDetails);
-        const {
-          anomalies: parentAnomalies,
-          schemaChanges: parentSchemaChanges,
-        } = getAlertData(parentModelId, aggregatedModels);
+        if (supportedResTypes?.has(resourceType)) {
+          const parentModelId = generateModelId(parentDetails);
+          if (!parentSet.has(parentModelId)) {
+            parentSet.add(parentModelId);
+            const {
+              anomalies: parentAnomalies,
+              schemaChanges: parentSchemaChanges,
+            } = getAlertData(parentModelId, aggregatedModels);
 
-        const key = index + 1;
-        const parentNode = generateNode({
-          modelId: parentModelId,
-          index: key,
-          details: parentDetails,
-          failedTests: failedTestKeys?.has(parentModelId),
-          anomalies: parentAnomalies?.size > 0,
-          schemaChanges: parentSchemaChanges?.length > 0,
-        });
+            const key = index + 1;
+            const parentNode = generateNode({
+              modelId: parentModelId,
+              index: key,
+              details: parentDetails,
+              failedTests: failedTestKeys?.has(parentModelId),
+              anomalies: parentAnomalies?.size > 0,
+              schemaChanges: parentSchemaChanges?.length > 0,
+            });
+            elements.push(parentNode);
+            elementObj[parentModelId] = key?.toString();
 
-        nodes.push({
-          label: parentModelId,
-          value: parentModelId,
-        });
-        elements.push(parentNode);
-        elementObj[parentModelId] = key?.toString();
-
-        edgesArr.push({
-          from: parentModelId,
-          to: modelId,
-        });
+            edgesArr.push({
+              from: parentModelId,
+              to: modelId,
+            });
+          }
+        }
       }
-    }
 
-    for (let index = 0; index < modelChildNodes.length; index++) {
-      const child = modelChildNodes?.[index];
+      for (let index = 0; index < modelChildNodes.length; index++) {
+        const child = modelChildNodes?.[index];
 
-      const childDetails = allNodes?.[child];
-      const {
-        database, schema, name,
-        resource_type: resourceType,
-      } = childDetails;
-      if (supportedResTypes?.has(resourceType)) {
-        const childModelId = `${database}.${schema}.${name}`.toLowerCase();
-        const {
-          anomalies: childAnomalies,
-          schemaChanges: childSchemaChanges,
-        } = getAlertData(childModelId, aggregatedModels);
+        const childDetails = allNodes?.[child];
+        const { resource_type: resourceType } = childDetails;
+        if (supportedResTypes?.has(resourceType)) {
+          const childModelId = generateModelId(childDetails);
+          if (!childSet.has(childModelId)) {
+            childSet.add(childModelId);
+            const {
+              anomalies: childAnomalies,
+              schemaChanges: childSchemaChanges,
+            } = getAlertData(childModelId, aggregatedModels);
 
-        const key = index + 1 + parentNodesLength;
-        const childNode = generateNode({
-          modelId: childModelId,
-          index: key,
-          details: childDetails,
-          anomalies: childAnomalies?.size > 0,
-          failedTests: failedTestKeys?.has(childModelId),
-          schemaChanges: childSchemaChanges?.length > 0,
-        });
-        nodes.push({
-          label: childModelId,
-          value: childModelId,
-        });
-        elements.push(childNode);
-        elementObj[childModelId] = key?.toString();
+            const key = index + 1 + parentNodesLength;
+            const childNode = generateNode({
+              modelId: childModelId,
+              index: key,
+              details: childDetails,
+              anomalies: childAnomalies?.size > 0,
+              failedTests: failedTestKeys?.has(childModelId),
+              schemaChanges: childSchemaChanges?.length > 0,
+            });
+            elements.push(childNode);
+            elementObj[childModelId] = key?.toString();
 
-        edgesArr.push({
-          from: modelId,
-          to: childModelId,
-        });
+            edgesArr.push({
+              from: modelId,
+              to: childModelId,
+            });
+          }
+        }
       }
     }
   } else {
@@ -284,6 +283,10 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
     } else {
       setActiveTab(tab ? tab as ModelTabs : ModelTabs.ANOMALIES);
     }
+
+    return () => {
+      setActiveTab(ModelTabs.ANOMALIES);
+    };
   }, []);
 
   const { elements, nodes } = generateGraph({
