@@ -25,46 +25,39 @@ module.exports = {
   ],
   themeConfig: {
     navbar: {
-      title: 're_data',
+      title: '',
       logo: {
         alt: 're_data logo',
         src: 'img/logo_circle.svg',
       },
       items: [
         {
-          to: 'docs/introduction/whatis',
-          label: 'Docs',
+          to: 'docs/re_data/introduction/whatis_data',
+          label: 're_data',
           position: 'left',
           activeBasePath: 'introduction'
         },
         {
-          to: 'docs/getting_started/installation/for_dbt_users',
-          label: 'Getting started',
+          to: 'docs/re_cloud/introduction/whatis_cloud',
+          label: 're_cloud',
           position: 'left',
-          activeBasePath: 'reference'
+          activeBasePath: 'introduction'
         },
         {
-          to: 'docs/reference/config',
-          label: 'Reference',
-          position: 'left',
-          activeBasePath: 'reference'
+          href: 'https://www.getre.io/slack',
+          label: 'Join our Slack!',
+          position: 'right',
         },
         {
-          to: 'docs/qa',
-          label: 'Q&A',
-          position: 'left',
-          activeBasePath: 'Q&A'
-        },
-        {
-          href: 'https://github.com/re-data/re-data',
-          label: 'GitHub',
+          href: 'https://getre.io',
+          label: 'getre.io',
           position: 'right',
         },
       ],
     },
     footer: {
       style: 'dark',
-      copyright: `Copyright © 2021 ReData. All Rights Reserved.`,
+      copyright: `Copyright © 2022 ReData. All Rights Reserved.`,
     },
     prism: {
       theme: lightCodeTheme,

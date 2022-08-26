@@ -6,7 +6,7 @@ sidebar_position: 2
 
 ## Data engines
 
-### re_data supported
+### Supported by us
 We support most of the main data warehouses supported by dbt. We plan to add support for Spark/Databricks.
 
 <div class="redata_table">

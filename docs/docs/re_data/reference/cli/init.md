@@ -20,4 +20,4 @@ The project setup contains two seed files:
 And it also contains one model:
 - toy_shop/models/pending_orders_per_customer.sql
 
-which is used to showcase a [toy_shop project](getting_started/toy_shop/toy_shop_data.mdx) using re_data.
+which is used to showcase a [toy_shop project](/docs/re_data/getting_started/toy_shop/toy_shop_data) using re_data.
