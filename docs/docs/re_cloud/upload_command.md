@@ -46,6 +46,16 @@ Options:
 
 For great-expectation `cd` to great-expectations directory. re_data uploads 
 
+
+### jupyter notebook
+
+Usage: re_cloud upload jupyter-notebook --name TEXT  --file TEXT
+
+Options:
+  --file TEXT  ipynb notebooks file to upload  [required]
+  --name TEXT  Name of the upload used for identification
+  --help       Show this message and exit.
+
 ### re-data
 
 ```
@@ -73,6 +83,6 @@ Name which you would like to give to the report, this will show in the interface
 
 ## Help
 
-Are you not familiar with some the mentioned tools and reports mentioned? We include sample reports from all of the tools on re_cloud [free account 😊](https://cloud.getre.io/#/register)**
+Are you not familiar with some the mentioned tools and reports mentioned? We include sample reports from all of the tools on re_cloud **[free account 😊](https://cloud.getre.io/#/register)**
 
 If you need any help with setting up the upload, let us know on **[Slack](https://www.getre.io/slack)**, we will try to help right away 😊
