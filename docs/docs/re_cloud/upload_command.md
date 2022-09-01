@@ -6,9 +6,9 @@ sidebar_position: 2
 
 **re_cloud** library has one command for uploading all the reports: `re_cloud upload`
 
-You can upload 4 currently supported reports with this command. Here the list of how to do it: 😊
+You can upload different reports with this command. Here is the list of how to do it: 😊
 
-## commands
+## Currently supported
 
 ### dbt-docs
 
@@ -74,6 +74,20 @@ Options:
 ```
 
 If you are inside dbt project dir and didn't changed default `target` directory for docs and re_data both `project-dir` and `re-data-target-dir` are optional.
+
+
+### custom
+
+Using re_cloud you can also upload your custom html files with information about your data. Some of the popular libraries will generate html for you (for example [pandas to_html command](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_html.html)) can can html created solely by yourself.
+
+```
+Usage: re_cloud upload custom --name TEXT  --file TEXT
+
+Options:
+  --file TEXT  custom html file to upload  [required]
+  --name TEXT  Name of the upload used for identification
+  --help       Show this message and exit.
+```
 
 ## common parameters
 
