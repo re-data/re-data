@@ -174,10 +174,6 @@ Before moving on and investigating it in re_data UI. Let's run tests to see if t
 
 First we update the dbt_project.yml and enable storing tests history (simply by adding `re_data:save_test_history` set to `true`).
 
-:::caution
-on-run-end hooks are called for dbt tests since dbt 1.0.0, so this re_data feature is only available for dbt versions >= 1.0.0.
-:::
-
 ```yaml title="toy_shop/dbt_project.yml"
 vars:
   ...

@@ -44,8 +44,13 @@ module.exports = {
           activeBasePath: 'introduction'
         },
         {
+          href: 'https://github.com/re-data/re-data',
+          label: 'Github',
+          position: 'right',
+        },
+        {
           href: 'https://www.getre.io/slack',
-          label: 'Join our Slack!',
+          label: 'Slack',
           position: 'right',
         },
         {
