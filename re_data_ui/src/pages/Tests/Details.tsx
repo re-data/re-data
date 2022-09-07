@@ -111,18 +111,19 @@ const generateDetailsData = (props: generateDetailsDataProps) => {
 
     for (let index = 0; index < arr?.length; index++) {
       const element = arr[index];
+      const elementRunAt = dayjs((element.run_at)).format(dateTimeFormat);
 
       if (testName?.toLowerCase() === element.test_name?.toLowerCase()) {
-        runAts.add(element.run_at);
-        timelineData[element.run_at] = element.failures_count || '0';
-        testDetailsObject[element.run_at] = element;
+        runAts.add(elementRunAt);
+        timelineData[elementRunAt] = element.failures_count || '0';
+        testDetailsObject[elementRunAt] = element;
       }
       if (!valSet.has(element.test_name)) {
         valSet.add(element.test_name);
 
         val.push({
           label: element.test_name,
-          value: `${element.test_name?.toLowerCase()}/${dayjs(element.run_at).valueOf()}`,
+          value: `${element.test_name?.toLowerCase()}/${dayjs(elementRunAt).valueOf()}`,
         });
       }
     }
@@ -303,7 +304,7 @@ const TestDetails: FC = (): ReactElement => {
               {
                 label: 'Compiled SQL',
                 data: results.compiled_sql
-                  ? format(results.compiled_sql.trim())
+                  ? format(results.compiled_sql.toString().trim())
                   : null,
                 language: 'sql',
               },

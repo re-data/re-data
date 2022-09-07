@@ -236,10 +236,10 @@ const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
       dateTimeFormat,
     ) as string;
 
-      testData.push({
-        ...element,
-        run_at,
-      });
+    testData.push({
+      ...element,
+      run_at,
+    });
 
     const model = stripQuotes(element.table_name).toLowerCase();
 
