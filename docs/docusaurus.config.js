@@ -97,14 +97,6 @@ module.exports = {
     [
       '@docusaurus/plugin-client-redirects',
       {
-        redirects: [
-          // /docs/oldDoc -> /docs/newDoc
-          {
-            to: '/docs/re_data/introduction/whatis_data',
-            from: '/docs/introduction/whatis/',
-          },
-          // Redirect from multiple old paths to the new path
-        ],
         createRedirects(existingPath) {
           if (existingPath.includes('/docs/re_data')) {
             return [
