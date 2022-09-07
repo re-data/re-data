@@ -29,6 +29,7 @@ public/monitored.json
 public/alerts.json
 public/table_samples.json
 public/tests_history.json
+public/Archive.zip
 
 yarn.lock
 public/dbt_manifest.json

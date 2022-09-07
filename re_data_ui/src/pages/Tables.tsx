@@ -215,7 +215,7 @@ const Tables: React.FC = (): ReactElement => {
                   },
                   {
                     label: 'Compiled SQL',
-                    data: compiledSql ? compiledSql.trim() : null,
+                    data: compiledSql ? compiledSql.toString().trim() : null,
                     language: 'sql',
                   },
                 ]}
