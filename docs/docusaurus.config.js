@@ -97,6 +97,13 @@ module.exports = {
     [
       '@docusaurus/plugin-client-redirects',
       {
+        
+        redirects: [
+          {
+            to: '/docs/start_here',
+            from: '/docs/introduction/whatis',
+          },
+        ],
         createRedirects(existingPath) {
           if (existingPath.includes('/docs/re_data')) {
             return [
