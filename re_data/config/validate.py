@@ -10,6 +10,7 @@ EMAIL_CONFIG_SCHEMA = {
         "smtp_user" : {"type" : "string"},
         "smtp_password" : {"type" : "string"},
         "use_ssl": {"type" : "boolean"},
+        "use_tls": {"type" : "boolean"},
     },
 }
 

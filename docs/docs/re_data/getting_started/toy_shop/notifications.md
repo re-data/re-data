@@ -53,6 +53,7 @@ notifications:
     smtp_user: username
     smtp_password: xxxxx
     use_ssl: true
+    use_tls: false
 ```
 
 Email alerts can now be sent using the command as shown below

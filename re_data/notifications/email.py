@@ -40,7 +40,8 @@ def send_mime_email(
         smtp_port: int,
         smtp_user: str,
         smtp_password: str,
-        use_ssl: bool = False
+        use_ssl: bool = True,
+        use_tls: bool = False
     ):
     """
     Send an email using the provided MIME message.
@@ -53,13 +54,16 @@ def send_mime_email(
     :param smtp_user: SMTP user to use
     :param smtp_password: SMTP password to use
     :param use_ssl: Use SSL to connect to SMTP server
+    :param use_tls: Use TLS to connect to SMTP server
     """
 
+    if use_tls:
+        server = smtplib.SMTP(smtp_host, smtp_port)
+        server.starttls()
     if use_ssl:
         server = smtplib.SMTP_SSL(smtp_host, smtp_port)
     else:
         server = smtplib.SMTP(smtp_host, smtp_port)
-        server.starttls()
     if smtp_user and smtp_password:
         server.login(smtp_user, smtp_password)
     server.sendmail(mail_from, mail_to, mime_msg.as_string())
