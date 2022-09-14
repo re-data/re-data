@@ -60,7 +60,7 @@ def send_mime_email(
     if use_tls:
         server = smtplib.SMTP(smtp_host, smtp_port)
         server.starttls()
-    if use_ssl:
+    elif use_ssl:
         server = smtplib.SMTP_SSL(smtp_host, smtp_port)
     else:
         server = smtplib.SMTP(smtp_host, smtp_port)
