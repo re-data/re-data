@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 # Quickstart 🚀
@@ -11,7 +11,7 @@ This introduction assumes you are using dbt and optionally re_data.
 
 ## Install re_cloud package
 
-**re_cloud** package is small python package for uploading data reports files to re_cloud 😊
+re_cloud package is small python package for uploading data reports files to re_cloud 😊
 
 ```bash
 pip install re_cloud

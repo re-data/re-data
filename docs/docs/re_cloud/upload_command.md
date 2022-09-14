@@ -1,10 +1,10 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 # Uploading reports
 
-**re_cloud** library has one command for uploading all the reports: `re_cloud upload`
+re_cloud library has one command for uploading all the reports: `re_cloud upload`
 
 You can upload different reports with this command. Here is the list of how to do it: 😊
 

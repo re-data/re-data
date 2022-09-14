@@ -38,7 +38,7 @@ module.exports = {
           activeBasePath: 'introduction'
         },
         {
-          to: 'docs/re_cloud/introduction/whatis_cloud',
+          to: 'docs/re_cloud/whatis_cloud',
           label: 're_cloud',
           position: 'left',
           activeBasePath: 'introduction'
