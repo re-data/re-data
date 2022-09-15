@@ -104,7 +104,7 @@ postgres=> SELECT * FROM toy_shop_re.re_data_monitored;
  orders                      | toy_shop | postgres | time_created | {}      | []      | {"name": "modified_z_score", "threshold": 3.5}
 ```
 
-You would notice that here we will also see *final* configuration applied when actually computing models (taking into account priorties from different configuration levels). More information on configuration can be found [here](/docs/reference/config).
+You would notice that here we will also see *final* configuration applied when actually computing models (taking into account priorties from different configuration levels). More information on configuration can be found [here](/docs/re_data/reference/config).
 
 :::info
 Notice that table was created inside `toy_shop_re` schema. re_data tables are by default created with this schema suffix, *except `toy_shop_re_internal`* tables which are internal tables not be used directly by you. You can change this behaviour however you want, we use following dbt config for our models. (which can be overwritten)
@@ -173,10 +173,6 @@ We can see there are a couple of things re_data flagged for us. Recall that re_d
 Before moving on and investigating it in re_data UI. Let's run tests to see if they point to any problems in our data.
 
 First we update the dbt_project.yml and enable storing tests history (simply by adding `re_data:save_test_history` set to `true`).
-
-:::caution
-on-run-end hooks are called for dbt tests since dbt 1.0.0, so this re_data feature is only available for dbt versions >= 1.0.0.
-:::
 
 ```yaml title="toy_shop/dbt_project.yml"
 vars:

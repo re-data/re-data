@@ -147,9 +147,9 @@ If not specified, re_data will compute metrics defined by `re_data:default_metri
 
 ### re_data_metrics (optional)
 
-**Additional** metrics to be computed for a given table (set of tables). Those can be either whole `table` level or `column` level. (Check out **[metrics](/docs/reference/metrics/overview_metric)** section to learn distinction between the two)
+**Additional** metrics to be computed for a given table (set of tables). Those can be either whole `table` level or `column` level. (Check out **[metrics](/docs/re_data/reference/metrics/overview_metric)** section to learn distinction between the two)
 
-You can be pass any number of already defined or your custom metrics to be computed. Check out **[extra metrics](/docs/reference/metrics/extra_metrics)** section for available metrics and **[custom metrics](/docs/reference/metrics/your_own_metric)** for ways to define your own metrics.
+You can be pass any number of already defined or your custom metrics to be computed. Check out **[extra metrics](/docs/re_data/reference/metrics/extra_metrics)** section for available metrics and **[custom metrics](/docs/re_data/reference/metrics/your_own_metric)** for ways to define your own metrics.
 
 In a lot of cases when you extend metrics which are computed we recommend creating a new `re_data:metrics_groups` in your vars,
 adding your metrics to it and then defining `re_data_metrics_groups` to use it for set of models. 
@@ -293,7 +293,7 @@ The period which `re_data` considers when looking for anomalies. (By default, it
 
 ### re_data:save_test_history
 
-Variable to enable storing test history. See [re_data tests history](/docs/reference/tests/history) for more details.
+Variable to enable storing test history. See [re_data tests history](/docs/re_data/reference/tests/history) for more details.
 
 ### re_data:query_test_failures
 
@@ -308,4 +308,4 @@ This is used to enable storing sample data of monitored tables.
 
 ### re_data:owners_config
 
-Variable to configure owners for your data.  See [re_data notifications](/docs/reference/notifications/configuring_owners) for more details.
+Variable to configure owners for your data.  See [re_data notifications](/docs/re_data/reference/notifications/configuring_owners) for more details.

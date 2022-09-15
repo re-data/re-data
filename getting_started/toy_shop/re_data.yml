@@ -8,3 +8,4 @@ notifications:
     smtp_user: apikey
     smtp_password:
     use_ssl: true
+    use_tls: false

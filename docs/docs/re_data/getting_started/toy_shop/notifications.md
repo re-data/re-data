@@ -1,10 +1,12 @@
 ---
-sidebar_position: 2
+sidebar_position: 4
 ---
 
-# Configuring Channels and Sending Alerts
+# Notifications
 
-Before using the notify command to send alerts, we need to configure the respective channels.
+Notifications are a great way to stay up to date with activities in your warehouse. You can let re_data send you notifications for alerts that occured within a specified date range.
+
+re_data currently supports the following channels for notifications.
 
 ## Slack
 To send alerts to a slack channel, we make use of [incoming webhooks](https://api.slack.com/messaging/webhooks) which is a simple way to post messages from apps into Slack.
@@ -21,9 +23,6 @@ re_data notify slack \
 --start-date 2021-01-01 \
 --end-date 2021-01-31 \
 --webhook-url https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX \
---select anomaly \
---select test \
---select schema_change \
 --subtitle="[Optional] Markdown text to be added as a subtitle in the slack message generated"
 ```
 
@@ -45,14 +44,6 @@ By default, the most recent 10 alerts are shown (for each table) and you can gen
 
 Before you can send alerts via email, you need to have configured an email account on the SMTP server you are going to use to send the email.
 
-- mail_from: Email address to set as the email's from
-- smtp_host: SMTP server to use
-- smtp_port: SMTP port to use
-- smtp_user: SMTP user to use
-- smtp_password: SMTP password to use
-- use_ssl: Use SSL to connect to SMTP server
-
-
 ```yaml title="~/.re_data/re_data.yml"
 notifications:
   email:
@@ -62,20 +53,17 @@ notifications:
     smtp_user: username
     smtp_password: xxxxx
     use_ssl: true
+    use_tls: false
 ```
+
+If you configure both `use_ssl: true` & `use_tls: true` the tls protocol will be used. TLS will enable you to use different mail ports which SSL does not support on some mail servers, eg `587`.
 
 Email alerts can now be sent using the command as shown below
 ```bash
 re_data notify email \
 --start-date 2021-01-01 \
---end-date 2021-01-31 \
---select anomaly \
---select test \
---select schema_change
+--end-date 2021-01-31
 ```
-
-Below is a sample alert notification message sent by a slack app created.
-![EmailAlertMessage](/screenshots/notifications/email_notification_message.png)
 
 :::info
 ### Having issues?
