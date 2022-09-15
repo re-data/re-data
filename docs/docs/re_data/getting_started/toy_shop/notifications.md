@@ -53,7 +53,10 @@ notifications:
     smtp_user: username
     smtp_password: xxxxx
     use_ssl: true
+    use_tls: false
 ```
+
+If you configure both `use_ssl: true` & `use_tls: true` the tls protocol will be used. TLS will enable you to use different mail ports which SSL does not support on some mail servers, eg `587`.
 
 Email alerts can now be sent using the command as shown below
 ```bash

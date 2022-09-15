@@ -51,6 +51,7 @@ Before you can send alerts via email, you need to have configured an email accou
 - smtp_user: SMTP user to use
 - smtp_password: SMTP password to use
 - use_ssl: Use SSL to connect to SMTP server
+- use_tls: Use TLS to connect to SMTP server
 
 
 ```yaml title="~/.re_data/re_data.yml"
@@ -62,6 +63,7 @@ notifications:
     smtp_user: username
     smtp_password: xxxxx
     use_ssl: true
+    use_tls: false
 ```
 
 Email alerts can now be sent using the command as shown below

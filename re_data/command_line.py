@@ -217,7 +217,7 @@ def run(start_date, end_date, interval, full_refresh, **kwargs):
         run_list = ['dbt'] + ['run'] + ['--models'] + ['package:re_data'] + ['--vars'] + [json.dumps(dbt_vars)]
         if for_date == start_date and full_refresh:
             run_list.append('--full-refresh')
-        
+
         add_dbt_flags(run_list, kwargs)
 
         completed_process = subprocess.run(run_list)
@@ -466,7 +466,7 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
     alerts_path = os.path.join(re_data_target_path, 'alerts.json')
     monitored_path = os.path.join(re_data_target_path, 'monitored.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
-    
+
     args = {
         'start_date': start_date,
         'end_date': end_date,
@@ -491,7 +491,7 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
     slack_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='slack')
 
     alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=slack_members, selected_alert_types=selected_alert_types)
-    
+
     alerts_found = False
 
     for model, details in alerts_per_model.items():
@@ -556,19 +556,20 @@ def email(start_date, end_date, re_data_target_dir, select, **kwargs):
     smtp_user = email_config.get('smtp_user')
     smtp_password = email_config.get('smtp_password')
     use_ssl = email_config.get('use_ssl', False)
+    use_tls = email_config.get('use_tls', False)
 
     _, re_data_target_path = get_target_paths(kwargs=kwargs, re_data_target_dir=re_data_target_dir)
     alerts_path = os.path.join(re_data_target_path, 'alerts.json')
     monitored_path = os.path.join(re_data_target_path, 'monitored.json')
     dbt_vars = parse_dbt_vars(kwargs.get('dbt_vars'))
-    
+
     args = {
         'start_date': start_date,
         'end_date': end_date,
         'alerts_path': alerts_path,
         'monitored_path': monitored_path,
     }
-    
+
 
     command_list = ['dbt', 'run-operation', 'export_alerts', '--args', yaml.dump(args)]
     if dbt_vars: command_list.extend(['--vars', yaml.dump(dbt_vars)])
@@ -603,8 +604,9 @@ def email(start_date, end_date, re_data_target_dir, select, **kwargs):
                 smtp_user=smtp_user,
                 smtp_password=smtp_password,
                 use_ssl=use_ssl,
+                use_tls=use_tls
             )
-    
+
     log_notification_status(start_date, end_date, alerts_per_model)
 
 
