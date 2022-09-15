@@ -1,10 +1,10 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 ---
 
-# Supported data libraries
+# Supported data apps
 
-We support hosting reports from popular data quality & data analytics tools, the current list below:
+We support hosting reports from popular data apps, the current list below:
 
 <div class="redata_table">
 
@@ -22,4 +22,4 @@ We support hosting reports from popular data quality & data analytics tools, the
 
 ## Other integrations
 
-Let us know on **[Slack! 😊](https://www.getre.io/slack)** if you would like to add support for other tools!
+Let us know on **[Slack! 😊](https://www.getre.io/slack)** if you would like to add support for other tools and we will add them!
