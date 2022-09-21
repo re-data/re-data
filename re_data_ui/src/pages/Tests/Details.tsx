@@ -13,7 +13,6 @@ import React, {
   useState,
 } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { format } from 'sql-formatter';
 import utc from 'dayjs/plugin/utc';
 import { Select, Table } from '../../components';
 import { CellProps, ColumnsProps } from '../../components/Table';
@@ -304,7 +303,7 @@ const TestDetails: FC = (): ReactElement => {
               {
                 label: 'Compiled SQL',
                 data: results.compiled_sql
-                  ? format(results.compiled_sql.toString().trim())
+                  ? (results.compiled_sql.toString().trim())
                   : null,
                 language: 'sql',
               },
