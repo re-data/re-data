@@ -24,7 +24,8 @@ export interface ColumnsProps {
 }
 
 export interface ITable {
-  columns: ColumnsProps[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  columns: any[];
   data: Record<string, unknown>[];
   showSearch?: boolean;
   RightComponent?: React.FunctionComponent<unknown> | null;
