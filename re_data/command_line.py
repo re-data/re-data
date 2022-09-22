@@ -4,6 +4,7 @@ import subprocess
 import json
 from datetime import date, timedelta, datetime
 import shutil
+import socket
 import logging
 
 import os
@@ -395,6 +396,21 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
             webbrowser.open_new_tab(f'http://127.0.0.1:{port}/#/alerts')
         except webbrowser.Error:
             pass
+
+    print(" * Serving re_data ui")
+    if address == "0.0.0.0":
+        print(f" * Running on all addresses ({address})")
+        # Get ip address
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+                s.connect(("10.10.10.10", 58162)) # arbitrary private address and port
+                ip_address = s.getsockname()[0]
+                print(f" * Running on http://{ip_address}:{port}")
+        except OSError:
+            pass
+        print(f" * Running on http://127.0.0.1:{port}")
+    else:
+        print(f" * Running on http://{address}:{port}")
 
     try:
         httpd.serve_forever()  # blocks
