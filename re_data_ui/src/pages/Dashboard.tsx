@@ -241,7 +241,7 @@ const formatTestData = (tests: Array<TestData>): formatTestDataProps => {
       run_at,
     });
 
-    const model = stripQuotes(element.table_name).toLowerCase();
+    const model = stripQuotes(element.table_name)?.toLowerCase() || ' ';
 
     if (
       Object.prototype.hasOwnProperty.call(

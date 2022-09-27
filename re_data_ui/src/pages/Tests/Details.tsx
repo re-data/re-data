@@ -41,8 +41,6 @@ const values = ({ timelineData }: valuesProps) => {
     .sort(([x]: [string, string], [y]: [string, string]) => dayjs(x).diff(y))
     .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
-  // console.log('timelineData', timelineData);
-
   const data = Object.values(timelineVal);
   const runAt = Object.keys(timelineVal);
 

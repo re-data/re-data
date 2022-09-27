@@ -12,7 +12,7 @@ export const MONITORED_FILE = 'monitored.json';
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 export const DATE_FORMAT = 'YYYY-MM-DD';
 
-export const stripQuotes = (str: string): string => str.replaceAll('"', '').replaceAll('`', '');
+export const stripQuotes = (str: string): string => str?.replaceAll('"', '')?.replaceAll('`', '');
 
 export const extractComponentFromIdentifier = (
   identifier: string | null, component: string,
