@@ -214,7 +214,6 @@ function MetricCharts(params: MetricChartsProps): ReactElement {
   const columnMetricCharts = Array.from(columnMetricChartsMap).map(([key, option]) => (
     <EChartsReactCore key={key} echarts={echarts} option={option} />
   ));
-
   const alertMetricCharts = anomaliesChartOptions.map(([key, option]) => (
     <EChartsReactCore key={`alert_${key}`} echarts={echarts} option={option} />
   ));

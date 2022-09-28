@@ -45,22 +45,21 @@ code {
 .success {
     color: #FFF;
     background: hsl(150deg 66% 44%);
+    min-width: 50px;
 }
 
+.warn,
+.warning,
 .pending {
-    @apply bg-yellow-400 text-white;
-}
-
-.pending {
-    color: #FFF;
-    @apply px-3 bg-yellow-400 font-semibold;
-    width: 80px;
+    @apply bg-yellow-400  text-white;
+    min-width: 50px;
 }
 
 .fail,
 .failed,
 .error {
     @apply bg-red-600 text-white;
+    min-width: 50px;
 }
 
 select {
