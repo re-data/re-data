@@ -160,13 +160,13 @@ def detect(**kwargs):
 @main.command()
 @click.option(
     '--start-date',
-    type=click.DateTime(formats=["%Y-%m-%d"]),
+    type=click.DateTime(),
     default=str(date.today() - timedelta(days=1)),
     help="Specify starting date to compute monitoring data, by default re_data will use yesterday for that value"
 )
 @click.option(
     '--end-date',
-    type=click.DateTime(formats=["%Y-%m-%d"]),
+    type=click.DateTime(),
     default=str(date.today()),
     help="""
         Specify end date to compute monitoring data, by default re_data will use today for that.
@@ -226,7 +226,7 @@ def run(start_date, end_date, interval, full_refresh, **kwargs):
         for_date += delta
 
         print(
-            f"Running for date: {for_date.date()}",
+            f"Running for time interval: {start_str} - {end_str}",
             chalk.green("SUCCESS"),
         )
 
