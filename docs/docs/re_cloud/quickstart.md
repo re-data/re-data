@@ -41,7 +41,7 @@ re_data overview generate
 ```
 
 :::info
-This commands require you to have dbt & re_data configured for the project. In case you just use dbt docs not re_data you can skip the second command. If you don't use any of it, check our instructions for other data apps: **[uploading reports](/docs/re_cloud/upload_command)** 
+This commands require you to have dbt & re_data configured for the project. In case you just use dbt docs not re_data you can skip the second command. If you don't use any of it, check our instructions for other data apps: **[Integrations](/docs/re_cloud/integrations/all_supported)** 
 :::
 
 ## Upload reports! 😊

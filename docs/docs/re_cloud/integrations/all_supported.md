@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Supported data apps
+# Currently supported
 
 We support hosting reports from popular data apps, the current list below:
 

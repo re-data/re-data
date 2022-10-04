@@ -13,7 +13,6 @@ import React, {
   useState,
 } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { format } from 'sql-formatter';
 import utc from 'dayjs/plugin/utc';
 import { Select, Table } from '../../components';
 import { CellProps, ColumnsProps } from '../../components/Table';
@@ -41,8 +40,6 @@ const values = ({ timelineData }: valuesProps) => {
   const timelineVal = Object.entries(timelineData)
     .sort(([x]: [string, string], [y]: [string, string]) => dayjs(x).diff(y))
     .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
-
-  // console.log('timelineData', timelineData);
 
   const data = Object.values(timelineVal);
   const runAt = Object.keys(timelineVal);
@@ -304,7 +301,7 @@ const TestDetails: FC = (): ReactElement => {
               {
                 label: 'Compiled SQL',
                 data: results.compiled_sql
-                  ? format(results.compiled_sql.toString().trim())
+                  ? (results.compiled_sql.toString().trim())
                   : null,
                 language: 'sql',
               },
