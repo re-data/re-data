@@ -29,8 +29,6 @@ from re_data.config.utils import read_re_data_config
 from re_data.config.validate import validate_config_section
 from re_data.logs import log_notification_status
 
-import socket
-
 logger = logging.getLogger(__name__)
 
 
@@ -399,14 +397,7 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
             pass
     
     print(" * Serving re_data ui")
-    hostname = socket.gethostname()
-    python_ip = socket.gethostbyname(hostname)
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((python_ip, 0))
-        
-    print(f" * Running python on {python_ip}:{sock.getsockname()[1]}")
-    print(f" * Running re_data hostname on {hostname}")
+    print(f" * re_data is running at http://127.0.0.1:{port}")
 
     try:
         httpd.serve_forever()  # blocks
