@@ -29,6 +29,8 @@ from re_data.config.utils import read_re_data_config
 from re_data.config.validate import validate_config_section
 from re_data.logs import log_notification_status
 
+import socket
+
 logger = logging.getLogger(__name__)
 
 
@@ -395,6 +397,27 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
             webbrowser.open_new_tab(f'http://127.0.0.1:{port}/#/alerts')
         except webbrowser.Error:
             pass
+    
+    print(" * Serving re_data ui")
+    hostname = socket.gethostname()
+    python_ip = socket.gethostbyname(hostname)
+    
+    print(f" * Running python on {python_ip}")
+    print(f" * Running re_data hostname on {hostname}")
+
+    def extract_ip():
+        st = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:       
+            st.connect(('10.255.255.255', 1))
+            IP = st.getsockname()[0]
+        except Exception:
+            IP = '127.0.0.1'
+        finally:
+            st.close()
+        return IP
+
+    ip_address = extract_ip()
+    print(f" * Running re_data on {ip_address}")
 
     try:
         httpd.serve_forever()  # blocks
