@@ -401,23 +401,12 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
     print(" * Serving re_data ui")
     hostname = socket.gethostname()
     python_ip = socket.gethostbyname(hostname)
-    
-    print(f" * Running python on {python_ip}")
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((python_ip, 0))
+        
+    print(f" * Running python on {python_ip}:{sock.getsockname()[1]}")
     print(f" * Running re_data hostname on {hostname}")
-
-    def extract_ip():
-        st = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:       
-            st.connect(('10.255.255.255', 1))
-            IP = st.getsockname()[0]
-        except Exception:
-            IP = '127.0.0.1'
-        finally:
-            st.close()
-        return IP
-
-    ip_address = extract_ip()
-    print(f" * Running re_data on {ip_address}")
 
     try:
         httpd.serve_forever()  # blocks
