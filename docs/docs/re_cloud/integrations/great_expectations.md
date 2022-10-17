@@ -2,7 +2,7 @@
 
 # great-expectations
 
-## overview
+## Overview
 
 Great expectations let's you test & document your data. 
 It supports many computation backends from pandas, spark to databases like snowflake.
@@ -13,7 +13,7 @@ One cool feature of great-expectations is ability to generate data docs which de
 
 ![great_expectations_example](/re_cloud/integrations/great_expectations.png)
 
-## uploading to re_cloud
+## Uploading to re_cloud
 
 Great-expectations data docs, are most usefull when shared with others. That's why we made is easily possible to send them to `re_cloud` and collobarote on the results with other people.
 
@@ -34,3 +34,7 @@ re_cloud upload great-expectations --name TEXT
 Options:
   --name TEXT  Name of the upload used for identification
 ```
+
+## Next steps
+
+If you would like to jump into uploading data you can create your **[free account here 😊](https://cloud.getre.io/#/register)** if you have more questions for us: don't be reluctant to join our **[Slack! 😊](https://www.getre.io/slack)**
