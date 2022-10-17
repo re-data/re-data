@@ -395,6 +395,9 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
             webbrowser.open_new_tab(f'http://127.0.0.1:{port}/#/alerts')
         except webbrowser.Error:
             pass
+    
+    print(" * Serving re_data ui")
+    print(f" * re_data is running at http://127.0.0.1:{port}")
 
     try:
         httpd.serve_forever()  # blocks

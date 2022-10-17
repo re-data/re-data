@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Quickstart 🚀
 
-In this quick tutorial we will deploy the UI of re_data & dbt_docs to prodocution environment when you and your team can check those 2 usefull reports.
+In this quick tutorial we will deploy the UI of re_data & dbt_docs to production environment when you and your team can check those 2 usefull reports.
 
 This introduction assumes you are using dbt and optionally re_data.
 
@@ -23,7 +23,7 @@ In the `Account Settings` section of the re_cloud, you can find your API key, wh
 
 ![DashboardExample](/screenshots/cloud/getapikey.png)
 
-Than paste this into your `~/.re_data/re_data.yml` configuration file. (For simplicity we use the same directory and file as you would use for *re_data* package configuration)
+Then paste this into your `~/.re_data/re_data.yml` configuration file. (For simplicity we use the same directory and file as you would use for *re_data* package configuration)
 
 ```yml title="~/.re_data/re_data.yml"
 
@@ -41,12 +41,12 @@ re_data overview generate
 ```
 
 :::info
-This commands require you to have dbt & re_data configured for the project. In case you just use dbt docs not re_data you can skip the second command. If you don't use any of it, check our instructions for other data apps: **[Integrations](/docs/re_cloud/integrations/all_supported)** 
+This commands require you to have dbt & re_data configured for the project. In case you just use dbt docs not re_data you can skip the second command. If you don't use any of it, check our instructions other tools we support.
 :::
 
 ## Upload reports! 😊
 
-Now with just 2 commands we can upoad our reports to cloud
+Now with just 2 commands we can upload our reports to cloud
 
 ```bash
 re_cloud upload dbt-docs

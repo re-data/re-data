@@ -1,7 +1,7 @@
 
 # dbt docs
 
-## overview
+## Overview
 
 Dbt docs help you share documentation about your data with your team and other shareholderes in the company.
 
@@ -13,7 +13,7 @@ Below example of how generated documentation looks like:
 
 More information on generating dbt docs is available on [dbt pages](https://docs.getdbt.com/docs/building-a-dbt-project/documentation)
 
-## uploading to re_cloud
+## Uploading to re_cloud
 
 In order to effectively work with dbt docs it's crucial to share it with other people in the company.
 re_cloud makes it super easy. The simplest way to do it is to run commands below in your dbt project:
@@ -38,3 +38,7 @@ Options:
 ```
 
 You don't need to pass project-dir paramter if calling this command from witin dbt main directory. Otherwise pass `project-dir` to upload generated docs from this directory.
+
+## Next steps
+
+If you would like to jump into uploading data you can create your **[free account here 😊](https://cloud.getre.io/#/register)** if you have more questions for us: don't be reluctant to join our **[Slack! 😊](https://www.getre.io/slack)**

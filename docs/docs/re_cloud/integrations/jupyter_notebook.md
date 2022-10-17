@@ -1,13 +1,13 @@
 
-# jupyter notebook
+# Jupyter notebook
 
-## overview
+## Overview
 
 Jupyter notebooks are super common way to work with data. There are couple of online tools for editing notebooks, currently focuses on supporting orginal 🙂 open-source python library and sharing results of your notebooks with other people in the company. re_cloud allows you to transform your jupyter notebooks to HTML and easily share with others.
 
 ![jupyter_notebook_example](/re_cloud/integrations/jupyter_notebook.png)
 
-## uploading to re_cloud
+## Uploading to re_cloud
 
 In order to upload jupyter notebook to re_cloud run:
 ```
