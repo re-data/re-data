@@ -1,7 +1,7 @@
 
 # re_data
 
-## overview
+## Overview
 
 re_data let's you track data in your dbt project. Check out our docs for more detailed overview of re_data **[here](/docs/re_data/introduction/whatis_data)**
 
@@ -10,7 +10,7 @@ One of the main features of re_data is ability to product overview of your data.
 
 ![re_data_example](/re_cloud/integrations/re_data.png)
 
-## uploading to re_cloud
+## Uploading to re_cloud
 
 to send re_data to re_cloud, first generate re_data overview and then upload it to re_cloud with a single command.
 
@@ -39,3 +39,7 @@ Options:
 
 If you are inside dbt project dir and didn't changed default `target` directory for docs and re_data both `project-dir` and `re-data-target-dir` are optional.
 
+
+## Next steps
+
+If you would like to jump into uploading data you can create your **[free account here 😊](https://cloud.getre.io/#/register)** if you have more questions for us: don't be reluctant to join our **[Slack! 😊](https://www.getre.io/slack)**

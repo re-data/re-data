@@ -1,7 +1,7 @@
 
 # pandas-profiling
 
-## overview
+## Overview
 
 Pandas-profiling is a python library which can you help you profile any pandas dataframe.
 It will automatically generate insights about:
@@ -19,7 +19,7 @@ Pandas profiling report is most often saved to HTML file to be inspected by data
 ![pandas_profiling_example](/re_cloud/integrations/pandas_profiling.png)
 
 
-## uploading to re_cloud
+## Uploading to re_cloud
 
 To collaborate on your pandas-profiling reports, you can easily upload it to re_cloud.
 Generating pandas profiling report is really easy:
@@ -52,3 +52,8 @@ Options:
 ```
 
 For pandas profiling --report-file is required paramter. re_data will upload your docs in `uncommitted/data_docs/local_site/` path then.
+
+
+## Next steps
+
+If you would like to jump into uploading data you can create your **[free account here 😊](https://cloud.getre.io/#/register)** if you have more questions for us: don't be reluctant to join our **[Slack! 😊](https://www.getre.io/slack)**

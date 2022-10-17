@@ -1,7 +1,7 @@
 
-# custom html
+# Custom HTML
 
-## overview
+## Overview
 
 If you have details about your data that you want to share with your team, custom html report maybe the best wayt to do it.
 
@@ -11,7 +11,7 @@ Example summary of your dataframe data you can upload:
 
 ![custom_html_example](/re_cloud/integrations/custom_html.png)
 
-## uploading to re_cloud
+## Uploading to re_cloud
 
 Let's upload summary of pandas dataframe to re_cloud
 ```python
@@ -40,3 +40,7 @@ Options:
   --name TEXT  Name of the upload used for identification
   --help       Show this message and exit.
 ```
+
+## Next steps
+
+If you would like to jump into uploading data you can create your **[free account here 😊](https://cloud.getre.io/#/register)** if you have more questions for us: don't be reluctant to join our **[Slack! 😊](https://www.getre.io/slack)**
