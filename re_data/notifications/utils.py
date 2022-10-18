@@ -41,7 +41,7 @@ def prepare_exported_alerts_per_model(alerts: list, members_per_model: Dict[str,
                 'anomalies': [],
                 'schema_changes': [],
                 'tests': [],
-                'owners': [k[0] for k in members_per_model.get(model, [])] or ['allUsers', 'allGroups'],
+                'owners': members_per_model.get(model) or ['allUsers', 'allGroups'],
             }
         if alert['type'] == 'anomaly' and alert['type'] in selected_alert_types:
             alerts_per_model[model]['anomalies'].append(alert)
