@@ -33,7 +33,7 @@ setup(
         "dbt-core>=1.0.0,<1.4.0",
         "yachalk>=0.1.0,<0.2.0",
         "tabulate==0.8.9",
-        "jsonschema==3.0.0",
+        "jsonschema>=3.0.0",
         "analytics-python",
         
     ],
