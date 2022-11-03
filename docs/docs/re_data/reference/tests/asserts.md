@@ -31,7 +31,7 @@ models:
           - re_data.assert_greater:
               metric: min
               value: 200
-              where: time_window_start >= '2020-05-02'
+              condition: time_window_start >= '2020-05-02'
 
 ```
 
@@ -43,7 +43,7 @@ Asserts have a set of standard params with the same meaning in all tests:
 - expression: an expression which re_data will evaluate to be true or false. Use `value` to indicate the value of a metric computed. Example expression: `value > 0` asserts that metric is greater than 0
 - value - a number to which you would like to compare metric. Example: `value: 5` in the `assert_greater` test would check if all metric values are larger than 5
 - min_value, max_value - similarly to `value` re_data will compare metric values to values passed here
-- where: (optional) time filter for the metric, if you would like to tests only metric from specific time range. User `time_window_start` or `time_window_end` to compare against time. Example: `time_window_start > '2020-05-02'` will check only metrics computed later than on '2020-05-02'
+- condition: (optional) time filter for the metric, if you would like to tests only metric from specific time range. User `time_window_start` or `time_window_end` to compare against time. Example: `time_window_start > '2020-05-02'` will check only metrics computed later than on '2020-05-02'
 :::
 
 ### assert_true
@@ -51,7 +51,7 @@ Asserts have a set of standard params with the same meaning in all tests:
 Accepted params:
 - metric
 - expression
-- where
+- condition
 
 Assert that given expression is true for the metric computed.
 
@@ -59,7 +59,7 @@ Assert that given expression is true for the metric computed.
 - re_data.assert_true:
     metric: nulls_percent
     expression: value = 0
-    where: time_window_start >= '2020-05-02' # (optinal)
+    condition: time_window_start >= '2020-05-02' # (optinal)
 ```
 
 
@@ -68,7 +68,7 @@ Assert that given expression is true for the metric computed.
 Accepted params:
 - metric
 - expression
-- where
+- condition
 
 Assert that given expression is false for the metric computed.
 
@@ -84,7 +84,7 @@ Accepted params:
 - metric
 - min_value
 - max_value
-- where
+- condition
 
 Assert that metric value is between min_value and max_value (inclusive)
 
@@ -100,7 +100,7 @@ Assert that metric value is between min_value and max_value (inclusive)
 Accepted params:
 - metric
 - value
-- where
+- condition
 
 Assert that metric value is equal to specified value
 
@@ -115,7 +115,7 @@ Assert that metric value is equal to specified value
 Accepted params:
 - metric
 - value
-- where
+- condition
 
 Assert that metric value is greater to specified value
 
@@ -131,7 +131,7 @@ Assert that metric value is greater to specified value
 Accepted params:
 - metric
 - value
-- where
+- condition
 
 Assert that metric value is greater or equal specified value
 
@@ -146,7 +146,7 @@ Assert that metric value is greater or equal specified value
 Accepted params:
 - metric
 - value
-- where
+- condition
 
 Assert that metric value is smaller specified value
 
@@ -161,7 +161,7 @@ Assert that metric value is smaller specified value
 Accepted params:
 - metric
 - value
-- where
+- condition
 
 Assert that metric value is smaller or equal to specified value
 
