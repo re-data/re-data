@@ -22,7 +22,7 @@ from re_data.utils import (
     get_project_root
 )
 
-from re_data.notifications.utils import build_notification_identifiers_per_model, prepare_exported_alerts_per_model, validate_alert_types, ALERT_TYPES
+from re_data.notifications.utils import build_notification_identifiers_per_model, prepare_exported_alerts_per_model, validate_alert_types, ALERT_TYPES, create_owners_to_models_map, create_models_to_alerts_map
 from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 from re_data.config.utils import read_re_data_config
@@ -585,23 +585,29 @@ def email(start_date, end_date, re_data_target_dir, select, **kwargs):
     with open(monitored_path) as f:
         monitored = json.load(f)
 
-    email_members = build_notification_identifiers_per_model(monitored_list=monitored, channel='email')
-    alerts_per_model = prepare_exported_alerts_per_model(alerts=alerts, members_per_model=email_members, selected_alert_types=selected_alert_types)
+    email_to_models_map = create_owners_to_models_map(monitored_models=monitored)
+    model_to_alerts_map = create_models_to_alerts_map(alerts, selected_alert_types)
+
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    for model in alerts_per_model:
-        owners = email_members.get(model, [])
-        for mail_to, group_name in owners:
+
+    for email in email_to_models_map:
+        # get list of models that have no owners
+        models_with_no_owners = email_to_models_map.get('NO_OWNER') or []
+        
+        if email != 'NO_OWNER':
+            models_to_notify = email_to_models_map.get(email)
+            all_models = set(models_to_notify + models_with_no_owners)
             mime_msg = build_mime_message(
                 mail_from=mail_from,
-                mail_to=mail_to,
+                mail_to=email,
                 subject='ReData Alerts [{}]'.format(current_time),
-                html_content=render.render_email_alert(alerts=alerts_per_model, owner=mail_to, group_name=group_name),
+                html_content=render.render_email_alert(alerts=model_to_alerts_map, owner=email, models_to_notify=all_models),
             )
 
             send_mime_email(
                 mime_msg=mime_msg,
                 mail_from=mail_from,
-                mail_to=mail_to,
+                mail_to=email,
                 smtp_host=smtp_host,
                 smtp_port=smtp_port,
                 smtp_user=smtp_user,
@@ -610,7 +616,7 @@ def email(start_date, end_date, re_data_target_dir, select, **kwargs):
                 use_tls=use_tls
             )
 
-    log_notification_status(start_date, end_date, alerts_per_model)
+    log_notification_status(start_date, end_date, model_to_alerts_map)
 
 
 main.add_command(overview)
