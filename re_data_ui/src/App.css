@@ -60,7 +60,24 @@
 
 .settings-sidebar .active {
   @apply font-bold;
-  /* border-bottom: 3px solid rgba(57,35,150); */
   border-bottom: 3px solid rgba(57,35,150, var(--tw-bg-opacity));
   
+}
+
+.sidebar-logo-container {
+  padding: 0 1rem;
+  gap: 9px;
+}
+
+.sidebar-logo {
+  width: 26px;
+  height: 26px;
+  background-color: #4A35A5;
+}
+
+.sidebar-logo-text {
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 14px;
+  color: #FFFFFF;
 }
