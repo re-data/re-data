@@ -38,7 +38,7 @@ const Sidebar: React.FC = (): ReactElement => {
       data-dev-hint="sidebar"
     >
       <div
-        className="flex flex-col space-y-6"
+        className="flex flex-col space-y-8"
         data-dev-hint="re_data sidebar"
       >
         <a
