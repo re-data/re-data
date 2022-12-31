@@ -50,10 +50,12 @@ def add_dbt_flags(command_list, flags):
 def get_target_paths(kwargs, re_data_target_dir=None):
     project_root = get_project_root(kwargs)
     partial = Project.partial_load(project_root)
-    dbt_target_path = os.path.abspath(partial.project_dict['target-path'])
-
+    dbt_target_path = os.path.join(
+                        partial.project_root,
+                        partial.project_dict['target-path']
+                        )
     if re_data_target_dir:
-        re_data_target_path = os.path.abspath(re_data_target_dir)
+        re_data_target_path = os.path.join(partial.project_root,re_data_target_dir)
     else:
         re_data_target_path = os.path.join(dbt_target_path, 're_data')
 
