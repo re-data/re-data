@@ -452,10 +452,18 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
         Specfy which alert types to generate. This accepts multiple options
         e.g. --select anomaly --select schema_change
     """)
+@click.option(
+    '--send-all-good/--no-send-all-good',
+    default=True,
+    type=click.BOOL,
+    help="""
+        Indicate if a message should be sent if no alerts are found
+        Defaults to true
+    """)
 @add_options(dbt_flags)
 @anonymous_tracking
 @with_version_check
-def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, select, **kwargs):
+def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, select, send_all_good, **kwargs):
     validate_alert_types(selected_alert_types=select)
     start_date = str(start_date.date())
     end_date = str(end_date.date())
@@ -505,7 +513,7 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
         slack_notify(webhook_url, slack_message)
         alerts_found = True
 
-    if not alerts_found:
+    if not alerts_found and send_all_good:
         slack_message = generate_all_good_slack_message(subtitle)
         slack_notify(webhook_url, slack_message)
 
