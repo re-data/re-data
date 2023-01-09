@@ -544,6 +544,14 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
     """
 )
 @click.option(
+    '--send-all-good/--no-send-all-good',
+    default=True,
+    type=click.BOOL,
+    help="""
+        Indicate if a message should be sent if no alerts are found
+        Defaults to true
+    """)
+@click.option(
     '--select',
     multiple=True,
     default=ALERT_TYPES,
@@ -554,7 +562,7 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
 @add_options(dbt_flags)
 @anonymous_tracking
 @with_version_check
-def email(start_date, end_date, re_data_target_dir, select, **kwargs):
+def email(start_date, end_date, re_data_target_dir, select, send_all_good, **kwargs):
     validate_alert_types(selected_alert_types=select)
     selected_alert_types = set(select)
     config = read_re_data_config()
@@ -607,6 +615,9 @@ def email(start_date, end_date, re_data_target_dir, select, **kwargs):
         if email != 'NO_OWNER':
             models_to_notify = email_to_models_map.get(email)
             all_models = set(models_to_notify + models_with_no_owners)
+            # if there are no alerts within the time window and flag is set to not notify in such case
+            if len(model_to_alerts_map) == 0 and not send_all_good:
+                break
             mime_msg = build_mime_message(
                 mail_from=mail_from,
                 mail_to=email,
