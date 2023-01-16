@@ -1,17 +1,17 @@
 
-# Bigquery
+# BigQuery
 
 ## Overview
 
-re_cloud can you you track anomalies, schema changes and failed data tests in your bigquery tables.
-All of this can be done through re_data library which supports Biguery.
+re_cloud can help you track anomalies, schema changes and failed data tests in your BigQuery tables.
+All of this can be done through re_data's library which supports BigQuery.
 
 
-You can check on how monitoring re_data information looks on bigquery **[here](https://docs.getre.io/ui-latest-bigquery/#/alerts)**
+You can check out how monitoring re_data information looks on BigQuery **[here](https://docs.getre.io/ui-latest-bigquery/#/alerts)**
 
 ## Next steps
 
-Best way to start using re_data is to check out our quicksart tutorials. Either for users using dbt or the ones who are just using data warehouse:
+Best way to start using re_data is to check out our quicksart tutorials. Either for users using dbt or the ones who are just using a data warehouse:
 
 - **[Quickstart - dbt users](/docs/re_data/getting_started/installation/for_dbt_users)**
 - **[Quickstart - new to dbt](/docs/re_data/getting_started/installation/new_to_dbt)**
