@@ -125,4 +125,6 @@ export const generateModelId = (details: DbtNode | DbtSource): string => {
 
 export const copyToClipboard = (text?: string): Promise<void> => navigator.clipboard.writeText(text || '');
 
-export const PROJECT_NAME = 're_data';
+export const PROJECT_NAME = 're_dat`a';
+
+export const isObj = (key: unknown): boolean => typeof key === 'object' && !Array.isArray(key) && key !== null;

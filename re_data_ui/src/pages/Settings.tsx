@@ -12,6 +12,7 @@ import {
   RedataOverviewContext,
 } from '../contexts/redataOverviewContext';
 import { CodeFormatter } from '../partials';
+import { isObj } from '../utils';
 
 type activeViewTypes = 'monitored' | 'dbt' | 'timeline';
 
@@ -90,12 +91,27 @@ const Settings: FC = (): ReactElement => {
                     {metrics[key] && Array.isArray(metrics[key]) ? `: ${metrics[key]}` : ''}
                     {metrics[key] && !Array.isArray(metrics[key]) ? (
                       <ul className="list-square ml-4 mt-2">
-                        {Object.keys(metrics[key]).map((k: any) => (
-                          <li key={k}>
-                            {k}
-                            {metrics[key]?.[k] ? `: ${metrics[key][k]}` : ''}
-                          </li>
-                        ))}
+                        {/* {console.log(metrics[key])} */}
+                        {Object.keys(metrics[key]).map((k: any) => {
+                          const val = metrics[key]?.[k];
+                          let res = ': ';
+
+                          if (Array.isArray(val)) {
+                            res += val.join(', ');
+                          }
+
+                          if (isObj(val)) {
+                            console.log('is an object', val, isObj(val));
+                          }
+                          return (
+                            <li key={k}>
+                              {console.log(k, metrics[key]?.[k])}
+
+                              {k}
+                              {res}
+                            </li>
+                          );
+                        })}
                       </ul>
                     ) : ''}
                   </li>
