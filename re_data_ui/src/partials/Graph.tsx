@@ -55,17 +55,19 @@ const generateGraph = (
 
   const nodes: optionsProps[] = [];
 
-  if (!overview.graph || !overview.modelNodes) {
-    return { elements, nodes };
-  }
-
   const {
+    graph,
     dbtMapping,
     modelNodes,
     aggregated_models: aggregatedModels,
-    graph: { nodes: dbtNodes, sources: dbtSources },
     failedTests,
   } = overview;
+
+  if (!graph || !modelNodes) {
+    return { elements, nodes };
+  }
+
+  const { nodes: dbtNodes, sources: dbtSources } = graph;
   const allNodes = { ...dbtNodes, ...dbtSources };
 
   const failedKeys = failedTests ? Object.keys(failedTests) : [];
@@ -75,7 +77,7 @@ const generateGraph = (
     const {
       parent_map: parentNodes,
       child_map: childNodes,
-    } = overview.graph;
+    } = graph;
     const modelTitle = dbtMapping[modelName];
 
     // get all the parents and the child nodes of the model name;
@@ -269,7 +271,10 @@ function GraphPartial(params: GraphPartialProps): ReactElement {
   const [searchParams] = useSearchParams();
 
   const overview: OverviewData = useContext(RedataOverviewContext);
-  const overviewDataLoaded = !!overview.graph;
+
+  const { graph } = overview;
+
+  const overviewDataLoaded = !!graph;
   const [modelType, setModelType] = useState<string | null>(null);
   const [alerts, setAlerts] = useState<AlertsType>(null);
   const [activeTab, setActiveTab] = useState(ModelTabs.ANOMALIES);
