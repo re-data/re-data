@@ -77,14 +77,16 @@ const ModelDetails = ({ activeTab, toggleTabs }: ModelDetailsTypes): ReactElemen
   const fullTableName = searchParams.get('model') as string;
   const overview: OverviewData = useContext(RedataOverviewContext);
 
+  const { loading } = overview;
+
   useEffect(() => {
-    if (fullTableName && overview && !overview.loading) {
+    if (fullTableName && overview && !loading) {
       const details = init(overview, fullTableName) as ReDataModelDetails;
       setModelDetails(details);
     } else {
       setModelDetails(undefined);
     }
-  }, [fullTableName, overview.loading]);
+  }, [fullTableName, loading]);
 
   const showAnomalies = (): void => toggleTabs(ModelTabs.ANOMALIES);
   const showSchema = (): void => toggleTabs(ModelTabs.SCHEMA_CHANGES);

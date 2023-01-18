@@ -30,7 +30,7 @@ const showA = true;
 const Tables: React.FC = (): ReactElement => {
   const overview: OverviewData = useContext(RedataOverviewContext);
   const {
-    modelNodes, dbtMapping, graph, modelNodesDepends, tableSamples,
+    loading, modelNodes, dbtMapping, graph, modelNodesDepends, tableSamples,
   } = overview;
   const [activeTab, setActiveTab] = useState('');
   const [callApi, setCallApi] = useState(true);
@@ -73,7 +73,7 @@ const Tables: React.FC = (): ReactElement => {
   };
 
   useEffect(() => {
-    if (model && !overview.loading && callApi) {
+    if (model && !loading && callApi) {
       setCallApi(false);
       const details = init(overview, model) as ReDataModelDetails;
       setOptionValue({
@@ -82,7 +82,7 @@ const Tables: React.FC = (): ReactElement => {
       });
       setModelDetails(details);
     }
-  }, [overview.loading]);
+  }, [loading]);
 
   useEffect(() => {
     if (tab && !callApi) {
