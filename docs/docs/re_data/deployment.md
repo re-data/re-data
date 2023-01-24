@@ -29,10 +29,10 @@ This can compute all the backend models of re_data in your dbt cloud environment
 
 Unfortunately, it's not possible to run the `re_data run` command directly in the dbt cloud, for this reason, if you want to generate `re-data` UI we are recommending you set up a Github Action which will run `re_data overview` command. This is the way we are running re_data (and dbt) ourselves, and we are happy to share our setup with you.
 
-## re_data (and possibly dbt) run in Github Actions
+## re_data (and possibly dbt) run in GitHub Actions
 
 As mentioned this is how we are running dbt and re_data, and re_cloud ourselves so that it can be considered our favorite :) We recently make our analysis repo public so you can see easily see and copy all the setup required for running dbt and re_data this way. You can check out the repo: **[HERE](https://github.com/re-data/analysis)**.
-The most interesting part of it is the Github Actions which is running our whole setup, you can check our **[github action file here](https://github.com/re-data/analysis/blob/main/.github/workflows/re_data.yml)** 
+The most interesting part of it is the GitHub Actions which is running our whole setup, you can check our **[github action file here](https://github.com/re-data/analysis/blob/main/.github/workflows/re_data.yml)** 
 
 One thing to notice is how to easily point re_data to the configuration file without making them part of the repo.
 re_data support variable `RE_DATA_CONFIG_DIR` which can be used to point to a directory where your configuration files are stored. This way is very similar to dbt's `DBT_PROFILES_DIR` env variable, which we are also using.
