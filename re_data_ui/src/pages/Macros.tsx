@@ -38,14 +38,14 @@ const Macros: FC = (): ReactElement => {
   const macro = searchParams.get('macro') as string;
 
   useEffect(() => {
-    if (macro && macros && !overview.loading) {
+    if (macro && macros && !loading) {
       setOptionValue({
         value: macro,
         label: macro,
       });
       setMacroDetails(macros[macro] as DbtMacro);
     }
-  }, [!overview.loading, macro]);
+  }, [!loading, macro]);
 
   const handleChange = (option: SelectOptionProps | null) => {
     if (option && macros) {

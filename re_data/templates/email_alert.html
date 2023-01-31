@@ -109,6 +109,10 @@ table.body .article {
             <table role="presentation" class="main" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background: #ffffff; border-radius: 3px; width: 100%;" width="100%">
               <!-- START MAIN CONTENT AREA -->
 
+              {% if alerts | length == 0 %}
+                  <h3>re_data found no alerts for the time window specified.</h3>
+              {% endif %}
+
               {% for model, details in alerts.items() if model in models_to_notify %}
                 <tr>
                   <td colspan="1" class="wrapper" style="font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;" valign="top">

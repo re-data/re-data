@@ -35,20 +35,20 @@ const Sidebar: React.FC = (): ReactElement => {
       className="bg-gray-800 text-gray-100 md:w-32 w-3/4 min-w-min space-y-6 pt-6 px-0 absolute inset-y-0 left-0
                 transform md:relative md:translate-x-0 transition duration-200 ease-in-out  md:flex
                  md:flex-col md:justify-between max-h-screen overflow-y-auto"
-      data-dev-hint="sidebar; px-0 for frameless; px-2 for visually inset the navigation"
+      data-dev-hint="sidebar"
     >
       <div
-        className="flex flex-col space-y-6"
-        data-dev-hint="optional div for having an extra footer navigation"
+        className="flex flex-col space-y-8"
+        data-dev-hint="re_data sidebar"
       >
         <a
           href="#/alerts"
-          className="text-white flex items-center space-x-2 px-8"
-          title="Your App is cool"
+          className="text-white flex items-center sidebar-logo-container"
+          title="re_data"
         >
           <span className="text-2xl font-extrabold whitespace-nowrap truncate">
             <svg
-              className="w-14"
+              className="sidebar-logo"
               viewBox="0 0 1001 1001"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -67,6 +67,8 @@ const Sidebar: React.FC = (): ReactElement => {
               />
             </svg>
           </span>
+
+          <span className="sidebar-logo-text">re_data</span>
         </a>
 
         <nav data-dev-hint="main navigation">
@@ -77,7 +79,6 @@ const Sidebar: React.FC = (): ReactElement => {
             <ImNotification size="1.25em" />
             <span>Alerts</span>
           </NavLink>
-
           <NavLink
             to="graph"
             className={({ isActive }) => (isActive ? 'navlink active' : 'navlink')}

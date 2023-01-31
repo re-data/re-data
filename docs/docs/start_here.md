@@ -35,6 +35,6 @@ re_cloud allows you to very easily host and collaborate on data reports from dif
 We think of `re_cloud` as a control center for you data. We wrote a simple `re_cloud` library (available as a python library) to upload supported reports to the cloud.
 
 To start with a cloud you can create **[a free account here 😊](https://cloud.getre.io/#/register)**
-or check our **[introdudction docs](/docs/re_cloud/whatis_cloud)** for more information on it.
+or check our **[introduction docs](/docs/re_cloud/whatis_cloud)** for more information on it.
 
 ![DashboardExample](/screenshots/cloud/dashboard.png)

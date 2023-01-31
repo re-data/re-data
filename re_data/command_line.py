@@ -50,10 +50,12 @@ def add_dbt_flags(command_list, flags):
 def get_target_paths(kwargs, re_data_target_dir=None):
     project_root = get_project_root(kwargs)
     partial = Project.partial_load(project_root)
-    dbt_target_path = os.path.abspath(partial.project_dict['target-path'])
-
+    dbt_target_path = os.path.join(
+                        partial.project_root,
+                        partial.project_dict['target-path']
+                        )
     if re_data_target_dir:
-        re_data_target_path = os.path.abspath(re_data_target_dir)
+        re_data_target_path = os.path.join(partial.project_root,re_data_target_dir)
     else:
         re_data_target_path = os.path.join(dbt_target_path, 're_data')
 
@@ -450,10 +452,18 @@ def serve(port, re_data_target_dir, no_browser, **kwargs):
         Specfy which alert types to generate. This accepts multiple options
         e.g. --select anomaly --select schema_change
     """)
+@click.option(
+    '--send-all-good/--no-send-all-good',
+    default=True,
+    type=click.BOOL,
+    help="""
+        Indicate if a message should be sent if no alerts are found
+        Defaults to true
+    """)
 @add_options(dbt_flags)
 @anonymous_tracking
 @with_version_check
-def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, select, **kwargs):
+def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, select, send_all_good, **kwargs):
     validate_alert_types(selected_alert_types=select)
     start_date = str(start_date.date())
     end_date = str(end_date.date())
@@ -503,7 +513,7 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
         slack_notify(webhook_url, slack_message)
         alerts_found = True
 
-    if not alerts_found:
+    if not alerts_found and send_all_good:
         slack_message = generate_all_good_slack_message(subtitle)
         slack_notify(webhook_url, slack_message)
 
@@ -534,6 +544,14 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
     """
 )
 @click.option(
+    '--send-all-good/--no-send-all-good',
+    default=True,
+    type=click.BOOL,
+    help="""
+        Indicate if a message should be sent if no alerts are found
+        Defaults to true
+    """)
+@click.option(
     '--select',
     multiple=True,
     default=ALERT_TYPES,
@@ -544,7 +562,7 @@ def slack(start_date, end_date, webhook_url, subtitle, re_data_target_dir, selec
 @add_options(dbt_flags)
 @anonymous_tracking
 @with_version_check
-def email(start_date, end_date, re_data_target_dir, select, **kwargs):
+def email(start_date, end_date, re_data_target_dir, select, send_all_good, **kwargs):
     validate_alert_types(selected_alert_types=select)
     selected_alert_types = set(select)
     config = read_re_data_config()
@@ -597,6 +615,9 @@ def email(start_date, end_date, re_data_target_dir, select, **kwargs):
         if email != 'NO_OWNER':
             models_to_notify = email_to_models_map.get(email)
             all_models = set(models_to_notify + models_with_no_owners)
+            # if there are no alerts within the time window and flag is set to not notify in such case
+            if len(model_to_alerts_map) == 0 and not send_all_good:
+                break
             mime_msg = build_mime_message(
                 mail_from=mail_from,
                 mail_to=email,
