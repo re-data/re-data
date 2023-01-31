@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Quickstart 🚀
+# Quickstart
 
 In this quick tutorial we will deploy the UI of re_data & dbt_docs to production environment when you and your team can check those 2 usefull reports.
 
