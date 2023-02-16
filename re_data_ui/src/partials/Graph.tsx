@@ -219,8 +219,8 @@ const generateGraph = (
 
       if (details.resource_type !== 'source') {
         const d = details as DbtNode;
-        const parentNodes = new Set(d?.depends_on.nodes);
-        parentNodes.forEach((parent) => {
+        const parentNodes = new Set(d?.depends_on?.nodes);
+        parentNodes?.forEach((parent) => {
           const parentNode: DbtNode | DbtSource = dbtNodes?.[parent]
             ? dbtNodes?.[parent]
             : dbtSources?.[parent];
