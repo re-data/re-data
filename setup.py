@@ -30,7 +30,7 @@ setup(
     ],
     install_requires=[
         "click>=8,<9",
-        "dbt-core>=1.0.0,<1.5.0",
+        "dbt-core>=1.0.0,<1.6.0",
         "yachalk>=0.1.0,<0.2.0",
         "tabulate==0.8.9",
         "jsonschema>=3.0.0",
