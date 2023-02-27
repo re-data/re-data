@@ -23,14 +23,25 @@ Check out our **[live demo](https://re-data.github.io/re-data/ui-latest/#/alerts
 ![GraphExample](/screenshots/ui/graph.png)
 
 ## re_cloud
-re_cloud allows you to very easily host and collaborate on data reports from different data apps. Some we are currently supporting are: 
+re_cloud allows you to very easily host and collaborate on data reports from different data tools. Some we are currently supporting are: 
 
-- re_data 😊
 - dbt docs
 - great_expectations
 - pandas_profiling
+- re_data 😊
 - jupyter notebooks
-- custom reports
+- custom htmls reports
+ 
+
+### Why do I need it?
+
+Data tools are great, but the way to share outputs produced by them with your team is harder than it could be. With re_cloud, using one line of code like:
+
+```
+re_cloud upload dbt-docs
+```
+
+You can make dbt docs available to your team.
 
 We think of `re_cloud` as a control center for you data. We wrote a simple `re_cloud` library (available as a python library) to upload supported reports to the cloud.
 

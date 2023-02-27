@@ -6,7 +6,7 @@ sidebar_position: 6
 
 ## Overview
 
-If you have details about your data that you want to share with your team, custom html report maybe the best wayt to do it.
+If you have details about your data that you want to share with your team, custom html report maybe the best way to do it.
 
 Some tools allows you to export HTML summary of you data. For example [pandas to_html command](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_html.html) let's you export information about your dataframe to HTML file.
 

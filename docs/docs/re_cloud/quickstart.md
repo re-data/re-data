@@ -4,14 +4,12 @@ sidebar_position: 2
 
 # Quickstart
 
-In this quick tutorial we will deploy the UI of re_data & dbt_docs to production environment when you and your team can check those 2 usefull reports.
-
-This introduction assumes you are using dbt and optionally re_data.
+In this quick tutorial we will deploy the UI of re_data & dbt_docs to production environment when you and your team can check those 2 usefull reports. This introduction assumes you are using dbt and optionally also use re_data
 
 
 ## Install re_cloud package
 
-re_cloud package is small python package for uploading data reports files to re_cloud 😊
+To upload reports you will need to install `re_cloud` python package, you can easily to it with pip
 
 ```bash
 pip install re_cloud
