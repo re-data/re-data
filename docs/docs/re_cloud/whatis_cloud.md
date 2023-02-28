@@ -4,33 +4,32 @@ sidebar_position: 0
 
 # What is re_cloud?
 
-re_cloud enables you to store outputs and reports from many data open-source tools and share them with team & business users super easily.
-
-On top of that is adds ability to view:
- - view reports history
- - get notifications when reports are updated
-
+re_cloud enables you to make your data reports (like dbt-docs, great_expectation docs, custom html reports, re_data report) available online to your team and business users.
 
 # Why do I need it?
 
-We talked with more than a 100 companies on how they are storing output from tools like dbt-docs, great-expectations, our open-source library and others. Answer is almost always the same - S3, GCS, github pages or used to do that.
+We talked with more than a 100 companies on how they are storing output from tools like dbt-docs, great-expectations, our open-source library and others. Answer is almost always the same - S3, GCS, github pages.
 
-With re_data with single line of code like:
+But those methods makes it hard to share reports with your team and business users. You need to learn how to setup permissions, buckets, github pages and more.
+
+With re_cloud using single line of code like:
 ```
 re_cloud upload dbt-docs
 ```
 
-You can make your outputs available to your team and business users in a few seconds without learning
-details on S3 permissions, GCS buckets, github pages or any other tool.
+You can make your docs available to your team and business users.
 
-And on top of that you can get slack notifications when reports are updated and view reports history features which are not available in home made solutions.
+And apart from just viewing them, you are getting new previously impossible features avaiable to you like:
 
-And we will be bringing more features in the no distant future.
-
+ - dashboard with all the reports in one place
+ - possiblity to view each report version history (to debug what changed)
+ - predefined & customized slack notifications
+ - and much more comming soon! :rocket:
+ 
 # Getting started
 
 If you are curious about re_cloud and would like to jump right into it, you can start with a **[free trial here](https://cloud.getre.io/#/register)**
 
 To see docs on how to upload reports into the cloud check our **[Quickstart guide](/docs/re_cloud/quickstart)**
 
-![DashboardExample](/screenshots/cloud/dashboard.png)
+![DashboardExample](/re_cloud/flows/dashboard.png)

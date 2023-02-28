@@ -48,4 +48,4 @@ We think of `re_cloud` as a control center for you data. We wrote a simple `re_c
 To start with a cloud you can create **[a free account here 😊](https://cloud.getre.io/#/register)**
 or check our **[introduction docs](/docs/re_cloud/whatis_cloud)** for more information on it.
 
-![DashboardExample](/screenshots/cloud/dashboard.png)
+![DashboardExample](/re_cloud/flows/dashboard.png)

@@ -13,6 +13,8 @@ On some level great-expectations competes with `dbt test` functionality.
 
 One cool feature of great-expectations is ability to generate data docs which describe your data & tests run.
 
+Below example of how generated great_expectations docs look like when uploaded to re_cloud:
+
 ![great_expectations_example](/re_cloud/integrations/great_expectations.png)
 
 ## Uploading to re_cloud
