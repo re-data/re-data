@@ -2,7 +2,7 @@
 sidebar_position: 6
 ---
 
-# Custom HTML
+# HTML file
 
 ## Overview
 
