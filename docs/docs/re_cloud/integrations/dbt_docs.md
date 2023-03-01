@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 
 # dbt docs
 
@@ -7,7 +11,7 @@ Dbt docs help you share documentation about your data with your team and other s
 
 You can generate dbt docs from your dbt project. Dbt allows you also to add descriptions to each of the tables, columns, macros.
 
-Below example of how generated documentation looks like:
+Below example of how generated documentation looks like when uploaded to re_cloud:
 
 ![dbt_docs_example](/re_cloud/integrations/dbt_docs.png)
 
