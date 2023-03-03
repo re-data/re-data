@@ -28,7 +28,7 @@ with open("summary.html", 'w') as f:
 Once generated you can upload report to the cloud:
 
 ```
-re_cloud upload custom --file summary.html
+re_cloud upload html-file --file summary.html
 ```
 
 ## re_cloud command
@@ -36,7 +36,7 @@ re_cloud upload custom --file summary.html
 Below we show all the currently supported options on how you can upload custom html to `re_cloud`
 
 ```
-Usage: re_cloud upload custom --name TEXT  --file TEXT
+Usage: re_cloud upload html-file --name TEXT  --file TEXT
 
 Options:
   --file TEXT  custom html file to upload  [required]
