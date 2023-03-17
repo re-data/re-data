@@ -31,10 +31,6 @@ Once generated you can upload report to the cloud:
 re_cloud upload html-file --file index.html
 ```
 
-:::caution
-Currently html file uploaded to re_cloud should be called `index.html` so if you have a different name you should rename it before uploading and we recommend to use --name option to give your upload a name of the file.
-:::
-
 ## re_cloud command
 
 Below we show all the currently supported options on how you can upload custom html to `re_cloud`
