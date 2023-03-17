@@ -49,8 +49,16 @@ Below we show all the currently supported options on how you can upload pandas-p
 re_cloud upload pandas-profiling --name TEXT  --report-file TEXT
 
 Options:
---report-file TEXT  Pandas profiling file with html report  [required]
---name TEXT         Name of the upload used for identification
+  --channel-name-or-id TEXT  The slack channel name to send the report
+                             uploaded message if a slack account is connected
+                             to the re_cloud account. It could be a channel
+                             name, channel id or member id.
+  --name TEXT                Name of the upload used for identification
+  --config-dir TEXT          Path to the directory containing re_data.yml
+                             config file
+  --report-file TEXT         Pandas profiling file with html report
+                             [required]
+  --help                     Show this message and exit.
 ```
 
 For pandas profiling --report-file is required paramter. re_data will upload your docs in `uncommitted/data_docs/local_site/` path then.
