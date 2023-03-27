@@ -8,7 +8,7 @@ sidebar_position: 3
 
 Elementary is library which allows you to monitor your data quality in a simple way. Similarly to re-data open-source it's targeting primarly dbt users.
 
-![great_expectations_example](/re_cloud/integrations/elementary.png)
+![elementary_example](/re_cloud/integrations/elementary.png)
 
 ## Uploading to re_cloud
 
