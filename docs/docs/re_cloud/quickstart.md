@@ -69,7 +69,7 @@ Inviting your team is super easy, just click on the `Invite` button in the top r
 
 ![DashboardExample](/re_cloud/flows/invite.png)
 
-## Configuring slack ngotifications
+## Configuring slack notifications
 
 If you would like to configure slack notifications for your reports, you can do it in the `Account Settings` section of the re_cloud.
 

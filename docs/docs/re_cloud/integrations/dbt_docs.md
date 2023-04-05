@@ -36,9 +36,17 @@ Below we show all the currently supported options on how you can upload dbt-docs
 re_cloud upload dbt-docs --name TEXT --project-dir TEXT
 
 Options:
-  --project-dir TEXT  Which directory to look in for the dbt_project.yml file.
-                      Default is the current working directory and its parents
-  --name TEXT         Name of the upload used for identification
+  --channel-name-or-id TEXT  The slack channel name to send the report
+                             uploaded message if a slack account is connected
+                             to the re_cloud account. It could be a channel
+                             name, channel id or member id.
+  --name TEXT                Name of the upload used for identification
+  --config-dir TEXT          Path to the directory containing re_data.yml
+                             config file
+  --project-dir TEXT         Which directory to look in for the
+                             dbt_project.yml file. Default is the current
+                             working directory and its parents
+  --help                     Show this message and exit.
 ```
 
 You don't need to pass project-dir paramter if calling this command from witin dbt main directory. Otherwise pass `project-dir` to upload generated docs from this directory.

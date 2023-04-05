@@ -25,7 +25,13 @@ Below we show all the currently supported options on how you can upload jupyter-
 Usage: re_cloud upload jupyter-notebook --name TEXT  --file TEXT
 
 Options:
-  --file TEXT  ipynb notebooks file to upload  [required]
-  --name TEXT  Name of the upload used for identification
-  --help       Show this message and exit.
+  --channel-name-or-id TEXT  The slack channel name to send the report
+                             uploaded message if a slack account is connected
+                             to the re_cloud account. It could be a channel
+                             name, channel id or member id.
+  --name TEXT                Name of the upload used for identification
+  --config-dir TEXT          Path to the directory containing re_data.yml
+                             config file
+  --file TEXT                a file with give upload type  [required]
+  --help                     Show this message and exit.
 ```

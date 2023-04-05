@@ -33,10 +33,19 @@ re_cloud upload great-expectations
 Below we show all the currently supported options on how you can upload great-expectations to `re_cloud`
 
 ```
-re_cloud upload great-expectations --name TEXT
+re_cloud upload great-expectations --name TEXT 
 
 Options:
-  --name TEXT  Name of the upload used for identification
+  --channel-name-or-id TEXT  The slack channel name to send the report
+                             uploaded message if a slack account is connected
+                             to the re_cloud account. It could be a channel
+                             name, channel id or member id.
+  --name TEXT                Name of the upload used for identification
+  --config-dir TEXT          Path to the directory containing re_data.yml
+                             config file
+  --path TEXT                path to the directory containing or files to push
+                             to re_cloud
+  --help                     Show this message and exit.
 ```
 
 ## Next steps
