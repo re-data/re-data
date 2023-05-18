@@ -177,6 +177,7 @@ export interface TestData {
   table_name: string,
   test_name: string,
   test_name_2?: string,
+  additional_runtime_metadata?: string,
 }
 
 export interface MetaData {

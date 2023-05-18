@@ -305,6 +305,18 @@ const TestDetails: FC = (): ReactElement => {
                   : null,
                 language: 'sql',
               },
+              {
+                label: 'Failures Table',
+                data: results.failures_table
+                  ? (results.failures_table.toString().trim())
+                  : null,
+                language: 'sql',
+              },
+              {
+                label: 'Additional Runtime Metadata',
+                data: results.additional_runtime_metadata || null,
+                language: 'json',
+              },
             ]}
           />
         )}
