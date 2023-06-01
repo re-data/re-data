@@ -13,7 +13,7 @@ import * as echarts from 'echarts/core';
 import { MarkArea1DDataItemOption, MarkArea2DDataItemOption } from 'echarts/types/src/component/marker/MarkAreaModel';
 import { VisualOptionPiecewise } from 'echarts/types/src/util/types';
 import React, { ReactElement } from 'react';
-import { FaRegSmileBeam, FaRegSmileWink } from 'react-icons/all';
+import { FaRegSmileBeam, FaRegSmileWink } from 'react-icons/fa';
 import { useSearchParams } from 'react-router-dom';
 import { Anomaly, Metric, ReDataModelDetails } from '../contexts/redataOverviewContext';
 import {

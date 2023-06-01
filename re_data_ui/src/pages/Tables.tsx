@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { FaRegSmileWink } from 'react-icons/all';
+import { FaRegSmileWink } from 'react-icons/fa';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   DynamicTable,

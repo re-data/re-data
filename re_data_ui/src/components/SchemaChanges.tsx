@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { FaRegSmileBeam } from 'react-icons/all';
+import { FaRegSmileBeam } from 'react-icons/fa';
 import { generateSchemaChangeMessage } from '../utils/helpers';
 import { ReDataModelDetails } from '../contexts/redataOverviewContext';
 import EmptyContent from './EmptyContent';

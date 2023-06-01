@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import React, {
   ReactElement, useContext, useMemo, useState,
 } from 'react';
-import { FaRegSmileBeam } from 'react-icons/all';
+import { FaRegSmileBeam } from 'react-icons/fa';
 import utc from 'dayjs/plugin/utc';
 import { EmptyContent, Table } from '../components';
 import AlertBadge from '../components/AlertBadge';

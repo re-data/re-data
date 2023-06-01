@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import React, {
   ReactElement, useContext, useMemo, useState,
 } from 'react';
-import { FaRegSmileWink } from 'react-icons/all';
+import { FaRegSmileWink } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import utc from 'dayjs/plugin/utc';
 import { EmptyContent, Table } from '../components';
