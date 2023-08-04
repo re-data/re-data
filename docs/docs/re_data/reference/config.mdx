@@ -35,7 +35,7 @@ re_data dbt native cofiguration follows the same rules as dbt configuration, con
       re_data_columns=['amount', 'status'],
       re_data_metrics_groups=['table_metrics', 'column_metrics'],
       re_data_metrics={'table': ['orders_obove_100'], 'column': { 'status': ['distinct_values'],
-      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3.0},
+      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3.0} }},
       re_data_owners=['datateam']
     )
 }}
@@ -309,3 +309,4 @@ This is used to enable storing sample data of monitored tables.
 ### re_data:owners_config
 
 Variable to configure owners for your data.  See [re_data notifications](/docs/re_data/reference/notifications/configuring_owners) for more details.
+
