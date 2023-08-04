@@ -32,7 +32,7 @@ vars:
 {{
     config(
       re_data_monitored=true,
-      re_data_anomaly_detector={'name': 'z_score', 'threshold': 3} }}
+      re_data_anomaly_detector={'name': 'z_score', 'threshold': 3}
     )
 }}
 
@@ -57,7 +57,7 @@ vars:
 {{
     config(
       re_data_monitored=true,
-      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3} }}
+      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3}
     )
 }}
 
@@ -83,7 +83,7 @@ vars:
 {{
     config(
       re_data_monitored=true,
-      re_data_anomaly_detector={'name': 'boxplot', whisker_boundary_multiplier: 1.5} }}
+      re_data_anomaly_detector={'name': 'boxplot', whisker_boundary_multiplier: 1.5}
     )
 }}
 
