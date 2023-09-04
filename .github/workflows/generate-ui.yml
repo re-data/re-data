@@ -49,6 +49,7 @@ jobs:
       - name: Install re_data and python dependencies
         working-directory: .
         run: |
+          pip install --upgrade pip
           pip install -e .
           pip install dbt-postgres==1.6
 
