@@ -9,9 +9,16 @@ env:
   RE_DATA_TESTING_USER: ${{ secrets.RE_DATA_TESTING_USER }}
   RE_DATA_TESTING_PASSWORD: ${{ secrets.RE_DATA_TESTING_PASSWORD }}
   REDSHIFT_RE_DATA_TESTING_HOST: ${{ secrets.REDSHIFT_RE_DATA_TESTING_HOST }}
+  BIGQUERY_TESTING_TYPE: ${{ secrets.BIGQUERY_TESTING_TYPE }}
   BIGQUERY_TESTING_PROJECT_ID: ${{ secrets.BIGQUERY_TESTING_PROJECT_ID }}
-  BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64: ${{ secrets.BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 }}
-  BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH: ${{ github.workspace }}/bigquery-testing-service-account.json
+  BIGQUERY_TESTING_PRIVATE_KEY_ID: ${{ secrets.BIGQUERY_TESTING_PRIVATE_KEY_ID }}
+  BIGQUERY_TESTING_PRIVATE_KEY: ${{ secrets.BIGQUERY_TESTING_PRIVATE_KEY }}
+  BIGQUERY_TESTING_CLIENT_EMAIL: ${{ secrets.BIGQUERY_TESTING_CLIENT_EMAIL }}
+  BIGQUERY_TESTING_CLIENT_ID: ${{ secrets.BIGQUERY_TESTING_CLIENT_ID }}
+  BIGQUERY_TESTING_AUTH_URI: ${{ secrets.BIGQUERY_TESTING_AUTH_URI }}
+  BIGQUERY_TESTING_TOKEN_URI: ${{ secrets.BIGQUERY_TESTING_TOKEN_URI }}
+  BIGQUERY_TESTING_AUTH_PROVIDER_X509_CERT_URL: ${{ secrets.BIGQUERY_TESTING_AUTH_PROVIDER_X509_CERT_URL }}
+  BIGQUERY_TESTING_CLIENT_X509_CERT_URL: ${{ secrets.BIGQUERY_TESTING_CLIENT_X509_CERT_URL }}
   RE_DATA_SEND_ANONYMOUS_USAGE_STATS: 0
   DBT_VERSION: 1.7
 
@@ -147,11 +154,6 @@ jobs:
         run: |
           echo $TOY_SHOP_SCHEMA
 
-      - name: Decode service account for BigQuery
-        if: matrix.database == 'bigquery'
-        run: 'echo $BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 | base64 --decode > $BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH'
-        shell: bash
-
       - name: Install re_data and python dependencies
         working-directory: .
         run: |
@@ -263,11 +265,6 @@ jobs:
       - name: Print TOY_SHOP_SCHEMA
         run: |
           echo $TOY_SHOP_SCHEMA
-
-      - name: Decode service account for BigQuery
-        if: matrix.database == 'bigquery'
-        run: 'echo $BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 | base64 --decode > $BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH'
-        shell: bash
 
       - name: Install dependencies and drop branch schema
         working-directory: ./getting_started/toy_shop
