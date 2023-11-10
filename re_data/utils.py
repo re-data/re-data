@@ -2,7 +2,7 @@ from typing import Any, Dict, Optional, List, Tuple
 from datetime import datetime, timezone
 import json
 import os
-from dbt.config.project import Project
+from pathlib import Path
 import pkg_resources
 import yaml
 try:
@@ -20,11 +20,12 @@ def get_project_root(kwargs):
 
 def load_metadata_from_project(start_date, end_date, interval, kwargs) -> Dict:
     project_root = os.getcwd() if not kwargs.get('project_dir') else os.path.abspath(kwargs['project_dir'])
-    partial = Project.partial_load(project_root)
+    project_dict = yaml.safe_load(Path(os.path.join(project_root, 'dbt_project.yml')).read_text())
+    packages_dict = yaml.safe_load(Path(os.path.join(project_root, 'packages.yml')).read_text())
     version = pkg_resources.require("re_data")[0].version
     metadata = {
-        'project_dict': partial.project_dict,
-        'packages': partial.packages_dict,
+        'project_dict': project_dict,
+        'packages': packages_dict,
         'version': version,
         'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
         're_data_args': {

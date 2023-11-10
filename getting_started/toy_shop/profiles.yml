@@ -56,7 +56,7 @@ toy_shop_bigquery:
       dataset: "{{ env_var('TOY_SHOP_SCHEMA') }}"
       threads: 4
       keyfile: "{{ env_var('BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH') }}"
-      location: EU
+      location: US
       timeout_seconds: 300
       priority: interactive
       retries: 1
