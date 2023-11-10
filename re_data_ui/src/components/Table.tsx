@@ -192,7 +192,6 @@ function Table(params: ITable): JSX.Element {
                   <td
                     {...cell.getCellProps()}
                     className={`${styledPadding} ${columns.length === 3 ? 'w-1/3' : cell?.column?.id === 'test_name' ? 'w-1/5 truncate' : 'w-1/5 truncate'} py-4 text-sm`}
-                    role="cell"
                     title={cell.value}
                   >
                     {cell.render('Cell')}
@@ -274,6 +273,7 @@ function Table(params: ITable): JSX.Element {
                       onClick={() => previousPage()}
                       disabled={!canPreviousPage}
                       className="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                      aria-label="Previous"
                     >
                       <svg
                         className="h-5 w-5"
@@ -294,6 +294,7 @@ function Table(params: ITable): JSX.Element {
                       onClick={() => nextPage()}
                       disabled={!canNextPage}
                       className="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                      aria-label="Next"
                     >
                       <svg
                         className="h-5 w-5"

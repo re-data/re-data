@@ -95,7 +95,6 @@ jobs:
           npm install
 
       - name: Build app for production
-        if: ${{ !env.ACT }}
         working-directory: ./re_data_ui
         shell: bash
         run: ./build.sh
@@ -150,7 +149,6 @@ jobs:
 
       - name: Decode service account for BigQuery
         if: matrix.database == 'bigquery'
-        working-directory: ./getting_started/toy_shop
         run: 'echo $BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 | base64 --decode > $BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH'
         shell: bash
 
@@ -268,7 +266,6 @@ jobs:
 
       - name: Decode service account for BigQuery
         if: matrix.database == 'bigquery'
-        working-directory: ./getting_started/toy_shop
         run: 'echo $BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 | base64 --decode > $BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH'
         shell: bash
 
