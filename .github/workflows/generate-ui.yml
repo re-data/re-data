@@ -13,7 +13,6 @@ env:
   BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64: ${{ secrets.BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 }}
   BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH: ${{ github.workspace }}/bigquery-testing-service-account.json
   RE_DATA_SEND_ANONYMOUS_USAGE_STATS: 0
-  PYTHON_VERSION: "3.8.x"
   DBT_VERSION: 1.7
 
 jobs:
@@ -40,7 +39,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ PYTHON_VERSION }}
+          python-version: "3.8.x"
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -129,7 +128,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ PYTHON_VERSION }}
+          python-version: "3.8.x"
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -254,7 +253,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ PYTHON_VERSION }}
+          python-version: "3.8.x"
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
