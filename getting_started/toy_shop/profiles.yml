@@ -51,12 +51,22 @@ toy_shop_bigquery:
   outputs:
     dev:
       type: bigquery
-      method: service-account
+      method: service-account-json
       project: "{{ env_var('BIGQUERY_TESTING_PROJECT_ID') }}"
       dataset: "{{ env_var('TOY_SHOP_SCHEMA') }}"
       threads: 4
-      keyfile: "{{ env_var('BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH') }}"
-      location: EU
+      keyfile_json:
+        type: "{{ env_var('BIGQUERY_TESTING_TYPE') }}"
+        project_id: "{{ env_var('BIGQUERY_TESTING_PROJECT_ID') }}"
+        private_key_id: "{{ env_var('BIGQUERY_TESTING_PRIVATE_KEY_ID') }}"
+        private_key: "{{ env_var('BIGQUERY_TESTING_PRIVATE_KEY') }}"
+        client_email: "{{ env_var('BIGQUERY_TESTING_CLIENT_EMAIL') }}"
+        client_id: "{{ env_var('BIGQUERY_TESTING_CLIENT_ID') }}"
+        auth_uri: "{{ env_var('BIGQUERY_TESTING_AUTH_URI') }}"
+        token_uri: "{{ env_var('BIGQUERY_TESTING_TOKEN_URI') }}"
+        auth_provider_x509_cert_url: "{{ env_var('BIGQUERY_TESTING_AUTH_PROVIDER_X509_CERT_URL') }}"
+        client_x509_cert_url: "{{ env_var('BIGQUERY_TESTING_CLIENT_X509_CERT_URL') }}"
+      location: US
       timeout_seconds: 300
       priority: interactive
       retries: 1

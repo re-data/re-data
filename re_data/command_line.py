@@ -5,6 +5,7 @@ import json
 from datetime import date, timedelta, datetime
 import shutil
 import logging
+from pathlib import Path
 
 import os
 from re_data.templating import render
@@ -23,7 +24,6 @@ from re_data.utils import (
 )
 
 from re_data.notifications.utils import build_notification_identifiers_per_model, prepare_exported_alerts_per_model, validate_alert_types, ALERT_TYPES, create_owners_to_models_map, create_models_to_alerts_map
-from dbt.config.project import Project
 from re_data.tracking import anonymous_tracking
 from re_data.config.utils import read_re_data_config
 from re_data.config.validate import validate_config_section
@@ -49,10 +49,12 @@ def add_dbt_flags(command_list, flags):
 
 def get_target_paths(kwargs, re_data_target_dir=None):
     project_root = get_project_root(kwargs)
-    partial = Project.partial_load(project_root)
+    
+    project_dict = yaml.safe_load(Path(os.path.join(project_root, 'dbt_project.yml')).read_text())
+
     dbt_target_path = os.path.join(
-                        partial.project_root,
-                        partial.project_dict['target-path']
+                        project_root,
+                        project_dict['target-path']
                         )
     if re_data_target_dir:
         re_data_target_path = os.path.join(partial.project_root,re_data_target_dir)

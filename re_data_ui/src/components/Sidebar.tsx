@@ -1,18 +1,13 @@
 import React, { ReactElement, useContext } from 'react';
-import {
-  BiCog,
-  BiCodeCurly,
-  BiNetworkChart,
-  BsGithub,
-  BsSlack,
-  ImNotification,
-  SiReadthedocs,
-  SiSpeedtest,
-  VscTable,
-} from 'react-icons/all';
-import { NavLink } from 'react-router-dom';
+import { BiCodeCurly, BiCog, BiNetworkChart } from 'react-icons/bi';
+import { BsGithub, BsSlack } from 'react-icons/bs';
+import { ImNotification } from 'react-icons/im';
+import { SiReadthedocs, SiSpeedtest } from 'react-icons/si';
+import { VscTable } from 'react-icons/vsc';
+
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { NavLink } from 'react-router-dom';
 import {
   OverviewData,
   RedataOverviewContext,

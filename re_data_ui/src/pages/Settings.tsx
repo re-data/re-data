@@ -6,7 +6,7 @@ import React, {
   useContext,
   useState,
 } from 'react';
-import { BsArrowDownCircle, BsArrowUpCircle } from 'react-icons/all';
+import { BsArrowDownCircle, BsArrowUpCircle } from 'react-icons/bs';
 import {
   OverviewData,
   RedataOverviewContext,

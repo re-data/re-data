@@ -9,10 +9,18 @@ env:
   RE_DATA_TESTING_USER: ${{ secrets.RE_DATA_TESTING_USER }}
   RE_DATA_TESTING_PASSWORD: ${{ secrets.RE_DATA_TESTING_PASSWORD }}
   REDSHIFT_RE_DATA_TESTING_HOST: ${{ secrets.REDSHIFT_RE_DATA_TESTING_HOST }}
+  BIGQUERY_TESTING_TYPE: ${{ secrets.BIGQUERY_TESTING_TYPE }}
   BIGQUERY_TESTING_PROJECT_ID: ${{ secrets.BIGQUERY_TESTING_PROJECT_ID }}
-  BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64: ${{ secrets.BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 }}
-  BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH: ${{ github.workspace }}/bigquery-testing-service-account.json
+  BIGQUERY_TESTING_PRIVATE_KEY_ID: ${{ secrets.BIGQUERY_TESTING_PRIVATE_KEY_ID }}
+  BIGQUERY_TESTING_PRIVATE_KEY: ${{ secrets.BIGQUERY_TESTING_PRIVATE_KEY }}
+  BIGQUERY_TESTING_CLIENT_EMAIL: ${{ secrets.BIGQUERY_TESTING_CLIENT_EMAIL }}
+  BIGQUERY_TESTING_CLIENT_ID: ${{ secrets.BIGQUERY_TESTING_CLIENT_ID }}
+  BIGQUERY_TESTING_AUTH_URI: ${{ secrets.BIGQUERY_TESTING_AUTH_URI }}
+  BIGQUERY_TESTING_TOKEN_URI: ${{ secrets.BIGQUERY_TESTING_TOKEN_URI }}
+  BIGQUERY_TESTING_AUTH_PROVIDER_X509_CERT_URL: ${{ secrets.BIGQUERY_TESTING_AUTH_PROVIDER_X509_CERT_URL }}
+  BIGQUERY_TESTING_CLIENT_X509_CERT_URL: ${{ secrets.BIGQUERY_TESTING_CLIENT_X509_CERT_URL }}
   RE_DATA_SEND_ANONYMOUS_USAGE_STATS: 0
+  DBT_VERSION: 1.7
 
 jobs:
   generate-ui:
@@ -36,9 +44,9 @@ jobs:
       - name: Check out
         uses: actions/checkout@v2
 
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v4
         with:
-          python-version: "3.7.x"
+          python-version: "3.8.x"
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -54,8 +62,9 @@ jobs:
       - name: Install re_data and python dependencies
         working-directory: .
         run: |
+          pip install --upgrade pip
           pip install -e .
-          pip install dbt-postgres==1.4.0
+          pip install dbt-postgres==$DBT_VERSION
 
       - name: Install dbt dependencies
         working-directory: ./getting_started/toy_shop
@@ -72,7 +81,7 @@ jobs:
 
       - name: Send alert notifications to various channels
         working-directory: ./getting_started/toy_shop
-        if: github.repository == 're-data/re-data'
+        if: github.repository == 're-data/re-data' && !env.ACT
         run: |
           re_data notify slack --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
           --profile toy_shop_postgres --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit> - (postgres)"
@@ -82,6 +91,7 @@ jobs:
           node-version: "16.13.0"
 
       - name: Set homepage in package.json
+        if: ${{ !env.ACT }}
         working-directory: ./re_data_ui
         run: contents=$(jq '.homepage="https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}"' package.json) && echo "${contents}" > package.json
         shell: bash
@@ -104,6 +114,7 @@ jobs:
           re_data overview generate --start-date 2021-01-01 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_postgres
 
       - name: Deploy
+        if: ${{ !env.ACT }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -121,9 +132,9 @@ jobs:
       - name: Check out
         uses: actions/checkout@v2
 
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v4
         with:
-          python-version: "3.7.x"
+          python-version: "3.8.x"
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -143,16 +154,11 @@ jobs:
         run: |
           echo $TOY_SHOP_SCHEMA
 
-      - name: Decode service account for BigQuery
-        if: matrix.database == 'bigquery'
-        run: 'echo $BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 | base64 --decode > $BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH'
-        shell: bash
-
       - name: Install re_data and python dependencies
         working-directory: .
         run: |
           pip install -e .
-          pip install dbt-${{ matrix.database }}==1.4.0
+          pip install dbt-${{ matrix.database }}==$DBT_VERSION
 
       - name: Replace sources schema in dbt_project.yml vars
         working-directory: ./getting_started/toy_shop
@@ -186,7 +192,7 @@ jobs:
 
       - name: Send alert notifications to various channels
         working-directory: ./getting_started/toy_shop
-        if: github.repository == 're-data/re-data'
+        if: github.repository == 're-data/re-data' && !env.ACT
         run: |
           re_data notify slack --start-date 2021-01-01 --end-date 2021-01-11 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ \
           --profile toy_shop_${{ matrix.database }} --webhook-url ${{secrets.RE_DATA_TESTING_SLACK_ALERTS_WEBHOOK}} --subtitle="<https://github.com/${{ github.repository }}/commit/${{ github.sha }} |View Commit> - (${{ matrix.database }})"
@@ -196,6 +202,7 @@ jobs:
           node-version: "16.13.0"
 
       - name: Set homepage in package.json
+        if: ${{ !env.ACT }}
         working-directory: ./re_data_ui
         run: contents=$(jq '.homepage="https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}-${{ matrix.database }}"' package.json) && echo "${contents}" > package.json
         shell: bash
@@ -206,6 +213,7 @@ jobs:
           npm install
 
       - name: Build app for production
+        if: ${{ !env.ACT }}
         working-directory: ./re_data_ui
         shell: bash
         run: ./build.sh
@@ -225,6 +233,7 @@ jobs:
           re_data overview generate --start-date 2021-01-01 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_${{ matrix.database }}
 
       - name: Deploy
+        if: ${{ !env.ACT }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -242,9 +251,9 @@ jobs:
       - name: Check out
         uses: actions/checkout@v2
 
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v4
         with:
-          python-version: "3.7.x"
+          python-version: "3.8.x"
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -257,15 +266,10 @@ jobs:
         run: |
           echo $TOY_SHOP_SCHEMA
 
-      - name: Decode service account for BigQuery
-        if: matrix.database == 'bigquery'
-        run: 'echo $BIGQUERY_TESTING_SERVICE_ACCOUNT_BASE64 | base64 --decode > $BIGQUERY_TESTING_SERVICE_ACCOUNT_PATH'
-        shell: bash
-
       - name: Install dependencies and drop branch schema
         working-directory: ./getting_started/toy_shop
         run: |
-          pip install dbt-${{ matrix.database }}==1.4.0
+          pip install dbt-${{ matrix.database }}==$DBT_VERSION
           dbt deps
           dbt run-operation drop_all_schemas --args "{ schema_name: ${{ env.TOY_SHOP_SCHEMA }} }" --profile toy_shop_${{ matrix.database }}
 

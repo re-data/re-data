@@ -10,11 +10,11 @@
 
 re_data is an open-source data reliability framework for the modern data stack. 😊
 
-Currently, re_data focuses on observing the dbt project (together with underlying data warehouse - Postgres, BigQuery, Snowflake, Redshift).
+Currently, re_data focuses on observing the dbt project (together with the underlying data warehouse - Postgres, BigQuery, Snowflake and Redshift).
 
 # Live demo
 
-Check out our **[live demo](https://getre.io/demo)** of what re_data can do for you 😊
+Check out our **[live demo](https://docs.getre.io/ui-latest)** of what re_data can do for you 😊
 
 <p align="center">
 <img alt="Demo" width=100% src="docs/static/screenshots/ui/graph.png"/>
@@ -24,7 +24,7 @@ Check out our **[live demo](https://getre.io/demo)** of what re_data can do for 
 
 **[Check our docs!](https://docs.getre.io/)** 📓 📓 📓
 
-**[Join re_data community on Slack](https://www.getre.io/slack)** (we are very responsive there)
+**[Join re_data community on Slack](https://join.slack.com/t/re-data/shared_invite/zt-vkauq1y8-tL4R4_H5nZoVvyXyy0hdug)**
 
 # Support
 

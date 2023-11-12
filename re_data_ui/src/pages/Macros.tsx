@@ -7,7 +7,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { FaRegClipboard } from 'react-icons/all';
+import { FaRegClipboard } from 'react-icons/fa';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Select, Toggle } from '../components';
 import {

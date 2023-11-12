@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { FaRegClipboard } from 'react-icons/all';
+import { FaRegClipboard } from 'react-icons/fa';
 import { copyToClipboard } from '../utils';
 import CodeFormatter from './CodeFormatter';
 import { DynamicTable } from '../components';
