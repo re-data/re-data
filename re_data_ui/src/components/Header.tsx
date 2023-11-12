@@ -8,6 +8,7 @@ const Header: React.FC = (): ReactElement => (
       htmlFor="menu-open"
       className="absolute right-2 bottom-2 shadow-lg rounded-full p-2 bg-gray-100 text-gray-600 md:hidden"
       data-dev-hint="floating action button"
+      aria-label="menu"
     >
       <svg
         className="h-6 w-6"
@@ -31,6 +32,7 @@ const Header: React.FC = (): ReactElement => (
         htmlFor="menu-open"
         id="mobile-menu-button"
         className="m-2 p-2 focus:outline-none hover:text-white hover:bg-gray-700 rounded-md"
+        aria-label="mobile-menu"
       >
         <svg
           id="menu-open-icon"
