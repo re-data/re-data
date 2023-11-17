@@ -2,16 +2,19 @@ name: Generate docusaurus documentation
 
 on: push
 
+env:
+  NODE_VERSION: 16.17.0
+
 jobs:
   generate-docs:
     runs-on: ubuntu-latest
-    steps:        
+    steps:
       - name: Check out
         uses: actions/checkout@v2
 
       - uses: actions/setup-node@v2
         with:
-          node-version: '16.17.0'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -30,6 +33,7 @@ jobs:
         run: npm run build
 
       - name: Deploy
+        if: ${{ !env.ACT }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

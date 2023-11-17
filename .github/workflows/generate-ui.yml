@@ -21,6 +21,8 @@ env:
   BIGQUERY_TESTING_CLIENT_X509_CERT_URL: ${{ secrets.BIGQUERY_TESTING_CLIENT_X509_CERT_URL }}
   RE_DATA_SEND_ANONYMOUS_USAGE_STATS: 0
   DBT_VERSION: 1.7
+  NODE_VERSION: 16.17.0
+  PYTHON_VERSION: "3.8.x"
 
 jobs:
   generate-ui:
@@ -46,7 +48,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.8.x"
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -88,7 +90,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.13.0"
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Set homepage in package.json
         if: ${{ !env.ACT }}
@@ -108,7 +110,7 @@ jobs:
         env:
           PUBLIC_URL: https://${{env.GITHUB_REPOSITORY_OWNER_PART_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME_PART_SLUG}}/ui-${{env.GITHUB_REF_SLUG}}
 
-      - name: Generate re_data artefacts
+      - name: Generate re_data artifacts
         working-directory: ./getting_started/toy_shop
         run: |
           re_data overview generate --start-date 2021-01-01 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_postgres
@@ -123,7 +125,7 @@ jobs:
 
   generate-ui-other-dbs:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.repository == 're-data/re-data'
+    if: github.event_name == 'push' && github.repository == 're-data/re-data' && github.ref == 'refs/heads/master'
     strategy:
       fail-fast: false
       matrix:
@@ -134,7 +136,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.8.x"
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -199,7 +201,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.13.0"
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Set homepage in package.json
         if: ${{ !env.ACT }}
@@ -227,7 +229,7 @@ jobs:
         run: sleep 60
         shell: bash
 
-      - name: Generate re_data artefacts
+      - name: Generate re_data artifacts
         working-directory: ./getting_started/toy_shop
         run: |
           re_data overview generate --start-date 2021-01-01 --profiles-dir ${{env.DBT_PROFILES_DIR}} --project-dir ./ --profile toy_shop_${{ matrix.database }}
@@ -242,18 +244,18 @@ jobs:
 
   clean-up-schemas:
     runs-on: ubuntu-latest
-    if: github.event_name == 'delete' && github.repository == 're-data/re-data'
+    if: github.event_name == 'delete' && github.repository == 're-data/re-data' && github.ref == 'refs/heads/master'
     strategy:
       fail-fast: false
       matrix:
         database: [snowflake, bigquery, redshift]
-    steps:        
+    steps:
       - name: Check out
         uses: actions/checkout@v2
 
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.8.x"
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -276,7 +278,6 @@ jobs:
   clean-up-deployment:
     runs-on: ubuntu-latest
     if: github.event_name == 'delete'
-    
     steps:        
       - name: Check out
         uses: actions/checkout@v2

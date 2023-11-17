@@ -2,19 +2,21 @@ name: ES Lint
 
 on: push
 
+env:
+  NODE_VERSION: 16.17.0
+
 jobs:
   run-linters:
     name: Run linters
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
       - name: Set up Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: 16.13.0
+          node-version: ${{ env.NODE_VERSION }}
 
       # ESLint and Prettier must be in `package.json`
       - name: Install Node.js dependencies
