@@ -1,6 +1,6 @@
 packages:
   - package: dbt-labs/dbt_utils
-    version: [">=1.0.0", "<1.1.0"]
+    version: [">=1.0.0", "<1.2.0"]
 
   - git: "https://github.com/re-data/dbt-re-data.git"
     revision: main
