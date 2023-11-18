@@ -93,7 +93,18 @@ const Settings: FC = (): ReactElement => {
                         {Object.keys(metrics[key]).map((k: any) => (
                           <li key={k}>
                             {k}
-                            {metrics[key]?.[k] ? `: ${metrics[key][k]}` : ''}
+                            {Array.isArray(metrics[key][k]) ? (
+                              metrics[key]?.[k] ? `: ${metrics[key][k]}` : ''
+                            ) : (
+                              Object.keys(metrics[key][k]).map((kk: any) => (
+                                <ul className="list-disc ml-4">
+                                  <li>
+                                    {kk}
+                                    {metrics[key]?.[k]?.[kk] ? `: ${metrics[key][k][kk]}` : ''}
+                                  </li>
+                                </ul>
+                              ))
+                            )}
                           </li>
                         ))}
                       </ul>
