@@ -23,6 +23,7 @@
   ],
   "rules": {
     "no-use-before-define": "off",
+    "no-nested-ternary": "off",
     "@typescript-eslint/no-use-before-define": [
       "error"
     ],
