@@ -59,6 +59,10 @@ run-frontend: install-frontend
 	@echo "Running RE Data UI..."
 	( cd re_data_ui && npm start )
 
+generate-docs:
+	@echo "Generating docs..."
+	( cd docs && yarn install && npm start )
+
 
 define HELP_MESSAGE
 Usage: $ make [TARGETS]
@@ -75,5 +79,6 @@ TARGETS
 	copy-artifacts          Copy re-data artifact files to frontend public folder
 	install-frontend        Install UI dependencies
 	run-frontend            Run RE Data UI
+	generate-docs           Generate docs
 
 endef

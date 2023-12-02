@@ -34,8 +34,8 @@ re_data dbt native cofiguration follows the same rules as dbt configuration, con
       re_data_time_filter='creation_time',
       re_data_columns=['amount', 'status'],
       re_data_metrics_groups=['table_metrics', 'column_metrics'],
-      re_data_metrics={'table': ['orders_obove_100'], 'column': { 'status': ['distinct_values'],
-      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3.0} }},
+      re_data_metrics={'table': ['orders_obove_100'], 'column': { 'status': ['distinct_values']}},
+      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3.0, 'direction': 'both'},
       re_data_owners=['datateam']
     )
 }}
@@ -69,6 +69,7 @@ models:
       re_data_anomaly_detector:
         name: modified_z_score
         threshold: 3
+        direction: both
           
           
 ```
@@ -85,6 +86,7 @@ models:
       +re_data_anomaly_detector:
         name: modified_z_score
         threshold: 3
+        direction: both
       +re_data_metrics_groups:
         - table_metrics
 

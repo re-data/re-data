@@ -7,3 +7,4 @@ venv
 .idea/
 build/
 .env
+yarn.lock
