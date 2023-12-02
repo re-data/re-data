@@ -27,12 +27,13 @@ vars:
     re_data:anomaly_detector:
         name: z_score
         threshold: 3
+        direction: both
 
 # configuring z score as anomaly detector per model
 {{
     config(
       re_data_monitored=true,
-      re_data_anomaly_detector={'name': 'z_score', 'threshold': 3}
+      re_data_anomaly_detector={'name': 'z_score', 'threshold': 3, 'direction': 'both'}
     )
 }}
 
@@ -52,12 +53,13 @@ vars:
     re_data:anomaly_detector:
         name: modified_z_score
         threshold: 3
+        direction: both
 
 # configuring modified z score as anomaly detector per model
 {{
     config(
       re_data_monitored=true,
-      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3}
+      re_data_anomaly_detector={'name': 'modified_z_score', 'threshold': 3, 'direction': 'both'}
     )
 }}
 
@@ -78,13 +80,18 @@ vars:
     re_data:anomaly_detector:
         name: boxplot
         whisker_boundary_multiplier: 1.5
+        direction: both
 
 # configuring boxplot as anomaly detector per model
 {{
     config(
       re_data_monitored=true,
-      re_data_anomaly_detector={'name': 'boxplot', whisker_boundary_multiplier: 1.5}
+      re_data_anomaly_detector={'name': 'boxplot', 'whisker_boundary_multiplier': 1.5, 'direction': 'both'}
     )
 }}
 
 ```
+
+#### Direction
+
+The re_data_anomaly_detector also takes in an optional "direction" argument. If the direction is set to "up" then only anomalies due to increases will occur and vice versa when set to "down". When set to "both" then both anomalies due to increases or decreases will be included. Defaults to "both" if not specified. This can be useful when monitoring metrics where the implications are different for an increase versus a decrease. An example could be the number of paying customers, a big increase isn't a problem for the business but a big decrease would be a huge problem.
