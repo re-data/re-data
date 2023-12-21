@@ -57,7 +57,7 @@ def get_target_paths(kwargs, re_data_target_dir=None):
                         project_dict['target-path']
                         )
     if re_data_target_dir:
-        re_data_target_path = os.path.join(partial.project_root,re_data_target_dir)
+        re_data_target_path = os.path.join(project_root,re_data_target_dir)
     else:
         re_data_target_path = os.path.join(dbt_target_path, 're_data')
 
