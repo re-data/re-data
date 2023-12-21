@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/css/main.d7a73fe6.chunk.css",
+    "main.js": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/js/main.e85d45ef.chunk.js",
+    "main.js.map": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/js/main.e85d45ef.chunk.js.map",
+    "runtime-main.js": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/js/runtime-main.09fa6cca.js",
+    "runtime-main.js.map": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/js/runtime-main.09fa6cca.js.map",
+    "static/css/2.9af11fe0.chunk.css": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/css/2.9af11fe0.chunk.css",
+    "static/js/2.48bffa81.chunk.js": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/js/2.48bffa81.chunk.js",
+    "static/js/2.48bffa81.chunk.js.map": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/js/2.48bffa81.chunk.js.map",
+    "static/js/3.93601625.chunk.js": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/js/3.93601625.chunk.js",
+    "static/js/3.93601625.chunk.js.map": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/js/3.93601625.chunk.js.map",
+    "index.html": "https://re-data.github.io/re-data/ui-feature-minor-changes/index.html",
+    "static/css/2.9af11fe0.chunk.css.map": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/css/2.9af11fe0.chunk.css.map",
+    "static/css/main.d7a73fe6.chunk.css.map": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/css/main.d7a73fe6.chunk.css.map",
+    "static/js/2.48bffa81.chunk.js.LICENSE.txt": "https://re-data.github.io/re-data/ui-feature-minor-changes/static/js/2.48bffa81.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.09fa6cca.js",
+    "static/css/2.9af11fe0.chunk.css",
+    "static/js/2.48bffa81.chunk.js",
+    "static/css/main.d7a73fe6.chunk.css",
+    "static/js/main.e85d45ef.chunk.js"
+  ]
+}

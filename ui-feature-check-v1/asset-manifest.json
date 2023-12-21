@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.js": "https://re-data.github.io/re-data/ui-feature-check-v1/static/js/main.784a54d1.chunk.js",
+    "main.js.map": "https://re-data.github.io/re-data/ui-feature-check-v1/static/js/main.784a54d1.chunk.js.map",
+    "runtime-main.js": "https://re-data.github.io/re-data/ui-feature-check-v1/static/js/runtime-main.1758e4bf.js",
+    "runtime-main.js.map": "https://re-data.github.io/re-data/ui-feature-check-v1/static/js/runtime-main.1758e4bf.js.map",
+    "static/js/2.89795429.chunk.js": "https://re-data.github.io/re-data/ui-feature-check-v1/static/js/2.89795429.chunk.js",
+    "static/js/2.89795429.chunk.js.map": "https://re-data.github.io/re-data/ui-feature-check-v1/static/js/2.89795429.chunk.js.map",
+    "static/js/3.991db021.chunk.js": "https://re-data.github.io/re-data/ui-feature-check-v1/static/js/3.991db021.chunk.js",
+    "static/js/3.991db021.chunk.js.map": "https://re-data.github.io/re-data/ui-feature-check-v1/static/js/3.991db021.chunk.js.map",
+    "index.html": "https://re-data.github.io/re-data/ui-feature-check-v1/index.html",
+    "static/js/2.89795429.chunk.js.LICENSE.txt": "https://re-data.github.io/re-data/ui-feature-check-v1/static/js/2.89795429.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.1758e4bf.js",
+    "static/js/2.89795429.chunk.js",
+    "static/js/main.784a54d1.chunk.js"
+  ]
+}
