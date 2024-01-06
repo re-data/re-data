@@ -192,6 +192,9 @@ vars:
   # (optional) configuring storing tests history
   re_data:save_test_history: true
 
+  # (optional) configuring showing test warnings as alerts
+  re_data:show_warns_as_alerts: false
+
   # (optional) querying db for failing rows
   re_data:query_test_failures: true
 
@@ -296,6 +299,10 @@ The period which `re_data` considers when looking for anomalies. (By default, it
 ### re_data:save_test_history
 
 Variable to enable storing test history. See [re_data tests history](/docs/re_data/reference/tests/history) for more details.
+
+### re_data:show_warns_as_alerts
+
+When set to true (defaults to false), test warnings will be listed in the re_data alerts page in the UI
 
 ### re_data:query_test_failures
 
