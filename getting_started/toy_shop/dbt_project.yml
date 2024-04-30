@@ -56,6 +56,7 @@ vars:
     threshold: 3
 
   re_data:save_test_history: true
+  re_data:show_warns_as_alerts: true
 
   re_data:owners_config:
     deji:
